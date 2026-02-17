@@ -1,0 +1,88 @@
+<legend style="margin-top: -19px;">DashBoard Entrega de Carnet</legend>
+<% usr = @usr
+   estados = Contratosperfecha.select("val_carne, (CASE WHEN val_carne = 'PENDIENTE' THEN 1 WHEN val_carne = 'ENTREGADO' THEN 2 END) codigo, concat('CAR_',val_carne) estado2, count(9) cantidad")
+                              .where("carne = 'SI' and estado = 'ACTIVO'").group("val_carne").distinct.order("2 asc")
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado2
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: p.estado2) do %>
+              <i class="fa fa-adn"></i> <%= p.val_carne %> (<%= p.cantidad rescue 0 %>)
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado2
+        %>
+            <div class="tab-pane active" id="<%= p.estado2 %>">
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="row" style="margin-top: -10px;">
+                      <div class="col-md-4">
+                        <%= form_tag searchcarnet_todo_menus_path(estado: p.val_carne), remote: true, method: :get do %>
+                          <div class="form-group input-group" style="padding-bottom: 10px;">
+                            <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                            <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Identificación, Nombre o Apellido' %>
+                            <span class="input-group-btn">
+                              <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              <% end %>
+                            </span>
+                          </div>
+                        <% end %>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="text-right" style="position: absolute;
+                          right: 30px;
+                          bottom: 20px;">
+                          <%= link_to informe_datas_path(infgrupo_id: 71, portafolio_id: p.val_carne, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Entrega de Carnet" do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+                            </button>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="resultado_carnet_todo<%= p.val_carne.downcase %>"></div>
+                  </div>
+                  <br/><br/>
+                  <% if @contratosprefechascarnet.present? %>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="3%"></th>
+                        <th class="text-left">Contratos</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <% @contratosprefechascarnet.select("contrato_id").distinct.each do |c| %>
+                        <%= render 'menus/tr_carnet_todo', c: c, p: p %>
+                      <% end %>
+                      </tbody>
+                    </table>
+                    <div class="box-tools pull-right">
+                      <%= will_paginate @contratosprefechascarnet.select("contrato_id").distinct, :param_name => "#{p.estado2.downcase.to_s}", remote: true, renderer: BootstrapPagination::Rails %>
+                    </div><!-- /.box-tools -->
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

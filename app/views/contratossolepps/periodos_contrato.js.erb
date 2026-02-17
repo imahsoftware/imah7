@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @contrato.id %>").html('<%= j render "contratossolepps/abrir_detalle_contrato" %>');
+$("#abrir<%= @contrato.id %>").addClass("hide");
+$("#cerrar<%= @contrato.id %>").removeClass("hide");
+$("#tr_show<%= @contrato.id %>").removeClass("hidden");
+<% else %>
+$("#abrir<%= @contrato.id %>").removeClass("hide");
+$("#cerrar<%= @contrato.id %>").addClass("hide");
+$("#abrir_detalle<%= @contrato.id %>").html(null);
+$("#tr_show<%= @contrato.id %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

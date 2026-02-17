@@ -1,0 +1,49 @@
+<div id="error_visita"></div>
+<%= simple_form_for @visita, remote: true do |f| %>
+  <%= f.hidden_field :latitude %>
+  <%= f.hidden_field :longitude %>
+  <%= f.hidden_field :direccion %>
+  <div class="bs-callout">
+    <div class="text-red alerta-visita" align="justify">
+      <i class="fa fa-info-circle"></i> Solicitamos respetuosamente que todas las visitas y gestiones con clientes se
+      realicen dentro de la jornada máxima de 46 horas semanales, y en caso de requerir tiempo adicional (horas extras) para el cumplimiento de sus objetivos se
+      requiere
+      autorización de la subgerencia de la compañía o a quien está delegue, en caso de laborar tiempo complementario sin
+      la
+      autorización requerida dicho tiempo no será remunerado y/o compensado. Tambien le recordamos que dentro de dicha
+      jornada
+      debe destinar una hora diaria para almorzar en el tiempo que mejor se
+      acople a la ejecucion de sus labores.
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-2">
+        <%= f.input :teletrabajo, as: :select, collection: select_clase_visita, input_html: { class: 'select2' }, label: "Clase Visita" %>
+      </div>
+      <div class="col-md-8">
+        <%= f.input :contrato_id, collection: select_contratos_activosbyportafolio(is_portafolio).collect { |p| [p.datos.to_s, p.id] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true, label: 'Contrato' %>
+      </div>
+      <div class="col-md-2">
+        <%= f.input :nro_ticket, label: "Nro Ticket (Microcinco)", input_html: { class: 'clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <%= f.input :descripcion, as: :text, label: "Objetivo de la Visita", input_html: { class: 'clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @visita.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#visita_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", visita_path(@visita), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

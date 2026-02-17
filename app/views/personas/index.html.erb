@@ -1,0 +1,192 @@
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#buscador" data-toggle="tab" aria-expanded="true"><i class="fa fa-binoculars"></i> Buscador</a></li>
+        <li><a href="#evaluaciones" data-toggle="tab" aria-expanded="true"><i class="fa fa-file-excel-o"></i> Seguimiento</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane" id="evaluaciones">
+          <div class="row">
+            <div class="col-md-12">
+              <%= form_tag seguimiento_personas_path, method: 'get' do %>
+                <div class="box-header">
+                  <legend>Informe de Seguimiento</legend>
+                </div>
+                <div class="box-body">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label>Mes</label><br/>
+                        <%= select_tag 'ubicacion[mes]', options_for_select(select_mes), {class: 'form-control select2', data: { width: '100%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-3">
+                        <label>Año</label><br/>
+                        <%= select_tag 'ubicacion[anno]', options_for_select(select_anno4), {class: 'form-control select2', data: { width: '100%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-3">
+                        <%= label_tag :cuenta_tanque, 'Compañia' %><br/>
+                        <%= select_tag 'ubicacion[portafolio_id]', options_from_collection_for_select(select_portafolios, :id, :nombre), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                      </div>
+                      <div class="col-md-1">
+                        <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-12">
+              <%= form_tag seguimientoa_personas_path, method: 'get' do %>
+                <div class="box-header">
+                  <legend>Informe de Seguimiento Administrativos</legend>
+                </div>
+                <div class="box-body">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label>Mes</label><br/>
+                        <%= select_tag 'ubicacion[mesa]', options_for_select(select_mes), {class: 'form-control select2', data: { width: '100%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-3">
+                        <label>Año</label><br/>
+                        <%= select_tag 'ubicacion[annoa]', options_for_select(select_anno4), {class: 'form-control select2', data: { width: '100%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-1">
+                        <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="col-md-12">
+              <%= form_tag seguimientoa2_personas_path, method: 'get' do %>
+                <div class="box-header">
+                  <legend>Informe de Seguimiento Administrativos por fecha</legend>
+                </div>
+                <div class="box-body">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <%= label_tag :fecha, 'Fecha Registro' %><br/>
+                        <%= text_field_tag :fecha, params[:fecha], { class: 'datepicker form-control', style:'width:110px;', placeholder: 'Fecha Inicial', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+                      </div>
+                      <div class="col-md-1">
+                        <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane active" id="buscador">
+          <%
+            cant = User.where(["unlock_token is not null"]).count
+          %>
+          <div class="box-header">
+            <legend>Personas - Buscador
+              <% if cant.to_i > 0 %>
+                <%= link_to desbloquearusuariof_users_path, data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Desbloquear todos los usuarios' do %>
+                  <button class="btn btn-xs btn-info"><i class="fa fa-unlock"> <%=cant%> Usuarios Bloqueados</i></button>
+                <% end %>
+              <% end %>
+            </legend>
+            <div class="box-tools pull-right">
+              <%= link_to new_persona_path, class: 'btn btn-sm btn-info' do %>
+                <i class="fa fa-plus-square"> </i> <span>Nuevo persona</span>
+              <% end %>
+            </div>
+          </div>
+          <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+            <div class="box-body">
+              <div class="form-group">
+                <%= label_tag :identificacion, 'Identificación' %><br/>
+                <%= text_field_tag :identificacion, params[:identificacion], class: 'form-control', style:'width:150px;', autocomplete: 'off' %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :nombre, 'Nombre' %><br/>
+                <%= text_field_tag :nombre, params[:nombre], class: 'form-control', style:'width:250px;', autocomplete: 'off' %>
+              </div>
+              <div class="form-group">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <div class="box-header with-border">
+            <% if @personas.count.to_i > 0 %>
+              <div class="box-body">
+                <div class="box-header with-border">
+                  <legend>Persona (<%=@personas.count rescue 0%>) </legend>
+                </div><!-- /.box-header -->
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                    <tr class="thcolor">
+                      <th width="8%"></th>
+                      <th width="15%" class="text-center">Fecha Estratificación</th>
+                      <th width="12%" class="text-left">Identificación</th>
+                      <th width="35%" class="text-left">Nombres</th>
+                      <th width="30%" class="text-left">Empresa</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @personas.order(created_at: :desc).each do |persona|
+                      user = User.find_by_persona_id(persona.id) rescue nil %>
+                      <tr id="persona_<%= persona.id %>">
+                        <td class="text-center">
+                          <%= link_to edit_persona_path(persona), class: 'edit_persona_button', data: {toggle: 'tooltip'}, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                          <% if user.unlock_token %>
+                            <%= link_to desbloquearusuariop_users_path(id: user.id), data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Desbloquear' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-unlock"></i></button>
+                            <% end %>
+                          <% end %>
+                          <% if persona.administrativo.to_s == 'A' %>
+                            <%= link_to activarinactivar_personas_path(id: persona.id, act: 'I'), data: { toggle: 'tooltip'}, title: 'Inactivar Administrativo' do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-refresh"></i></button>
+                            <% end %>
+                          <% else %>
+                            <%= link_to activarinactivar_personas_path(id: persona.id, act: 'A'), data: { toggle: 'tooltip' }, title: 'Activar Administrativo' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-refresh"></i></button>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td class="text-center"><%= persona.created_at.strftime('%d-%m-%Y') rescue nil %></td>
+                        <td><%= persona.identificacion rescue nil %></td>
+                        <td><%= persona.nombre rescue nil %></td>
+                        <td><%= persona.nombreportafolio rescue nil %> <small><%=persona.centrodetrabajo rescue nil %></small></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @personas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+                </div><!-- /.box-tools -->
+              </div>
+            <% else %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              </div>
+            <% end %>
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>

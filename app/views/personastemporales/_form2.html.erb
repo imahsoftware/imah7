@@ -1,0 +1,65 @@
+<%= simple_form_for @personastemporal, :url => create2_personastemporales_path, :method => :post, remote: true do |f| %>
+  <%= f.hidden_field :contrato_id %>
+  <script>
+      window.onload = function() {
+          var myInput = document.getElementById('bloquear');
+          myInput.onpaste = function(e) {
+              e.preventDefault();
+              alert("esta acción está prohibida");
+          }
+
+          myInput.oncopy = function(e) {
+              e.preventDefault();
+              alert("esta acción está prohibida");
+          }
+      }
+
+      function justNumbers(e) {
+          var keynum = window.event ? window.event.keyCode : e.which;
+          if ((keynum == 8) || (keynum == 46))
+              return true;
+
+          return /\d/.test(String.fromCharCode(keynum));
+      }
+
+      function habcampo() {
+
+      }
+
+      $("#ide").keyup(function () {
+          var  ta = $("#ide");
+          letras = ta.val().replace('//g',"");
+          ta.val(letras);
+      });
+  </script>
+
+  <section class="content-header"><%= render 'layouts/flash_messages' %></section>
+  <div class="box-header"><h3 class="box-title">Registro Rapido Personas</h3></div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+          <%= label_tag :tipo_identificacion, 'Tipo de Identifcación' %><br/>
+          <%= f.input :tipo_identificacion, collection: Iparametro.where(campo: 'tipo_identificacion').order(:descripcion).collect {|p| [ p.descripcion, p.descripcion ] }, input_html: { data: { width: '100%' }, class: 'select2' }, as: :select, include_blank: true, label:false%></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :identificacion, id: "ide", input_html: {onkeypress: "return justNumbers(event);", maxlength: 12} %></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3"><%= f.input :nombres, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :apellidos, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3"><%= f.input :telefono, as: :integer  %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3"><%= f.input :movil, as: :integer  %></div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+          <%= label_tag :cargo, 'Cargo' %><br/>
+          <%= f.input :contratoscargo_id, collection: Contratoscargo.where(contrato_id: @personastemporal.contrato_id).order(:perfil).collect {|p| [ p.desc_contrato, p.id ] }, input_html: { data: { width: '100%' }, class: 'select2' }, as: :select, include_blank: true, label:false %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= label_tag :user_asignado, 'Responsable' %><br/>
+          <%= f.input :user_asignado, collection: User.where(["tipoconsulta != 'PERSONA' AND geintac is null"]).order(:nombre).collect {|p| [ p.nombre, p.id ] }, input_html: { data: { width: '100%' }, class: 'select2' }, as: :select, include_blank: true, label:false%></div>
+      </div>
+    </div>
+  <div class="box-footer">
+    <div class="box-tools pull-right">
+      <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+    </div><!-- /.box-tools -->
+  </div>
+<% end %>

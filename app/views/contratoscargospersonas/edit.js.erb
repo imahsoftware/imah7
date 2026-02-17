@@ -1,0 +1,22 @@
+$("#contratoscargospersona_form").collapse("hide");
+
+$("#contratoscargospersona_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratoscargospersona_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratoscargospersona: @active_record %>");
+<% end %>
+
+$("#contratoscargospersona_<%= @contratoscargospersona.id %>").html("<td colspan='7'><%= j render 'form' %></td>");
+
+$("#contratoscargospersona_<%= @contratoscargospersona.id %>").addClass("active_contratoscargospersona");
+$(".select2").select2();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '1950:2027',
+    changeMonth: true,
+    changeYear: true,
+});

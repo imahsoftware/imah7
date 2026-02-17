@@ -1,0 +1,1 @@
+json.partial! "contratosactmcodigosinfos/contratosactmcodigosinfo", contratosactmcodigosinfo: @contratosactmcodigosinfo

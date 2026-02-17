@@ -1,0 +1,2 @@
+class Contratossoleppscontrol < ApplicationRecord
+end

@@ -1,0 +1,29 @@
+<% contratosperfecha =  Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                         .select("contratos.nro_contrato,
+                                                  (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                  contratosgrupos.descripcion,
+                                                  contratosgrupos.termino,
+                                                  contratoscargos.perfil,
+                                                  (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                  (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                   contratosperfechas.*")
+                                         .where(["contratosperfechas.id = #{c.id_registro}"]).first rescue nil %>
+<tr>
+  <td class="text-table" style="font-size: 10px;">
+    <%= link_to edit_contratospersona_path(id: contratosperfecha.contratospersona_id), data: {toggle: 'tooltip'}, title: 'Ir al empleado' do %>
+      <i class="fa fa-user"></i>
+      <% end %> <%= contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+  <td class="text-table" style="font-size: 10px;">
+    <%= contratosperfecha.identnombre rescue nil %> -
+      <strong>Nro Contrato : </strong><%= contratosperfecha.nro_contrato rescue nil %>
+      <br/><strong>Cargo : </strong><%= contratosperfecha.perfil rescue nil %>
+      <br/><strong>Grupo Nomina : </strong><%= contratosperfecha.termino rescue nil %>
+      <% if contratosperfecha.seccionnombre.present? %>
+        <br/><strong>Sección : </strong><%= contratosperfecha.seccionnombre rescue nil %> -<%= contratosperfecha.autobuscar_municipios rescue nil %>
+    <% end %>
+      <br/><strong>Dirección : </strong><%= contratosperfecha.contratospersona.direcciontelefono rescue nil %>
+  </td>
+  <td class="text-center" style="font-size: 10px;"><%= c.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+  <td class="text-center" style="font-size: 10px;"><%= c.fecha_firma rescue nil %></td>
+  <td class="text-table" style="font-size: 10px;"><%= c.tipo_documento rescue nil %></td>
+</tr>

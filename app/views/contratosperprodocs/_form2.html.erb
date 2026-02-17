@@ -1,0 +1,24 @@
+<%= simple_form_for([@contratosperproceso, @contratosperprodoc], remote: true) do |f| %>
+  <%= hidden_field_tag :ruta, params[:ruta], value: 'PROCESO' %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title">
+      <strong><%= @contratosperproceso.new_record? ? 'Agregar' : 'Agregar' %> Documento Digital</strong></h3>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :tipo, label: "Tipo" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :docproceso, as: :file, label: 'Archivo a cargar' %>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+<% end %>

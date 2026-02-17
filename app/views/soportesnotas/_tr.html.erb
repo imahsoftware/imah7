@@ -1,0 +1,53 @@
+<tr id="soportesnota_<%= soportesnota.id %>">
+  <td class="text-center">
+    <% if soportesnota.soporte.estado == 'PENDIENTE' %>
+      <%# if is_auth_e("soportesnota")%>
+      <%= link_to soporte_soportesnota_path(@soporte, soportesnota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+      <%= link_to documento_soportesnotas_path(soporte_id: @soporte.id, soportesnota_id: soportesnota.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Documentos" do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= soportesnota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= soportesnota.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= soportesnota.observaciones rescue nil %>
+
+    <% if soportesnota.soportesnotasimagenes.present? %>
+      <br/>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+        <tr>
+          <td width="10%"></td>
+          <th class="text-left text-table">Documento Digital</th>
+        </tr>
+        </thead>
+        <tbody id="tbody_soportesnotas">
+        <% soportesnota.soportesnotasimagenes.order(id: :desc).each do |soportesnotasimagen| %>
+          <tr>
+            <td class="text-table text-center">
+              <% if soportesnotasimagen.soportesnota.soporte.estado == 'PENDIENTE' %>
+                <%= link_to soportesnota_soportesnotasimagen_path(soportesnota, soportesnotasimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                  <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="text-table">
+              <%= link_to soportesnotasimagen.docsoportesnota.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download text-danger"></i> <%= soportesnotasimagen.docsoportesnota_file_name rescue nil %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </td>
+</tr>
+
+<div class="modal fade" id="documento<%= soportesnota.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

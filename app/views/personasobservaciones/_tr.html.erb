@@ -1,0 +1,15 @@
+<tr id="personasobservacion_<%= personasobservacion.id %>">
+  <td class="text-center">
+    <% if is_auth_a("personasobservacion")%>
+      <%= link_to edit_persona_personasobservacion_path(@persona, personasobservacion), remote: true, class: 'edit_personasobservacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("personasobservacion")%>
+      <%= link_to persona_personasobservacion_path(@persona, personasobservacion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="text-left"><%=  personasobservacion.observacion rescue nil %> </td>
+</tr>

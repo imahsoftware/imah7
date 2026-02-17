@@ -1,0 +1,169 @@
+<%
+
+  @contratosperfecha = Contratosperfecha.where("estado = 'ACTIVO' and (fecha_fin is null or fecha_fin > now()) and contratospersona_id in (select contratospersona_id from users where id = #{@user_responsable})").first rescue nil
+
+  descripciones = Iparametro.distinct.where(id: Iparametrosuser.where(user_id: is_admin).pluck(:iparametro_id),
+                                            campo: 'evaluacion_clase_prueba',
+                                            descripcion: Evaluacionesdetalle.where(evaluacion_id: @evaluacion.id).distinct.pluck(:clase))
+                            .pluck(:descripcion)
+  evaluacioncontrato = Evaluacionescontrato.where("evaluacion_id = #{@evaluacion.id} and user_responsable = #{@user_responsable}").first rescue 0
+%>
+<div class="pull-right">
+  <b style="color: #357ca5;">PENDIENTE</b> <i class="fa fa-certificate " style="color: #357ca5;"></i> &nbsp;
+  <b style="color: #d33724;">DEFICIENTE</b> <i class="fa fa-certificate" style="color: #d33724;"></i> &nbsp;
+  <b style="color: #ff7701;">REGULAR</b> <i class="fa fa-certificate" style="color: #ff7701;"></i> &nbsp;
+  <b style="color: #555299">BUENO</b> <i class="fa fa-certificate" style="color: #555299"></i> &nbsp;
+  <b style="color: #008d4c">EXCELENTE</b> <i class="fa fa-certificate" style="color: #008d4c"></i> &nbsp;
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <i class="fa fa-warning"></i>
+        <h3 class="box-title">
+          <%= link_to gestion_prueba_evaluaciones_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %> Evaluación Periodo de Prueba
+        </h3>
+      </div>
+      <div class="box-body">
+        <table class="table table-bordered table-condensed table-striped">
+          <tr class="thcolor">
+            <th class="text-table-10" width="20%">Evaluación</th>
+            <th class="text-table-10" width="20%">Empleado</th>
+            <th class="text-table-10  text-center" width="10%">Fecha Limite</th>
+            <th class="text-table-10">Objetivo</th>
+            <th class="text-table-10  text-center" width="15%"></th>
+          </tr>
+          <tr>
+            <td class="text-table-10">
+              <%= @evaluacion.tema rescue nil %>
+            </td>
+            <td class="text-table-10">
+              <%= User.find(@user_responsable).nombre rescue nil %>
+            </td>
+            <td class="text-table-10 text-center">
+              <%= @evaluacion.fecha_limite rescue nil %>
+            </td>
+            <td class="text-table-10">
+              <%= @evaluacion.objetivo rescue nil %>
+            </td>
+            <td class="text-table-10">
+              <div id="activar_cierre<%= @evaluacion.id %>" class="text-center">
+                <%= render 'evaluacionesejecuciones/activar_cierre', evaluacion: @evaluacion.id, user_responsable: @user_responsable, contratosperfecha_id: @contratosperfecha.id %>
+              </div>
+              <div class="modal fade" id="otp<%= @evaluacion.id rescue nil %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content">
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <% descripciones.each do |descripcion| %>
+          <legend style="font-size: 15px; padding: 5px;"><em><%= descripcion rescue nil %></em></legend>
+          <table class="table table-bordered table-condensed table-striped">
+            <tr class="thcolor">
+              <th class="text-table" width="45%">Actividades</th>
+              <th class="text-table text-center" width="10%">Evaluar</th>
+              <th class="text-table">Observación</th>
+            </tr>
+            <% @promedio = 0
+               @promedio2 = 0
+               cnt = 0
+               @total_promedio = 0
+               Evaluacionesejecucion.joins(:evaluacionesdetalle)
+                                    .select("evaluacionesejecuciones.*, evaluacionesdetalles.actividad evaluacionesdetalles_actividad,
+                                           evaluacionesdetalles.observacion evaluacionesdetalles_observacion,
+                                           evaluacionesdetalles.requieredoc evaluacionesdetalles_requieredoc,
+                                           (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                           (select distinct 'X' from evaluacionesejecucionesdocs where evaluacionesejecucion_id = evaluacionesejecuciones.id) tienedoc")
+                                    .where("evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                         and evaluacionesdetalles.clase = '#{descripcion}'
+                                         and evaluacionesejecuciones.user_responsable = #{@user_responsable}").each do |p|
+                 @promedio += p.estado.to_i
+                 cnt += 1
+
+            %>
+              <tr>
+                <td class="text-justify text-table" style="padding: 5px;">
+                  <%= p.evaluacionesdetalles_actividad %>
+                  <% if p.evaluacionesdetalles_observacion.present? %>
+                    <em> <small><br/><strong>Observación: </strong> <%= p.evaluacionesdetalles_observacion rescue nil %>
+                    </small></em>
+                  <% end %>
+                  <div id="usuario_marca<%= p.id %><%= @user_responsable %>">
+                    <% if p.fecha_marca.present? %>
+                      <b><i class="fa fa-user"></i> Usuario:</b> <%= p.nombresusermarca rescue nil %><br/>
+                      <b><i class="fa fa-calendar"></i>
+                        Fecha:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+                    <% end %>
+                  </div>
+                  <% if p.evaluacionesdetalles_requieredoc.to_s == 'SI' %>
+                    <div><strong style="color: red"><em>Debe subir soporte digital</em></strong></div>
+                  <% end %>
+                  <div id="documentos<%= p.id %>">
+                    <% if p.tienedoc.to_s == 'X' %><br/>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <td clase="text-center" width="10%"></td>
+                          <td class="text-table" width="90%">Documento Digital</td>
+                        </tr>
+                        <% p.evaluacionesejecucionesdocs.each do |doc| %>
+                          <tr>
+                            <td>
+                              <div align="center">
+                                <% if doc.user_id == is_admin %>
+                                  <%= link_to eliminar_evaluacionesejecucionesdocs_path(id: doc.id, evaluacionesejecucion_id: p.id), remote: true, data: { toggle: 'tooltip', confirm: 'Estas Seguro?' }, title: 'Eliminar' do %>
+                                    <i class="fa fa-trash"></i>
+                                  <% end %>
+                                <% end %>
+                                <%= link_to doc.docevaluacion.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                  <i class="fa fa-cloud-download text-danger"></i>
+                                <% end %></div>
+                            </td>
+                            <td clase="text-justify"><%= doc.tipo rescue nil %></td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    <% end %>
+                  </div>
+                </td>
+                <td width="8%" class="text-center text-table">
+                  <div class="btn-group" id="botones<%= p.id %>">
+                    <%= render 'evaluacionesejecuciones/botones_prueba', p: p, user_responsable_id: @user_responsable, contador: evaluacioncontrato.estado.to_i, contratosperfecha_id: @contratosperfecha.id %>
+                  </div>
+                </td>
+                <td width="40%" cls="text-justify text-table">
+                  <% if evaluacioncontrato.estado.to_i == 0 %>
+                    <div id="input_registro_data<%= p.id %>"><%= render 'evaluacionesejecuciones/input_registro_prueba', p: p %></div>
+                    <div id="mensaje_error<%= p.id %>"></div>
+                  <% else %>
+                    <%= p.resultado rescue nil %>
+                  <% end %>
+                </td>
+              </tr>
+              <div class="modal fade" id="nuevoSoporte<%= p.id %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content"></div>
+                </div>
+              </div>
+            <% end %>
+            <tr class="thcolor2">
+              <th colspan="2" class=" text-right">PROMEDIO</th>
+              <th><%= camponumerico @promedio.to_f / cnt.to_f rescue 0 %></th>
+            </tr>
+          </table>
+          <br/>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

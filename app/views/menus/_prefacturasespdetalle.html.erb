@@ -1,0 +1,44 @@
+<br/><br/>
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="12%" class="text-center" style="font-size:10px;"></th>
+      <th width="10%" class="text-center" style="font-size:10px;">Nro. Prefactura</th>
+      <th class="text-center" style="font-size:10px;">Empresa</th>
+      <th width="15%" class="text-center" style="font-size:10px;">Fecha creación</th>
+      <th width="13%" class="text-center" style="font-size:10px;">Valor Total</th>
+      <th width="15%" class="text-center" style="font-size:10px;">Estado</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% datos.each do |p| %>
+      <tr>
+        <td class="text-center" style="font-size:12px;">
+          <%= link_to edit_contratosprefactura_path(id: p.id, etapa: 'A'), class: 'edit_contratosprefactura_button', data: { toggle: 'tooltip' }, title: "Editar" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+          <% end %>
+          <%= link_to contratosprefactura_path(id: p.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver prefactura ' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+          <% end %>
+          <%= link_to visualizar_contratosprefacturas_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Prefactura en Excel' do %>
+            <button class="btn btn-xs btn-danger">
+              <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+          <% end %>
+          <% if p.estado.to_s != 'PENDIENTE' %>
+            <%= link_to cambioestado_contratosprefacturas_path(id: p.id, estado: "PENDIENTE"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a PENDIENTE?" }, title: 'Marcar PENDIENTE' do %>
+              <button class="btn btn-xs btn-info">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-center" style="font-size:10px;"><%= p.id rescue nil %></td>
+        <td class="text-left" style="font-size:10px;"><%= p.identnombre rescue nil %></td>
+        <td class="text-center" style="font-size:10px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+        <td class="text-right" style="font-size:10px;">$ <%= camponumerico p.total rescue 0 %></td>
+        <td class="text-center" style="font-size:10px;"><%= p.estado rescue nil %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

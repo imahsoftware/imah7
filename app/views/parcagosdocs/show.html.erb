@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Parcargo:</strong>
+  <%= @parcagosdoc.parcargo %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @parcagosdoc.user %>
+</p>
+
+<p>
+  <strong>Obligatorio:</strong>
+  <%= @parcagosdoc.obligatorio %>
+</p>
+
+<p>
+  <strong>Observacion:</strong>
+  <%= @parcagosdoc.observacion %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @parcagosdoc.estado %>
+</p>
+
+<%= link_to 'Edit', edit_parcagosdoc_path(@parcagosdoc) %> |
+<%= link_to 'Back', parcagosdocs_path %>

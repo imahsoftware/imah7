@@ -1,0 +1,9 @@
+$("#inicioOTP3").remove();
+<% if @controlfirma.codigo_otp.present? %>
+$("#otp1").html("<%= j render 'controlfirmas/otp1', controlfirma: @controlfirma %>");
+<% else %>
+$(document).ready( function() {
+    url = "<%= menus_path %>"
+    $(location).attr("href", url);
+});
+<% end %>

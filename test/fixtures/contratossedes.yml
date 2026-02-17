@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  empresassede: one
+  user: one
+  user_act: 1
+
+two:
+  contrato: two
+  empresassede: two
+  user: two
+  user_act: 1

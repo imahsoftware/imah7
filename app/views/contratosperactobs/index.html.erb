@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosperactobs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratospersona</th>
+      <th>Contratosperfecha</th>
+      <th>Contratoscargo</th>
+      <th>Resultado</th>
+      <th>User interventor</th>
+      <th>Anno</th>
+      <th>Mes</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosperactobs.each do |contratosperactob| %>
+      <tr>
+        <td><%= contratosperactob.contratospersona %></td>
+        <td><%= contratosperactob.contratosperfecha %></td>
+        <td><%= contratosperactob.contratoscargo %></td>
+        <td><%= contratosperactob.resultado %></td>
+        <td><%= contratosperactob.user_interventor %></td>
+        <td><%= contratosperactob.anno %></td>
+        <td><%= contratosperactob.mes %></td>
+        <td><%= link_to 'Show', contratosperactob %></td>
+        <td><%= link_to 'Edit', edit_contratosperactob_path(contratosperactob) %></td>
+        <td><%= link_to 'Destroy', contratosperactob, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosperactob', new_contratosperactob_path %>

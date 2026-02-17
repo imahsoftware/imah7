@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="5%"></td>
+				<th width="15%" class="text-left text-table">Fecha Creación</th>
+        <th width="30%" class="text-left text-table">Descripción</th>
+				<th class="text-left text-table">Documento Digital</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_veriserviciosiimagenes">
+	    <% @veriserviciositem.veriserviciosiimagenes.order(id: :desc).each do |veriserviciosiimagen| %>
+	      <%= render 'veriserviciosiimagenes/tr', veriserviciosiimagen: veriserviciosiimagen %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

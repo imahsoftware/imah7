@@ -1,0 +1,16 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="25%" class="text-left text-table">Tipo de Imagen</th>
+        <th class="text-left text-table">Imagen</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosperimagenes">
+	    <% @contratospersona.contratosperimagenes.order(id: :desc).each do |contratosperimagen| %>
+	      <%= render 'contratosperimagenes/tr', contratosperimagen: contratosperimagen %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

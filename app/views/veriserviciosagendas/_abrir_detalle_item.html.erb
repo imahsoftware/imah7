@@ -1,0 +1,107 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#usarios<%= veriserviciosagenda.id %>" data-toggle="tab"><i class="fa fa-users"></i> Usuarios</a>
+        </li>
+        <li><a href="#documentos<%= veriserviciosagenda.id %>" data-toggle="tab"><i class="fa fa-image"></i> Documentos Digitales</a></li>
+        <% if Veriserviciosagendasdato.where("veriserviciosagenda_id = #{veriserviciosagenda.id}").present? %>
+          <li><a href="#grafica<%= veriserviciosagenda.id %>" data-toggle="tab"><i class="fa fa-bar-chart"></i> Grafica</a></li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane" id="documentos<%= veriserviciosagenda.id %>">
+          <% if veriserviciosagenda.veriserviciosasoportes.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor3">
+              <tr>
+                <th width="15%" class="text-left text-table">Fecha</th>
+                <th class="text-left text-table" width="40%">Descripción</th>
+                <th class="text-left text-table">Documento</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_veriserviciosagendas">
+              <% veriserviciosagenda.veriserviciosasoportes.order(id: :desc).each do |veriserviciosasoporte| %>
+                <tr>
+                  <td align="left" class="text-table"><%= veriserviciosasoporte.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                    <br/>
+                    <%= veriserviciosasoporte.user.nombre rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosasoporte.descripcion rescue nil %></td>
+                  <td align="left" class="text-table">
+                    <%= link_to veriserviciosasoporte.verisoporte.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                      <i class="fa fa-cloud-download text-danger"></i> <%= veriserviciosasoporte.descripcion rescue nil %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-warning">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+
+        <div class="tab-pane active" id="usarios<%= veriserviciosagenda.id %>">
+          <% if veriserviciosagenda.veriserviciosusers.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor3">
+              <tr>
+                <th width="5%" class="text-left text-table"></th>
+                <th width="15%" class="text-left text-table">Fecha</th>
+                <th class="text-left text-table">Usuarios</th>
+                <th width="15%" class="text-center text-table">Fecha Firma</th>
+                <th width="20%" class="text-center text-table">Codigo Firma</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_veriserviciosagendas">
+              <% veriserviciosagenda.veriserviciosusers.order(id: :desc).each do |veriserviciosuser| %>
+                <tr>
+                  <td align="center" class="text-table">
+                    <% #if veriserviciosagenda.conclusion.present? and (!veriserviciosuser.veriservicio.veriserviciositems.where("calificacion is null").exists? or Veriserviciositem.where("veriservicio_id = #{veriserviciosuser.veriservicio_id} AND calificacion IS NOT NULL and calificacion not in (1,2,3)").present?) and veriserviciosuser.codigo_firma.to_s == "" and Time.now.to_date == veriserviciosuser.veriserviciosagenda.fecha_reprogramacion.to_date %>
+                    <% if veriserviciosagenda.conclusion.present? and veriserviciosuser.codigo_firma.to_s == "" %>
+                      <%= link_to otp_veriserviciosusers_path(id: veriserviciosuser.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Digitalmente' do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-paint-brush"></i></button>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td align="left" class="text-table"><%= veriserviciosuser.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosuser.user.nombrecompleto rescue nil %></td>
+                  <td align="center" class="text-table">
+                    <% if veriserviciosuser.codigo_fecha.present? %>
+                      <%= veriserviciosuser.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %>
+                    <% else %>
+                      <em><b><i class="fa fa-info-circle"></i> Sin firmar</b></em>
+                    <% end %>
+                  </td>
+                  <td align="center" class="text-table">
+                    <% if veriserviciosuser.codigo_firma.present? %>
+                      <%= veriserviciosuser.codigo_firma rescue nil %>
+                    <% else %>
+                      <em><b><i class="fa fa-info-circle"></i> Sin firmar</b></em>
+                    <% end %>
+                  </td>
+                </tr>
+                <div class="modal fade" id="otp<%= veriserviciosuser.id rescue nil %>">
+                  <div class="modal-dialog modal-dialog-responsive" role="document">
+                    <div class="modal-content">
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-warning">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+        <div class="tab-pane" id="grafica<%= veriserviciosagenda.id %>">
+          <%= render 'veriserviciosagendas/grafica', veriserviciosagenda: veriserviciosagenda %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

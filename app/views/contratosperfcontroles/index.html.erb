@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosperfcontroles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosperfecha</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+      <th>Contratospervacacion</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosperfcontroles.each do |contratosperfcontrol| %>
+      <tr>
+        <td><%= contratosperfcontrol.contratosperfecha_id %></td>
+        <td><%= contratosperfcontrol.fecha %></td>
+        <td><%= contratosperfcontrol.estado %></td>
+        <td><%= contratosperfcontrol.contratospervacacion_id %></td>
+        <td><%= link_to 'Show', contratosperfcontrol %></td>
+        <td><%= link_to 'Edit', edit_contratosperfcontrol_path(contratosperfcontrol) %></td>
+        <td><%= link_to 'Destroy', contratosperfcontrol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosperfcontrol', new_contratosperfcontrol_path %>

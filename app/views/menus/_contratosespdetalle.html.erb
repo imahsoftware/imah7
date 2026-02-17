@@ -1,0 +1,161 @@
+<br/><br/>
+<% acceso = is_auth_c("marcarestados") %>
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="5%" class="text-center" style="font-size:11px;"></th>
+    <th width="13%" class="text-center" style="font-size:11px;">Fecha</th>
+    <th width="5%" class="text-center" style="font-size:11px;">Nro.</th>
+    <th width="35%" class="text-left" style="font-size:11px;">Empresa</th>
+    <th class="text-left" style="font-size:11px;">Responsable</th>
+  </tr>
+  </thead>
+  <tbody id="tbody">
+  <% solicitudes.each do |p| %>
+    <tr>
+      <td class="text-center" style="font-size:12px;">
+        <div class="btn-group" id="botones<%= p.id %>">
+          <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+            Opciones <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <%= link_to edit_contrato_path(id: p.contrato_id, etapa: 'A'), class: 'edit_contrato_button', data: { toggle: 'tooltip' } do %>
+                <div class="text-blue"><i class="fa fa-file-o"></i> Ir al contrato</div>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to edit_contratossolicitud_path(id: p.id, etapa: 'A'), class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' } do %>
+                <div class="text-orange"><i class="fa fa-edit"></i> Editar solicitud</div>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to contratossolicitud_path(id: p.id), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                <div class="text-blue"><i class="fa fa-clone"></i> Ver solicitud</div>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to visualizar_contratossolicitudes_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' } do %>
+                <div class="text-orange"><i class="fa fa-file-pdf-o"></i> Solicitud por Sedes</div>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to informe_datas_path(infgrupo_id: 18, portafolio_id: p.id, format: :xlsx), data: { toggle: 'tooltip' } do %>
+                <div class="text-orange"><i class="fa fa-file-excel-o"></i> Descargar</div>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to visualizar_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' } do %>
+                <div class="text-orange"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Solicitud Sedes en Excel</div>
+              <% end %>
+            </li>
+            <% if acceso
+                 if p.estado.to_s == 'ENVIADO' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "PENDIENTE"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a PENDIENTE?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar PENDIENTE</div>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "EN PROCESO"), data: { toggle: 'tooltip', confirm: "Seguro que desea marcar EN PROCESO?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar EN PROCESO</div>
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == 'PENDIENTE' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "ENVIADO"), data: { toggle: 'tooltip', confirm: "Seguro que desea marcar ENVIADO?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar ENVIADO</div>
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == 'EN PROCESO' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "ENVIADO"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a ENVIADO?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar ENVIADO</div>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "TERMINADOS"), data: { toggle: 'tooltip', confirm: "Seguro que desea marcar TERMINADOS?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar TERMINADOS</div>
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == 'TERMINADOS' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "EN PROCESO"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a EN PROCESO?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar EN PROCESO</div>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "DESPACHADOS"), data: { toggle: 'tooltip', confirm: "Seguro que desea marcar DESPACHADOS?" } do %>
+                    <div class="text-red"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar DESPACHADOS</div>
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == 'DESPACHADOS' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "TERMINADOS"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a TERMINADOS?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar TERMINADOS</div>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "FINALIZADOS"), data: { toggle: 'tooltip', confirm: "Seguro que desea marcar FINALIZADOS?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar FINALIZADOS</div>
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == 'FINALIZADOS' %>
+                <li>
+                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "DESPACHADOS"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a DESPACHADOS?" } do %>
+                    <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar DESPACHADOS</div>
+                  <% end %>
+                </li>
+              <% end %>
+            <% end %>
+            <% if p.estado.to_s == 'ENVIADO' or p.estado.to_s == 'EN PROCESO' or p.estado.to_s == 'FINALIZADOS' %>
+              <li>
+                <%= link_to mostrare_contratossolicitudes_path(id: p.id), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                  <div class="text-red"><i class="fa fa-clone"></i> Ver solicitud (Empresa)</div>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' } do %>
+                  <div class="text-red"><i class="fa fa-file-pdf-o"></i> Solicitud Sedes (Empresa)</div>
+                <% end %>
+              </li>
+              <li>
+                <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' } do %>
+                  <div class="text-red"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Solicitud  Sedes en Excel (Empresa)</div>
+                <% end %>
+              </li>
+            <% end %>
+            <% if p.estado == 'FINALIZADOS' %>
+              <li>
+                <%= link_to firma_contratossolicitudes_path(id: p.id, etapa: 'A'), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' } do %>
+                  <div class="text-orange"><i class="fa fa-paint-brush"></i> Firmar Servicio</div>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </td>
+      <td class="text-center" style="font-size:12px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+      <td class="text-center" style="font-size:12px;"><%= p.id rescue nil %></td>
+      <td class="text-left" style="font-size:12px;"><%= p.identnombre rescue nil %> <small>(<%= p.nro_contrato rescue nil %>)</small></td>
+      <td class="text-left" style="font-size:12px;"><small><%= p.usernombre.html_safe rescue nil %></small>
+        <% if p.estado.to_s == 'DESPACHADOS' and p.fecha_despacho.to_s != "" %>
+          <br/><small class="text-red"><strong>Fecha despacho: <%= p.fecha_despacho.strftime("%Y-%m-%d") rescue nil %></strong></small>
+        <% end %>
+        <% if p.estado.to_s == 'PENDIENTE' and p.solicitud_aprobacion.to_s != "" %>
+          <br/><small class="text-red"><strong>Solicitud de aprobación <%=p.solicitud_aprobacion.strftime("%Y-%m-%d") rescue nil %></strong></small>
+        <% end %>
+        <%  sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{p.contrato.id} and user_interventor = #{p.user_id})"]).order(id: :asc)
+            sedesactivas.each do |a|
+              dato = " contratossolicitud_id = #{p.id} and contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+              if Contratossoldetalle.where(["#{dato.to_s}"]).present? %>
+                <div style="font-size:11px;" align="left">--> Sede: <%=a.nombre.to_s rescue nil%></div>
+        <%      
+              end
+            end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

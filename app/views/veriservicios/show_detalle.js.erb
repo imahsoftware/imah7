@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_servicio<%= @fecha%>").html('<%= j render "veriservicios/abrir_detalle_servicio" %>');
+$("#abrir_servicio<%= @fecha%>").addClass("hide");
+$("#cerrar_servicio<%= @fecha%>").removeClass("hide");
+$("#tr_show_servicio<%= @fecha%>").removeClass("hidden");
+<% else %>
+$("#abrir_servicio<%= @fecha%>").removeClass("hide");
+$("#cerrar_servicio<%= @fecha%>").addClass("hide");
+$("#abrir_detalle_servicio<%= @fecha%>").html(null);
+$("#tr_show_servicio<%= @fecha%>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

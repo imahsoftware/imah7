@@ -1,0 +1,201 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<section class="content-header">
+  <h1>
+    Captura - Finalización
+    <div id="despues<%= @visita.id %>" class="pull-right <%= 'hide' unless @visita.visitasdocs.exists?(tipo: 'DESPUES') %>">
+      <%= simple_form_for @visita, remote: true, method: :patch, html: { class: 'formularioclass' } do |f| %>
+        <%= f.hidden_field :fin_latitude %>
+        <%= f.hidden_field :fin_longitude %>
+        <%= f.hidden_field :fin_direccion %>
+        <%= button_tag "Finalizar Visita",
+                       class: "btn btn-xs btn-danger disable-with",
+                       id: "btnFinalizarVisita",
+                       data: { toggle: 'tooltip', disable_with: "<i class='fa fa-spinner fa-spin' style='color: red;'></i> Generando..." } %>
+
+
+        <script>
+
+            $('#btnFinalizarVisita').on('click', function (e) {
+
+                $(this).prop('disabled', true).html("<i class='fa fa-spinner fa-spin' style='color: red;'></i> Finalizando Visita...");
+
+
+                e.preventDefault();
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude;
+
+                        // Actualizar los campos de latitud y longitud
+                        $('#visita_fin_latitude').val(latitude);
+                        $('#visita_fin_longitude').val(longitude);
+
+                        // Hacer una solicitud a Nominatim para obtener la dirección
+                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+                            .then(response => response.json())
+                            .then(data => {
+                                var address = data.display_name;
+                                $('#visita_fin_direccion').val(address);
+
+                                if (address) {
+                                    console.log(`La dirección es: ${address}`);
+
+                                    // Enviar los datos mediante AJAX después de obtener la ubicación
+                                    $.ajax({
+                                        type: 'PATCH',
+                                        url: $('.formularioclass').attr('action'),
+                                        data: $('.formularioclass').serialize(),
+                                        success: function (data) {
+                                            console.log('Solicitud AJAX exitosa');
+                                            // Puedes manejar la respuesta del servidor aquí si es necesario
+                                        },
+                                        error: function (error) {
+                                            console.error('Error en la solicitud AJAX:', error);
+                                        }
+                                    });
+                                } else {
+                                    console.log('No se pudo determinar la dirección.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error al obtener la dirección:', error);
+                            });
+                    });
+                }
+            });
+
+        </script>
+      <% end %>
+    </div>
+  </h1>
+</section>
+<section class="content">
+  <div class="box box-primary  hidden-xs hidden-sm">
+    <%= render 'visitas/table_md' %>
+  </div>
+  <div class="box box-primary  hidden-md hidden-lg">
+    <%= render 'visitas/table_xs' %>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Cámara</h3>
+          <div class="pull-right"><div id="message" style="display: none;"></div></div>
+          <button id="requestLocationButton" class="btn btn-primary btn-xs">Habilitar <i class="fa fa-map-pin"></i> </button>
+          <script type="text/javascript">
+              if ("geolocation" in navigator) {
+                  navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+                      if (result.state === 'granted') {
+                          showMessage('El acceso a la ubicación está permitido');
+                          hideButton();
+                      } else {
+                          showMessage('El acceso a la ubicación no está permitido, reinicia tu navegador');
+                      }
+                  });
+              } else {
+                  showMessage('El navegador no soporta geolocalización');
+              }
+
+              function showMessage(message) {
+                  var messageElement = document.getElementById('message');
+                  messageElement.textContent = message;
+                  messageElement.style.display = 'block';
+              }
+
+              function hideButton() {
+                  var button = document.getElementById('requestLocationButton');
+                  button.style.display = 'none';
+              }
+          </script>
+        </div>
+        <div class="box-body">
+          <video id="video" width="100%" height="100%" autoplay></video>
+          <button id="snap" class="btn btn-primary">
+            <i class="fa fa-camera"></i> Tomar Foto
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Resultado</h3>
+        </div>
+        <div class="box-body">
+          <div class="canvas-container text-center">
+            <canvas id="canvas"></canvas>
+            <%= form_for @image, url: '/save_image', method: :post, html: { id: 'image-form' } do |form| %>
+              <%= form.hidden_field :tipo, id: 'image-title' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+    .canvas-container {
+        max-width: 100%; /* Asegura que el contenedor no exceda su ancho en pantallas pequeñas */
+        overflow: hidden;
+    }
+
+    #canvas {
+        width: 100%;
+        height: auto; /* Mantiene la proporción de aspecto */
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+
+<script>
+
+    var boton = document.getElementById('despues<%= @visita.id %>');
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var snap = document.getElementById('snap');
+
+    navigator.mediaDevices.getUserMedia({video: true})
+        .then(function (stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    snap.addEventListener('click', function () {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        var image_data = canvas.toDataURL('image/png');
+
+        var form_data = new FormData(document.getElementById('image-form'));
+        form_data.append('image[image_data]', image_data.split(',')[1]);
+        form_data.append('visita_id', <%= @visita.id %>);
+
+        $.ajax({
+            type: 'POST',
+            url: 'captura_despues',
+            data: form_data,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success && response.antesExists) {
+                    boton.classList.remove("hide");
+                } else {
+                    boton.classList.add("hide");
+                }
+            },
+            error: function(error) {
+                console.error('Error al realizar la solicitud: ', error);
+            }
+        });
+    });
+</script>

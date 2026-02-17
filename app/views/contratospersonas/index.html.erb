@@ -1,0 +1,285 @@
+<%
+  usr = current_user
+  isadmin = usr.id
+  isRector = false
+  if usr.tipoconsulta == 'RECTOR' or is_sygma
+    isRector = true
+  end
+  @logo_firma ="recordacion.png"
+%>
+<% if @existesuper %>
+  <div class="alert alert-danger" id="notContent">
+    <table width="100%">
+      <tr>
+        <td><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -2px; top: -4px; left: -4px; right: 10px; z-index: 0; width: 150px;') %></td>
+        <td>
+          <div style="font-family: Arial; font-size: 23px;" align="justify">
+            HOLA!, Informamos que apartir del 1 de Septiembre del año en curso no se permitirá el registro de novedades de ausentismo acumuladas, solo se permitirá el registro de los últimos 3 días hábiles, solicitamos el registro de estas día a día.</div>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% end %>
+<div class="box box-danger">
+  <div class="box-header with-border">
+    <legend>Empleados
+      <% if @vcAutoCon %>
+        <% if is_auth_c('personalcompleto') %>
+          <%= link_to informe_datas_path(infgrupo_id: 31, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+          <% end %>
+        <% end %>
+        <% if @vcContratospersona %>
+          <%= link_to new_contratospersona_path, data: { toggle: 'tooltip' }, title: 'Crear' do %>
+            <button class="btn btn-xs btn-info"><strong>Nuevo</strong></button>
+          <% end %>
+        <% end %>
+        <% cant = User.where(["unlock_token is not null"]).count %>
+        <% if cant.to_i > 0 %>
+          <%= link_to desbloquearusuariof_users_path, data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Desbloquear todos los usuarios' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-unlock"> <%= cant %> Usuarios Bloqueados</i></button>
+          <% end %>
+        <% end %>
+        <% if @existesuper %>
+          <%= link_to informe_datas_path(infgrupo_id: 32, portafolio_id: isadmin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe SUPER</button>
+          <% end %>
+          <%= link_to informe_datas_path(infgrupo_id: 33, portafolio_id: isadmin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Novedades periodo actual' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Novedades SUPER</button>
+          <% end %>
+        <% end %>
+      <% elsif @existesuper %>
+        <%= link_to informe_datas_path(infgrupo_id: 32, portafolio_id: isadmin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+        <% end %>
+        <%= link_to informe_datas_path(infgrupo_id: 33, portafolio_id: isadmin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Novedades periodo actual' do %>
+          <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Novedades</button>
+        <% end %>
+        <% if isRector %>
+          <%= link_to evaluacion_masiva_contratospersonas_path, data: { toggle: 'tooltip' }, title: 'Certificación Laboral Masiva' do %>
+            <button class="btn btn-xs btn-warning"><strong>Certificación Laboral Masiva</strong></button>
+          <% end %>
+        <% end %>
+      <% end %>
+    </legend>
+  </div>
+  <% if @existesuper
+       if @asignacionesnuevas.present? %>
+      <div class="box-body">
+        <div class="table-responsive">
+          <a href="javascript:void(0);" onclick="SINO('asignaciones')" style="font-size:14px; color:red;">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            Hola... tienes nuevas asignaciones..(<%= @asignacionesnuevas.count rescue 0 %>)
+          </a>
+          <div id="asignaciones" style="display:none;">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                <th width="50%" class="text-left">Empresa</th>
+                <th width="10%" class="text-center">Fecha Inicio</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <% @asignacionesnuevas.each do |p| %>
+                <tr>
+                  <td class="text-left" style="font-size:11px;"><%= p.contratospersona.identificacion rescue nil %> <%= p.contratospersona.nombre_completo rescue nil %>
+                    <br/><em>Telefono: <%= p.contratospersona.movil rescue nil %></em></td>
+                  <td class="text-left" style="font-size:11px;">
+                    <% a = p.contratospersona.contratosperfechas.where("estado = 'ACTIVO'").last %>
+                    <%= a.contrato.empresa.identnombre rescue nil %>
+                    <br/><strong>Nro Contrato : </strong><%= a.contrato.nro_contrato rescue nil %> -
+                    <strong>Grupo : </strong><%= a.contratosgrupo.descripcion rescue nil %><small>(<%= a.contratosgrupo.termino rescue nil %>)</small><br/>
+                    <strong>Sección : </strong><small><%= a.contratosseccion.descripcion rescue nil %></small><br/>
+                    <strong>Fecha Contrato : </strong><small><%= a.fechascontrato rescue nil %></small><br/>
+                  </td>
+                  <td class="text-center" style="font-size:11px;"><%= a.fecha_inicio rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end
+       if @docsinfirmar.present? %>
+      <div class="box-body">
+        <div class="table-responsive">
+          <a href="javascript:void(0);" onclick="SINO('docsinfirmar')" style="font-size:14px; color:red;">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            Hola... tienes empleados con documentos pendiente de firma ...(<%= @docsinfirmar.count rescue 0 %>)
+          </a>
+          <div id="docsinfirmar" style="display:none;">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                <th width="50%" class="text-left">Empresa</th>
+                <th width="10%" class="text-center">Fecha Sol.Firma</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <% @docsinfirmar.each do |p| %>
+                <tr>
+                  <td class="text-left" style="font-size:11px;"><%= p.nombreempleado rescue nil %>
+                    <br/><em>Telefono: <%= p.movil rescue nil %></em></td>
+                  <td class="text-left" style="font-size:11px;"><%= p.identnombre rescue nil %>
+                    <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                    <br/><strong>Doc. Pendiente de firma : </strong><%= p.tipo_documento rescue nil %>
+                  </td>
+                  <td class="text-center" style="font-size:11px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end
+       if @procesosencurso.present? %>
+      <div class="box-body">
+        <div class="table-responsive">
+          <a href="javascript:void(0);" onclick="SINO('procesosencurso')" style="font-size:14px; color:red;">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            Hola... tienes empleados con procesos Juridicos en Curso ...(<%= @procesosencurso.count rescue 0 %>)
+          </a>
+          <div id="procesosencurso" style="display:none;">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                <th width="40%" class="text-left">Empresa</th>
+                <th width="20%" class="text-left">Proceso</th>
+                <th width="10%" class="text-center">Fecha Proceso</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <% @procesosencurso.each do |p| %>
+                <tr>
+                  <td class="text-left" style="font-size:11px;"><%= p.nombreempleado rescue nil %>
+                    <br/><em>Telefono: <%= p.movil rescue nil %></em></td>
+                  <td class="text-left" style="font-size:11px;"><%= p.identnombre rescue nil %>
+                    <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                  </td>
+                  <td class="text-left" style="font-size:11px;"><%= p.clase rescue nil %>
+                    <% if p.desvinc.to_s == 'X' %>
+                      <div class="text-red"><b>Desvinculación en proceso</b></div>
+                    <% end %></td>
+                  <td class="text-center" style="font-size:11px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end
+       if @vacacionesencurso.present? %>
+      <div class="box-body">
+        <div class="table-responsive">
+          <a href="javascript:void(0);" onclick="SINO('vacacionesencurso')" style="font-size:14px; color:red;">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            Hola... tienes empleados con vacaciones en proceso o proximos a salir ...(<%= @vacacionesencurso.count rescue 0 %>)
+          </a>
+          <div id="vacacionesencurso" style="display:none;">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                <th width="40%" class="text-left">Empresa</th>
+                <th width="15%" class="text-center">Fecha Inicio</th>
+                <th width="15%" class="text-center">Fecha Fin</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <% @vacacionesencurso.each do |p| %>
+                <tr>
+                  <td class="text-left" style="font-size:11px;"><%= p.nombreempleado rescue nil %>
+                    <br/><em>Telefono: <%= p.movil rescue nil %></em></td>
+                  <td class="text-left" style="font-size:11px;"><%= p.identnombre rescue nil %>
+                    <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                  </td>
+                  <td class="text-center" style="font-size:11px;"><%= p.fecha_inicio.strftime("%Y-%m-%d") rescue nil %></td>
+                  <td class="text-center" style="font-size:11px;"><%= p.fecha_fin.strftime("%Y-%m-%d") rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= simple_form_for(Contratospersona.new, url: contratospersonas_path, remote: true, method: :get) do |f| %>
+    <div class="box-body">
+      <div class="col-md-3">
+        <%= label_tag :nombre, 'Identificación - Nombre' %><br/>
+        <%= text_field_tag :nombre, params[:nombre], class: 'form-control', style: 'width: 100%;', autocomplete: 'off' %>
+      </div>
+      <div class="col-md-2">
+        <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box-body" id="idSearch"></div>
+        <div class="alert alert-danger" id="notContent">
+          <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>No hay resultado de la busqueda
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box-header">
+    <div class="flash_messages"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="novedad">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="procesos">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addsolicitud">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addvacacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addtraslado">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="evaluacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+

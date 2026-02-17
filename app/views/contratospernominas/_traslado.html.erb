@@ -1,0 +1,170 @@
+<%
+  usr = User.find(is_admin)
+  estados = ["Pendiente", "Aprobado", "Rechazado"]
+  if usr.id == 1
+    @vcAutoTraslado = true
+  else
+    @vcAutoTraslado = is_auth_c('contratosperfact')
+  end
+%>
+<% if @vcAutoTraslado %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <%
+            estados.each do |p|
+              if usr.subetapa.to_s == p
+                clase = "active"
+              else
+                clase = ""
+              end
+          %>
+            <li class="<%= clase %>">
+              <%= link_to etapars_contratospernominas_path(subetapa: p) do %>
+                <i class="fa fa-paper-plane-o"></i>&nbsp<%= p %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <div class="tab-content">
+          <% if usr.subetapa.to_s != "" %>
+            <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+              <div class="box-body">
+                <div class="table-responsive">
+                  <%= link_to informe_datas_path(infgrupo_id: 107, portafolio_id: usr.subetapa.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Traslados' do %>
+                    <button class="btn btn-xs btn-success"><i class="fa fa-file-excel-o"></i> Informe Traslados</button>
+                  <% end %><br/>
+                  <% datos = Contratosperfact.joins(:contrato, :contratosgrupo, :contratoscargo, :contratospersona)
+                                                   .select("contratosperfacts.contrato_id, contratos.nro_contrato, contratosperfacts.id,
+                                                          contratospersonas.autobuscar,
+                                                          (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                          contratosperfacts.contratosgrupo_id,
+                                                          contratosgrupos.descripcion,
+                                                          contratosgrupos.termino,
+                                                          contratoscargos.perfil,
+                                                          contratosperfacts.estado,
+                                                          contratosperfacts.created_at, contratosperfacts.user_id,
+                                                          (select autobuscar from empresas where id = (select empresa_id from contratos where id = contratosperfacts.oricontrato_id)) ori_identnombre,
+                                                          (select nro_contrato from contratos where id = contratosperfacts.oricontrato_id) ori_nro_contrato,
+                                                          (select descripcion from contratosgrupos where id = contratosperfacts.oricontratosgrupo_id) ori_descripcion,
+                                                          (select termino from contratosgrupos where id = contratosperfacts.oricontratosgrupo_id) ori_termino,
+                                                          (select perfil from contratoscargos where id = contratosperfacts.oricontratoscargo_id) ori_perfil,
+                                                          (select distinct 'X' from contratospernominas where contratosperfecha_id = contratosperfacts.contratosperfechanew) existenomina,
+                                                          (select distinct 'X' from contratosperimagenes where contratosperfecha_id = contratosperfacts.contratosperfecha_id
+                                                           and descripcion LIKE 'OTRO SI CAMBIO DE CENTRO DE TRABAJO%') existedoc_continuidad,
+                                                          (select username from users where id = contratosperfacts.user_id) username,
+                                                          contratosperfacts.tipo, contratosperfacts.contratospersona_id, contratosperfacts.contratosperfecha_id")
+                                                   .where(["date_format(contratosperfacts.created_at,'%%Y-%%m') = date_format(now(),'%%Y-%%m') and contratosperfacts.estado = '#{usr.subetapa.upcase}'"])
+                                                   .order("contratosperfacts.id desc")
+                     if datos.present?
+                  %>
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <th width="5%" class="text-left"></th>
+                          <th class="text-center">Fecha Sol.</th>
+                          <th width="25%" class="text-left">Empleado</th>
+                          <th width="30%" class="text-left">Contrato - Grupo - Cargo TRASLADO</th>
+                          <th width="30%" class="text-left">Contrato - Grupo - Cargo ACTUAL</th>
+                        </tr>
+                        <% datos.each do |pf| %>
+                          <tr>
+                            <td><div align="center">
+                              <% if usr.subetapa.to_s == "Pendiente" %>
+                                <%= link_to evaluar_contratosperfacts_path(id: pf.id, e: "APROBADO"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Aprobar esta solicitud de traslado?", toggle: 'tooltip' }, title: "Aprobar traslado" do %>
+                                  <button class="btn btn-xs btn-info"><i class="fa fa-gear"></i></button>
+                                <% end %>
+                                <%= link_to evaluar_contratosperfacts_path(id: pf.id, e: "RECHAZADO"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Rechazar esta solicitud de traslado?", toggle: 'tooltip' }, title: "Rechazar traslado" do %>
+                                  <button class="btn btn-xs btn-danger"><i class="fa fa-gear"></i></button>
+                                <% end %>
+                                <%= link_to evaluar_contratosperfacts_path(id: pf.id, e: "ELIMINAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Eliminar esta solicitud de traslado?", toggle: 'tooltip' }, title: "Eliminar traslado" do %>
+                                  <button class="btn btn-xs btn-warning"><i class="fa fa-gear"></i></button>
+                                <% end %>
+                              <% elsif usr.subetapa.to_s == "Aprobado" and pf.existenomina.to_s != 'X' and ['ESTABILIDAD','CONTINUIDAD'].exclude?(pf.tipo.to_s) %>
+                                <%= link_to evaluar_contratosperfacts_path(id: pf.id, e: "REVERSAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Reversar esta solicitud de traslado?", toggle: 'tooltip' }, title: "Reversar traslado" do %>
+                                  <button class="btn btn-xs btn-warning"><i class="fa fa-gear"></i></button>
+                                <% end %>
+                              <% end %>
+                              <%# if ['ESTABILIDAD','CONTINUIDAD'].exclude?(pf.tipo.to_s) %>
+                                <%= link_to carta_contratosperfacts_path(id: pf.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Traslado PDF' do %>
+                                  <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                                <% end %>
+                              <%# end %>
+                            </div></td>
+                            <td class="text-center" style="font-size:10px;"><%= pf.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/><%= pf.username rescue nil %></td>
+                            <td class="text-left" style="font-size:10px;">
+                              <%= link_to edit_contratospersona_path(id: pf.contratospersona_id, etapa: 'F'), target: "_blank", title: "Ir al Contrato" do %>
+                                <i class="fa fa-child text-blue"></i>
+                              <% end %>
+                              <%= pf.autobuscar rescue nil %>
+                              <% if ['ESTABILIDAD','CONTINUIDAD'].include?(pf.tipo.to_s) %>
+                                <div class="text-red" style="font-size: 10px;">(<%=pf.tipo.to_s %>)</div>
+                                <% if pf.existedoc_continuidad.to_s == 'X' %>
+                                  <% Contratosperimagen.where(contratosperfecha_id: pf.contratosperfecha_id, descripcion: 'OTRO SI CAMBIO DE CENTRO DE TRABAJO').each do |b| %>
+                                    <div class="text-blue" style="font-size: 10px;">
+                                      <%= link_to b.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                        <i class="fa fa-cloud-download"></i> <%= b.descripcion rescue nil %>
+                                      <% end %>
+                                    </div>
+                                  <% end %>
+                                <% else %>--> Aun sin documento!<% end %>
+                              <%end %>
+                            </td>
+                            <td class="text-left" style="font-size:10px;">
+                              <%= pf.identnombre rescue nil %>
+                              <br/><strong>Nro Contrato : </strong><%= pf.nro_contrato rescue nil %>
+                              <br/><strong>Cargo : </strong><%= pf.perfil rescue nil %>
+                              <br/><strong>Grupo de nomina : </strong><%= pf.descripcion rescue nil %>
+                              (<%= pf.termino rescue nil %>)</td>
+                            <td class="text-left" style="font-size:10px;">
+                              <%= pf.ori_identnombre rescue nil %>
+                              <br/><strong>Nro Contrato : </strong><%= pf.ori_nro_contrato rescue nil %>
+                              <br/><strong>Cargo : </strong><%= pf.ori_perfil rescue nil %>
+                              <br/><strong>Grupo de nomina : </strong><%= pf.ori_descripcion rescue nil %>
+                              (<%= pf.ori_termino rescue nil %>)</td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    </div>
+                  <% else %>
+                    <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> - No hay datos...</div>
+                  <% end %>
+                  <legend>Periodos Anteriores:</legend>
+                  <table class="table table-bordered table-condensed table-striped">
+                  <% datos = Contratosperfact.select("date_format(contratosperfacts.created_at,'%Y-%m') periodo, count(9) cant")
+                                             .where(["date_format(contratosperfacts.created_at,'%%Y-%%m') != date_format(now(),'%%Y-%%m') and contratosperfacts.estado = '#{usr.subetapa.upcase}'"])
+                                             .group(["date_format(contratosperfacts.created_at,'%Y-%m')"])
+                                            .order("date_format(contratosperfacts.created_at,'%Y-%m') desc")
+                     datos.each do |p| %>
+                      <tr>
+                        <td class="text-table text-left">
+                          <div id="abrir_traslado<%=p.periodo%>" class="pull-left">
+                            <%= link_to showinfo_contratosperfacts_path(ruta: 'ABRIR', periodo: p.periodo, estado: usr.subetapa.upcase.to_s), style: "color: black;", remote: true do %>
+                              <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver la informacion"></i>
+                              <i class="fa fa-arrow-circle-down text-success"></i> <%=p.periodo rescue nil %> (<%=p.cant rescue nil %>)
+                            <% end %>
+                          </div>
+                          <div id="cerrar_traslado<%= p.periodo %>" class="pull-left hide">
+                            <%= link_to showinfo_contratosperfacts_path(ruta: 'CERRAR', periodo: p.periodo, estado: usr.subetapa.upcase.to_s), style: "color: black;", remote: true do %>
+                              <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para cerrar la informacion"></i>
+                              <i class="fa fa-star text-red"></i> <%=p.periodo rescue nil %> (<%=p.cant rescue nil %>)
+                            <% end %>
+                          </div>
+                          <div id="abrir_detalle_traslado<%= p.periodo %>"></div>
+                        </td>
+                      </tr>
+                  <% end %>
+                  </table>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> - Usted No tiene Acceso a este proceso</div>
+<% end %>
+
+</div>

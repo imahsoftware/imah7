@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="alert alert-danger" align="justify" style="margin-left: 100px; margin-right: 100px;">
+    <h4>Hola, <%= @contratosperfecha.contratospersona.nombre_completo.upcase rescue nil %></h4>
+    <p>
+      <small><%= @contratosperfecha.contrato.empresa.identnombre rescue nil %>
+        <br/><strong>Nro Contrato : </strong><%= @contratosperfecha.contrato.nro_contrato rescue nil %> -
+        <strong>Cargo : </strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %>
+        <br/><strong>Grupo de nomina : </strong><%= @contratosperfecha.contratosgrupo.descripcion rescue nil %>
+        (<%= @contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+      <br/><br/>
+    </p>
+    <div style="padding: 5px; border-radius:5px; background-color: #394959;">
+      <em>Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto
+        en la Ley 527/99 y el decreto reglamentario 2364/12</em></div>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-left: 100px; padding-right: 100px;">
+    <div class="row" style=" background-color: #E5E5E5 !important; padding: 70px !important;border-radius: 18px !important;">
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9">
+        <%= form_tag ws_otp2_contratosperfechas_path(id: @contratosperfecha.id, contratospersona_id: @contratospersona.id), remote: true, method: :post, class: 'form-inline' do %>
+          <%= render 'menus/input_otp2' %>
+          <div class="row" id="mensaje">
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+              <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+                Verificar Codigo
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<%
+  @eproveedorescredito = Eproveedorescredito.find(params[:id])
+  @logo = @eproveedorescredito.eproveedorescompra.portafolio.logoportafolio.to_s
+%>
+<div align="center">
+  <table width="100%" border="0">
+    <tr>
+      <td width="30%">
+        <div align="center">
+          <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+        </div>
+      </td>
+      <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+        <div align="center">
+          <strong><div style="font-size: 25px; font-family: Tahoma;">NOTA CREDITO</div></strong>
+          <br/>
+          <div style="font-size: 18px; font-family: Tahoma;">
+            <%=@eproveedorescredito.eproveedorescompra.portafolio.razon_social rescue nil %><br/>
+            <%=@eproveedorescredito.eproveedorescompra.portafolio.identificacion rescue nil %>-<%=@eproveedorescredito.eproveedorescompra.portafolio.digito rescue nil %>
+          </div>
+        </div>
+      </td>
+      <td width="15%" style="font-size: 14px; font-family: Tahoma; line-height:150%">
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th height="20" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">&nbsp;<strong>NÚMERO</strong></th>
+          </tr>
+          <tr>
+            <th height="20" style="border:1px solid #CCCCCC;font-size: 12px; font-family: Tahoma;">&nbsp;<%=@eproveedorescredito.consecutivo rescue nil %></th>
+          </tr>
+          <tr>
+            <th height="20" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">&nbsp;<strong>FECHA</strong></th>
+          </tr>
+          <tr>
+            <th height="20" style="border:1px solid #CCCCCC;font-size: 12px; font-family: Tahoma;">&nbsp;<%=@eproveedorescredito.created_at.strftime("%Y-%m-%d") rescue nil %></th>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="20%" height="20" style="background: #E8E3E3; font-size: 10px; font-family: Tahoma;">&nbsp;<strong>PROVEEDOR : </strong></td>
+      <td width="80%" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@eproveedorescredito.eproveedorescompra.eproveedor.nombre rescue nil%></td>
+    </tr>
+    <tr>
+      <td height="20" style="background: #E8E3E3; font-size: 10px; font-family: Tahoma;">&nbsp;<strong>NIT : </strong></td>
+      <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@eproveedorescredito.eproveedorescompra.eproveedor.identificacion rescue nil%>
+        <% if @eproveedorescredito.eproveedorescompra.eproveedor.digito.to_i > 0 %>-<%=@eproveedorescredito.eproveedorescompra.eproveedor.digito rescue nil%><% end %></td>
+    </tr>
+  </table>
+  <br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+    <thead>
+    <tr>
+      <th height="20" width="10%" align="center" style="background: #E8E3E3;">Nro Factura</th>
+      <th width="10%" align="center" style="background: #E8E3E3;">Fecha Factura</th>
+      <th style="background: #E8E3E3;">Concepto</th>
+      <th width="15%" class="text-right" style="background: #E8E3E3;">Valor Nota Credito</th>
+    </tr>
+    </thead>
+
+      <tr valign="middle">
+        <td height="20" align="center" style="font-size: 9px; font-family: Verdana, Geneva, sans-serif;"><%=@eproveedorescredito.eproveedorescompra.nro_factura rescue nil%></td>
+        <td align="center" style="font-size: 9px; font-family: Verdana, Geneva, sans-serif;"><%=@eproveedorescredito.eproveedorescompra.fecha rescue nil%><%=@eproveedorescredito.eproveedorestemegreso.fecha rescue nil%></td>
+        <td class="text-left" style="font-size: 9px; font-family: Verdana, Geneva, sans-serif;"><%=@eproveedorescredito.eproveedorescompra.observacion rescue nil%>
+          <% if @eproveedorescredito.observaciones.to_s != "" %>
+          <br/><strong>Observación Nota Credito: </strong><%=@eproveedorescredito.observaciones.to_s %>
+          <% end %>
+        </td>
+        <td><div align="right"><%=camponumerico(@eproveedorescredito.valor) rescue 0 %></div></td>
+      </tr>
+  </table>
+  <br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td valign="top" style="font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+        <div align="center">
+          ELABORO<br/><br/><br/><br/>
+          ____________________________________<br/>
+          <%=@eproveedorescredito.user.nombre rescue nil %>
+        </div></td>
+      <td valign="top" style="font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+        <div align="center">
+          REVISO<br/><br/><br/><br/>
+          ____________________________________<br/>
+        </div></td>
+      <td width="25%"><div align="center">
+        <table width="96%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th height="20" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">&nbsp;<strong>TOTAL</strong></th>
+          </tr>
+          <tr>
+            <th height="20" style="border:1px solid #CCCCCC;font-size: 12px; font-family: Tahoma;">&nbsp;<%=camponumerico(@eproveedorescredito.valor) rescue 0 %></th>
+          </tr>
+        </table></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+

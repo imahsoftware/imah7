@@ -1,0 +1,67 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="right"><%= image_tag "#{@logo}", size: "240x100" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          <br/>
+          Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>
+          <br/><br/><br/><br/>
+          SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+          C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+          Cargo: <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong><br/>
+          <br/><br/>
+          <strong>ASUNTO:</strong> TERMINACIÓN DE CONTRATO
+          <br/><br/>
+          Cordial saludo,<br/><br/>
+          <b><%=portafolio.razon_social.to_s%></b> identificada con NIT. <b><%=portafolio.identificacion.to_s %>-<%=portafolio.digito.to_s %></b>, le informa que el día <%=namedate(@contratosperfecha.fecha_fin) rescue nil %>,
+          finaliza la obra y labor para la cual fue contratado (a) de acuerdo al contrato que usted suscribió con la empresa <b><%=portafolio.razon_social.to_s%></b><br/><br/>
+          Si la empresa decide continuar con sus servicios con anterioridad se le hace saber a través de un comunicado
+          personalizado.
+          <br/><br/>
+          <div align="justify" style="font-size: 12px; font-family: Tahoma;">
+          <strong>NOTA IMPORTANTE:</strong> Para la empresa es muy importante dar cumplimiento al SG-SST y a la Resolución 1843 de 2025 para la práctica de evaluaciones medicas ocupacionales, por lo que informamos que si su contrato termina definitivamente y no hay lugar a reubicación dentro de la compañía, tiene derecho a realizarse el examen médico ocupacional de Retiro para lo cual debes de solicitar la carta de autorización para la atención al correo: Heidi.palacio@asearesp.com el día siguiente a la terminación de tu contrato, ya que cuentas con cinco (5) días hábiles para hacerse dicho examen, este no tiene ningún costo para usted y es de carácter voluntario por lo que no tendrá ninguna incidencia en el pago de su liquidación o paz y salvo con la empresa.
+          </div>
+          <br/>
+          <br/>
+          <strong>
+            <% if @controlfirma.codigo_firma.present? %>
+              <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -10px; top: 15px; right: 10px; z-index: 0; width: 200px;') %>
+            <% end %>
+            <br>
+            <br/>
+            <%=portafolio.nombre_rep.to_s%><br/>
+            Gerente (a)<br/>
+            C.C. <%=portafolio.identificacion_rep.to_s%></strong>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

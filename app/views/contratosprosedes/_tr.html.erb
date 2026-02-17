@@ -1,0 +1,8 @@
+<tr id="contratosprosede_<%= contratosprosede.id %>">
+  <td class="text-center">
+    <%= link_to contratosproyecto_contratosprosede_path(@contratosproyecto, contratosprosede), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td><%= contratosprosede.contratossede.nombre rescue nil %></td>
+</tr>

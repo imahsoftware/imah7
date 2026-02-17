@@ -1,0 +1,127 @@
+<%= simple_form_for(Contratospermasiva.new, url: masivaproceso_contratospermasivas_path, :method => :get) do |f| %>
+  <div class="box-body">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :proceso, collection: Iparametro.where(campo: 'proceso').order(:descripcion).collect {|p| [ p.descripcion.to_s, p.descripcion.to_s ] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true }, label: "Fecha de Pago" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <label>Contrato</label>
+          <select class="form-control select2ContratoIndexMasive select2" style="width:100%;" name="ubicacion[contrato_id]" id="ubicacion_contrato_id">
+            <option selected="selected" value="<%= f.object.contrato_id -%>">
+              <%= "#{f.object.descripcion_contrato}" -%>
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <label>Grupo</label>
+          <%= f.input :contratosgrupo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: false, disabled: true %>
+        </div>
+        <div class="col-md-1">
+          <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+            <i class="fa fa-search" aria-hidden="true"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<% Contratospermasiva.select("proceso, replace(proceso,' ','') procesosinesp").where(["proceso != 'LIQUIDACION'"]).group(:proceso).order("proceso desc").each do |a| %>
+  <table class="table table-bordered table-condensed table-striped">
+    <tbody>
+      <tr>
+        <td class="text-left" style="font-size:11px;">
+          <div id="abrir<%= a.procesosinesp %>" class="pull-left">
+            <%= link_to show_detallepro_contratospernominas_path(consecutivo: a.procesosinesp,consecutivo2: a.proceso, ruta: 'ABRIR'), remote: true do %>
+              <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+              Proceso : <%=a.proceso %>
+            <% end %>
+          </div>
+          <div id="cerrar<%= a.procesosinesp %>" class="pull-left hide">
+            <%= link_to show_detallepro_contratospernominas_path(consecutivo: a.procesosinesp,consecutivo2: a.proceso, ruta: 'CERRAR'), remote: true do %>
+              <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+              Proceso : <%=a.proceso %>
+            <% end %>
+          </div>
+          <div id="procesosdetalles<%= a.procesosinesp %>" style="width: 100%"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>
+
+  <% Contratospermasiva.select("proceso").where(["proceso != 'LIQUIDACION'"]).group(:proceso).order("proceso desc").each do |a|
+     contratospermasivas =  Contratospermasiva.joins(:contrato, :contratosgrupo)
+                                              .select("contratospermasivas.*, contratos.nro_contrato,
+                                                       (select e.autobuscar from empresas e, contratos c where c.id = contratospermasivas.contrato_id and c.empresa_id = e.id) identnombre,
+                                                       (select count(9) from contratospermasdetalles where contratospermasiva_id = contratospermasivas.id) cantdetalle,
+                                                       contratosgrupos.descripcion, contratosgrupos.termino")
+                                              .where(["contratospermasivas.proceso = '#{a.proceso.to_s}'"]).order("contratospermasivas.id desc")
+     procesosin = a.proceso.gsub(' ','').to_s
+  %>
+    <div id="<%=a.proceso %>" class="box box-danger collapsed-box">
+      <div class="box-header with-border">
+        <div class="row">
+          <div class="col-md-12">
+            <span class="btn btn-box-tool" data-widget="collapse">
+              <i class="fa fa-plus"></i>
+                <h3 class="box-title">Proceso : <%=a.proceso %></h3>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="nav-tabs-custom">
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#<%=procesosin %>_tab1" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Pendientes</a></li>
+                <li class=""><a href="#<%=procesosin %>_tab2" data-toggle="tab" aria-expanded="false"><i class="fa fa-adn"></i> Incluidas</a></li>
+                <li class=""><a href="#<%=procesosin %>_tab3" data-toggle="tab" aria-expanded="false"><i class="fa fa-adn"></i> Archivo plano</a></li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane active" id="<%=procesosin %>_tab1">
+                  <% @contratospermasivas1 = contratospermasivas.where(["contratospermasivas.estado = 'PENDIENTE'"]) rescue nil %>
+                  <% if @contratospermasivas1.present? %>
+                    <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: a.proceso + '-PENDIENTE', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+                    <%end %>
+                    <%= render 'procesosdet', contratospermasivas: @contratospermasivas1 %>
+                  <% else %>
+                    <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+                  <% end %>
+                </div>
+                <div class="tab-pane" id="<%=procesosin.to_s %>_tab2">
+                  <% @contratospermasivas2 = contratospermasivas.where(["contratospermasivas.estado = 'INCLUIDAS'"]) rescue nil %>
+                  <% if @contratospermasivas2.present? %>
+                    <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: a.proceso + '-INCLUIDAS', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+                    <%end %>
+                    <%= render 'procesosdet', contratospermasivas: @contratospermasivas2  %>
+                  <% else %>
+                    <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+                  <% end %>
+                </div>
+                <div class="tab-pane" id="<%=procesosin %>_tab3">
+                  <% @contratospermasivas3 = contratospermasivas.where(["contratospermasivas.estado = 'ARCHIVOPLANO'"]) rescue nil %>
+                  <% if @contratospermasivas3.present? %>
+                    <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: a.proceso + '-ARCHIVOPLANO', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+                    <%end %>
+                    <%= render 'procesosdet', contratospermasivas: @contratospermasivas3  %>
+                  <% else %>
+                    <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+

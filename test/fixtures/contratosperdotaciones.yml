@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  contratosperfecha: one
+  contratospersona: one
+  fecha_prox_entrega: 2024-02-18
+  talla_pantalon: MyString
+  cant_pantalon: 1
+  talla_camisa: MyString
+  cant_camisa: 1
+  talla_zapatos: MyString
+  cant_zapatos: 1
+  zapatos: MyString
+  observacion: MyString
+  estado: MyString
+  user_estado: 1
+
+two:
+  contrato: two
+  contratosperfecha: two
+  contratospersona: two
+  fecha_prox_entrega: 2024-02-18
+  talla_pantalon: MyString
+  cant_pantalon: 1
+  talla_camisa: MyString
+  cant_camisa: 1
+  talla_zapatos: MyString
+  cant_zapatos: 1
+  zapatos: MyString
+  observacion: MyString
+  estado: MyString
+  user_estado: 1

@@ -1,0 +1,51 @@
+<%= simple_form_for @contratospersona, :url => update2_contratospersonas_path, :method => :post, remote: true do |f| %>
+  <%= hidden_field_tag :id, params[:id], value: @contratospersona.id %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratospersona.autobuscar %></strong></h3>
+  </div>
+  <div class="modal-body">
+    <div class="text-red alerta-visita" align="justify">
+      <i class="fa fa-info-circle"></i> Aqui puedes actualizar directamente la información basica de tu Hoja de Vida.
+    </div><br/>
+    <div class="row">
+      <div class="text-red col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :dirc1, as: :select, collection: Iparametro.where(campo: 'nomenclatura').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2 clean' }, label: 'Ejemplo Direccion: Calle' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc2, id: "dirc2", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', maxlength: 3 }, label: '10' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc3, id: "dirc3", input_html: { onkeypress: "return justLetters(event);", onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 3 }, label: 'A' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc4, as: :select, collection: Iparametro.where(campo: 'nomenclaturaletra').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, label: 'SUR', input_html: { class: 'select2 clean' } %></div>
+      <div align="center" class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1">#</div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc5, id: "dirc5", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', :maxlength => 3 }, label: '11' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc6, id: "dirc6", input_html: { onkeypress: "return justLetters(event);", onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 3 }, label: 'A' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc7, as: :select, collection: Iparametro.where(campo: 'nomenclaturaletra').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, label: 'SUR', input_html: { class: 'select2 clean' } %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc8, id: "dirc8", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', :maxlength => 3 }, label: '12' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :dirc9, input_html: { onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 300 }, label: 'Urban., Bloque 1, Apto 806' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :correo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :telefono, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :movil, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <% if @contratospersona.genero == 'MASCULINO' %>
+          <%= f.input :talla_pantalon, collection: Iparametro.where(campo: 'pantalon_hombre').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true%>
+        <% elsif @contratospersona.genero == 'FEMENINO' %>
+          <%= f.input :talla_pantalon, collection: Iparametro.where(campo: 'pantalon_mujer').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <% if @contratospersona.genero == 'MASCULINO' %>
+          <%= f.input :talla_camisa, collection: Iparametro.where(campo: 'camisa_hombre').order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true%>
+        <% elsif @contratospersona.genero == 'FEMENINO' %>
+          <%= f.input :talla_camisa, collection: Iparametro.where(campo: 'camisa_mujer').order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :talla_zapatos, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();", placeholder: 'Talla' }, label: "Talla Zapatos" %></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div>
+  </div>
+<% end %>
+

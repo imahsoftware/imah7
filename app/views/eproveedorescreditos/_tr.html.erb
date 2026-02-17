@@ -1,0 +1,23 @@
+<tr id="eproveedorescredito_<%= eproveedorescredito.id %>">
+  <td class="text-center">
+      <%= link_to edit_eproveedor_eproveedorescredito_path(@eproveedor, eproveedorescredito), remote: true, class: 'edit_eproveedorsmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to eproveedor_eproveedorescredito_path(@eproveedor, eproveedorescredito), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+      <%= link_to ver_eproveedorescreditos_path(id: eproveedorescredito.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver NC' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= eproveedorescredito.user_nombre.html_safe rescue nil %><%= eproveedorescredito.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="center"><%= eproveedorescredito.fecha %></td>
+  <td align="center"><%= eproveedorescredito.consecutivo %></td>
+  <td align="center"><%= eproveedorescredito.eproveedorescompra.nro_factura %></td>
+  <td align="right"><%= camponumerico eproveedorescredito.valor %></td>
+  <td align="left"><%= eproveedorescredito.observaciones %></td>
+
+</tr>
+
+
+

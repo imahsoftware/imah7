@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @nombreuser %>").html('<%= j render "visitas/abrir_detalle" %>');
+$("#abrir<%= @nombreuser %>").addClass("hide");
+$("#cerrar<%= @nombreuser %>").removeClass("hide");
+$("#tr_show<%= @nombreuser %>").removeClass("hidden");
+<% else %>
+$("#abrir<%= @nombreuser %>").removeClass("hide");
+$("#cerrar<%= @nombreuser %>").addClass("hide");
+$("#abrir_detalle<%= @nombreuser %>").html(null);
+$("#tr_show<%= @nombreuser %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

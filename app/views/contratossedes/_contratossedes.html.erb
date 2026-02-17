@@ -1,0 +1,34 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Sedes Asociadas al contrato
+
+    <% if Contratossolicitud.where(contrato_id: @contrato.id).exists? == false %>
+      <%= link_to abrircargue_contratos_path(id: @contrato.id, clase: 'SEDES'), remote: true, data: { toggle: 'tooltip' }, title: 'Carga masiva de Sedes' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-cloud-upload"></i> Cargue</button>
+      <% end %>
+      <%= link_to depurarsedes_contratos_path(id: @contrato.id), data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: 'Depurar' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-cloud-upload"></i> Depurar</button>
+      <% end %>
+    <% end %>
+
+
+  </strong></h3>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('contratossede') %>
+      <%= link_to new_contrato_contratossede_path(@contrato), id: 'new_contratossede_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratossede_form" class="collapse"></div>
+  <div id="contratossedes">
+    <% if @contrato.contratossedes.present? %>
+      <%= render 'contratossedes/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>
+

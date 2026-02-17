@@ -1,0 +1,53 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Egresosdetalles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Egreso</th>
+      <th>Concepto</th>
+      <th>Cantidad</th>
+      <th>Valor unitario</th>
+      <th>Iva</th>
+      <th>Valor iva</th>
+      <th>Subtotal</th>
+      <th>Total</th>
+      <th>User</th>
+      <th>Retencion</th>
+      <th>Retecre</th>
+      <th>Claseretencion</th>
+      <th>Centroscosto</th>
+      <th>Eproveedorescompra</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @egresosdetalles.each do |egresosdetalle| %>
+      <tr>
+        <td><%= egresosdetalle.egreso %></td>
+        <td><%= egresosdetalle.concepto %></td>
+        <td><%= egresosdetalle.cantidad %></td>
+        <td><%= egresosdetalle.valor_unitario %></td>
+        <td><%= egresosdetalle.iva %></td>
+        <td><%= egresosdetalle.valor_iva %></td>
+        <td><%= egresosdetalle.subtotal %></td>
+        <td><%= egresosdetalle.total %></td>
+        <td><%= egresosdetalle.user %></td>
+        <td><%= egresosdetalle.retencion %></td>
+        <td><%= egresosdetalle.retecre %></td>
+        <td><%= egresosdetalle.claseretencion %></td>
+        <td><%= egresosdetalle.centroscosto %></td>
+        <td><%= egresosdetalle.eproveedorescompra %></td>
+        <td><%= link_to 'Show', egresosdetalle %></td>
+        <td><%= link_to 'Edit', edit_egresosdetalle_path(egresosdetalle) %></td>
+        <td><%= link_to 'Destroy', egresosdetalle, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Egresosdetalle', new_egresosdetalle_path %>

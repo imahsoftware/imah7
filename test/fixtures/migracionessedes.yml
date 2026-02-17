@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  archivo: one
+  estado: MyString
+  contrato_id: 1
+  nombre: MyString
+  direccion: MyString
+  ordensede: 1
+  departamento: MyString
+  municipio: MyString
+
+two:
+  user: two
+  archivo: two
+  estado: MyString
+  contrato_id: 1
+  nombre: MyString
+  direccion: MyString
+  ordensede: 1
+  departamento: MyString
+  municipio: MyString

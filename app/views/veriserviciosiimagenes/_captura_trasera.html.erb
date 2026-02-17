@@ -1,0 +1,145 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Cámara Trasera: <%= @veriserviciositem.descripcion rescue nil %></h4>
+</div>
+
+<div class="modal-body">
+  <section class="content-header">
+    <h1>
+      Tomar Foto
+      <div id="antes<%= @veriserviciositem.id %>" class="pull-right hide">
+        <%= link_to '#', id: "continuar-btn-#{@veriserviciositem.id}", data: { toggle: 'tooltip' }, title: "Continuar", class: 'btn btn-xs btn-warning' do %>
+          <i class="fa fa-angle-left"></i> Continuar con el proceso
+        <% end %>
+      </div>
+    </h1>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">Cámara</h3>
+          </div>
+          <div class="box-body">
+            <video id="video" width="100%" height="100%" autoplay></video>
+            <button id="snap" class="btn btn-primary">
+              <i class="fa fa-camera"></i> Tomar Foto
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">Resultado</h3>
+          </div>
+          <div class="box-body">
+            <div class="canvas-container text-center">
+              <%= form_for @image, url: captura_imagen_veriserviciositems_path, method: :post, html: { id: 'image-form' } do |form| %>
+                <div class="row">
+                  <div class="col-md-12 text-left">
+                    <div class="mensaje_firma_agenda"><i class="fa fa-info-circle"></i> Para que la imagen sea capturada debes de colocar una descripción, de lo contrario no será capturada la imagen.</div>
+                    <%= form.text_field :descripcion, id: 'image-title', class: 'form-control', placeholder: 'Descripción de la imagen', required: true %>
+                  </div>
+                </div><br/>
+                <%= form.hidden_field :veriimagen, id: 'image-data' %>
+                <%= hidden_field_tag :veriserviciositem_id, @veriserviciositem.id %>
+              <% end %>
+              <canvas id="canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+      .canvas-container {
+          max-width: 100%;
+          overflow: hidden;
+      }
+
+      #canvas {
+          width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+      }
+
+      .hide {
+          display: none;
+      }
+  </style>
+
+  <script>
+      var boton = document.getElementById('antes<%= @veriserviciositem.id %>');
+      var continuarBtn = document.getElementById('continuar-btn-<%= @veriserviciositem.id %>');
+      var video = document.getElementById('video');
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      var snap = document.getElementById('snap');
+      var descripcionInput = document.getElementById('image-title');
+      var photoTaken = false;
+
+      // Función para validar si el campo de descripción no está vacío
+      function validateDescripcion() {
+          return descripcionInput.value.trim() !== '';
+      }
+
+      // Habilitar o deshabilitar el botón de continuar basado en la foto tomada y la descripción
+      function toggleContinuarBtn() {
+          if (photoTaken && validateDescripcion()) {
+              boton.classList.remove('hide');
+          } else {
+              boton.classList.add('hide');
+          }
+      }
+
+      // Inicializar el stream de video con la cámara trasera
+      navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { exact: "environment" } } // Habilitar la cámara trasera
+      })
+        .then(function (stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+      // Tomar la foto
+      snap.addEventListener('click', function () {
+          if (!validateDescripcion()) {
+              alert('Por favor, ingrese una descripción antes de tomar la foto.');
+              return;
+          }
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          var image_data = canvas.toDataURL('image/png');
+          document.getElementById('image-data').value = image_data.split(',')[1];
+
+          photoTaken = true;
+          toggleContinuarBtn(); // Asegúrate de llamar esta función después de tomar la foto
+      });
+
+      // Habilitar el botón de continuar si ya hay una descripción y se ha tomado la foto
+      descripcionInput.addEventListener('input', toggleContinuarBtn);
+
+      continuarBtn.addEventListener('click', function (event) {
+          event.preventDefault();
+          if (validateDescripcion()) {
+              document.getElementById('image-form').submit();
+          } else {
+              alert('Por favor, ingrese una descripción antes de continuar.');
+          }
+      });
+
+      // Asegúrate de que el botón de continuar esté oculto al cargar la página si la descripción está vacía
+      document.addEventListener('DOMContentLoaded', toggleContinuarBtn);
+  </script>
+</div>

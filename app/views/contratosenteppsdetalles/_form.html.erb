@@ -1,0 +1,63 @@
+<%= simple_form_for([@contratosentepp, @contratosenteppsdetalle], remote: true) do |f| %>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%#= f.input :contratosperfecha_id, collection: Contratosperfecha.joins(:contratospersona)
+                                                                        .select('contratosperfechas.id, contratospersonas.autobuscar')
+                                                                        .where(contratosperfechas: { estado: 'ACTIVO', contrato_id: @contratosentepp.contrato_id })
+                                                                        .order('contratospersonas.autobuscar')
+                                                                        .collect { |p| [p.autobuscar.to_s, p.id.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Usuario' %>
+      <%= f.input :contratosperfecha_id, collection: Contratosperfecha.joins(:contratospersona)
+                                                                      .select('contratosperfechas.id, contratospersonas.autobuscar')
+                                                                      .where(contratosperfechas: { estado: 'ACTIVO' })
+                                                                      .order('contratospersonas.autobuscar')
+                                                                      .collect { |p| [p.autobuscar.to_s, p.id.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Usuario' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%= f.input :item, collection:
+          Contratossoleppsdetalle.select("CONCAT(contratossoleppsdetalles.item, ' - Pendiente por utilizar: ',
+                                        SUM(contratossoleppsdetalles.cant_aprobada) - COALESCE(
+                                            (SELECT SUM(ced.cantidad)
+                                             FROM contratosenteppsdetalles ced
+                                             WHERE ced.user_id = #{is_admin}
+                                               AND ced.item = contratossoleppsdetalles.item), 0
+                                        )) AS autobuscar,
+                                        contratossoleppsdetalles.item")
+            .joins("INNER JOIN contratossolepps ON contratossolepps.id = contratossoleppsdetalles.contratossolepp_id")
+            .where("contratossolepps.user_id = ? AND contratossolepps.estado = ?", is_admin, 'ENTREGADO')
+            .group("contratossoleppsdetalles.item")
+            .having("SUM(contratossoleppsdetalles.cant_aprobada) - COALESCE(
+                (SELECT SUM(ced.cantidad)
+                 FROM contratosenteppsdetalles ced
+                 WHERE ced.user_id = #{is_admin}
+                   AND ced.item = contratossoleppsdetalles.item), 0) > 0")
+            .order("contratossoleppsdetalles.item")
+            .collect { |p| [p.autobuscar, p.item.to_s] },
+                    input_html: { class: 'select2' },
+                    as: :select,
+                    include_blank: true,
+                    label: 'Item'
+        %>
+
+      </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :cantidad, input_html: {class: "form-control"} %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosenteppsdetalle.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosenteppsdetalle_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosentepp_contratosenteppsdetalle_path(@contratosentepp, @contratosenteppsdetalle), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+
+<% end %>
+<br/>
+

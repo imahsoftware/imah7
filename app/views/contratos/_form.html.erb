@@ -1,0 +1,87 @@
+<%= simple_form_for(@contrato) do |f| %>
+  <%= f.hidden_field :empresa_id %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <legend>
+        <%= link_to edit_empresa_path(id: @contrato.empresa_id, etapa: 'A'), data: {toggle: 'tooltip'}, title: 'Regresar a la empresa' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Información Contrato (<%= @contrato.empresa.identnombre rescue nil %>)
+      </legend>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+          <%= f.input :nro_contrato, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+          <%= f.input :objeto, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 } %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <%= f.input :municipio_id, collection: Municipio.order(:autobuscar).collect {|p| [ p.autobuscar, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+          <%= f.input :direccion, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :telefono_empresa %></div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :email_empresa %></div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <%= f.input :tiposcontrato_id, collection: Tiposcontrato.order(:descripcion).collect {|p| [ p.descripcion, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :plazo_mes %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :plazo_dia %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_firma, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_liquidacion, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fechamasmodi, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valormasmodi, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :anticipo, as: :select, collection: select_sinocorto, input_html: { class: 'select2' } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_anticipo, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estadocontrato, input_html: { class: 'select2' } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_validacion, as: :select, collection: select_tipovalidacion, input_html: { class: 'select2' } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :monto_maximo_mes, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :insumos_convalorbase, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :clasevalor, as: :select, collection: select_clasevalor, input_html: { class: 'select2' }, label: "Clase Valor" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :informe_consolidado, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :publicado, as: :select, collection: select_sino, input_html: { class: 'select2' },label: "Activado?" %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_insumos, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_maquinaria, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_otrosservicios, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :visualiza_iva, as: :select, collection: select_sino, input_html: { class: 'select2' },label: "Visualiza IVA en Pedidos?" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :areas, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: 'Area' %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :contacto_nombre, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nombre Contacto Empresa" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :contacto_apellido, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Apellido Contacto Empresa" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :contacto_email, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Email Contacto Empresa" %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :activo_vacantes, as: :select, collection: select_sino, input_html: { class: 'select2' },label: "Activo para vacantes?" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :mes_entrega, as: :select, collection: select_contratosperiodos, input_html: { class: 'select2' },label: "Meses Entrega Inicial" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :mes_entrega_periodica, as: :select, collection: select_contratosperiodos, input_html: { class: 'select2' },label: "Meses Entrega Periodica" %></div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-left"><strong>ID Contrato: <%=@contrato.id rescue nil %></strong></div>
+      <div class="box-tools pull-right">
+        <% if is_auth_a('contrato') %>
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        <% end %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>

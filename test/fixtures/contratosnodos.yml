@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  contratossede: one
+  user_act: 1
+  estado: MyString
+  nombre: MyString
+  clase_aseo: MyString
+  clase_aseo2: MyString
+  clase_aseo3: MyString
+  clase_aseo4: MyString
+  clase_aseo5: MyString
+
+two:
+  contrato: two
+  user: two
+  contratossede: two
+  user_act: 1
+  estado: MyString
+  nombre: MyString
+  clase_aseo: MyString
+  clase_aseo2: MyString
+  clase_aseo3: MyString
+  clase_aseo4: MyString
+  clase_aseo5: MyString

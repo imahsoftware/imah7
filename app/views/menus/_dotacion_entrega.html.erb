@@ -1,0 +1,156 @@
+<legend>
+<section class="content-header" style="padding: 0px 15px 0 15px !important; margin-top: -10px;">
+  <h1 style="font-size: 20px;">DashBoard Entregas Periodicas de Dotación
+    <div class="pull-right">
+      <b class="text-red">PENDIENTES</b> <i class="fa fa-certificate text-red"></i> &nbsp;
+      <b class="text-blue">NO APLICA</b> <i class="fa fa-certificate text-blue"></i> &nbsp;
+      <b class="text-green">ENTREGADOS</b> <i class="fa fa-certificate text-green"></i>
+    </div>
+  </h1>
+</section>
+</legend>
+<div class="box-body">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#proceso" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> PROCESO</a></li>
+          <li><a href="#archivos" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> ARCHIVOS</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="proceso">
+            <div class="box-body">
+              <div class="col-xs-12">
+                <div class="row">
+                  <div class="col-md-4">
+                    <%= form_tag searchdotacion_todo_contratosperdotaciones_path, remote: true, method: :get do %>
+                      <div class="form-group input-group" style="padding-bottom: 10px;">
+                        <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                        <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Identificación, Nombre o Apellido' %>
+                        <span class="input-group-btn">
+                          <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          <% end %>
+                         </span>
+                      </div>
+                    <% end %>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="pull-right">
+                      <%= link_to informe_datas_path(infgrupo_id: 100, portafolio_id: 1, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Entrega de Dotación" do %>
+                        <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+                <div id="resultado_dotacion_todo"></div>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th class="text-left">Fecha</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @fechas.each do |fecha|%>
+                    <tr>
+                      <td>
+                        <div id="abrir_dotacion_entrega<%= fecha.fecha_prox_entrega %>" class="pull-left">
+                          <%= link_to show_detalle_dotacion_entrega_menus_path(fecha: fecha.fecha_prox_entrega, ruta: 'ABRIR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Empleados"></i>
+                            <% if fecha.fecha_prox_entrega.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d') %>
+                              <i class="text-red fa fa-star"></i> <%= fecha.fecha_prox_entrega %>
+                            <% else %>
+                              <%= fecha.fecha_prox_entrega %>
+                            <% end %>
+                          <% end %>
+                        </div>
+                        <div id="cerrar_dotacion_entrega<%= fecha.fecha_prox_entrega %>" class="pull-left hide">
+                          <%= link_to show_detalle_dotacion_entrega_menus_path(fecha: fecha.fecha_prox_entrega, ruta: 'CERRAR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Empleados"></i>
+                            <% if fecha.fecha_prox_entrega.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d') %>
+                              <i class="text-red fa fa-star"></i> <%= fecha.fecha_prox_entrega %>
+                            <% else %>
+                              <%= fecha.fecha_prox_entrega %>
+                            <% end %>
+                          <% end %>
+                        </div>
+                        <div class="pull-right">
+                          <b class="text-red"><%= fecha.cnt_pendientes rescue nil %></b>
+                          <i class="fa fa-certificate text-red"></i> &nbsp;
+                          <b class="text-blue"><%= fecha.cnt_otros rescue nil %></b>
+                          <i class="fa fa-certificate text-orange"></i> &nbsp;
+                          <b class="text-green"><%= fecha.cnt_entregados rescue nil %></b>
+                          <i class="fa fa-certificate text-green"></i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr id="tr_show_dotacion_entrega<%= fecha.fecha_prox_entrega %>" class="hidden">
+                      <td>
+                        <div id="abrir_detalle_dotacion_entrega<%= fecha.fecha_prox_entrega %>" style="padding-left: 30px; padding-right: 30px;"></div>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="archivos">
+          <%
+            contratos = Contrato.select("(select autobuscar from empresas where id = contratos.empresa_id) identnombre, contratos.*")
+                                .where("estado in ('EN EJECUCION')").order("1 asc")
+          %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th width="10%" class="text-left"></th>
+                <th class="text-left">Empresa</th>
+                <th class="text-left">Nro Contrato</th>
+                <th width="10%" class="text-center">Fecha Inicio</th>
+                <th width="10%" class="text-center">Fecha Fin</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% contratos.each do |c| %>
+                <tr>
+                  <td class="text-center" style="font-size:11px;">
+                    <%= link_to descargacontratoesp_contratos_path(contrato_id: c.id, clase: 'DOTACION'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación de todo el contrato' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                    <%= link_to descargacontratoesp_contratos_path(contrato_id: c.id, clase: 'DOTACIONP'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica del contrato' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style="font-size:11px;"><%= c.identnombre rescue nil %></td>
+                  <td class="text-left" style="font-size:11px;"><%= c.nro_contrato rescue nil %></td>
+                  <td class="text-center" style="font-size:11px;"><%= c.fecha_inicio rescue nil %></td>
+                  <td class="text-center" style="font-size:11px;"><%= c.fechafinal rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+            <% if is_auth_c('download') %>
+              <div class="box box-danger">
+                <div class="box-body table-responsive">
+                  <legend>Descargas</legend>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr>
+                      <td>
+                        <div align="right">
+                          <IFRAME SRC=<%="/datas/download"%> WIDTH="100%" HEIGHT="200" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+    <tr class="thcolor">
+      <th class="text-table" width="10%"></th>
+      <th class="text-table" width="10%">ID</th>
+      <th class="text-table">Nombre</th>
+      <th class="text-table">Campo</th>
+      <th class="text-table">Segmento</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_variables">
+    <% @variables.each do |variable| %>
+      <%= render 'variables/tr', variable: variable %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,13 @@
+<tr id="contratosperdotadicional_<%= contratosperdotadicional.id %>">
+  <td class="text-center">
+    <% if ['PENDIENTE', 'ENTREGADO'].include?(@contratosperdotacion.estado) %>
+      <%= link_to contratosperdotacion_contratosperdotadicional_path(@contratosperdotacion, contratosperdotadicional), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="text-left" style="font-size: 11px;"><%= contratosperdotadicional.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><%= contratosperdotadicional.user.username rescue nil %></td>
+  <td class="text-justify" style="font-size: 10px;"><%= contratosperdotadicional.elemento rescue nil %></td>
+  <td class="text-center" style="font-size: 10px;"><%= contratosperdotadicional.cantidad rescue nil %></td>
+</tr>

@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosenteppsfirmas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosentepp</th>
+      <th>Contratosperfecha</th>
+      <th>Codigo firma</th>
+      <th>Fecha firma</th>
+      <th>Codigo env</th>
+      <th>Codigo rec</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosenteppsfirmas.each do |contratosenteppsfirma| %>
+      <tr>
+        <td><%= contratosenteppsfirma.contratosentepp %></td>
+        <td><%= contratosenteppsfirma.contratosperfecha %></td>
+        <td><%= contratosenteppsfirma.codigo_firma %></td>
+        <td><%= contratosenteppsfirma.fecha_firma %></td>
+        <td><%= contratosenteppsfirma.codigo_env %></td>
+        <td><%= contratosenteppsfirma.codigo_rec %></td>
+        <td><%= link_to 'Show', contratosenteppsfirma %></td>
+        <td><%= link_to 'Edit', edit_contratosenteppsfirma_path(contratosenteppsfirma) %></td>
+        <td><%= link_to 'Destroy', contratosenteppsfirma, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosenteppsfirma', new_contratosenteppsfirma_path %>

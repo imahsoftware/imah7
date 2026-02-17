@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-12">
+    <legend><strong>Cargue - EXCEL</strong></legend>
+    <div class="box box-primary">
+      <%= form_tag '/contratos/cargar', method: :post, multipart: true do %>
+        <%= hidden_field_tag :contratoid, @contratoid.to_s %>
+        <div class="box-header">
+          <div class="alert alert-warning">
+            <h4><i class="icon fa fa-info"></i> Atención!</h4>
+              Recuerde que el archivo debe ser con extensión <strong>XLS</strong> o <strong>XLSX</strong>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-group">
+                  <span class="input-group-btn">
+                    <button id="fake-file-button-browse" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-file"></span>
+                    </button>
+                </span>
+                <%= file_field_tag(:file, id: 'files-input-upload', style: 'display:none', data: { toggle: 'tooltip' }, title: 'Seleccionar Archivo') %>
+                <input type="text" id="rutaarchivo" disabled="disabled" placeholder="No has seleccionado el archivo" class="form-control">
+              </div>
+              <span class="input-group-btn">
+                  <%= button_tag(type: "submit", class: "btn btn-primary", data: { toggle: 'tooltip', disable_with: 'Procesando...' }, title: 'Cargar Archivo') do %>
+                    <span class="fa fa-upload"></span>Cargar....
+                    <% end %>
+                </span>
+              <script type="text/javascript">
+                document.getElementById('fake-file-button-browse').addEventListener('click', function() {
+                    document.getElementById('files-input-upload').click();
+                });
+
+                document.getElementById('files-input-upload').addEventListener('change', function() {
+                    document.getElementById('rutaarchivo').value = this.value.replace(/C:\\fakepath\\/,'');
+                    document.getElementById('fake-file-button-upload').removeAttribute('disabled');
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

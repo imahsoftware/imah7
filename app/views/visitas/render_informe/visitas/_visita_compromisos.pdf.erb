@@ -1,0 +1,31 @@
+<%
+  @visitascompromisos = Visitascompromiso.where("visita_id in (select id from visitas where DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and contrato_id = #{@contrato.id})")
+
+%>
+
+<br/>
+<div class="encabezado_izq"><b>Relación de reuniones  - Total: (<%= @visitascompromisos.count rescue 0 %>)</b></div><br/>
+
+<% if @visitascompromisos.present? %>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <th width="15%" class="encabezado_tabla alineacion_center">Fecha de Reunion</th>
+      <th width="25%" class="encabezado_tabla alineacion_izq">Responsable</th>
+      <th class="encabezado_tabla alineacion_izq">Compromiso</th>
+      <th width="15%" class="encabezado_tabla alineacion_center">Estado</th>
+    </tr>
+    <% @visitascompromisos.each do |visitascompromiso| %>
+      <tr>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center"><%= visitascompromiso.fecha rescue nil %></td>
+        <td class="alineacion_izq" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><%= visitascompromiso.user.nombre rescue nil %></td>
+        <td class="alineacion_izq" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><%= visitascompromiso.compromiso rescue nil %></td>
+        <td class="alineacion_center" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><%= visitascompromiso.estado rescue nil %></td>
+      </tr>
+    <% end %>
+  </table>
+
+<% else %>
+  <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+    informacion
+  </div>
+<% end %>

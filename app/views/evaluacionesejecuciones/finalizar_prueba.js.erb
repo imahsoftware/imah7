@@ -1,0 +1,13 @@
+$('#botones<%= @evaluacionesejecucion.id %>').html("<%= j render 'evaluacionesejecuciones/botones_prueba', p: @evaluacionesejecucion, user_responsable_id: @user_responsable, contratosperfecha_id: @contratosperfecha.id %>");
+$('#estado_evaluacion<%= @evaluacionesejecucion.id %>').html("<%= j render 'evaluacionesejecuciones/estado_evaluacion_prueba', p: @evaluacionesejecucion %>");
+$('#input_registro_data<%= @evaluacionesejecucion.id %>').html("<%= j render 'evaluacionesejecuciones/input_registro_prueba', p: @evaluacionesejecucion %>")
+$('#resultado<%= @evaluacionesejecucion.id %>').html("<%= @evaluacionesejecucion.resultado rescue nil %>");
+
+<% if ['2', '1'].include?(@estado) and @evaluacionesejecucion.resultado.blank? %>
+$('#mensaje_error<%= @evaluacionesejecucion.id %>').html("<%= j render 'evaluacionesejecuciones/mensaje_error', p: @evaluacionesejecucion %>");
+<% else %>
+$('#usuario_marca<%= @evaluacionesejecucion.id %><%= @user_responsable %>').html("<%= j render 'evaluacionesejecuciones/datos_user', p: @evaluacionesejecucion, user_responsable_id: @user_responsable, contratosperfecha_id: @contratosperfecha.id %>");
+$('#mensaje_error<%= @evaluacionesejecucion.id %>').html("");
+<% end %>
+
+$('#activar_cierre<%= @evaluacionesejecucion.evaluacion_id %>').html("<%= j render 'evaluacionesejecuciones/activar_cierre', evaluacion: @evaluacionesejecucion.evaluacion_id, user_responsable: @user_responsable, contratosperfecha_id: @contratosperfecha.id %>");

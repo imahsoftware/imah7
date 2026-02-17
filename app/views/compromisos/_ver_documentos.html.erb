@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @compromiso.parcargosdoc.descripcion rescue nil %></h4>
+</div>
+
+
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered table-condensed table-striped">
+        <tr class="thcolor">
+          <th class="text-table">Empleado</th>
+          <th width="15%" class="text-table text-center">Fecha de Entrega</th>
+        </tr>
+        <tr>
+          <td class="text-table text-left">
+            <% if @compromiso.contratosperfecha.present? %>
+              <%= @compromiso.contratosperfecha.contratospersona.autobuscar rescue nil %><br/>
+              <small><%= @compromiso.contratosperfecha.contrato.empresa.identnombre rescue nil %> -
+                <strong>Nro Contrato
+                  : </strong><%= @compromiso.contratosperfecha.contrato.nro_contrato rescue nil %>
+                <br/><strong>Cargo
+                : </strong><%= @compromiso.contratosperfecha.contratoscargo.perfil rescue nil %>
+                <br/><strong>Grupo Nomina
+                : </strong><%= @compromiso.contratosperfecha.contratosgrupo.descripcion rescue nil %>
+                <% if @compromiso.contratosperfecha.contratosseccion_id.present? %>
+                  <br/><strong>Sección
+                : </strong><%= @compromiso.contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+                <% end %>
+                <br/><strong>Dirección
+                : </strong><%= @compromiso.contratosperfecha.contratospersona.direcciontelefono rescue nil %>
+              </small>
+            <% else %>
+              <%= @compromiso.personasformulario.identificacion rescue nil %> <%= @compromiso.personasformulario.nombre rescue nil %>
+            <% end %>
+
+          </td>
+          <td class="text-table text-center"><%= @compromiso.fecha_entrega %></td>
+        </tr>
+      </table>
+      <br/>
+      <bt/>
+      <legend>Documentos del compromiso cargados</legend>
+      <% if Contratosperimagen.where("compromiso_id = #{@compromiso.id}").present? %>
+        <table class="table table-bordered table-condensed table-striped">
+          <tr class="thcolor">
+            <th width="15%" class="text-table text-center"></th>
+            <th class="text-table">Documento Digital</th>
+            <th width="15%" class="text-table text-center">Fecha del Cargue</th>
+            <th width="15%" class="text-table text-center">Estado</th>
+          </tr>
+          <% Contratosperimagen.where("compromiso_id = #{@compromiso.id}").each do |contratosperimagen| %>
+            <tr>
+              <td class="text-table text-center">
+                <div class="btn-group" id="botones<%= contratosperimagen.id %>">
+                  <%= render 'compromisos/botones', contratosperimagen: contratosperimagen %>
+                </div>
+              </td>
+              <td class="text-table">
+                <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-cloud-download"></i> <%= contratosperimagen.personasimagen_file_name rescue nil %>
+                <% end %>
+              </td>
+              <td class="text-table text-center"><%= contratosperimagen.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+              <td class="text-table text-center">
+                <div id="cambio_estado<%= contratosperimagen.id %>">
+                  <%= contratosperimagen.estado rescue nil %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+      <br/>
+      <br/>
+    </div>
+  </div>
+</div>

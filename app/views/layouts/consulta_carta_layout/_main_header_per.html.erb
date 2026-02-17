@@ -1,0 +1,100 @@
+<%
+  user = User.find(is_admin)
+  issygma = is_sygma
+%>
+<header class="main-header">
+  <nav class="navbar navbar-static-top">
+      <div class="navbar-header">
+        <%= link_to root_path, class: 'logo' do %>
+          <span class="logo-mini"><%= image_tag 'logo.png', alt: 'Logo Teseo', width: '90%' %></span>
+          <span class="logo-lg" style="font-size: 18px;"><b><%= ENV['NOMBRE_CORTO'] %></b></span>
+        <% end %>
+      </div>
+    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+
+    </div>
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li class="dropdown user user-menu">
+            <%= link_to '#', class: 'dropdown-toggle', data: {toggle: 'dropdown'} do %>
+              <%= image_tag user.avatar.url(:medium), class: 'user-image', alt: 'User Image' %>
+              <span class="hidden-xs" style="color: #fff;"><%= user.username %></span>
+            <% end %>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <%= image_tag user.avatar.url(:medium), class: 'img brd', alt: 'User Image' %>
+                <p style="font-size: 12px; color: #fff;">
+                  <%= user.nombre %>
+                </p>
+              </li>
+              <li class="user-footer">
+                <div class="pull-left">
+                  <%= link_to edit_user_registration_path do %>
+                    <button class="btn btn-flat btn-default">
+                      <i class="fa fa-edit"> <b style="font-size: 11px;"><%= t :editar_perfil %></b></i></button>
+                  <% end %>
+                </div>
+                <div class="pull-right">
+                  <%= link_to logout_path, data: {confirm: '¿Esta seguro ' + "#{user.nombre}" + ' que quiere desconectarse?'} do %>
+                    <button class="btn btn-flat btn-default">
+                      <i class="fa fa-sign-in"> <b style="font-size: 11px;"><%= t :salir %></b></i></button>
+                  <% end %>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+  </nav>
+</header>
+
+
+<div class="modal fade" id="menu">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<style>
+  .bor {
+    border-radius: 10px !important;
+  }
+
+  .main-header .logo {
+    text-align: left;
+  }
+
+  .main-header #navbar-search-input.form-control {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: transparent !important;
+  }
+
+  .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group {
+    z-index: -2;
+    margin-left: 0px !important;
+  }
+
+  .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    background-color: #36424F;
+    border-color: #337ab7;
+  }
+
+  .nav > li > a:hover, .nav > li > a:active, .nav > li > a:focus {
+    color: #444;
+    background: #36424F;
+  }
+
+  .brd {
+    border: 0px solid !important;
+  }
+
+  .main-header .navbar {
+    margin-left: 0px !important;
+  }
+
+</style>
+
+
+
+

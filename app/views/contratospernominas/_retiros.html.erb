@@ -1,0 +1,532 @@
+<%
+  periodos = Solicitudesretiro.select("date_format(fecha,'%Y-%m') periodo, count(9) cantidad")
+                              .where("solicitudesretiros.user_aprobacion is not null and solicitudesretiros.user_liquidacion is null and solicitudesretiros.consecutivo is null")
+                              .distinct
+                              .order("date_format(fecha,'%Y-%m') desc")
+                              .group("date_format(fecha,'%Y-%m')")
+  @enprocesos = Solicitudesretiro.joins(:contratospersona, :contrato, :contratosgrupo)
+                                 .select("contratos.nro_contrato, contratospersonas.identificacion, contratospersonas.nombre_completo,
+                                              contratosgrupos.descripcion, contratosgrupos.termino,
+                                             (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                             (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                             (select nombre from users where id = solicitudesretiros.user_aprobacion) useraprobanombre,
+                                             (select trasladado from contratosperfechas where id = solicitudesretiros.contratosperfecha_id) trasladado,
+                                             (select distinct 'X' from periodosliquidaciones where solicitudesretiros.fecha between inicio and fin and estado = 'C') existeperiodo,
+                                              solicitudesretiros.*")
+                                 .where(["solicitudesretiros.user_aprobacion is not null and solicitudesretiros.user_liquidacion is null and solicitudesretiros.consecutivo is null"])
+                                 .order("solicitudesretiros.fecha_aprobacion desc")
+  usr = User.find(is_admin)
+  estados = ["Pendientes", "En proceso", "Aprobadas para pago", "Pagadas", "Masivas", "MasivasE","Buscador"]
+  #estados = Periodosliquidacion.select("termino estado2, concat('Nomina ',termino) estado").distinct.order("1 desc")
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.subetapa.to_s == p
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapars_contratospernominas_path(subetapa: p) do %>
+              <i class="fa fa-rocket"></i>&nbsp<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if usr.subetapa.to_s == 'Pendientes' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @pendientes.present? %>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="10%" class="text-center"></th>
+                      <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                      <th width="40%" class="text-left">Solicitud</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @pendientes.each do |p| %>
+                      <tr id="evaluar<%= p.id %>">
+                        <td class="text-center" style="font-size:12px;">
+                          <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                          <%= link_to evaluar_solicitudesretiros_path(id: p.id, e: "APROBADA"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea aprobar esta solicitud de retiro?", toggle: 'tooltip' }, title: "Aprobar retiro", remote: true do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-gear"></i></button>
+                          <% end %>
+                          <%= link_to edit_solicitudesretiro_path(p), remote: true, data: { toggle: 'tooltip' }, title: 'Editar Solicitar Retiro' do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-rocket"></i></button>
+                          <% end %>
+                          <%= link_to evaluar_solicitudesretiros_path(id: p.id, e: "ELIMINAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Eliminar esta solicitud de retiro?", toggle: 'tooltip' }, title: "Eliminar retiro", remote: true do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                          <% end %>
+                        </td>
+                        <td class="text-left" style="font-size:12px;">
+                          <strong><%= link_to edit_contratospersona_path(id: p.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+                              <i class="fa fa-child text-blue"></i>
+                              <% end %> <%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                          <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                          <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                          <small>(<%= p.termino rescue nil %>)</small>
+                          <% if p.documento_retiro_file_name.present? %>
+                            <br/>
+                            <b>Documento: </b>
+                            <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                              <i class="fa fa-cloud-download text-danger"></i>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td class="text-jutify" style="font-size:10px;">
+                          <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                          <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                          <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                        </td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'En proceso' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%" class="text-left"></th>
+                  <th class="text-left">Periodos en proceso</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                  periodos.each do |pe|
+                %>
+                  <%
+                    if @enprocesos.where("date_format(solicitudesretiros.fecha,'%Y-%m') = '#{pe.periodo.to_s}'").present?
+                      datosenproceso = @enprocesos.where("date_format(solicitudesretiros.fecha,'%Y-%m') = '#{pe.periodo.to_s}'")
+                  %>
+                    <tr>
+                      <td>
+                        <div align="center">
+                          <%= link_to informe_datas_path(infgrupo_id: 42, portafolio_id: pe.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left" style="font-size:11px;">
+                        <a href="javascript:void(0);" onclick="SINO('demo_<%=pe.periodo%>')">
+                          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver los archivos planos"></i>
+                          Periodo <%= pe.periodo %> (<%= pe.cantidad rescue 0 %>)
+                        </a>
+                        <div id="demo_<%= pe.periodo %>" style="display:none;"><br/>
+                          <table class="table table-bordered table-condensed table-striped">
+                            <thead>
+                            <tr class="thcolor">
+                              <th width="15%" class="text-center"></th>
+                              <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                              <th width="40%" class="text-left">Solicitud</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            <% datosenproceso.each do |p|
+                              cpl = p.contratosperliquidacion_id rescue nil
+                            %>
+                              <tr id="evaluar<%= p.id %>">
+                                <td class="text-center" style="font-size:12px;">
+                                  <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                                  <% end %>
+                                  <%= link_to novedad_contratosperliquidaciones_path(id: cpl), data: { toggle: 'tooltip' }, title: 'Novedades', remote: true do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-cc-mastercard"></i></button>
+                                  <% end %>
+                                  <%# if @autorizacionnomina %>
+                                  <%# if p.existeperiodo.to_s == 'X' #Periodosliquidacion.where("'#{p.fecha}' between inicio and fin and estado = 'C'").exists? %>
+                                  <%= link_to evaluar_solicitudesretiros_path(id: p.id, e: "LIQUIDADA"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea marcar como liquidada esta solicitud de retiro?", toggle: 'tooltip' }, title: "Aprobar retiro", remote: true do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-gear"></i></button>
+                                  <% end %>
+                                  <%# end %>
+                                  <%# end %>
+                                  <%= link_to evaluar_solicitudesretiros_path(id: p.id, e: "ELIMINAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Eliminar esta solicitud de retiro?", toggle: 'tooltip' }, title: "Eliminar retiro", remote: true do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                  <% end %>
+                                  <%= link_to liquidacion_contratosperliquidaciones_path(id: cpl, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                  <%= link_to reliquidacion_contratosperliquidaciones_path(id: cpl), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea recalcular la liquidación?", toggle: 'tooltip' }, title: "Recalculo", remote: true do %>
+                                    <button class="btn btn-xs btn-info"><i class="fa fa-refresh"></i></button>
+                                  <% end %>
+                                  <%#= link_to control_firma_digital_menus_path(id_registro: cpl, controlador: 'contratosperliquidaciones', url: "liquidacion", tipo_documento: "Liquidación"), data: { toggle: 'tooltip' }, title: "Firma Digital" do %>
+                                  <!--<button class="btn btn-xs btn-success"><i class="fa fa-users"></i></button> -->
+                                  <%# end %>
+                                </td>
+                                <td class="text-left" style="font-size:10px;">
+                                  <strong><%= link_to edit_contratospersona_path(id: p.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+                                      <i class="fa fa-child text-blue"></i>
+                                      <% end %> <%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                                  <small id="recalculo<%= cpl %>"></small>
+                                  <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                                  <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                                  <br/><strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                                  <small>(<%= p.termino rescue nil %>)</small>
+                                  <% if p.trasladado.to_s == 'SI' %>
+                                    <div class="text-red" style='font-size: 10px;'><strong>->> Trasladado!!</strong>
+                                    </div>
+                                  <% end %>
+                                  <% if p.documento_retiro_file_name.present? %>
+                                    <br/>
+                                    <b>Documento: </b>
+                                    <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                      <i class="fa fa-cloud-download text-danger"></i>
+                                    <% end %>
+                                  <% end %>
+                                </td>
+                                <td class="text-left" style="font-size:10px;">
+                                  <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                                  <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                                  <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                                  <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                                  (<%= p.fecha_aprobacion rescue nil %>)
+                                </td>
+                              </tr>
+                            <% end %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Aprobadas para pago' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @parapago.present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="15%" class="text-left"></th>
+                    <th class="text-left">Consecutivo Aprobacion de Pago</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    @datos = Solicitudesretiro.joins(:contrato, :contratospersona, :contratosgrupo)
+                                              .select("contratospersonas.autobuscar, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                       contratos.nro_contrato, contratos.id idcontrato,
+                                                       contratosgrupos.descripcion, contratosgrupos.termino,
+                                                       (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                                       (select trasladado from contratosperfechas where id = solicitudesretiros.contratosperfecha_id) trasladado,
+                                                       (select nombre from users where id = solicitudesretiros.user_aprobacion) useraprobanombre,
+                                                       solicitudesretiros.*")
+                                              .where(["solicitudesretiros.estado_final is null"])
+                                              .order("contratospersonas.identificacion asc")
+                    @parapago.each do |a|
+                      datos = @datos.where(["consecutivo = #{a.consecutivo}"])
+                      cantContratos = Solicitudesretiro.select("distinct contrato_id").where(["consecutivo = #{a.consecutivo} and estado_final is null"]).count
+                  %>
+                    <tr id="evaluar<%= a.consecutivo %>">
+                      <td>
+                        <div align="center">
+                          <%= link_to archivosplanoliq_contratospernominas_path(consecutivo: a.consecutivo), data: { toggle: 'tooltip' }, title: 'Archivos Planos', remote: true do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-credit-card"></i></button>
+                          <% end %>
+                          <%= link_to evaluar_solicitudesretiros_path(consecutivo: a.consecutivo, e: "PAGADO"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea marcar como Pagado este lote?", toggle: 'tooltip' }, title: "Pagar Liquidaciones", remote: true do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-gear"></i></button>
+                          <% end %>
+                          <%= link_to liquidacion_masive_contratosperliquidaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidaciones Masivas Seguimiento' do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                          <% end %>
+                          <%= link_to liquidacionmasive_contratosperliquidaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidaciones Masivas PDF' do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                          <% end %>
+                          <%= link_to informe_datas_path(infgrupo_id: 43, portafolio_id: a.consecutivo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                          <% end %>
+                          <%= link_to recalculo_contratosperliquidaciones_path(consecutivo: a.consecutivo.to_s), data: { toggle: 'tooltip' }, title: 'Recalculo' do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-refresh"></i></button>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left" style="font-size:11px;">
+                        <a href="javascript:void(0);" onclick="SINO('demo_<%=a.consecutivo%>')">
+                          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver los archivos planos"></i>
+                          Aprobado pago nro : <%= a.consecutivo %> - Cant: (<%= a.cantidad.to_i rescue 0 %>)
+                        </a>
+                        <div id="demo_<%= a.consecutivo %>" style="display:none;">
+                          <div class="table-responsive"><br/>
+                            <table class="table table-bordered table-condensed table-striped">
+                              <thead>
+                              <tr class="thcolor">
+                                <th width="15%" class="text-center"></th>
+                                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                                <th width="40%" class="text-left">Solicitud</th>
+                              </tr>
+                              </thead>
+                              <tbody id="tbody">
+                              <% datos.each do |p|
+                                cpl = p.contratosperliquidacion_id rescue nil
+                              %>
+                                <tr id="evaluar<%= p.id %>">
+                                  <td class="text-center" style="font-size:12px;">
+                                    <% if @autorizacionnomina %>
+                                      <%= link_to liquidacion_contratosperliquidaciones_path(id: cpl, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+                                        <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                      <% end %>
+                                      <%= link_to reliquidacion_contratosperliquidaciones_path(id: cpl), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea recalcular la liquidación?", toggle: 'tooltip' }, title: "Recalculo", remote: true do %>
+                                        <button class="btn btn-xs btn-info"><i class="fa fa-refresh"></i></button>
+                                      <% end %>
+                                      <%= link_to novedad_contratosperliquidaciones_path(id: cpl), data: { toggle: 'tooltip' }, title: 'Novedades', remote: true do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-cc-mastercard"></i>
+                                        </button>
+                                      <% end %>
+                                      <%= link_to evaluar_solicitudesretiros_path(id: p.id, e: "ELIMINAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Eliminar esta liquidación?", toggle: 'tooltip' }, title: "Eliminar Liquidación", remote: true do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                      <% end %>
+                                      <% if cantContratos.to_i > 1 %>
+                                        <%= link_to evaluar_solicitudesretiros_path(consecutivo: a.consecutivo, contrato_id: p.idcontrato, e: "DIVIDIRLOTE"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea dejar solamente este contrato -> #{p.nro_contrato} en el consecutivo #{a.consecutivo}?", toggle: 'tooltip' }, title: "Dividir lote" do %>
+                                          <button class="btn btn-xs btn-info"><i class="fa fa-code-fork"></i></button>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                  </td>
+                                  <td class="text-left" style="font-size:10px;">
+                                    <strong><%= link_to edit_contratospersona_path(id: p.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+                                        <i class="fa fa-child text-blue"></i>
+                                        <% end %> <%= p.autobuscar rescue nil %></strong>
+                                    <small id="recalculo<%= cpl %>"></small>
+                                    <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                                    <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                                    <br/><strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                                    <small>(<%= p.termino rescue nil %>)</small>
+                                    <% if p.trasladado.to_s == 'SI' %>
+                                      <div class="text-red" style='font-size: 10px;'><strong>->> Trasladado!!</strong>
+                                      </div>
+                                    <% end %>
+                                    <% if p.documento_retiro_file_name.present? %>
+                                      <br/>
+                                      <b>Documento: </b>
+                                      <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                        <i class="fa fa-cloud-download text-danger"></i>
+                                      <% end %>
+                                    <% end %>
+                                  </td>
+                                  <td class="text-left" style="font-size:10px;">
+                                    <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                                    <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                                    <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                                    <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                                  </td>
+                                </tr>
+                              <% end %>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+                <div class="modal fade" id="archivosplanoliq">
+                  <div class="modal-dialog" style="width: 800px;">
+                    <div class="modal-content"></div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Pagadas' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <%
+                datospagados = Solicitudesretiro.select("date_format(fecha_final,'%Y-%m') fechafinalpago, count(9) cant")
+                                                .where(["estado_final = 'PAGADO' and fecha_final is not null"])
+                                                .group("date_format(fecha_final,'%Y-%m')")
+                                                .order("date_format(fecha_final,'%Y-%m') desc")
+
+                datospagadosanno = Solicitudesretiro.select("date_format(fecha_final,'%Y') fechafinalpago, count(9) cant")
+                                                .where(["estado_final = 'PAGADO' and fecha_final is not null"])
+                                                .group("date_format(fecha_final,'%Y')")
+                                                .order("date_format(fecha_final,'%Y') desc")
+              %>
+              <a href="javascript:void(0);" onclick="SINO('demopagadasinfo')">
+                <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulse aqui"></i>
+                Ver pagados por Año y mes
+              </a>
+              <div id="demopagadasinfo" style="display:none;">
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="10%" class="text-left"></th>
+                    <th class="text-left">Año de aprobacion liquidación</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    datospagadosanno.each do |a|
+                  %>
+                    <tr>
+                      <td>
+                        <div align="center">
+                          <%= link_to informe_datas_path(infgrupo_id: 83, portafolio_id: a.fechafinalpago.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left" style="font-size:11px;"><%= a.fechafinalpago %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+                <br/>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="10%" class="text-left"></th>
+                    <th class="text-left">Año y mes de aprobacion liquidación</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    datospagados.each do |a|
+                  %>
+                    <tr>
+                      <td>
+                        <div align="center">
+                          <%= link_to informe_datas_path(infgrupo_id: 62, portafolio_id: a.fechafinalpago.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left" style="font-size:11px;"><%= a.fechafinalpago %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+              <br/><br/>
+              <% if @pagadas.present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="12%" class="text-left"></th>
+                    <th class="text-left">Consecutivo para pago</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    @permisoaporte = is_auth_c("autorizaaporteslinea")
+                    @datos = Solicitudesretiro.joins(:contrato, :contratospersona, :contratosgrupo)
+                                              .select("contratospersonas.autobuscar, (select autobuscar from empresas where id = contratos.empresa_id) identnombre, contratos.nro_contrato,
+                                                    contratosgrupos.descripcion, contratosgrupos.termino,
+                                                    (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                                    (select nombre from users where id = solicitudesretiros.user_aprobacion) useraprobanombre,
+                                                    (select trasladado from contratosperfechas where id = solicitudesretiros.contratosperfecha_id) trasladado,
+                                                    (select distinct 'X' from contratosperlimagenes where contratosperfecha_id = solicitudesretiros.contratosperfecha_id) existeimagen,
+                                                    solicitudesretiros.*")
+                                              .where(["estado_final = 'PAGADO'"])
+                                              .order("contratospersonas.identificacion asc")
+                    @pagadas.each do |a|
+
+                  %>
+                    <tr>
+                      <td>
+                        <div align="center">
+                          <%= link_to archivosplanoliq_contratospernominas_path(consecutivo: a.consecutivo), data: { toggle: 'tooltip' }, title: 'Archivos Planos', remote: true do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-credit-card"></i></button>
+                          <% end %>
+                          <%= link_to informe_datas_path(infgrupo_id: 43, portafolio_id: a.consecutivo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                          <% end %>
+                          <%= link_to liquidacionmasive_contratosperliquidaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidaciones Masivas PDF' do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                          <% end %>
+                          <%= link_to cargarimagenes_contratosperliquidaciones_path(consecutivo: a.consecutivo), data: { toggle: 'tooltip' }, title: 'Cargar Imagenes Masivas' do %>
+                            <button class="btn btn-xs btn-primary"><i class="fa fa-download"></i></button>
+                          <% end %>
+                          <% if @permisoaporte %>
+                            <%= link_to enviar_novedad_consecutivo_contratospernominas_path(consecutivo: a.consecutivo, tiponovedad: 'RET'), data: { toggle: 'tooltip' }, title: 'Clic para enviar Aportes Linea' do %>
+                              <button class="btn btn-xs btn-success"><i class="fa fa-h-square"></i></button>
+                            <% end %>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left" style="font-size:11px;">
+                        <div id="abrir<%= a.consecutivo %>" class="pull-left">
+                          <%= link_to show_detalle_contratospernominas_path(consecutivo: a.consecutivo, ruta: 'ABRIR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            Consecutivo de pago nro : <%= a.consecutivo %> - Cant: (<%= a.cantidad.to_i rescue 0 %>)
+                          <% end %>
+                        </div>
+                        <div id="cerrar<%= a.consecutivo %>" class="pull-left hide">
+                          <%= link_to show_detalle_contratospernominas_path(consecutivo: a.consecutivo, ruta: 'CERRAR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            Consecutivo de pago nro : <%= a.consecutivo %> - Cant: (<%= a.cantidad.to_i rescue 0 %>)
+                          <% end %>
+                        </div>
+                        <div id="abrir_detalle<%= a.consecutivo %>" style="width: 100%"></div>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+                <div class="modal fade" id="archivosplanoliq">
+                  <div class="modal-dialog" style="width: 800px;">
+                    <div class="modal-content"></div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Masivas' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <%= render 'retirosmasive' %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'MasivasE' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <%= render 'retirosmasiveesp' %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Buscador'%>
+          <div class="tab-pane active" id="<%=usr.subetapa.to_s %>">
+            <div class="box-body">
+              <%= render 'solicitudesretiros/buscador' %>
+            </div>
+          </div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="novedad">
+  <div class="modal-dialog" style='width: 90%;'>
+    <div class="modal-content" style='width: 90%;'></div>
+  </div>
+</div>
+<div class="modal fade" id="addsolicitud">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>

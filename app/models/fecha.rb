@@ -1,0 +1,2 @@
+class Fecha < ApplicationRecord
+end

@@ -1,0 +1,156 @@
+<%
+  visualiza_iva = @contratossolicitud.contrato.visualiza_iva.to_s rescue nil
+  portafolio = Portafolio.find(@contratossolicitud.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  
+   sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc)
+   sedesactivas.each do |a|
+%>
+<div align="center">
+  <table width="700" border="0">
+    <tr valign="top">
+      <td height="700">
+          <table width="100%">
+            <tr>
+              <td><div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div></td>
+              <td width="80%">
+                <div align="center" style="margin-bottom:5px; font-size: 16px; font-family: Tahoma;"><strong>
+                  <strong>SOLICITUD NRO. <%= @contratossolicitud.id rescue nil%></strong>
+                  <br/><%= @contratossolicitud.contrato.empresa.identnombre rescue nil %>
+                  <br/><small><%= @contratossolicitud.contrato.direccion rescue nil %></small></strong>
+                </div></td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; line-height: 150%;">
+            <tr style="background: #adadad">
+              <th width="20%" height="10" class="stiloprint">Fecha Solicitud</th>
+              <th width="10%" class="stiloprint" >Periodo</th>
+              <th width="40%" class="stiloprint">Solicitante</th>
+              <th width="15%" class="stiloprint">Estado</th>
+              <th width="15%" class="stiloprint">Nro Contrato</th>
+            </tr>
+            <tr>
+              <td class="stiloprint" height="10"><%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+              <td class="stiloprint"><%= @contratossolicitud.periodo rescue nil%></td>
+              <td class="stiloprint"><%= @contratossolicitud.user.nombre rescue nil%></td>
+              <td class="stiloprint"><%= @contratossolicitud.estado rescue nil%></td>
+              <td class="stiloprint"><%= @contratossolicitud.contrato.nro_contrato rescue nil%></td>
+            </tr>
+          </table>
+          <%
+            array = ['A','C','O']
+            array.each do |arr|
+              dato = ""
+              tit = ""
+              if arr.to_s == 'A'
+                dato = " contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+                tit = "Insumos"
+              elsif arr.to_s == 'C'
+                dato = " contratosotro_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+                tit = "Otros servicios"
+              elsif arr.to_s == 'O'
+                dato = " id = -1 "
+                contratossolotros = @contratossolicitud.contratossolotros.where(["cantsede_#{a.ordensede.to_s} > 0"]).order("id asc")
+                tit = "Insumos General"
+              end
+              contratossoldetalle = @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order("id asc")
+              if contratossoldetalle.count.to_i > 0
+                total = 0
+          %>
+              <div align="center" style="margin-top: 10px; margin-bottom:10px; font-size: 12px; font-family: Tahoma;"><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></div>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; line-height: 150%;">
+                <tr style="background: #adadad">
+                  <th class="stiloprint" height="20">Item</th>
+                  <th width="5%" class="stiloprint">Cant.</th>
+                  <th width="8%" class="stiloprint">Vlr Unitario</th>
+                  <% if visualiza_iva.to_s == 'SI' %>
+                    <th width="5%" class="text-right" class="stiloprint">% IVA</th>
+                    <th width="8%" class="text-right" class="stiloprint">Valor IVA</th>
+                    <th width="10%" class="text-right" class="stiloprint">Vlr Unitario + IVA</th>
+                  <% end %>
+                  <th width="15%" class="stiloprint">Total</th>
+                </tr>
+                <% contratossoldetalle.each do |c|
+                  cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+                  total = total + (c.precio_unitario*cant)
+                %>
+                  <tr>
+                    <td align="left" height="18" class="stiloprint"><%= c.nombreinsumoe_by_etapa(arr.to_s) rescue nil %></td>
+                    <td align="center" class="stiloprint"><%= camponumerico cant rescue nil %></td>
+                    <% if visualiza_iva.to_s == 'SI' %>
+                      <td align="right" class="stiloprint"><%= camponumerico c.precio_siniva rescue nil %></td>
+                      <td align="right" class="stiloprint"><%= camponumerico c.porc_iva rescue nil %></td>
+                      <td align="right" class="stiloprint"><%= camponumerico c.valor_iva rescue nil %></td>
+                      <td align="right" class="stiloprint"><%= camponumerico c.precio_unitario rescue nil %></td>
+                    <% else %>
+                      <td align="right" class="stiloprint"><%= camponumerico c.precio_unitario rescue nil %></td>
+                    <% end %>
+                    <td align="right" class="stiloprint"><%= camponumerico (c.precio_unitario*cant) rescue nil %></td>
+
+                  </tr>
+                <% end %>
+                <tr style="background: #adadad">
+                  <% if visualiza_iva.to_s == 'SI' %>
+                    <td colspan="6" class="stiloprint" height="20"><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></td>
+                  <% else %>
+                    <td colspan="3" class="stiloprint" height="20"><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></td>
+                  <% end %>
+                  <td align="right" class="stiloprint"><strong><%=camponumerico total rescue 0%></strong></td>
+                </tr>
+              </table>
+            <% end %>
+            <%  if arr.to_s == 'O' and contratossolotros.count.to_i > 0
+                  total = 0
+            %>
+              <div align="center" style="margin-bottom:5px; font-size: 12px; font-family: Tahoma;"><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></div>
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; line-height: 150%;">
+                <tr style="background: #adadad">
+                  <th class="stiloprint" height="20">Item</th>
+                  <th width="10%" class="stiloprint">Cant.</th>
+                  <th width="10%" class="stiloprint">Vlr Unitario</th>
+                  <th width="15%" class="stiloprint">Total</th>
+                </tr>
+                <% contratossolotros.each do |c|
+                  cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+                  total = total + (c.precio_unitario*cant)
+                %>
+                  <tr>
+                    <td align="left" height="18" class="stiloprint"><%= c.insumo.insumodetalle rescue nil %></td>
+                    <td align="center" class="stiloprint"><%= camponumerico cant rescue nil %></td>
+                    <td align="right" class="stiloprint"><%= camponumerico c.precio_unitario rescue nil %></td>
+                    <td align="right" class="stiloprint"><%= camponumerico c.precio_unitario*cant rescue nil %></td>
+                  </tr>
+                <% end %>
+                <tr style="background: #adadad">
+                  <td colspan="3" class="stiloprint" height="20"><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></td>
+                  <td align="right" class="stiloprint"><strong><%=camponumerico total rescue 0%></strong></td>
+                </tr>
+              </table>
+            <% end %>
+          <% end %>
+        <div align="left" style="margin-bottom:5px; font-size: 8px; font-family: Tahoma;">Fin pedido Sede: <%= a.nombre rescue nil %></div><br/>
+        <table width="50%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="stiloprint" height="80">
+              <br/><br/><br/><br/><br/>
+              ________________________________________________
+              <br/>Firma Recibido
+              <br/>Sede: <%= a.nombre rescue nil %></td>
+
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+<div style="page-break-after:always; border:0px solid blue;"></div>
+<% end %>
+<style>
+    .stiloprint {
+        border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; line-height: 150%; padding: 5px;
+    }
+</style>
+
+
+

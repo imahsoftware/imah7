@@ -1,0 +1,172 @@
+<%
+  isadmin = is_admin
+%>
+<div align="center">
+  <table width="94%">
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 18px; font-family: Verdana, Geneva, sans-serif;">
+          <table width="100%">
+            <tr>
+              <th style=" padding: 5px; font-size: 10px;">
+                <div align="center" style="font-size: 28px">EVALUACIÓN</div>
+              </th>
+              <td width="20%">
+                <div align="right">
+                  <%= image_tag 'https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png', size: "200x100" %>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th colspan="2" rowspan="8" width="20%">
+                <div align="center">
+                  <% personasformulariosdoc = Personasformulariosdoc.where("personasformulario_id in (select id from personasformularios where identificacion = '#{@contratospersona.identificacion}') and parcargosdoc_id in (select id from parcargosdocs where descripcion = 'FOTO PARA EL CARNET')").first %>
+                  <% if personasformulariosdoc.present? %>
+                    <%= wicked_pdf_image_tag image_url(personasformulariosdoc.soporte_digital.url(:original, false)), size: "150x180" %>
+                  <% else %>
+                    <%= wicked_pdf_image_tag image_url('camera.png'), size: "130x180" %>
+                  <% end %>
+                </div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left"> Tipo identificacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="15%">
+                <div align="left">Identificacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Nombre Completo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.tipo_identificacion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.identificacion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.nombre_completo %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left">Fecha expedicion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="15%">
+                <div align="left">Genero</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Lugar expedición</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.fecha_expedicion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.genero %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_lugar_expedicion).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left">Fecha nacimiento</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%" colspan="2">
+                <div align="left">Lugar nacimiento</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.fecha_nacimiento %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;" colspan="2">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_lugar_nacimiento).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%" colspan="2">
+                <div align="left">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Ciudad de la dirección</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;" colspan="2">
+                <div align="left"><%= @contratospersona.direccion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <% @periodos.each do |periodo|
+            campo = Contratossecuser.where(user_id: periodo.user_interventor).map(&:contratosseccion_id).join(',')
+            detalleinstituciones = Contratosseccion.where("id in (#{campo})").map(&:detalleinforme).join(' * ')
+          %>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <td width="30%" style="background: #E8E3E3; padding: 5px; font-size: 10px;"><div align="left"><strong>Evaluador: </strong></div></td>
+                <td style="padding: 5px; font-size: 10px;"><div align="left"><%=periodo.nombreinter rescue nil %></div>
+                </td>
+              </tr>
+              <tr>
+                <td width="30%" style="background: #E8E3E3; padding: 5px; font-size: 10px;"><div align="left"><strong>Periodo: </strong></div></td>
+                <td style="padding: 5px; font-size: 10px;"><div align="left"><%= periodo.anno %>-<%= periodo.mes %></div>
+                </td>
+              </tr>
+              <tr>
+                <td width="30%" style="background: #E8E3E3; padding: 5px; font-size: 10px;"><div align="left"><strong>Instituciones: </strong></div></td>
+                <td style="padding: 5px; font-size: 10px;"><div align="left">* <%=detalleinstituciones %></div>
+                </td>
+              </tr>
+            </table>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <th style="background: #E8E3E3; padding: 4px;" height="18" width="40%">
+                  <div align="left">Actividad</div>
+                </th>
+                <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                  <div align="center">Resultado</div>
+                </th>
+                <th style="background: #E8E3E3; padding: 4px;" height="18">
+                  <div align="left">Observación</div>
+                </th>
+              </tr>
+              <% Contratosperactob.select(["contratosperactobs.*, (select descripcion from contratoscargosacts where id = contratosperactobs.contratoscargosact_id) descact"])
+                                  .where("contratospersona_id = #{@contratospersona.id} and user_interventor = #{periodo.user_interventor} and anno = '#{periodo.anno}' and mes = '#{periodo.mes}'").each do |contratosperactob| %>
+                <tr>
+                  <td style=" padding: 4px; font-size: 10px;">
+                    <div align="left"><%= contratosperactob.descact rescue nil %>&nbsp;</div>
+                  </td>
+                  <td style=" padding: 4px; font-size: 10px;">
+                    <div align="center"><%= contratosperactob.resultado rescue nil %>&nbsp;</div>
+                  </td>
+                  <td style=" padding: 4px; font-size: 10px;">
+                    <div align="left"><%= contratosperactob.observacion rescue nil %>&nbsp;</div>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+            <br/>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %> -<%= isadmin %>&nbsp;
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+

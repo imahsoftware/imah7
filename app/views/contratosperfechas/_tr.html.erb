@@ -1,0 +1,359 @@
+<tr id="contratosperfecha_<%= contratosperfecha.id %>">
+  <td class="text-center">
+    <button class="btn btn-xs btn-info">
+      <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperfecha.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+    </button>
+    <div class="btn-group" id="botones<%= contratosperfecha.id %>">
+      <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+        Opciones <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <% if !Contratosperfecha.where("contratospersona_id = #{contratosperfecha.contratospersona_id} and registro_aportes_linea is not null").present? %>
+          <% if contratosperfecha.registro_aportes_linea.blank? %>
+            <li>
+              <%= link_to crear_aporte_contratosperfechas_path(id: contratosperfecha.id), data: { toggle: 'tooltip' } do %>
+                <i class="fa fa-h-square"></i> Crear en aportes en linea
+              <% end %>
+            </li>
+          <% end %>
+        <% end %>
+        <% if is_auth_a('contratosperfecha') %>
+          <li>
+            <%= link_to edit_contratospersona_contratosperfecha_path(@contratospersona, contratosperfecha), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+              <i class="fa fa-edit"></i> Editar
+            <% end %>
+          </li>
+          <% if contratosperfecha.sol_firma_digital == 'OK' %>
+            <% contratosperimagen = Contratosperimagen.where("contratosperfecha_id = #{contratosperfecha.id} and personasimagen_file_name LIKE '%Contrato_Digital%'").first
+               if contratosperimagen.present?
+            %>
+              <li>
+                <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-file-pdf-o"></i> Contrato PDF
+                <% end %>
+              </li>
+            <% else %>
+              <li>
+                <%= link_to contrato_contratosperfechas_path(id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                  <i class="fa fa-file-pdf-o"></i> Contrato PDF
+                <% end %>
+              </li>
+            <% end %>
+          <% else %>
+            <li>
+              <%= link_to contrato_contratosperfechas_path(id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                <i class="fa fa-file-pdf-o"></i> Contrato PDF
+              <% end %>
+            </li>
+          <% end %>
+          <li>
+            <%= link_to carta_contratosperfechas_path(id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup' do %>
+              <i class="fa fa-file-pdf-o"></i> Carta Laboral PDF
+            <% end %>
+          </li>
+          <% if Contratosperinventario.where("contratosperfecha_id = #{contratosperfecha.id} and estado = 'FIRMADO'").present? %>
+            <li>
+              <%= link_to inventario_items_contrato_contratospersonas_path(contratosperfecha_id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                <i class="fa fa-file-pdf-o"></i> Inventario
+              <% end %>
+            </li>
+          <% end %>
+          <% if contratosperfecha.estado.to_s == "ACTIVO" and contratosperfecha.contratospersona.movil.present? and contratosperfecha.sol_firma_digital.to_s == "" and contratosperfecha.fecha_inicio.to_date >= '2023-04-01'.to_date %>
+            <li>
+              <%= link_to marcar_firma_contratosperfechas_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' } do %>
+                <i class="fa fa-key"></i> Marcar Firma Digital
+              <% end %>
+            </li>
+          <% end %>
+        <% end %>
+
+        <% if is_auth_e("contratosperfecha") and Contratospernomina.where(contratosperfecha_id: contratosperfecha.id).exists? == false %>
+          <li>
+            <%= link_to contratospersona_contratosperfecha_path(@contratospersona, contratosperfecha), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' } do %>
+              <i class="fa fa-trash"></i> Eliminar
+            <% end %>
+          </li>
+        <% end %>
+        <% if @vcAutoCon %>
+          <li>
+            <%= link_to tirilla_masive_contratospernominas_path(contratosperfecha_id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' } do %>
+              <i class="fa fa-file-pdf-o"></i> Tirillas consolidadas
+            <% end %>
+          </li>
+        <% end %>
+        <li>
+          <%= link_to abrir_documentos_contrato_menus_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' } do %>
+            <i class="fa fa-cloud-download"></i> Documentos del Contrato
+          <% end %>
+        </li>
+        <li>
+          <%= link_to descargardocbyperfecha_datas_path(contratosperfecha_id: contratosperfecha.id), data: { toggle: 'tooltip' } do %>
+            <i class="fa fa-download"></i> Descargar Todos los Documentos
+          <% end %>
+        </li>
+        <% if is_auth_a('controlformato') %>
+          <li>
+            <%= link_to abrir_formatos_menus_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' } do %>
+              <i class="fa fa-cloud-download"></i> Formatos para solicitar Firma
+            <% end %>
+          </li>
+        <% end %>
+
+        <% if is_auth_a('controlfirmacontrato') and contratosperfecha.sol_firma_digital.to_s == 'OK' %>
+          <li>
+            <%= link_to refirmar_contratosperfechas_path(id: contratosperfecha.id), data: { confirm: "Seguro que desea refirmar el contrato?", toggle: 'tooltip' } do %>
+              <i class="fa fa-expeditedssl"></i> Refirmar contrato
+            <% end %>
+          </li>
+          <li>
+            <%= link_to habilitafirma_contratosperfechas_path(id: contratosperfecha.id), data: { confirm: "Seguro que desea borrar el contrato y solicitar nuevamente la firma?", toggle: 'tooltip' } do %>
+              <i class="fa fa-heartbeat"></i> Volver a solicitar la firma
+            <% end %>
+          </li>
+        <% end %>
+        <li>
+          <%= link_to novedad_contratospersonas_path(id: contratosperfecha.contratospersona_id, contratosperfecha_id: contratosperfecha.id), data: { toggle: 'tooltip' }, remote: true do %>
+            <i class="fa fa-cc-mastercard"></i> Novedades
+          <% end %>
+        </li>
+        <% if contratosperfecha.sol_firma_digital == 'SI' and contratosperfecha.estado == 'ACTIVO' %>
+          <li>
+            <%= link_to firmar_conjunto_contratosperfechas_path(contratospersona_id: contratosperfecha.contratospersona_id, contratosperfecha_id: contratosperfecha.id), data: { toggle: 'tooltip' }, remote: true do %>
+              <i class="fa fa-hand-spock-o"></i> Firmar en conjunto
+            <% end %>
+          </li>
+        <% end %>
+        <li>
+          <%= link_to procesos_contratospersonas_path(id: contratosperfecha.contratospersona_id, contratosperfecha_id: contratosperfecha.id), data: { toggle: 'tooltip' }, remote: true do %>
+            <i class="fa fa-map-signs"></i> Procesos Juridicos
+          <% end %>
+        </li>
+        <li>
+          <%= link_to inventario_contratospersonas_path(id: contratosperfecha.contratospersona_id, contratosperfecha_id: contratosperfecha.id), data: { toggle: 'tooltip' }, remote: true do %>
+            <i class="fa fa-bars"></i> Inventario
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </td>
+  <td align="left"><small>
+    <%= contratosperfecha.contrato.empresa.identnombre rescue nil %>
+    <br/><strong>Tipo de Contrato : </strong><%= contratosperfecha.tipo_contrato rescue nil %>
+    <% if contratosperfecha.codigo_firma.present? %> <small style="color: red"><i class="fa fa-check"></i> Contrato Firmado </small><% end %>
+
+    <br/><strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %> -
+    <strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+    <%= link_to cargosnota_contratoscargos_path(id: contratosperfecha.contratoscargo.id, contrato_id: contratosperfecha.contrato_id), data: { toggle: 'tooltip' }, title: 'Adicionar EPPS', remote: true do %>
+      <i class="fa fa-cc-mastercard"></i>
+    <% end %>
+    <br/><strong>Grupo de nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %>
+    <% if contratosperfecha.contratosseccion_id.present? %>
+      <br/><strong>Sección : </strong><%= contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+    <% end %>
+    <small>(<%= contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+    <% if contratosperfecha.sol_firma_digital.to_s == 'SI' %>
+      <br/> <small style="color: darkviolet">---><strong>Solicitud de firma en proceso desde el <%= contratosperfecha.sol_firma_fecha.strftime("%Y-%m-%d") rescue nil %> </strong></small>
+    <% end %>
+    <% if contratosperfecha.laboro.to_s == 'NO' %>
+      <br/>
+      <div style="color:red;"><small>* Este empleado NUNCA LABORO</small></div>
+    <% end %>
+    <code>
+      <% if contratosperfecha.registro_aportes_linea.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_linea rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se encuentra Registrado con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.errores_aportes_linea.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.errores_aportes_linea rescue nil %>
+              </span>
+      <% end %>
+      <% if contratosperfecha.registro_aportes_retiro.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_retiro rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se encuentra Retirado con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.error_aportes_retiro.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.error_aportes_retiro rescue nil %>
+              </span>
+      <% end %>
+      <% if contratosperfecha.registro_aportes_ingreso.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_ingreso rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se Ingreso con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.error_aportes_ingreso.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.error_aportes_ingreso rescue nil %>
+              </span>
+      <% end %>
+    </code>
+  </small>
+
+    <div class="box-tools">
+      <% if @vcAutoCon
+           dato = contratosperfecha.contratospernominas.joins(:periodosliquidacion)
+                                   .select("CONCAT(DATE_FORMAT(periodosliquidaciones.inicio,'%Y-%m-%d'),' - ', DATE_FORMAT(periodosliquidaciones.fin,'%Y-%m-%d')) periodoliqnom, contratospernominas.* ")
+                                   .where(["contratospernominas.estado = 'CONSOLIDADO'"])
+                                   .order("contratospernominas.periodosliquidacion_id desc")
+           if dato.present?
+      %>
+          <a href="javascript:void(0);" onclick="SINO('demo_<%=contratosperfecha.id%>')">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            Ver listado de tirillas</a>
+          <div id="demo_<%= contratosperfecha.id rescue nil %>" style="display:none;">
+            <ul><br/>
+              <% dato.each do |a| %>
+                <li>
+                  <%= link_to tirilla_contratospernominas_path(idnomina: a.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+                    <i class="fa fa-file-pdf-o"></i> Periodo: <%= a.periodoliqnom rescue nil %>
+                  <% end %>
+                  <% if a.alegra_cune.present? %>
+                    <%= link_to "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=#{a.alegra_cune}", onclick: 'window.open(this.href,"new_window","height=800,width=850,scrollbars=yes");return false;' do %>
+                      <code><%= image_tag("logo_dian.png", size: '35x6') %></code>
+                    <% end %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <% datotraslado = Contratosperfact.select("(select distinct 'X' from contratosperimagenes where contratosperfecha_id = contratosperfacts.contratosperfecha_id
+                                                           and descripcion LIKE 'OTRO SI CAMBIO DE CENTRO DE TRABAJO%') existedoc_continuidad,
+                                                    contratosperfacts.*")
+                                          .where(["contratosperfecha_id = #{contratosperfecha.id} and estado = 'APROBADO'"]).order("id desc")
+           if datotraslado.present? %>
+          <% datotraslado.each do |d| %>
+            <div class="text-red" style='font-size: 10px;'><strong>->> Traslado: <%=d.tipo.to_s rescue nil %>!!
+              <% if d.existedoc_continuidad.to_s == 'X' %>
+                <% Contratosperimagen.where(contratosperfecha_id: contratosperfecha.id, descripcion: 'OTRO SI CAMBIO DE CENTRO DE TRABAJO').each do |b| %>
+                    <%= link_to b.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                      &nbsp;<i class="fa fa-cloud-download text-danger"></i>
+                    <% end %>
+                <% end %>
+              <% end %>
+            </strong></div>
+          <% end %>
+        <% end %>
+        <% if contratosperfecha.fecha_pasoalfondo.to_s != "" %><br/>
+          <div class="text-red" style='font-size: 10px;'>
+            <strong>->> Fecha paso al fondo --- <%= contratosperfecha.fecha_pasoalfondo rescue nil %>!!</strong></div>
+        <% end %>
+        <% if contratosperfecha.fecha_pasoregrefondo.to_s != "" %><br/>
+          <div class="text-info" style='font-size: 10px;'>
+            <strong><<- Fecha Regreso del fondo --- <%= contratosperfecha.fecha_pasoregrefondo rescue nil %>!!</strong>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <% if contratosperfecha.fecha_inicio >= '2023-04-01'.to_date %>
+      <div style="display: flex;align-items: flex-end;">
+        <% if contratosperfecha.val_eps == 'AFILIADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> EPS
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> EPS
+          </div>
+        <% end %>
+
+        <% if contratosperfecha.val_arl == 'AFILIADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> ARL
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> ARL
+          </div>
+        <% end %>
+
+        <% if contratosperfecha.val_afp == 'AFILIADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> AFP
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> AFP
+          </div>
+        <% end %>
+
+        <% if contratosperfecha.val_ccaf == 'AFILIADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> CCAF
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> CCAF
+          </div>
+        <% end %>
+
+        <% if contratosperfecha.val_dotacion == 'ENTREGADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> DOTACION
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> DOTACION
+          </div>
+        <% end %>
+        <% if contratosperfecha.dotacion == 'ENTREGADO' %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FDFFC2; border-radius: 5px; color: red">
+            <i class="fa fa-check"></i> CARNET
+          </div>
+        <% else %>
+          <div style="margin-right: 10px; padding: 6px; font-size: 8px; background-color: #FBA5A5; border-radius: 5px;">
+            <i class="fa fa-close"></i> CARNET
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
+  <td align="center"><%= contratosperfecha.fecha_inicio rescue nil %></td>
+  <td align="center"><%= contratosperfecha.fecha_fin rescue nil %></td>
+  <td align="right"><%= camponumerico contratosperfecha.salariofinal rescue nil %></td>
+  <td align="center"><%= contratosperfecha.estado rescue nil %></td>
+</tr>
+<div class="modal fade" id="abrir_documentos_contrato<%= contratosperfecha.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade" id="abrir_formatos<%= contratosperfecha.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade" id="novedad">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="inventarios">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="procesos">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="firma_conjunto<%= contratosperfecha.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+

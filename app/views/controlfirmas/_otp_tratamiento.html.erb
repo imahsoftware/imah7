@@ -1,0 +1,37 @@
+<div id="inicioOTP3">
+  <% @usr = current_user %>
+  <div class="box-body">
+    <div class="container">
+      <div class="alert alert-danger" align="justify">
+        <h4>Hola, <%= @usr.nombre.upcase rescue nil %></h4>
+        <p>Toda tu información del documento <b><%= @controlfirma.tipo_documento rescue nil %></b> se relaciona a
+          continuación, para continuar da clic en iniciar proceso de firma</p>
+      </div>
+      <%= render "menus/formatos", controlfirma: @controlfirma %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 text-center">
+      <%= link_to generar_otp1_controlfirmas_path(controlfirma_id: @controlfirma.id), method: :post, remote: true, data: { toggle: 'tooltip', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" } do %>
+        <button type="button" class="btn btn-danger"><i class="fa fa-sort-numeric-asc"></i> Iniciar Firma
+          de <%= @controlfirma.tipo_documento rescue nil %>
+        </button>
+      <% end %>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+  </div>
+</div>
+
+<div class="row" id="otp1"></div>
+
+<script type="text/javascript" charset="utf-8">
+    const onConfirmRefresh = function (event) {
+        event.preventDefault();
+        return event.returnValue = "Are you sure you want to leave the page?";
+    }
+
+    window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+</script>
+

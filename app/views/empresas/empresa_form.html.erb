@@ -1,0 +1,23 @@
+<%= render "form" %>
+<% unless @empresa.new_record? %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <% if @empresa.etapa.to_s == "A" %>
+            <li class="active"><%= link_to edit_empresa_path(id: @empresa.id, etapa: "A") do %>Contratos<%end %></li>
+          <% else %>
+            <li><%= link_to edit_empresa_path(id: @empresa.id, etapa: "A") do %>Contratos<% end %></li>
+          <% end %>
+        </ul>
+        <div class="tab-content">
+          <% if @empresa.etapa.to_s == "A" %>
+            <div class="tab-pane active"><%= render 'contrato' %></div>
+          <% elsif @empresa.etapa.to_s == "B" %>
+            <div class="tab-pane active"><%= render 'empresassedes/empresassedes' %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

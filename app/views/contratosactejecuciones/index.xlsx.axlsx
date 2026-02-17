@@ -1,0 +1,164 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF2498E4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FF00BA36",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FF018126",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosiz = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :left, :vertical => :center})
+  datoscent = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosder = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  fechas = wd.styles.add_style(sz: 11,font_name: "Calibri", :format_code => 'dd-mm-yyyy',:alignment=>{:horizontal => :center, :vertical => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,###0.#0',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  datosnumeros2 = wd.styles.add_style(:format_code => '#,###,###0',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  porcentaje = wd.styles.add_style(:num_fmt => Axlsx::NUM_FMT_PERCENT,sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  observacion = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :left,:wrap_text => true})
+  fecha_min = wd.styles.add_style(sz: 11,font_name: "Calibri", :format_code => 'dd-mm-yyyy HH:MM:SS',:alignment=>{:horizontal => :center, :vertical => :center})
+
+  if @etapa.to_s == "11"
+    wd.add_worksheet(:name => "Actividades")  do |sheet|
+        estilo = [datosiz,fecha_min,datosiz,datoscent,datoscent,observacion,datoscent,datoscent,datoscent,datoscent,observacion,datosiz,datosiz]
+        tipos = [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil]
+        sheet.add_row ["ID Act","Fecha Act.","Usuario","Nodo","Realizada","Actividad","Clase","Tipo","Turno","Horario","Observacion No realizada"],
+                      :style=> [header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,header]
+        for p in @contratosactejecuciones
+          sheet.add_row [p.id, p.created_at, p.usernombre, p.sedenombre, p.realizada,
+                         p.detalle, p.clase,p.tipo, p.turno, p.horario,
+                         p.nota], :types => tipos, :style => estilo
+      end
+    end
+  elsif @etapa.to_s == "12"
+    wd.add_worksheet(:name => "Actividades")  do |sheet|
+      estilo = [datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,fecha_min]
+      tipos = [nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      sheet.add_row ["ID Act","Detalle","Clase","Tipo","Cantidad","Nodo","Dia Semana","Ult Act"],
+                    :style=> [header,header,header,header,header,header,header,header,header,header]
+      for p in @contratosactividades
+        sheet.add_row [p.id, p.detalle, p.clase, p.tipo, p.cantidad, p.contratossede.nombre, p.dia_semana, p.updated_at], :types => tipos, :style => estilo
+      end
+    end
+  elsif @etapa.to_s == "13"
+    wd.add_worksheet(:name => "Verificacion Diaria")  do |sheet|
+      cadena = []
+      cadena2 = []
+      headers = []
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena << "Id"
+      cadena << "Nodo"
+      cadena << "Usuario"
+      cadena << "Tipo"
+      cadena << "Fecha"
+      headers << "id"
+      headers << "sedenombre"
+      headers << "usernombre"
+      headers << "nodo"
+      headers << "fecha"
+      Tiposevaluacion.where(tipo: @tipo, clase: "SERVICIO").order("id asc").each do |a|
+        cadena2 << a.descripcion.to_s
+        cadena << a.detalle.to_s
+        headers << "rsteva_"+a.id.to_s
+      end
+      Tiposevaluacion.where(tipo: @tipo, clase: "PERSONAL").order("id asc").each do |a|
+        cadena2 << a.descripcion.to_s
+        cadena << a.detalle.to_s
+        headers << "rsteva_"+a.id.to_s
+      end
+      sheet.add_row cadena2, :style=> [header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,
+                                       header,header,header,header,header,header,header,header,header,header,header,header,header,header,header]
+      sheet.add_row cadena, :style=> [header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,
+                                      header,header,header,header,header,header,header,header,header,header,header,header,header,header,header]
+      @contratosactcodigosinfos.each do |p|
+        array1 = JSON.parse(p.to_json(only: [headers], :methods =>headers))
+        sheet.add_row array1.values,
+                      :style =>[datosnumeros2,datosiz,datosiz,datosiz,fechas,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,
+                                datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,
+                                datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,datosiz,],
+                              :types => [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      end
+    end
+
+    wd.add_worksheet(:name => "Detallado")  do |sheet|
+      cadenaT = []
+      cadenaT = ["Id","Nodo","Usuario","Tipo","Fecha","Item","Detalle","Calificación","Observación"]
+      headersD = []
+      headersD = ["id","sedenombre","usernombre","nodo","createdat","tiposevaluaciondesc","tiposevaluaciondetalle","calificacion","observaciones"]
+
+      sheet.add_row cadenaT, :style=> [header3,header3,header3,header3,header3,header3,header3,header3,header3]
+
+      @contratosactcodigos.each do |p|
+        array2 = JSON.parse(p.to_json(only: [headersD], :methods =>headersD))
+        sheet.add_row array2.values,
+                      :style =>[datosnumeros2,datosiz,datosiz,datosiz,fechas,datosiz,datosiz,datosiz,observacion],
+                      :types => [nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      end
+    end
+
+  elsif @etapa.to_s == "14"
+    wd.add_worksheet(:name => "Verificacion Mensual") do |sheet|
+      cadena = []
+      cadena2 = []
+      headers = []
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena2 << ""
+      cadena << "Id"
+      cadena << "Nodo"
+      cadena << "Usuario"
+      cadena << "Tipo"
+      cadena << "Fecha"
+      headers << "id"
+      headers << "sedenombre"
+      headers << "usernombre"
+      headers << "nodo"
+      headers << "fecha"
+      Tiposmevaluacion.where(tipo: @tipo, clase: "SERVICIO").order("id asc").each do |a|
+        cadena2 << a.descripcion.to_s
+        cadena << a.detalle.to_s
+        headers << "rsteva_"+a.id.to_s
+      end
+      cadena2 << "TOTAL"
+      cadena << "TOTAL"
+      headers << "rsttotal"
+      Tiposmevaluacion.where(tipo: @tipo, clase: "PERSONAL").order("id asc").each do |a|
+        cadena2 << a.descripcion.to_s
+        cadena << a.detalle.to_s
+        headers << "rsteva_"+a.id.to_s
+      end
+      sheet.add_row cadena2, :style=> [header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,
+                                       header,header,header,header,header,header,header,header,header,header,header,header,header,header,header]
+      sheet.add_row cadena, :style=> [header,header,header,header,header,header,header,header,header,header,header,header,header,header,header,
+                                      header,header,header,header,header,header,header,header,header,header,header,header,header,header,header]
+      @contratosactmcodigosinfos.each do |p|
+        array1 = JSON.parse(p.to_json(only: [headers], :methods =>headers))
+        sheet.add_row array1.values,
+                      :style =>[datosnumeros2,datosiz,datosiz,datosiz,fechas,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,
+                                datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent,datoscent],
+                      :types => [nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      end
+    end
+
+    wd.add_worksheet(:name => "Detallado")  do |sheet|
+      cadenaT = []
+      cadenaT = ["Id","Nodo","Usuario","Tipo","Fecha","Item","Detalle","Calificación","Observación"]
+      headersD = []
+      headersD = ["id","sedenombre","usernombre","nodo","createdat","tiposmevaluaciondesc","tiposmevaluaciondetalle","calificacion","observaciones"]
+
+      sheet.add_row cadenaT, :style=> [header3,header3,header3,header3,header3,header3,header3,header3,header3]
+
+      @contratosactmcodigos.each do |p|
+        array2 = JSON.parse(p.to_json(only: [headersD], :methods =>headersD))
+        sheet.add_row array2.values,
+                      :style =>[datosnumeros2,datosiz,datosiz,datosiz,fechas,datosiz,datosiz,datoscent,observacion],
+                      :types => [nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      end
+    end
+
+  end
+end

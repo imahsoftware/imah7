@@ -1,0 +1,2 @@
+module VisitassedesHelper
+end

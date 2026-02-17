@@ -1,0 +1,80 @@
+<%= simple_form_for @insumo do |f| %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <legend>
+        <%= link_to insumos_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Información Insumo
+      </legend>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :id, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, disabled: true%>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <%= f.input :tipo, as: :select, collection: select_tipoinsumo, input_html: { class: 'select2' }, include_blank: true %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :bien_servicio, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+          <%= f.input :especificacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 7 } %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <%= f.input :presentacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 5 } %>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
+            <% if is_auth_c('activacioninsumo') %>
+              <%= f.input :estado, as: :select, collection: select_estadoinsumo, input_html: { class: 'select2' }%>
+            <% else %>
+              <%= f.input :estado, as: :select, collection: select_estadoinsumo, input_html: { class: 'select2' }, disabled: true  %>
+            <% end %>
+          </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :clase, as: :select, collection: select_claseinsumo, input_html: { class: 'select2' }, include_blank: true %></div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <%= f.input :proveedor_id, collection: Proveedor.order(:nombre_proveedor).collect {|p| [ p.nombre_proveedor, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Proveedor'%>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_compra, as: :moneda %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_unitario, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :porc_iva, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_iva, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_final, as: :moneda %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor1, as: :moneda, label: 'Valor Final con U.' %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor2, as: :moneda %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+          <%= f.input :insumoid, collection: Insumo.where(tipo: 'CONSUMO', clase: 'COLOMBIA COMPRA EFICIENTE').order(:bien_servicio).collect {|p| [ p.insumodetalleccf, p.id ] }, input_html: { class: 'select2' }, as: :select, label: "Homologacion CCE", include_blank: true%></div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>
+<% unless @insumo.new_record? %>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#fa-fichas" data-toggle="tab"><i class="fa fa-sticky-note-o"></i> Fichas</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="fa-fichas">
+          <%= render 'insumosfichas/insumosfichas' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,5 @@
+$("#fichas<%= @insumo.id %> .modal-content").html('<%= j render "insumos/fichas" %>');
+$("#fichas<%= @insumo.id %> ").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

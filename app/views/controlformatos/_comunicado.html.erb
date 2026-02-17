@@ -1,0 +1,69 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          Medellin, Miercoles 24 de Diciembre de 2025.
+          <br/><br/><br/><br/>
+          SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+          C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+          Cargo: <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong><br/>
+          Empresa: <strong><%= @contratosperfecha.contrato.empresa.nombre rescue nil %></strong><br/>
+          <br/><br/>
+          <strong>ASUNTO:</strong> COMUNICADO A LOS TRABAJADORES ADMINISTRATIVOS
+          <br/><br/>
+          Cordial saludo,<br/><br/>
+          Por medio del presente comunicado, la empresa se permite informar que, atendiendo a las actuales condiciones operativas y organizacionales, se ha tomado la decisión de dar por terminado de manera anticipada el contrato de trabajo, mediante acuerdo bilateral entre las partes, conforme a lo dispuesto en el artículo 61 literal b) del Código Sustantivo del Trabajo, el cual establece como causal de terminación del contrato el mutuo consentimiento.
+          <br/><br/>
+          Esta determinación obedece exclusivamente a necesidades de la empresa, derivadas de la finalización de varios contratos comerciales, así como del cierre temporal de los contratos comerciales vigentes con ocasión de la vacancia colectiva y las festividades propias de la temporada navideña, situaciones que han generado la inexistencia de actividades administrativas y operativas para la adecuada prestación de los servicios a cargo de los trabajadores administrativos.
+          <br/><br/>
+          La terminación anticipada se efectuará el dia <b><%=namedate(@contratosperfecha.fecha_fin) rescue nil %></b>, garantizando el respeto de los derechos laborales de cada trabajador, incluyendo el pago oportuno de la liquidación final de salarios, prestaciones sociales.
+          <br/><br/>
+          En señal de conformidad y de común acuerdo entre las partes contratantes, Para constancia de lo anterior, se firma por las partes el día <b>Miercoles 24 de Diciembre de 2025</b>.
+          <br/><br/><br/>
+          <table width="100%">
+            <tr>
+              <td width="30%"><b>EL CONTRATANTE</b></td>
+              <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %><%end %>
+                <br/>
+                <%= @nombre_firma %><br/>
+                Representante Legal
+              </td>
+            </tr>
+          </table>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

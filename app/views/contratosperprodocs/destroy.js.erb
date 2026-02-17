@@ -1,0 +1,23 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @ruta == 'PROCESO' %>
+	$('#mostrar_documento<%= @contratosperproceso.id %>').html("<%= j render 'contratosperprocesos/documentos_cargados', contratosperproceso: @contratosperproceso %>")
+<% else %>
+	<% if @contratosperproceso.contratosperprodocs.count == 0 %>
+	$("#contratosperprodocs").html("<div class='alert alert-danger'><h4><i class='icon fa fa-info'></i> <%=t :atencion%></h4><%=t :atencion_msj%><span></div>");
+	<% else %>
+	$("#contratosperprodoc_<%= @contratosperprodoc.id %>").remove();
+	<% end %>
+<% end %>
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);
+
+$('.tooltip').tooltip('hide');

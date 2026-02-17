@@ -1,0 +1,25 @@
+<% if Evaluacionescontrato.where("evaluacion_id = #{evaluacion} and user_responsable = #{user_responsable} and estado > 0").present? %>
+  <% valor = Evaluacionescontrato.where("evaluacion_id = #{evaluacion} and user_responsable = #{user_responsable}").first.estado.to_f rescue 0 %>
+  Calificación: <%= valor.to_f rescue nil %><br/>
+  <% if valor.to_f >= 3.53 %>
+    <b>SOBRESALIENTE</b>
+  <% elsif valor.to_f >= 2.53 %>
+    <b>SATISFACTORIO</b>
+  <% elsif valor.to_f <= 1.52 %>
+    <b>NO SATISFACTORIO</b>
+  <% else %>
+    <b>NECESITA MEJORAR REALIZAR PLAN DE ACCION</b>
+  <% end %>
+<% elsif Evaluacionescontrato.where("evaluacion_id = #{evaluacion} and user_responsable = #{user_responsable} and estado = 0").present? and
+  Evaluacionesejecucion.where("evaluacion_id =  #{evaluacion} AND evaluacionescontrato_id IN (SELECT id FROM evaluacionescontratos WHERE user_responsable = #{user_responsable}) and estado is not null").count == Evaluacionesejecucion.where("evaluacion_id =  #{evaluacion} AND evaluacionescontrato_id IN (SELECT id FROM evaluacionescontratos WHERE user_responsable = #{user_responsable})").count %>
+  <%= link_to cerrar_capacitacion_evaluacionescontratos_path(evaluacion_id: evaluacion, user_responsable: user_responsable, contratosperfecha_id: contratosperfecha_id), data: { toggle: 'tooltip' }, title: 'Cerrar Evaluación', remote: true do %>
+    <button class="btn btn-xs btn-success"><i class="fa fa-check"></i> Cerrar</button>
+  <% end %>
+<% else %>
+  <small class="label pull-center bg-red">Pendiente</small>
+<% end %>
+
+
+
+
+

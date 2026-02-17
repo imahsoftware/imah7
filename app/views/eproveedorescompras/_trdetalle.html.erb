@@ -1,0 +1,18 @@
+<br/><br/>
+<table class="table table-bordered table-condensed table-striped">
+  <thead class="thcolor">
+  <tr>
+    <th width="23%" class="text-left" style="font-size:10px;">Concepto</th>
+    <th class="text-left" style="font-size:10px;">Retencion</th>
+    <th width="15%" class="text-right" style="font-size:10px;">Valor</th>
+  </tr>
+  </thead>
+  <% eproveedorescompra.eproveedorescompretenciones.includes([:tipospretencion,:concepto]).each do |a| %>
+    <tr>
+      <td align="left" style="font-size:10px;"><%= a.concepto.descripcion rescue nil %></td>
+      <td align="left" style="font-size:10px;"><%= a.tipospretencion.descripcion rescue nil %> - (<%= a.tipospretencion.porcentaje rescue nil %>%)</td>
+      <td align="right" style="font-size:10px;"><%= camponumerico a.valor %></td>
+    </tr>
+  <% end %>
+</table>
+<small>Observaciones: <%= eproveedorescompra.observacion rescue nil %></small>

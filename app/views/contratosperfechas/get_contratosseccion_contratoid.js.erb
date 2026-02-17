@@ -1,0 +1,18 @@
+<% if @valida == true%>
+<% if @contratossecciones.present? %>
+$('#contratosperfecha_contratosseccion_id').empty();
+$('#contratosperfecha_contratosseccion_id').append('<option selected>Seleccione</option>');
+<% @contratossecciones.each do |contratosseccion| %>
+$('#contratosperfecha_contratosseccion_id').append('<option value="<%= contratosseccion.id %>"><%= contratosseccion.descripcion2 %></option>');
+<% end %>
+$('#contratosperfecha_contratosseccion_id').prop('disabled', false);
+<% else %>
+$('#contratosperfecha_contratosseccion_id').empty();
+$('#contratosperfecha_contratosseccion_id').append('<option selected>Seleccione</option>');
+$('#contratosperfecha_contratosseccion_id').prop('disabled', true);
+<% end %>
+<% else %>
+$('#contratosperfecha_contratosseccion_id').empty();
+$('#contratosperfecha_contratosseccion_id').append('<option selected>Seleccione</option>');
+$('#contratosperfecha_contratosseccion_id').prop('disabled', true);
+<% end %>

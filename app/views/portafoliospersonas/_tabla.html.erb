@@ -1,0 +1,15 @@
+<div class="table-responsive">
+	<table class="table table-bordered">
+	  <thead class="thcolor">
+      <tr>
+        <td width="15%"></td>
+        <th width="85%" class="text-left">Barbero</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_portafoliospersonas">
+	    <% @portafolio.portafoliospersonas.order(id: :desc).each do |portafoliospersona| %>
+	      <%= render 'portafoliospersonas/tr', portafoliospersona: portafoliospersona %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

@@ -1,0 +1,59 @@
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th width="20%" class="text-center">Fecha Inicio Visita</th>
+    <th width="20%" class="text-center">Usuario</th>
+    <th>Contrato</th>
+  </tr>
+  <tr>
+    <td class="text-tr-table text-center"><%= @visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+    <td class="text-tr-table text-center"><%= @visita.user.nombre rescue nil %></td>
+    <td class="text-tr-table text-left">
+      <%= link_to consolidado_visitas_path(id: @visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{@visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+        <i class="fa fa-map-marker text-red"> </i>
+      <% end %>&nbsp;
+      <%= @visita.contrato.empresa.identnombre rescue nil %><%= @visita.contrato.nro_contrato rescue nil %>
+      <br/><small><strong>Objetivo de la Visita: </strong><%= @visita.descripcion rescue nil %></small>
+      <div class="modal fade" id="consolidado<%= @visita.id %>">
+        <div class="modal-dialog" style="width: 80%">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+              </button>
+              <h4 class="modal-title">Consolidado Georreferenciación -
+                <small><%= @visita.user.nombre rescue nil %></small></h4>
+            </div>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+            <div class="modal-body">
+
+              <div id="map3_<%= @visita.id %>" style="height: 400px; z-index: 0;"></div>
+              <script type="text/javascript" charset="utf-8">
+                  document.addEventListener('DOMContentLoaded', function () {
+                      $('#consolidado<%= @visita.id %>').on('shown.bs.modal', function () {
+                          var mapId = "map3_<%= @visita.id %>";
+                          var firstLatitude = <%= @visita.latitude rescue nil %>;
+                          var firstLongitude = <%= @visita.longitude rescue nil %>;
+
+                          var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                          }).addTo(map);
+
+
+                          var marker = L.marker([<%= @visita.latitude.to_s %>, <%= @visita.longitude.to_s %>]).addTo(map);
+                          marker.bindPopup("<%= @visita.descripcion_visita rescue nil %>").openPopup();
+
+                          map.invalidateSize();
+                      });
+                  });
+              </script>
+
+            </div>
+            <br/>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>

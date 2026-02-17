@@ -1,0 +1,33 @@
+<%= simple_form_for([@contrato, @contratosinsumo], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :insumo_cliente, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <% if @contrato.tiposcontrato_id.to_i == 24 %>
+          <%= f.input :insumo_id, collection: Insumo.where(["tipo = 'CONSUMO' and clase = 'GENERAL' and estado = 'ACTIVO' and insumoid is not null"]).order(:bien_servicio).collect {|p| [ p.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        <% else %>
+          <%= f.input :insumo_id, collection: Insumo.where(["tipo = 'CONSUMO' and clase = 'GENERAL'
+                                                             and estado = 'ACTIVO'"]).order(:bien_servicio).collect {|p| [ p.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :precio_unitario, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :descuento, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :precio_condescuento, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosinsumo.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosinsumo_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosinsumo_path(@contrato, @contratosinsumo), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

@@ -1,0 +1,36 @@
+<tr>
+  <td class="text-table text-center">
+    <% if contratosperinventario.estado == 'FIRMADO' %>
+      <%= link_to inventario_items_ind_contratospersonas_path(id: contratosperinventario.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver Inventario' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to complemento_contratosperinventarios_path(id: contratosperinventario.id), data: { toggle: 'tooltip' }, title: 'Ingresar' do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <% if contratosperinventario.estado == 'FIRMADO' and contratosperinventario.contratosperinvdetalles.where("consecutivo_acta is null").present? %>
+      <%= link_to devolucion_contratosperinventarios_path(id: contratosperinventario.id), data: { toggle: 'tooltip' }, title: 'Devolución' do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="text-table">
+    <%= contratosperinventario.contratospersona.autobuscar rescue nil %>
+  </td>
+  <td class="text-table">
+    <div align="justify">
+      <strong>Nro Contrato : </strong><%= contratosperinventario.contratospersona.contrato.nro_contrato rescue nil %> -
+      <strong>Grupo : </strong><%= contratosperinventario.contratosperfecha.contratosgrupo.descripcion rescue nil %>
+      <small>(<%= contratosperinventario.contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+      <br/><strong>Cargo : </strong><%= contratosperinventario.contratosperfecha.contratoscargo.perfil rescue nil %>
+    </div>
+    <% Contratosperinvacta.where("contratosperinventario_id = #{contratosperinventario.id} and estado = 'FINALIZADO'").each do |contratosperinvacta| %>
+      <%= link_to acta_contratosperinventarios_path(contratosperinvacta_id: contratosperinvacta.id, format: :pdf, consecutivo: contratosperinvacta.consecutivo_acta), data: { toggle: 'tooltip' }, class: 'popup', title: "Acta #{contratosperinvacta.consecutivo_acta}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i> Acta Nro <%= contratosperinvacta.consecutivo_acta %></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="text-table text-center">
+    <%= contratosperinventario.estado rescue nil %>
+  </td>
+</tr>

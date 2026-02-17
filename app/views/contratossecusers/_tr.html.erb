@@ -1,0 +1,9 @@
+<tr id="contratossecuser_<%=contratossecuser.id %>">
+  <td class="text-center">
+    <%= link_to contratosseccion_contratossecuser_path(@contratosseccion, contratossecuser), remote: true, method: :delete, data: {confirm: "#{t :elimina_confirma}", toggle: 'tooltip'}, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="text-center" style="font-size: 11px;"><%= contratossecuser.created_at.strftime("%Y-%m-%d") rescue nil %></td>
+  <td class="text-left" style="font-size: 10px;"><%= contratossecuser.user.nombrecompleto rescue nil %></td>
+</tr>

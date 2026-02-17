@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  personasformulario_id: 1
+  parcargosdoc_id: 1
+  documento: MyString
+
+two:
+  personasformulario_id: 1
+  parcargosdoc_id: 1
+  documento: MyString

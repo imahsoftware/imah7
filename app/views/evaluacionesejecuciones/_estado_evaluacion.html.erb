@@ -1,0 +1,11 @@
+<% if p.estado.to_s == "" %>
+  <i class="fa fa-certificate text-red" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Fecha Creación: <%= p.created_at %> <br/> Estado: Pendiente</div>"></i>
+<% elsif p.estado.to_s == '1' %>
+  <i class="fa fa-certificate text-success" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Fecha Creación: <%= p.created_at %> <br/> Estado: Cumple</div>"></i>
+<% elsif p.estado.to_s == '1.0' %>
+  <i class="fa fa-certificate" style="color: #e08e0b" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Fecha Creación: <%= p.created_at %> <br/> Estado: No Aplica</div>"></i>
+<% elsif p.estado.to_s == '0.5' %>
+  <i class="fa fa-certificate" style="color: #BC09D5" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Fecha Creación: <%= p.created_at %> <br/> Estado: Parcialmente</div>"></i>
+<% elsif p.estado.to_s == '0' %>
+  <i class="fa fa-certificate text-danger" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Fecha Creación: <%= p.created_at %> <br/> Estado: No Cumple</div>"></i>
+<% end %>

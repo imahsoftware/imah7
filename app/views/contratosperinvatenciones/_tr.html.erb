@@ -1,0 +1,38 @@
+<tr id="contratosperinvatencion_<%= contratosperinvatencion.id %>">
+  <td class="text-center">
+    <% if contratosperinvatencion.contratosperinventario.estado == 'PENDIENTE' and contratosperinvatencion.codigo_firma.blank? %>
+      <%# if is_auth_e("contratosperinvatencion")%>
+      <%= link_to edit_contratosperinventario_contratosperinvatencion_path(@contratosperinventario, contratosperinvatencion), remote: true, class: 'edit_contratosperinvatencion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosperinventario_contratosperinvatencion_path(@contratosperinventario, contratosperinvatencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+      <%= link_to otp_contratosperinvatenciones_path(id: contratosperinvatencion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Visita' do %>
+        <button class="btn btn-xs btn-success"><i class="fa fa-paint-brush"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperinvatencion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratosperinvatencion.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= contratosperinvatencion.nombre rescue nil %>
+    <% if contratosperinvatencion.codigo_firma.present? %>
+      <div>
+        <em>
+          <b>Firmado:</b> <i class="fa fa-check text-success"></i> -
+          <b>Fecha: </b><%= contratosperinvatencion.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %>
+        </em>
+      </div>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperinvatencion.identificacion rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperinvatencion.cargo rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperinvatencion.celular rescue nil %></td>
+</tr>
+
+<div class="modal fade" id="otp2<%= contratosperinvatencion.id rescue nil %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

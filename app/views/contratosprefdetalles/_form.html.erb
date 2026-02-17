@@ -1,0 +1,29 @@
+<%= simple_form_for([@contratosprefactura, @contratosprefdetalle], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_producto, as: :select, collection: select_tipoproducto, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Tipo de producto"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :detalle, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: 'Detalle' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :cantidad, as: :moneda, label: "Cant." %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_unitario, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :iva, as: :moneda, label: "Iva"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <%= f.input :contratossolicitud_id, collection: Contratossolicitud.where(["contrato_id = #{@contratosprefactura.contrato_id}"]).order("id desc").collect {|p| [ p.namebyprefact, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Solicitud Asociada"%>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosprefdetalle.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosprefdetalle_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosprefactura_contratosprefdetalle_path(@contratosprefactura, @contratosprefdetalle), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

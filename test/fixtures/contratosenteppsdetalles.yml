@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosentepp: one
+  item: MyString
+  observacion: MyString
+  cantidad: 1
+
+two:
+  contratosentepp: two
+  item: MyString
+  observacion: MyString
+  cantidad: 1

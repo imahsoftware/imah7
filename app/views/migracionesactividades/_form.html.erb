@@ -1,0 +1,52 @@
+<%= form_for(migracionesactividad) do |f| %>
+  <% if migracionesactividad.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(migracionesactividad.errors.count, "error") %> prohibited this migracionesactividad from being saved:</h2>
+
+      <ul>
+      <% migracionesactividad.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.number_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :archivo_id %>
+    <%= f.number_field :archivo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado %>
+    <%= f.text_field :estado %>
+  </div>
+
+  <div class="field">
+    <%= f.label :tareasactividad_id %>
+    <%= f.number_field :tareasactividad_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :dias %>
+    <%= f.number_field :dias %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado_actividad %>
+    <%= f.text_field :estado_actividad %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_persona %>
+    <%= f.number_field :user_persona %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,2 @@
+class Infgrupostablascampo < ApplicationRecord
+end

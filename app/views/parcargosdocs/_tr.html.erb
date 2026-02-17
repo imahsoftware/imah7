@@ -1,0 +1,18 @@
+<tr id="parcargosdoc_<%= parcargosdoc.id %>">
+  <td class="text-center">
+    <%# if @contrato.contratosusers.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false and @contrato.contratoscargos.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false  %>
+    <%= link_to edit_parcargo_parcargosdoc_path(@parcargo, parcargosdoc), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%# if is_auth_e("contratosactividad")%>
+    <%= link_to parcargo_parcargosdoc_path(@parcargo, parcargosdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center"><%= parcargosdoc.id rescue nil %></td>
+  <td class="font-size-text-tabla"><%= parcargosdoc.descripcion rescue nil %></td>
+  <td class="font-size-text-tabla text-center"><%= parcargosdoc.obligatorio rescue nil %></td>
+  <td class="font-size-text-tabla text-center"><%= parcargosdoc.estado rescue nil %></td>
+  <td class="font-size-text-tabla text-center"><%= parcargosdoc.soloimagen rescue nil %></td>
+  <td class="font-size-text-tabla"><%= parcargosdoc.observacion rescue nil %></td>
+</tr>

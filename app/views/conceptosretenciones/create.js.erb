@@ -1,0 +1,26 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @concepto.conceptosretenciones.count == 1 %>
+	$("#conceptosretenciones").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_conceptosretenciones").prepend("<%= j render 'tr', conceptosretencion: @conceptosretencion %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#conceptosretencion_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);

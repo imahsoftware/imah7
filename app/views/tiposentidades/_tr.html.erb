@@ -1,0 +1,13 @@
+<tr id="tiposentidad_<%= tiposentidad.id %>">
+  	<td class="text-center">
+      <% if @is_auth_c_tiposentidad %>
+        <%= link_to edit_tiposentidad_path(tiposentidad), class: 'edit_tiposentidad_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+           <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+        <% end %>
+      <% end %>
+    </td>
+  <td class="text-left"><%= tiposentidad.identificacion %></td>
+  <td class="text-left"><%= tiposentidad.nombre %></td>
+  <td class="text-left"><%= tiposentidad.descripcion %></td>
+  <td class="text-center"><%= tiposentidad.estado rescue nil %></td>
+</tr>

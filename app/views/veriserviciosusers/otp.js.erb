@@ -1,0 +1,20 @@
+// Para cerrar el modal
+$("#moda-agenda<%= @veriserviciosuser.veriserviciosagenda.id %>").remove();
+$("#otp<%= @veriserviciosuser.id %> .modal-content").html('<%= j render "veriserviciosusers/otp" %>');
+$("#otp<%= @veriserviciosuser.id %> ").modal();
+
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+$('.tooltip').tooltip('hide');
+
+

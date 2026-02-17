@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").html('<%= j render "contratosperprocesos/showinfo" %>');
+$("#abrir_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").addClass("hide");
+$("#cerrar_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").removeClass("hide");
+$("#tr_show_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").removeClass("hidden");
+<% else %>
+$("#abrir_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").removeClass("hide");
+$("#cerrar_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").addClass("hide");
+$("#abrir_detalle_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").html(null);
+$("#tr_show_proceso<%= @periodo %>_<%= @clase.gsub(' ','_').to_s %>_<%= @estado.gsub(' ','_').to_s %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

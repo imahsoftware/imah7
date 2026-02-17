@@ -1,0 +1,18 @@
+$("#otp<%= @contratosperpronota.id %> .modal-content").html('<%= j render "contratosperpronotas/otp" %>');
+$("#otp<%= @contratosperpronota.id %> ").modal();
+
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+$('.tooltip').tooltip('hide');
+
+

@@ -1,0 +1,141 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Evaluación: <%= @evaluacion.tema.capitalize rescue nil %> - Fecha Limite: <%= @evaluacion.fecha_limite %></h4>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered table-condensed table-striped">
+      <tr class="thcolor">
+        <th class="text-table" width=25%">Empleado</th>
+        <th class="text-table" width="25%">Empresa</th>
+        <th class="text-table" width="15%">Nro Contrato</th>
+        <th class="text-table">Cargo</th>
+        <th class="text-table">Grupo de nomina</th>
+      </tr>
+      <tr>
+        <td class="text-left text-table">
+          <%= @contratosperfecha.contratospersona.identificacion rescue nil %> - <%= @contratosperfecha.contratospersona.nombre_completo rescue nil %>
+        </td>
+        <td class="text-left text-table">
+          <%= @contratosperfecha.contrato.empresa.identnombre rescue nil %>
+        </td>
+        <td class="text-left text-table">
+          <%= @contratosperfecha.contrato.nro_contrato rescue nil %>
+        </td>
+        <td class="text-left text-table">
+          <%= @contratosperfecha.contratoscargo.perfil rescue nil %>
+        </td>
+        <td class="text-left text-table">
+          <%= @contratosperfecha.contratosgrupo.descripcion rescue nil %>
+          <small>(<%= @contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+        </td>
+      </tr>
+    </table>
+
+    <br/>
+    <%
+      descripciones = Iparametro.distinct.where(id: Iparametrosuser.where(user_id: is_admin).pluck(:iparametro_id),
+                                                campo: 'evaluacion_clase_prueba',
+                                                descripcion: Evaluacionesdetalle.where(evaluacion_id: @evaluacion.id).distinct.pluck(:clase))
+                                .pluck(:descripcion)
+    %>
+    <% descripciones.each do |descripcion| %>
+      <legend style="font-size: 15px;"><em><%= descripcion rescue nil %></em></legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <tr class="thcolor">
+          <th class="text-table" width="45%">Actividades</th>
+          <th class="text-table text-center" width="10%">Estado</th>
+
+          <th class="text-table">Observación</th>
+        </tr>
+        <%
+          @promedio = 0
+          cnt = 0
+          Evaluacionesejecucion.joins(:evaluacionesdetalle)
+                                .select("evaluacionesejecuciones.*, evaluacionesdetalles.actividad evaluacionesdetalles_actividad,
+                                           evaluacionesdetalles.observacion evaluacionesdetalles_observacion,
+                                           evaluacionesdetalles.requieredoc evaluacionesdetalles_requieredoc,
+                                           (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                           (select distinct 'X' from evaluacionesejecucionesdocs where evaluacionesejecucion_id = evaluacionesejecuciones.id) tienedoc")
+                                .where("evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                         and evaluacionesdetalles.clase = '#{descripcion}'
+                                         and evaluacionesejecuciones.user_responsable = #{@evaluacionescontrato.user_responsable}").each do |p|
+          @promedio += p.estado.to_i
+          cnt += 1
+        %>
+          <tr>
+
+            <td class="text-justify text-table" style="padding: 5px;">
+              <%= p.evaluacionesdetalles_actividad %>
+              <% if p.evaluacionesdetalles_observacion.present? %>
+                <em> <small><br/><strong>Observación: </strong> <%= p.evaluacionesdetalles_observacion rescue nil %>
+                </small></em>
+              <% end %>
+              <div id="usuario_marca<%= p.id %><%= @evaluacionescontrato.user_responsable %>">
+                <% if p.fecha_marca.present? %>
+                  <b><i class="fa fa-user"></i> Usuario:</b> <%= p.nombresusermarca rescue nil %><br/>
+                  <b><i class="fa fa-calendar"></i>
+                    Fecha:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+                <% end %>
+              </div>
+              <% if p.evaluacionesdetalles_requieredoc.to_s == 'SI' %>
+                <div><strong style="color: red"><em>Debe subir soporte digital</em></strong></div>
+              <% end %>
+              <div id="documentos<%= p.id %>">
+                <% if p.tienedoc.to_s == 'X' %><br/>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr class="thcolor">
+                      <td clase="text-center" width="10%"></td>
+                      <td class="text-table" width="90%">Documento Digital</td>
+                    </tr>
+                    <% p.evaluacionesejecucionesdocs.each do |doc| %>
+                      <tr>
+                        <td>
+                          <div align="center">
+                            <% if doc.user_id == is_admin %>
+                              <%= link_to eliminar_evaluacionesejecucionesdocs_path(id: doc.id, evaluacionesejecucion_id: p.id), remote: true, data: { toggle: 'tooltip', confirm: 'Estas Seguro?' }, title: 'Eliminar' do %>
+                                <i class="fa fa-trash"></i>
+                              <% end %>
+                            <% end %>
+                            <%= link_to doc.docevaluacion.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                              <i class="fa fa-cloud-download text-danger"></i>
+                            <% end %></div>
+                        </td>
+                        <td clase="text-justify"><%= doc.tipo rescue nil %></td>
+                      </tr>
+                    <% end %>
+                  </table>
+                <% end %>
+              </div>
+            </td>
+            <td width="8%" class="text-center text-table">
+              <div class="btn-group" id="botones<%= p.id %>">
+                <% if p.estado.present? %>
+                  <small class="label pull-right bg-red"></small>
+                  <%= p.estado_prueba rescue nil %>
+                <% else %>
+                  <small class="label pull-right bg-red">Sin Evaluar</small>
+                <% end %>
+              </div>
+            </td>
+            <td cls="text-justify text-table">
+              <%= p.resultado rescue nil %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <th width="45%" height="20" class="text-center" style="background-color: #CDCDCD; color: black;">PROMEDIO</th>
+          <th width="10%" height="20" class="text-center" style="background-color: #CDCDCD; color: black;">
+            <%= camponumerico @promedio.to_f / cnt.to_f rescue 0 %>
+          </th>
+          <td width="40%" height="20" class="td-table" style="background-color: #CDCDCD; color: black;">
+
+          </td>
+        </tr>
+      </table>
+    <% end %>
+
+
+  </div>
+</div>

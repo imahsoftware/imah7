@@ -1,0 +1,75 @@
+<% usr = User.find(is_admin) %>
+<aside class="main-sidebar">
+
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+        <div align="center"><%= image_tag usr.avatar.url(:medium), alt: 'User Image', class: 'img-circle', width: '128px' %></div>
+        <div class="user-panel">
+        <h4 class="text-center"><%= usr.nombre rescue nil %></h4>
+        </div>
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <li>
+        <%= link_to programas_personas_path do %>
+          <i class="fa fa-arrow-left"></i> <span>Regresar a programas</span>
+        <% end %>
+      </li>
+      <li class="header"><%=t :menu%></li>
+      <li class="<%= active_class(edit_persona_path(etapa: "A", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "A", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Información</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "ED", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "ED", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Datos Adicionales</span>
+        <% end %>
+      </li>
+      <% if (@persona.tipo_proceso == 'RENOVACION' or @persona.tipo_proceso == 'REINGRESO') or @persona.personasrenovacion_id.to_s != "" %>
+          <li class="<%= active_class(edit_persona_path(etapa: "RC", id: @persona.id)) %>">
+            <%= link_to edit_persona_path(etapa: "RC", id: @persona.id) do %>
+              <i class="fa fa-money"></i> <span>Forma de Pago</span>
+            <% end %>
+          </li>
+          <li class="<%= active_class(edit_persona_path(etapa: "RB", id: @persona.id)) %>">
+            <%= link_to edit_persona_path(etapa: "RB", id: @persona.id) do %>
+              <i class="fa fa-file-pdf-o"></i> <span>Soporte Documental</span>
+            <% end %>
+          </li>
+          <li class="<%= active_class(edit_persona_path(etapa: "RZ", id: @persona.id)) %>">
+            <%= link_to edit_persona_path(etapa: "RZ", id: @persona.id) do %>
+              <i class="fa fa-folder"></i> <span>Proceso ICETEX</span>
+            <% end %>
+          </li>
+      <% else %>
+        <% if cohorte_metodopago(@prog) == true %>
+          <li class="<%= active_class(edit_persona_path(etapa: "EC", id: @persona.id)) %>">
+            <%= link_to edit_persona_path(etapa: "EC", id: @persona.id) do %>
+              <i class="fa fa-money"></i> <span>Forma de Pago</span>
+            <% end %>
+          </li>
+        <% end %>
+        <% if @persona.tienedocumentos == true %>
+            <li class="<%= active_class(edit_persona_path(etapa: "EB", id: @persona.id)) %>">
+              <%= link_to edit_persona_path(etapa: "EB", id: @persona.id) do %>
+                <i class="fa fa-file-pdf-o"></i> <span>Soporte Documental</span>
+              <% end %>
+            </li>
+        <% end %>
+        <li class="<%= active_class(edit_persona_path(etapa: "EZ", id: @persona.id)) %>">
+          <%= link_to edit_persona_path(etapa: "EZ", id: @persona.id) do %>
+            <i class="fa fa-folder"></i> <span>Proceso ICETEX</span>
+          <% end %>
+        </li>
+      <% end %>
+      <li class="<%= active_class(edit_persona_path(etapa: "EG", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "EG", id: @persona.id) do %>
+          <i class="fa fa-folder"></i> <span>Pecuniarios</span>
+        <% end %>
+      </li>
+    </ul>
+    <!-- /.sidebar-menu -->
+  </section>
+  <!-- /.sidebar -->
+</aside>

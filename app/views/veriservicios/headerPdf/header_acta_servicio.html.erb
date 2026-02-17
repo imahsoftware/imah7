@@ -1,0 +1,53 @@
+<%
+  if @logo.present?
+     logo = @logo
+   end
+%>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+      .center {
+          text-align: center;
+      }
+  </style>
+</head>
+<body class="center">
+<div align="center">
+  <table width="890" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="25%" rowspan="2">
+        <div align="center">
+          <%= wicked_pdf_image_tag "#{image_url(logo)}", size: "230x80" %>
+        </div>
+      </td>
+      <td style="font-size: 12px; font-family: Tahoma; line-height:150%; height: 40px;">
+        <div align="center">
+          <strong>
+            PROCESO DE COORDINACION DE CONTRATOS
+          </strong>
+        </div>
+      </td>
+      <td></td>
+      <td width="15%" rowspan="2">
+        <div align="center">
+          Versión 1
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="font-size: 12px; font-family: Tahoma; line-height:150%; height: 40px;">
+        <div align="center">
+          <strong>
+            VERIFICACION DEL SERVICIO
+          </strong>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

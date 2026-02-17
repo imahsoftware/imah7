@@ -1,0 +1,8 @@
+$("#nuevoSoporte<%= @contratosperinvdetalle.id %> .modal-content").html('<%= j render "form" %>');
+$("#nuevoSoporte<%= @contratosperinvdetalle.id %>").modal();
+$(".select2").select2();
+
+/// Convierte texto en mayuscula
+$('.uppercaseInput').keyup(function () {
+    $(this).val($(this).val().toUpperCase());
+});

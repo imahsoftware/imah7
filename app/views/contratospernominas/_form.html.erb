@@ -1,0 +1,44 @@
+<%= simple_form_for(@contratospernomina) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :periodosliquidacion %>
+    <%= f.association :contrato %>
+    <%= f.association :contratospersona %>
+    <%= f.input :salario %>
+    <%= f.input :salario %>
+    <%= f.input :dias %>
+    <%= f.input :dias_novedad %>
+    <%= f.input :dias_incg %>
+    <%= f.input :dias_incl %>
+    <%= f.input :dias_vaca %>
+    <%= f.input :valor_novedad %>
+    <%= f.input :bonificacion %>
+    <%= f.input :incapacidad %>
+    <%= f.input :subtotal %>
+    <%= f.input :ajuste %>
+    <%= f.input :salud %>
+    <%= f.input :pension %>
+    <%= f.input :auxilio %>
+    <%= f.input :seguro %>
+    <%= f.input :dotacion %>
+    <%= f.input :prestamo %>
+    <%= f.input :total %>
+    <%= f.input :prov_cesantias %>
+    <%= f.input :prov_intcesantias %>
+    <%= f.input :prov_prima %>
+    <%= f.input :prov_vacaciones %>
+    <%= f.input :arl %>
+    <%= f.input :caja %>
+    <%= f.input :otros_desc %>
+    <%= f.input :salud_emp %>
+    <%= f.input :pension_emp %>
+    <%= f.input :valor_vaca %>
+    <%= f.input :estado %>
+    <%= f.input :observacion %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

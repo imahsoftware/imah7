@@ -1,0 +1,2 @@
+class Contratosperfcontrol < ApplicationRecord
+end

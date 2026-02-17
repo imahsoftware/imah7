@@ -1,0 +1,101 @@
+  <legend class="alert alert-danger">VERIFICACIÓN MENSUAL DEL SERVICIO DE ASEO</legend>
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+        <th width="30%" class="text-center">Nodo</th>
+        <th width="35%" class="text-center">Evaluador</th>
+        <th width="35%" class="text-center">Fecha evalulacion</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="text-center"><%= @contratosactmcodigos[0].contratossede.nombre_consulta rescue nil %> - <strong><%= @contratosactmcodigos[0].nodo rescue nil %></strong></td>
+        <td class="text-center"><%= @contratosactmcodigos[0].user.nombre rescue nil %></td>
+        <td class="text-center"><%= @contratosactmcodigos[0].created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <%= form_tag '/contratosactmcodigos/update_individual', method: 'put' do %>
+    <div class="box-body">
+      <div class="table-responsive">
+        <legend>Verificación del Servicio</legend>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+            <th width="25%" class="text-left">Item</th>
+            <th width="8%" class="col text-center">Cumple</th>
+            <th width="8%" class="col text-center">No Cumple</th>
+            <th class="col text-left">Observaciones</th>
+          </thead>
+          <tbody>
+          <% for contratosactmcodigo in @contratosactmcodigos.where(["tiposmevaluacion_id in (select id from tiposmevaluaciones where clase ='SERVICIO')"]) %>
+            <tr>
+              <%= fields_for "contratosactmcodigos[]", contratosactmcodigo do |f| %>
+                <%= render "fields",
+                           :f => f,
+                           :fe => contratosactmcodigo,
+                           :ce => contratosactmcodigo.contratossede,
+                           :clase => "SERVICIO"
+                %>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <legend><strong>¡Tu percepción es importante!</strong><br/>
+        <small>Con tu opinión estás contribuyendo a nuestro indicador de servicio, agradecemos que las observaciones y las oportunidades de mejora que identifiques las compartas con nosotros.</small></legend>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <th width="40%" class="text-left">Item</th>
+          <th width="8%" class="col text-center">Bueno</th>
+          <th width="8%" class="col text-center">Regular</th>
+          <th width="8%" class="col text-center ">Malo</th>
+          <th class="col text-left">Observaciones</th>
+          </thead>
+          <tbody>
+          <% for contratosactmcodigo in @contratosactmcodigos.where(["tiposmevaluacion_id in (select id from tiposmevaluaciones where clase ='PERSONAL')"]) %>
+            <tr>
+              <%= fields_for "contratosactmcodigos[]", contratosactmcodigo do |f| %>
+                <%= render "fields",
+                           :f => f,
+                           :fe => contratosactmcodigo,
+                           :ce => contratosactmcodigo.contratossede,
+                           :clase => "PERSONAL"
+                %>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer">
+        <div class="box-tools pull-left">
+          <% if @contratosactmcodigos.sum("validacion") == 0 %>
+            <%=link_to "Finalizar", actividades_menus_path(contratossedereturn: @contratosactmcodigos[0].contratossede.id), :class => "btn btn-sm btn-info" %>
+          <% else %>
+            <div class="alert alert-danger"><strong>Nos interesa mejorar!</strong>
+              <br/>Por eso es importante conocer porque el servicio tiene una calificación Mala o Regular...
+              <br/>Recuerda que debes sustentar tus respuestas "NO CUMPLE"
+              <br/>Recuerda que debes diligenciar todas las preguntas</div>
+          <% end %>
+        </div>
+        <div class="box-tools pull-right">
+          <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+
+<style>
+    .my-custom-scrollbar {
+        position: relative;
+        height: 450px;
+        overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+</style>
+

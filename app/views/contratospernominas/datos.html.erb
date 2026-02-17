@@ -1,0 +1,81 @@
+<div class="box ">
+    <div class="box-header">
+      <legend>
+        <%= link_to contratospernominas_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Prenomina</legend>
+    </div>
+    <div class="box-body">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-6">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th width="30%" class="thcolor text-left">Periodo de Liquidacion</th>
+                  <td class="text-center" style="font-size:12px;"><%= @periodosliquidacion.descripcion rescue nil%></td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-left">Empresa</th>
+                  <td class="text-center" style="font-size:12px;"><%= @contrato.empresa.identnombre rescue nil%></td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-left">Contrato</th>
+                  <td class="text-center" style="font-size:12px;"><%= @contrato.nro_contrato rescue nil%></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <table class="table table-bordered">
+              <tr>
+                <th width="40%" class="thcolor text-left">Nro de Empleados</th>
+                <td class="text-center" style="font-size:12px;"><%= camponumerico2 @contratospernominas.count rescue nil%></td>
+              </tr>
+              <tr>
+                <th class="thcolor text-left">Valor Total Nomina</th>
+                <td class="text-center" style="font-size:12px;"><%=camponumerico @contratospernominas.sum("total") rescue nil%></td>
+              </tr>
+              <tr>
+                <th class="thcolor text-left"></th>
+                <td class="text-center" style="font-size:12px;">&nbsp;</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2"></div>
+          <div class="col-md-7">
+            <table class="table table-bordered">
+              <tr>
+                <td class="text-center" style="font-size:12px;">
+                  <%= link_to informe_datas_path(infgrupo_id: 25, portafolio_id: @contrato.id.to_s+'-'+@periodosliquidacion.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe' do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Generar Excel</button>
+                  <%end %>
+                </td>
+                <td class="text-center" style="font-size:12px;">
+                  <%= link_to informe_datas_path(infgrupo_id: 26, portafolio_id: @contrato.id.to_s+'-'+@periodosliquidacion.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe' do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Novedades</button>
+                  <%end %>
+                </td>
+                <td class="text-center" style="font-size:12px;">
+                  <% if @estadonomina.to_s != "CONSOLIDADO" %>
+                    <%= link_to cambioestado_contratospernominas_path(periodosliquidacion_id: @periodosliquidacion.id, contrato_id: @contrato.id.to_s, estado: "CONSOLIDADO"), data: { toggle: 'tooltip' }, title: 'Informe', remote: true do %>
+                      <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i> Consolidar</button>
+                    <% end %>
+                  <% else %>
+                    INFORME CONSOLIDADO
+                  <%end %>
+                </td>
+                <td class="text-center" style="font-size:12px;">
+                  Enviar Tirillas
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

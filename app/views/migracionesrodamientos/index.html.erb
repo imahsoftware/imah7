@@ -1,0 +1,47 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesrodamientos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Contrato</th>
+      <th>Periodosliquidacion</th>
+      <th>Identificacion</th>
+      <th>Nombre</th>
+      <th>Detalle</th>
+      <th>Valor dia</th>
+      <th>Nro dias</th>
+      <th>Valor total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesrodamientos.each do |migracionesrodamiento| %>
+      <tr>
+        <td><%= migracionesrodamiento.user %></td>
+        <td><%= migracionesrodamiento.archivo %></td>
+        <td><%= migracionesrodamiento.estado %></td>
+        <td><%= migracionesrodamiento.contrato_id %></td>
+        <td><%= migracionesrodamiento.periodosliquidacion_id %></td>
+        <td><%= migracionesrodamiento.identificacion %></td>
+        <td><%= migracionesrodamiento.nombre %></td>
+        <td><%= migracionesrodamiento.detalle %></td>
+        <td><%= migracionesrodamiento.valor_dia %></td>
+        <td><%= migracionesrodamiento.nro_dias %></td>
+        <td><%= migracionesrodamiento.valor_total %></td>
+        <td><%= link_to 'Show', migracionesrodamiento %></td>
+        <td><%= link_to 'Edit', edit_migracionesrodamiento_path(migracionesrodamiento) %></td>
+        <td><%= link_to 'Destroy', migracionesrodamiento, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesrodamiento', new_migracionesrodamiento_path %>

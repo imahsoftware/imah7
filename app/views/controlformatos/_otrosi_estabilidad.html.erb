@@ -1,0 +1,77 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  contratosperfact = Contratosperfact.where(contratosperfecha_id: @contratosperfecha.id, contrato_id: @contratosperfecha.contrato_id, contratosgrupo_id: @contratosperfecha.contratosgrupo_id, contratoscargo_id: @contratosperfecha.contratoscargo_id)[0] rescue nil
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <br/><br/><br/>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          <div align="center">
+            <b style="font-size: 16px">OTRO SÍ AL CONTRATO DE TRABAJO POR OBRA O LABOR DETERMINADA</b>
+          </div>
+          <br/><br/><br/><br/>
+          Entre los suscritos a saber: <b><%=@nombre_empresa%></b> representada por <b><%=@nombre_firma %></b>, mayor de
+          edad, identificado con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal,
+          quien de ahora en adelante se denominará EL CONTRATANTE, con sede en la ciudad de Medellín, por una parte; y por la
+          otra <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificado con cédula de
+          ciudadanía <b>N° <%= camponumerico2(contratospersona.identificacion) rescue nil %></b>, obrando en su
+          calidad de Representante Legal, que para efectos del presente contrato se denominará TRABAJADOR, hemos
+          convenido en celebrar el siguiente <b>OTRO SI AL CONTRATO POR OBRA Y LABOR DETERMINADA</b>, previas las siguientes:
+          <br/><br/>
+          <b>CONSIDERACIONES:</b><br/><br/>
+          <ol id="1">
+            <li>Que el <b><%=namedate(@contratosperfecha.fecha_inicio) rescue nil %></b> las partes suscribieron un contrato de trabajo por obra o labor determinada, en el cual se estipuló que el trabajador prestaría sus servicios en el marco de las actividades propias del objeto social de la empresa.</li>
+            <li>Que, en atención a la situación de estabilidad laboral reforzada del trabajador, y ante la terminación del contrato de prestación de servicios con la entidad en la cual venía desempeñando sus funciones, se hace necesario asignarle un nuevo centro de trabajo, dentro del mismo objeto y naturaleza del contrato inicialmente suscrito.</li>
+          </ol>
+          <br/>
+          <b>CLÁUSULAS:</b><br/><br/>
+          <b>PRIMERA – CAMBIO DE CENTRO DE TRABAJO:</b> A partir del día <b><%=namedate(contratosperfact.fecha_inicio) rescue nil %></b>, el(la) trabajador(a) será asignado(a) para prestar sus servicios como <b><%=contratosperfact.perfil rescue nil %></b>, en el centro de trabajo correspondiente a <b><%=contratosperfact.descripcion rescue nil %></b>, en desarrollo del contrato comercial No. <b><%= contratosperfact.nro_contrato rescue nil %></b>, celebrado entre <b><%=@nombre_empresa%></b> y <b><%= contratosperfact.empresanombre rescue nil %></b>.<br/><br/>
+          <b>SEGUNDA – PERMANENCIA DE CLÁUSULAS:</b> Las demás cláusulas del contrato de trabajo inicial permanecen vigentes y sin modificación, salvo lo expresamente pactado en el presente <b>OTRO SÍ</b>.<br/><br/>
+          <br/><br/>
+          En señal de conformidad y de común acuerdo entre las partes contratantes se firma el presente documento el <%=namedate(@controlfirma.fecha_firma) rescue nil %>
+          <br/><br/><br/>
+          <table width="100%">
+            <tr>
+              <td width="30%"><b>EL CONTRATANTE</b></td>
+              <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                  <% end %>
+                <br/>
+                <%= @nombre_firma %><br/>
+                Representante Legal
+              </td>
+            </tr>
+          </table>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

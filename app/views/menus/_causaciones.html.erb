@@ -1,0 +1,49 @@
+<legend style="margin-top: -19px;">DashBoard Causaciones</legend>
+<% usr = @usr%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <div class="tab-content">
+        <div class="box-body">
+          <table class="table table-bordered table-condensed table-striped" id="dttbPrefactura">
+            <thead>
+            <tr class="thcolor">
+              <th width="3%"></th>
+              <th class="text-left">Proveedor</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @compras.each do |pe| %>
+              <tr>
+                <td></td>
+                <td class="text-left" style="font-size:11px;">
+                  <div id="abrir<%= pe.eproveedor_id %>" class="pull-left">
+                    <%= link_to show_detalle_menus_path(eproveedor_id: pe.eproveedor_id, ruta: 'ABRIR'), remote: true do %>
+                      <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                      <%= pe.identnombre %> (Cant. <%= pe.cantidad %> - $ <%= camponumerico pe.valortotal %>)
+                    <% end %>
+                  </div>
+                  <div id="cerrar<%= pe.eproveedor_id %>" class="pull-left hide">
+                    <%= link_to show_detalle_menus_path(eproveedor_id: pe.eproveedor_id, ruta: 'CERRAR'), remote: true do %>
+                      <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                      <%= pe.identnombre %> (Cant. <%= pe.cantidad %> - $ <%= camponumerico pe.valortotal %>)
+                    <% end %>
+                  </div>
+                  <div id="causacionesdetalle<%= pe.eproveedor_id %>" style="width: 100%"></div>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="firma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

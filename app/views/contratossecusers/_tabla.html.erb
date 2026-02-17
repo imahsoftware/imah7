@@ -1,0 +1,16 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead>
+	    <tr class="thcolor">
+        <td width="8%"><div align="center"></div></td>
+        <td width="10%" class="text-center">Fecha</td>
+        <td class="text-left">Usuario / Supervisor</td>
+	    </tr>
+	  </thead>
+	  <tbody id="tbody_contratossecusers">
+      <% @contratosseccion.contratossecusers.order("id desc").each do |contratossecuser| %>
+	      <%= render 'contratossecusers/tr', contratossecuser: contratossecuser %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

@@ -1,0 +1,48 @@
+window.location.href = '<%= complementar_visitas_path(id: @visita.id, etapa: 'A') %>';
+
+$(".alert_flash").fadeOut(1000, function() {
+	$(this).remove();
+});
+
+$(".clean").val("").trigger('change');
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(1000, function() {
+		$(this).remove();
+	});
+}, 5000);
+
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(function (position) {
+		var latitude = position.coords.latitude;
+		var longitude = position.coords.longitude;
+
+		// Actualizar los campos de latitud y longitud
+		document.getElementById('visita_latitude').value = latitude;
+		document.getElementById('visita_longitude').value = longitude;
+
+		// Hacer una solicitud a Nominatim para obtener la dirección
+		fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+			.then(response => response.json())
+			.then(data => {
+				var address = data.display_name;
+				document.getElementById('visita_direccion').value = address;
+
+				if (address) {
+					console.log(`La dirección es: ${address}`);
+				} else {
+					console.log('No se pudo determinar la dirección.');
+				}
+			})
+			.catch(error => {
+				console.error('Error al obtener la dirección:', error);
+			});
+	});
+}
+

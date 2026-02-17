@@ -1,0 +1,20 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th class="font-size-text-tabla text-let text-table" width="50%">Clase</th>
+    <th class="font-size-text-tabla text-center text-table">Cantidad Items</th>
+    <th class="font-size-text-tabla text-center text-table">Cantidad Evaluada</th>
+    <th class="font-size-text-tabla text-center text-table">Avance</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @resultados.each do |p| %>
+    <tr>
+      <td class="font-size-text-tabla text-table text-left"><%= p.clase rescue nil %></td>
+      <td class="font-size-text-tabla text-table text-center"><%= p.cnt_items rescue nil %></td>
+      <td class="font-size-text-tabla text-table text-center"><%= p.cnt_evaluada rescue nil %></td>
+      <td class="font-size-text-tabla text-table text-center"><%= p.resultado.to_i rescue nil %>%</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

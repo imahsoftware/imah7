@@ -1,0 +1,164 @@
+<% isadmin = is_admin %>
+<section class="content-header" style="padding: 0px 15px 0 15px !important; margin-top: -10px;">
+  <h1>Week Ejecuciones
+    <div class="pull-right">
+      <b class="text-red">PENDIENTES</b> <i class="fa fa-certificate text-red"></i> &nbsp;
+      <b class="text-blue">NO APLICA</b> <i class="fa fa-certificate text-blue"></i> &nbsp;
+      <b class="text-orange">EN PROCESO</b> <i class="fa fa-certificate text-orange"></i> &nbsp;
+      <b class="text-green">FINALIZADAS</b> <i class="fa fa-certificate text-green"></i>
+    </div>
+  </h1>
+</section>
+<% isadmin = is_admin
+   bloqueoporweek = 'NO'
+   if Objeto.find_by_sql("SELECT * FROM view_tareasactividades WHERE user_id = #{isadmin}").present?
+     bloqueoporweek = 'SI'
+   end
+   if bloqueoporweek == 'SI' %>
+    <br/><div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> What happened? </h4>Tienes tareas del Week sin realizar.... hasta que no termines no puedes continuar con tus actividades. Asi que ponte pilas y empieza YA!</div>
+<% end %>
+<div class="box-header">
+  <% if @tareas.present? %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-default ">
+          <%= simple_form_for(Tareasactividad.new, url: search_tareasactividades_path(tarea_id: current_user.subetapa.to_s), remote: true, method: :get) do |f| %>
+            <div class="box-body">
+              <div class="col-md-4">
+                <%= label_tag :actividad, 'Buscar Actividad - Empleado' %><br/>
+                <%= text_field_tag :actividad, params[:actividad], class: 'form-control', style: 'width: 100%;', autocomplete: 'off' %>
+              </div>
+              <div class="col-md-2">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div id="search_actividad<%= current_user.subetapa.to_s %>"></div>
+  <% end %>
+  <div class="row">
+    <div class="col-md-12">
+      <% if @tareas.present? %>
+        <% @tareas.each do |tarea|
+          porc2 = (100 * tarea.sumtotal.to_f) / tarea.total.to_f rescue 0
+        %>
+          <% actividades = Tareasactividad.where("tarea_id = #{tarea.id}") %>
+          <div class="box box-default collapsed-box">
+            <div class="box-header with-border">
+              <h3 class="box-title"><%= link_to informedat_datas_path(format: :xlsx, infgrupo_id: 85, tarea_id: tarea.id), data: { toggle: 'tooltip' }, title: "Generar Reporte" do %>
+                  <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                  <% end %> <%= tarea.tema rescue nil %> <small> (Creación: <%=tarea.created_at.strftime("%Y-%m-%d %X") rescue nil%>)</small></h3>
+              <div class="pull-right">
+                <b class="text-red"><%= tarea.pendientes rescue nil %></b>
+                <i class="fa fa-certificate text-red"></i> &nbsp;
+                <b class="text-blue"><%= tarea.noaplica rescue nil %></b>
+                <i class="fa fa-certificate text-blue"></i> &nbsp;
+                <b class="text-orange"><%= tarea.procesos rescue nil %></b>
+                <i class="fa fa-certificate text-orange"></i> &nbsp;
+                <b class="text-green"><%= tarea.finalizadas rescue nil %></b>
+                <i class="fa fa-certificate text-green"></i>
+                ... Total Act: <%= tarea.total rescue nil %> ( <%= porc2.to_i rescue nil %> % )
+                <%= link_to ver_grafica_general_tareas_path(id: tarea.id), remote: true, data: { toggle: 'tooltip' }, title: 'Ver Grafica' do %>
+                  <button class="btn btn-xs btn-danger"><i class="fa fa-pie-chart"></i></button>
+                <% end %>
+                <%= link_to ver_grafica_usuarios_tareas_path(id: tarea.id), remote: true, data: { toggle: 'tooltip' }, title: 'Ver Grafica Usuarios' do %>
+                  <button class="btn btn-xs btn-warning"><i class="fa fa-bar-chart"></i></button>
+                <% end %>
+              </div>
+            </div>
+            <div class="box-header">
+              <div class="row">
+                <div class="col-md-12">
+                  <% if actividades.present? %>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <% actividades.select("tareasactividades.user_persona, (select nombre from users where id = tareasactividades.user_persona) nombreuser,
+                                             (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona and t.estado = '0') pendientes,
+                                             (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona and t.estado = '0.5') procesos,
+                                             (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona and t.estado = '1.0') noaplica ,
+                                             (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona and t.estado = '1') finalizadas ,
+                                             (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona) total,
+                                             (select sum(ifnull(t.estado,0)) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                              and t.user_persona = tareasactividades.user_persona) sumtotal ")
+                                    .distinct.group("user_persona").order("2").each do |actividad|
+                        porc = (100 * actividad.sumtotal.to_f) / actividad.total.to_f rescue 0
+                      %>
+                        <tr>
+                          <td width="100%" class="text-left text-table" style="padding: 7px;">
+                            <div id="abrir_monday<%= tarea.id.to_s %>_<%= actividad.user_persona.to_s %>">
+                              <%= link_to mostrar_monday_tareas_path(tarea_id: tarea.id, ruta: 'ABRIR', user_persona: actividad.user_persona), remote: true, style: 'color: black; ' do %>
+                                <i class="fa fa-plus text-success"></i> <%= actividad.nombreuser rescue nil %>
+                                <% if isadmin == actividad.user_persona %><i class="fa fa-certificate text-red"></i>
+                                <% end %>
+                              <% end %>
+                              <div class="pull-right">
+                                <b class="text-red"><%= actividad.pendientes rescue nil %></b>
+                                <i class="fa fa-certificate text-red"></i> &nbsp
+                                <b class="text-blue"><%= actividad.noaplica rescue nil %></b>
+                                <i class="fa fa-certificate text-blue"></i> &nbsp;
+                                <b class="text-orange"><%= actividad.procesos rescue nil %></b>
+                                <i class="fa fa-certificate text-orange"></i> &nbsp;
+                                <b class="text-green"><%= actividad.finalizadas rescue nil %></b>
+                                <i class="fa fa-certificate text-green"></i> ... Total
+                                Act: <%= actividad.total rescue nil %> ( <%= porc.to_i rescue nil %> % )
+                              </div>
+                            </div>
+                            <div class="hide" id="cerrar_monday<%= tarea.id.to_s %>_<%= actividad.user_persona.to_s %>">
+                              <%= link_to mostrar_monday_tareas_path(tarea_id: tarea.id, ruta: 'CERRAR', user_persona: actividad.user_persona), remote: true, style: 'color: black;' do %>
+                                <i class="fa fa-minus text-red"></i> <%= actividad.nombreuser rescue nil %>
+                                <% if isadmin == actividad.user_persona %><i class="fa fa-certificate text-red"></i>
+                                <% end %>
+                              <% end %>
+                              <div class="pull-right">
+                                <b class="text-red"><%= actividad.pendientes rescue nil %></b>
+                                <i class="fa fa-certificate text-red"></i> &nbsp;
+                                <b class="text-blue"><%= actividad.noaplica rescue nil %></b>
+                                <i class="fa fa-certificate text-blue"></i> &nbsp;
+                                <b class="text-orange"><%= actividad.procesos rescue nil %></b>
+                                <i class="fa fa-certificate text-orange"></i> &nbsp;
+                                <b class="text-green"><%= actividad.finalizadas rescue nil %></b>
+                                <i class="fa fa-certificate text-green"></i> ... Total
+                                Act: <%= actividad.total rescue nil %> ( <%= porc.to_i rescue nil %> % )
+                              </div>
+                            </div>
+                            <div id="show_monday<%= tarea.id.to_s %>_<%= actividad.user_persona.to_s %>"></div>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </table>
+                  <% else %>
+                    <div class="alert alert-danger">
+                      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="grafica<%= tarea.id %>">
+            <div class="modal-dialog modal-dialog-responsive" role="document">
+              <div class="modal-content"></div>
+            </div>
+          </div>
+          <div class="modal fade" id="grafica_usuario<%= tarea.id %>">
+            <div class="modal-dialog modal-dialog-responsive" role="document">
+              <div class="modal-content"></div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        No hay tarea seleccionada
+      <% end %>
+    </div>
+  </div>
+</div>
+

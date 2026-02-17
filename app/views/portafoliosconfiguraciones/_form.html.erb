@@ -1,0 +1,32 @@
+<%= form_for(portafoliosconfiguracion) do |f| %>
+  <% if portafoliosconfiguracion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(portafoliosconfiguracion.errors.count, "error") %> prohibited this portafoliosconfiguracion from being saved:</h2>
+
+      <ul>
+      <% portafoliosconfiguracion.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :portafolio_id %>
+    <%= f.text_field :portafolio_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :descripcion %>
+    <%= f.text_field :descripcion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :valor %>
+    <%= f.text_field :valor %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

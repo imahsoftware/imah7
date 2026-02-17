@@ -1,0 +1,18 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="10%"></th>
+    <th class="font-size-text-tabla text-center" width="5%">ID</th>
+    <th class="font-size-text-tabla" width="25%">Descripción del Documento</th>
+    <th class="font-size-text-tabla text-center" width="12%">Obligatorio</th>
+    <th class="font-size-text-tabla text-center" width="12%">Estado</th>
+    <th class="font-size-text-tabla text-center" width="12%">Solo Imagen</th>
+    <th class="font-size-text-tabla">Observación</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_parcargosdocs">
+  <% @parcargo.parcargosdocs.order(id: :desc).each do |parcargosdoc| %>
+    <%= render 'parcargosdocs/tr', parcargosdoc: parcargosdoc %>
+  <% end %>
+  </tbody>
+</table>

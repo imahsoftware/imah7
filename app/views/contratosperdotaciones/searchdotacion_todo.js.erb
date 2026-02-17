@@ -1,0 +1,9 @@
+<% if @contratosprefechasdotacion_todo.present? %>
+$("#resultado_dotacion_todo").html("<%= j render 'contratosperdotaciones/resultado_dotacion_todo'%>");
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_dotacion_todo").html("");
+<% end %>

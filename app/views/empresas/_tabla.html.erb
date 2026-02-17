@@ -1,0 +1,25 @@
+<table class="table table-bordered table-responsive table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="5%"></th>
+    <th class="text-left">Identificación - Nombres</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tbody id="tbody_empresas">
+  <% @empresas.order(created_at: :desc).each do |empresa| %>
+    <%= render 'empresas/tr', empresa: empresa %>
+  <% end %>
+  </tbody>
+</table>
+
+<div class="box-tools pull-right">
+  <%= will_paginate @empresas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+</div><!-- /.box-tools -->
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+</script>
+

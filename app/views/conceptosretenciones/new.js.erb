@@ -1,0 +1,9 @@
+<% if @active_record.present? %>
+	$("#conceptosretencion_<%= @active_record.id %>").replaceWith("<%= j render 'tr', conceptosretencion: @active_record %>");
+<% end %>
+$("#conceptosretencion_form").html("<%= j render 'form' %>");
+$(".datetimepicker").datetimepicker();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#conceptosretencion_form").collapse("show");
+$(".select2").select2();

@@ -1,0 +1,25 @@
+<%= simple_form_for([@contrato, @contratosgrupo], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :descripcion, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: 'Descripcion' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :termino, as: :select, collection: select_terminodescuento, input_html: { class: 'select2' }, label: "Aplicación"  %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :seguridad_minimo, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Control Seguridad Social"  %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :codigo_aportesenlinea, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: 'Codigo AportesEnLinea' %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosgrupo.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosgrupo_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosgrupo_path(@contrato, @contratosgrupo), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

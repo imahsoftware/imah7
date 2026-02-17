@@ -1,0 +1,17 @@
+<tr id="contratossolnota_<%= contratossolnota.id %>">
+  <td class="text-center">
+    <% if @contratossolicitud.estado.to_s == 'PENDIENTE1' %>
+    <%= link_to edit_contratossolicitud_contratossolnota_path(@contratossolicitud, contratossolnota), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contratossolicitud_contratossolnota_path(@contratossolicitud, contratossolnota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%= contratossolnota.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/><%= contratossolnota.user.nombre.html_safe rescue nil %></td>
+  <td align="justify"><%= contratossolnota.observacion rescue nil %></td>
+</tr>
+
+
+

@@ -1,0 +1,32 @@
+<%
+  @procesos = Contratosperproceso.where("DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and contratosperfecha_id in (select id from contratosperfechas where contrato_id = #{@contrato.id})")
+                                 .order("created_at asc")
+  if @procesos.present?
+%>
+    <div class="parrafo">
+      Durante el periodo <b><%= @mes rescue nil %></b>, la empresa procedió en cumplimiento con el Reglamento Interno de trabajo y siendo consecuentes
+      con el código Sustantivo de trabajo con diferentes procesos de llamados de atención y/o procesos
+      disciplinarios con aquellos colaboradores que no cumplieron con dichas normas y que de cierta forma ponen en
+      riesgo la prestación del servicio, en total se realizaron <b>&nbsp;(<%= @procesos.count rescue 0 %>)&nbsp;</b> procesos, a continuación se relacionan las personas.
+    </div><br/>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="15%" class="encabezado_tabla alineacion_center">Fecha</th>
+        <th width="30%" class="encabezado_tabla alineacion_izq">Nombre Empleado</th>
+        <th class="encabezado_tabla alineacion_izq">Cargo</th>
+      </tr>
+      <% @procesos.each do |contratosperproceso| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;" class="alineacion_center"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;" class="alineacion_izq"><%= contratosperproceso.contratospersona.nombre_completo rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;" class="alineacion_izq"><%= contratosperproceso.contratosperfecha.contratoscargo.perfil rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizo ningun proceso.
+  </div><br/>
+<% end %>
+
+

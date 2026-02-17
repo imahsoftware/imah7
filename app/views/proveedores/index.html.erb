@@ -1,0 +1,77 @@
+<div class="box ">
+  <div class="box-header with-border">
+    <div class="row">
+      <div class="col-md-11">
+        <legend>Proveedores - Buscador</legend>
+      </div>
+      <div class="col-md-1">
+        <%= link_to new_proveedor_path, data: {toggle: 'tooltip'}, title: 'Crear Proveedor' do %>
+          <button class="btn btn-info"><strong>Nuevo</strong></button>
+        <% end %>
+      </div>
+    </div>
+  </div><!-- /.box-header -->
+  <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+    <div class="box-body">
+      <div class="form-group">
+        <%= label_tag :identificacion, 'Identificación' %><br/>
+        <%= text_field_tag :identificacion, params[:identificacion], class: 'form-control', style:'width:150px;', autocomplete: 'off' %>
+      </div>
+      <div class="form-group">
+        <%= label_tag :nombre, 'Nombre' %><br/>
+        <%= text_field_tag :nombre, params[:nombre], class: 'form-control', style:'width:240px;', autocomplete: 'off' %>
+      </div>
+      <div class="form-group">
+        <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="box-header with-border">
+    <% if @proveedores.count.to_i > 0 %>
+      <div class="box-body">
+        <div class="box-header with-border">
+          <legend>Proveedores (<%=@proveedores.count rescue 0%>) </legend>
+        </div><!-- /.box-header -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+            <tr class="thcolor">
+              <th width="10%"></th>
+              <th width="15%" class="text-left">Identificación</th>
+              <th width="50%" class="text-left">Nombre popular del proveedor</th>
+              <th class="text-left">Telefonos</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @proveedores.order(created_at: :desc).each do |p|
+            %>
+              <tr id="proveedor_<%= p.id %>">
+                <td class="text-center">
+                  <%= link_to edit_proveedor_path(p, etapa: 'A'), class: 'edit_proveedor_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                  <% end %>
+                  <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                  <% end %>
+                </td>
+                <td><%= p.identificacion rescue nil %>-<%= p.digito rescue nil %></td>
+                <td><%= p.nombre_proveedor rescue nil %></td>
+                <td><%= p.telefono rescue nil %> - <%= p.celular rescue nil %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-tools pull-right">
+          <%= will_paginate @proveedores, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+        </div><!-- /.box-tools -->
+      </div>
+    <% else %>
+      <div class="alert alert-danger">
+        <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+      </div>
+    <% end %>
+    </div>
+</div>

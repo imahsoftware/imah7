@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : 'App' %> | <%= ENV['NOMBRE_APLICACION'] %></title>
+    <%= csrf_meta_tags %>
+    <%= action_cable_meta_tag %>
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+  <body>
+<div class="wrapper">
+  <%= render 'layouts/without_seg_layout/main_header_entrada' %>
+  <%= render 'layouts/without_seg_layout/content_wrapper' %>  
+</div>
+</body>
+</html>

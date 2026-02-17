@@ -1,0 +1,46 @@
+
+<div id="inicioOTP" class="<%= ruta == 'MODULO_CONTRATO' ? '' : 'container' %>">
+  <%
+      @usr = current_user
+      if ruta == 'MODULO_CONTRATO'
+        @usr = contratosperfecha.contratospersona
+      end
+    contratosperfecha = Contratosperfecha.where("contratospersona_id = (select id from contratospersonas where identificacion = '#{@usr.identificacion}') and sol_firma_digital = 'SI'").first
+    #contratosperfecha = Contratosperfecha.where("contratospersona_id = (select id from contratospersonas where identificacion = '1047964149') and sol_firma_digital = 'SI'").first
+    if contratosperfecha.present? %>
+    <div class="alert alert-danger" align="justify">
+      <h4>Hola, <%= contratosperfecha.contratospersona.nombre_completo.upcase rescue nil %></h4>
+      <p>Tienes un contrato pendiente de Firma:
+
+        <br/><br/><small><%= contratosperfecha.contrato.empresa.identnombre rescue nil %>
+        <br/><strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %> -
+        <strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+        <br/><strong>Grupo de nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %>
+        (<%= contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+        <br/><br/>Da click en "Iniciar", para continuar con el proceso</p>
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 text-center">
+        <%= link_to generar_otp_contratosperfechas_path(id: contratosperfecha.id, contratospersona_id: contratosperfecha.contratospersona_id, ruta: ruta), method: :post, remote: true, data: { toggle: 'tooltip', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" } do %>
+          <button type="button" class="btn btn-danger"><i class="fa fa-sort-numeric-asc"></i> Iniciar </button>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+    </div>
+  <% end %>
+</div>
+
+<div class="row" id="tratamientoOTP"></div>
+<div class="row" id="otp2"></div>
+<div class="row" id="codigo_firma_cifrada"></div>
+
+<script type="text/javascript" charset="utf-8">
+    const onConfirmRefresh = function (event) {
+        event.preventDefault();
+        return event.returnValue = "Are you sure you want to leave the page?";
+    }
+    window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+</script>
+

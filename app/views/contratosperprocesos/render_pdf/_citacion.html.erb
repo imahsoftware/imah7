@@ -1,0 +1,77 @@
+<div align="center">
+  <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="35%" rowspan="3"><%= image_tag "#{@logo}", size: "280x120" %></td>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center"><b><%= @porta.razon_social rescue nil %></b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center"><b>PROCESO DE RECURSO HUMANO</b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center"><b>PROCESO DISCIPLINARIO</b></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                <br/>
+                Medellin, <%= namedate(Time.now) rescue nil %>
+                <br/><br/><br/><br/>
+                Señor(a)<br/>
+                <b><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %></b><br/>
+                <b><%= camponumerico2 @contratosperproceso.contratospersona.identificacion rescue nil %></b><br/>
+                <b><%= @contratosperproceso.contratospersona.direccion rescue nil %></b><br/>
+                <b><%= @contratosperproceso.contratospersona.correo rescue nil %></b><br/>
+                <b><%= @porta.razon_social rescue nil %></b><br/>
+                <br/><br/>
+                <strong>ASUNTO:</strong> CITACIÓN A DESCARGOS
+                <br/><br/>
+                De acuerdo con lo dispuesto en Reglamento Interno de Trabajo, y en atención al procedimiento que se sigue por <b>"<%= @contratosperprocitacion.reglamento_interno rescue nil %>""</b>, se le cita a la Audiencia de Descargos, la cual se llevará a cabo en:<br/><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                  <tr>
+                    <td width="20%" height="30" style="background: #E8E3E3;"><strong>LUGAR : </strong></td>
+                    <td>&nbsp;<%= @contratosperprocitacion.lugar rescue nil %></td>
+                  </tr>
+                  <tr>
+                    <td height="30" style="background: #E8E3E3;"><strong>FECHA : </strong></td>
+                    <td>&nbsp;<%= namedate(@contratosperprocitacion.fecha.strftime("%d-%m-%Y").to_date) rescue nil %></td>
+                  </tr>
+                  <tr>
+                    <td height="30" style="background: #E8E3E3;"><strong>HORA : </strong></td>
+                    <td>&nbsp;<%= @contratosperprocitacion.fecha.strftime("%H:%M") %></td>
+                  </tr>
+                </table>
+                <br/><br/>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                  Para que pueda ejercer su derecho a presentar las pruebas y argumentos que considere pertinentes en su defensa.<br/><br/>
+                  En dicha audiencia, usted tendrá la oportunidad de manifestar lo que estime conveniente respecto a los hechos que se le imputan y de presentar cualquier prueba que pueda acreditar su versión de los hechos.<br/><br/>
+                  Le recordamos que la audiencia se celebrará con su comparecencia personal, y en caso de no asistir, se podrá continuar el procedimiento con base en la información disponible.<br/><br/>
+                  Se le informa además que tiene usted derecho de asistir a esta diligencia acompañado de dos testigos, preferiblemente compañeros de trabajo.<br/><br/>
+                </div>
+                <br/><br/>
+                <table width="60%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+                  <tr>
+                    <td height="50" style="background: #E8E3E3; padding: 10px;">
+                      <% if @contratosperprocitacion.codigo_firma.present? %>
+                        <strong><%= @contratosperprocitacion.user.nombre rescue nil rescue nil %><br/>
+                        <%= @porta.razon_social rescue nil %><br/></strong>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperprocitacion.codigo_firma %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperprocitacion.codigo_fecha.strftime("%d-%m-%Y %X") rescue nil %><br/>
+                        <small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

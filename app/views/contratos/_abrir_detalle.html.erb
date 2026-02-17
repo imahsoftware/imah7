@@ -1,0 +1,408 @@
+<%
+  is_auth_c_capacitacionespecial = is_auth_c('capacitacionespecial')
+%>
+<div class="box box-default color-palette-box">
+  <div class="box-header with-border">
+    <h3 class="box-title"><i class="fa fa-users"></i> Detalle de la Capacitación</h3>
+    <div class="pull-right">
+      <%= link_to edit_capacitacion_path(id: @contratoscapacitacion.capacitacion_id, subetapa: '3') do %>
+        <i class="fa fa-arrow-left"></i> Regresar
+      <% end %></div>
+  </div>
+  <div class="box-body">
+    <table width="100%">
+      <td width="75%">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="50%" class="text-left text-table">Empresa - Contrato</th>
+            <th class="text-left text-table">Responsable Capacitación</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="text-left text-table"><%= @contratoscapacitacion.contrato.empresa.identnombre rescue nil %>
+              <strong>( <%= @contratoscapacitacion.contrato.nro_contrato rescue nil %>) </strong></td>
+            <td class="text-left text-table"><%= User.find(@contratoscapacitacion.user_supervisor).nombre rescue nil %></td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th class="text-left text-table">Descripcion de la Capacitación</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="text-left text-table">
+              <div align="justify">
+                <strong><%= @contratoscapacitacion.capacitacion.descripcion rescue nil %></strong>
+                <br/><strong>Objetivo: </strong><%= @contratoscapacitacion.capacitacion.objetivo rescue nil %>
+                <br/><strong>Tema: </strong><%= @contratoscapacitacion.capacitacion.temas rescue nil %>
+                <% if @contratoscapacitacion.capacitacion.capacitaciondocs.present? %><br/>
+                  <table class="table table-bordered table-condensed table-striped  table-hover">
+                    <tr class="thcolor">
+                      <th class="font-size-text-tabla text-table">Material de Apoyo</th>
+                    </tr>
+                    <tr>
+                      <td class="text-left">
+                        <% @contratoscapacitacion.capacitacion.capacitaciondocs.order(id: :desc).each do |capacitaciondoc| %>
+                          <% if capacitaciondoc.capacitaciondoc_file_name.present? %>
+                            <%= link_to capacitaciondoc.capacitaciondoc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                              <i class="fa fa-cloud-download text-danger"></i> <%= capacitaciondoc.descripcion rescue nil %>
+                              - <%= capacitaciondoc.capacitaciondoc_file_name rescue nil %>
+                            <% end %>
+                          <% else %>
+                            <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'VIDEO' %>
+                              <%= link_to video_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Video" do %>
+                                <i class="fa fa-youtube-play text-danger"></i> <%= capacitaciondoc.descripcion rescue nil %>
+                              <% end %>
+                            <% end %>
+                            <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'LINK' %>
+                              <%= link_to link_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Link" do %>
+                                <i class="fa fa-external-link-square text-danger"></i> <%= capacitaciondoc.descripcion rescue nil %>
+                              <% end %>
+                            <% end %>
+                          <% end %><br/>
+                          <div class="modal fade" id="video<%= capacitaciondoc.id %>">
+                            <div class="modal-dialog modal-dialog-responsive" role="document">
+                              <div class="modal-content"></div>
+                            </div>
+                          </div>
+                          <div class="modal fade" id="link<%= capacitaciondoc.id %>">
+                            <div class="modal-dialog modal-dialog-responsive" role="document">
+                              <div class="modal-content"></div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </td>
+                    </tr>
+                  </table>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="15%" class="text-center text-table">Pendientes</th>
+            <th width="15%" class="text-center text-table">No Aplica</th>
+            <th width="15%" class="text-center text-table">Otros Pendientes</th>
+            <th width="15%" class="text-center text-table">Pend Iniciar Capacitación</th>
+            <th width="15%" class="text-center text-table">En Proceso</th>
+            <th width="15%" class="text-center text-table">Finalizados</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr id="capacitacion_<%= @contratoscapacitacion.id %>">
+            <td class="text-center text-table"><%= @valorpend rescue 0 %></td>
+            <td class="text-center text-table"><%= @valornoaplica rescue 0 %></td>
+            <td class="text-center text-table"><%= Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: @contratoscapacitacion.id).count rescue 0 %></td>
+            <td class="text-center text-table"><%= @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").count rescue 0 %></td>
+            <td class="text-center text-table"><%= @valorpro rescue 0 %></td>
+            <td class="text-center text-table"><%= @valorf rescue 0 %></td>
+          </tr>
+          </tbody>
+        </table>
+
+      </td>
+      <td valign="top" width="25%" style="padding: 15px">
+        <canvas id="miGraficoTorta" width="10" height="10"></canvas>
+        <script>
+
+            var ctx = document.getElementById("miGraficoTorta").getContext("2d");
+
+            var data = {
+                labels: ["Pendiente","No Aplica","Otros Pendientes", "Pendientes Iniciar Capacitacion", "En Proceso", "Finalizado"],
+                datasets: [{
+                    data: [<%= @valorpend %>, <%= @valornoaplica %>, <%= Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: @contratoscapacitacion.id).count rescue 0 %>, <%= @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").count rescue 0 %>, <%= @valorpro %>, <%= @valorf %>],
+                    backgroundColor: ["#EE2727","#E89E8E", "#1659EA", "#F38217", "#FFCE56", "#28AF10"]
+                }]
+            };
+
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: data
+            });
+
+        </script>
+      </td>
+    </table>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+
+            <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+              <%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'A') do %>
+                Pendientes (<%= @contratosperfechas.count rescue 0 %>)
+              <% end %>
+            </li>
+
+            <li class="<%= @etapa == 'A1' ? 'active' : '' %>"><%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'A1') do %>
+                No Aplica (<%= Contratoscapapersona.where(estado_evaluacion: 'NO APLICA', contratoscapacitacion_id: @contratoscapacitacion.id).count rescue 0 %>)
+              <% end %></li>
+
+            <li class="<%= @etapa == 'B' ? 'active' : '' %>"><%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'B') do %>
+                Otros Pendientes (<%= Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: @contratoscapacitacion.id).count rescue 0 %>)
+              <% end %></li>
+
+            <li class="<%= @etapa == 'E' ? 'active' : '' %>"><%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'E') do %>
+                Pendientes Iniciar Capacitación (<%= @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").count rescue nil %>)
+              <% end %></li>
+
+            <li class="<%= @etapa == 'C' ? 'active' : '' %>"><%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'C') do %>
+                En Proceso (<%= @contratoscapapersonasprocesos.count rescue 0 %>)
+              <% end %></li>
+
+            <li class="<%= @etapa == 'D' ? 'active' : '' %>"><%= link_to show_detalle_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, etapa: 'D') do %>
+                Finalizados (<%= @contratoscapapersonasfinalizados.count rescue 0 %>)
+              <% end %></li>
+            <div class="pull-right">
+              <%= link_to informedat_datas_path(format: :xlsx, infgrupo_id: 92, contratoscapacitacion_id: @contratoscapacitacion.id), data: { toggle: 'tooltip' }, title: "Generar Reporte" do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Reporte de la Capacitación
+                </button>
+              <% end %>
+              <%= link_to capacitacion_pdf_contratoscapacitaciones_path(id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i> Informe</button>
+              <% end %>
+              <%= link_to capacitacion_pdf_contratoscapacitaciones_path(id: @contratoscapacitacion.id, contrato_id: @contratoscapacitacion.contrato_id, full: 'SI'), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i> Informe Full</button>
+              <% end %>
+            </div>
+          </ul>
+          <div class="tab-content">
+            <% if @etapa == 'A' %>
+              <div class="pull-right" style="padding: 5px;">
+                <div style="display: flex;align-items: flex-end; margin-right: 20px;">
+                  <% if @contratosperfechas.present? %>
+                    <% if is_auth_a('marcar_capacitaciones_pendientes') %>
+                      <% if Contratosperfecha.where("contrato_id = #{@contratoscapacitacion.contrato_id} and id not in (select contratosperfecha_id from contratoscapapersonas where contrato_id = #{@contratoscapacitacion.contrato_id} and contratoscapacitacion_id = #{@contratoscapacitacion.id})").present? %>
+                        <%= link_to marcar_todo_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Marcar para capacitación" do %>
+                          <button class="btn btn-xs btn-success"><i class="fa fa-check"></i> Marcar Todo</button>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                  <% if is_auth_c_capacitacionespecial %>&nbsp;
+                    <% if @contratoscapacitacion.interno.to_s == 'NO' %>
+                      <%= link_to marcar_todo_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, interno: 'SI'), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Activar solo interno" do %>
+                        <button class="btn btn-xs btn-info"><i class="fa fa-check"></i> Activar Solo Interno</button>
+                      <% end %>
+                    <% elsif @contratoscapacitacion.interno.to_s == 'SI' %>
+                      <%= link_to marcar_todo_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id, interno: 'NO'), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Desactivar solo interno" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Deactivar Solo Interno
+                        </button>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <% if @contratosperfechas.present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th class="text-center text-table" width="5%"></th>
+                    <th class="text-left text-table">Datos del usuario</th>
+                    <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @contratosperfechas.includes([:contratospersona]).each do |contratosperfecha| %>
+                    <tr>
+                      <td class="text-center text-table">
+                        <div id="marcacion<%= contratosperfecha.id %><%= @contratoscapacitacion.id %>">
+                          <%= link_to marcar_capacitacion_contratos_path(contratosperfecha_id: contratosperfecha.id, contrato_id: contratosperfecha.contrato_id, contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Marcar para capacitación" do %>
+                            <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td class="text-left text-table">
+                        <div class="btn-group" id="botones<%= contratosperfecha.id %>">
+                          <button type="button" class="btn btn-info dropdown-toggle btn-xs" data-toggle="dropdown">
+                            N/A <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                            <li>
+                              <%= link_to marcar_noaplica_contratos_path(motivo: 'INCAPACIDAD', contratosperfecha_id: contratosperfecha.id, contrato_id: contratosperfecha.contrato_id, contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" } do %>
+                                <i class="fa fa-h-square"></i> Incapacidad
+                              <% end %>
+                            </li>
+                            <li>
+                              <%= link_to marcar_noaplica_contratos_path(motivo: 'LICENCIA', contratosperfecha_id: contratosperfecha.id, contrato_id: contratosperfecha.contrato_id, contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" } do %>
+                                <i class="fa fa-h-square"></i> Licencia
+                              <% end %>
+                            </li>
+                            <li>
+                              <%= link_to marcar_noaplica_contratos_path(motivo: 'HOSPITALIZACION', contratosperfecha_id: contratosperfecha.id, contrato_id: contratosperfecha.contrato_id, contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" } do %>
+                                <i class="fa fa-h-square"></i> Hospitalizacion
+                              <% end %>
+                            </li>
+                            <li>
+                              <%= link_to marcar_noaplica_contratos_path(motivo: 'VACACIONES', contratosperfecha_id: contratosperfecha.id, contrato_id: contratosperfecha.contrato_id, contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" } do %>
+                                <i class="fa fa-h-square"></i> Vacaciones
+                              <% end %>
+                            </li>
+                          </ul>
+                        </div>&nbsp;
+                        <%= contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+                      <td class="text-center text-table">
+                        <div id="tiempo<%= contratosperfecha.id %><%= @contratoscapacitacion.id %>"></div>
+                      </td>
+                    </tr>
+                  <% end %>
+
+                  </tbody>
+                </table>
+              <% else %>
+                <br/><br/>
+                <div class="alert alert-danger"><strong><%= t :atencion %> NO hay datos</strong></div>
+              <% end %>
+            <% end %>
+
+
+            <% if @etapa == 'A1' %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th class="text-left text-table">Datos del usuario</th>
+                  <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @contratoscapapersonasnoaplica.includes([:contratospersona]).each do |contratoscapapersona| %>
+                  <tr>
+                    <td class="text-left text-table">
+                      <%= link_to marcar_noaplica_contratos_path(motivo: 'NN', contratoscapapersona_id: contratoscapapersona.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }  do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+                      <% end %>&nbsp;<%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                    <td class="text-center text-table"><%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+
+            <% if @etapa == 'C' %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th class="text-center text-table" width="5%"></th>
+                  <th class="text-left text-table">Datos del usuario</th>
+                  <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @contratoscapapersonasprocesos.includes([:contratospersona]).each do |contratoscapapersona| %>
+                  <tr>
+                    <td class="text-center text-table">
+                      <% if is_auth_c_capacitacionespecial %>
+                        <%= link_to devolver_contratoscapapersonas_path(contratoscapapersona_id: contratoscapapersona.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Devolver Capacitacion" do %>
+                          <button class="btn btn-xs btn-success"><i class="fa fa-arrow-left"></i></button>
+                        <% end %>
+                      <% end %>
+                    </td>
+                    <td class="text-left text-table"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                    <td class="text-center text-table"><%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+            <% if @etapa == 'D' %>
+              <% if @contratoscapapersonasfinalizados.where(calificacion: 'REPROBADO').present? %>
+               <legend>Reprobados (<%=@contratoscapapersonasfinalizados.where(calificacion: 'REPROBADO').count.to_i rescue 0%>)</legend>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th class="text-left text-table" width="5%"></th>
+                    <th class="text-left text-table">Datos del usuario</th>
+                    <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+                    <th class="text-center text-table" width="15%">Calificación</th>
+                    <th class="text-center text-table" width="15%">Fecha Firma</th>
+                    <th class="text-center text-table" width="20%">Codigo Firma</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @contratoscapapersonasfinalizados.includes([:contratospersona]).where(calificacion: 'REPROBADO').each do |contratoscapapersona| %>
+                    <tr>
+                      <td class="text-center text-table">
+                        <%= link_to capacitacion_pdf_contratoscapapersonas_path(id: contratoscapapersona.id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' }, title: 'Capacitación PDF' do %>
+                          <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+                        <% end %>
+                      </td>
+                      <td class="text-left text-table"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.calificacion rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% end %>
+
+              <% if @contratoscapapersonasfinalizados.where(calificacion: 'APROBADO').present? %>
+                <legend>Aprobados (<%=@contratoscapapersonasfinalizados.where(calificacion: 'APROBADO').count.to_i rescue 0%>)</legend>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th class="text-left text-table" width="5%"></th>
+                    <th class="text-left text-table">Datos del usuario</th>
+                    <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+                    <th class="text-center text-table" width="15%">Calificación</th>
+                    <th class="text-center text-table" width="15%">Fecha Firma</th>
+                    <th class="text-center text-table" width="20%">Codigo Firma</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @contratoscapapersonasfinalizados.includes([:contratospersona]).where(calificacion: 'APROBADO').each do |contratoscapapersona| %>
+                    <tr>
+                      <td class="text-center text-table">
+                        <%= link_to capacitacion_pdf_contratoscapapersonas_path(id: contratoscapapersona.id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' }, title: 'Capacitación PDF' do %>
+                          <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+                        <% end %>
+                      </td>
+                      <td class="text-left text-table"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.calificacion rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %></td>
+                      <td class="text-center text-table"><%= contratoscapapersona.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% end %>
+            <% end %>
+            <% if @etapa == 'B' %>
+              <%= render 'contratoscapapersonas/contratoscapapersonas', contratoscapacitacion: @contratoscapacitacion %>
+            <% end %>
+            <% if @etapa == 'E' %>
+              <%= render 'contratos/pendientes_iniciar' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+

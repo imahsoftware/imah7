@@ -1,0 +1,17 @@
+$("#tiposdocumento_form").collapse("hide");
+
+$("#tiposdocumento_form").empty();
+
+<% if @active_record.present? %>
+	$("#tiposdocumento_<%= @active_record.id %>").replaceWith("<%= j render 'tr', tiposdocumento: @active_record %>");
+<% end %>
+
+$("#tiposdocumento_<%= @tiposdocumento.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#tiposdocumento_<%= @tiposdocumento.id %>").addClass("active_tiposdocumento");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

@@ -1,0 +1,102 @@
+
+<%
+  isportafolio = is_portafolio
+  meses = "'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'"
+  fechasshow = Dashboardcalculado.select(["to_char(fechakpi,'MM') mes, to_char(fechakpi,'YYYY') anno"]).where(["portafolio_id = #{isportafolio} and etiqueta = 'db_GraficaRecaudoAcumuladoMesDia_1'"]).distinct(["to_char(fechakpi,'MM') dia, to_char(fechakpi,'YYYY') anno"]).order("to_char(fechakpi,'YYYY'),to_char(fechakpi,'MM')")
+%>
+<head>
+  <script type="text/javascript">
+      $(function () {
+          var chart;
+          $(document).ready(function() {
+              chart = new Highcharts.Chart({
+                  chart: {
+                      renderTo: 'container',
+                      type: 'spline'
+                  },
+                  title: {
+                      text: 'Recaudo por mes'
+                  },
+                  xAxis: {
+                      categories: [<%= meses.html_safe %>]
+                  },
+                  yAxis: {
+                      min: 0,
+                      title: {
+                          text: ' Millones'
+                      },
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#ffffff'
+                      }]
+                  },
+                  tooltip: {
+                      shared: true,
+                      crosshairs: true
+                  },
+
+                  plotOptions: {
+                      spline: {
+                          lineWidth: 4,
+                          states: {
+                              hover: {
+                                  lineWidth: 5
+                              }
+                          },
+                          marker: {
+                              enabled: false
+                          }
+                      }
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle'
+                  },
+                  credits: {
+                      enabled: false
+                  },
+                  series: [
+                      <%
+                       ing = 0
+                       estado = false
+                      fechasshow.each do |f|
+                        fch1 = f.mes.to_s + '-' + f.anno.to_s
+                        vlr = []
+                        vlrHoy = 0
+                        diaFinish = 0
+                        dt = 0
+                        Dashboardcalculado.select(["to_number(to_char(fechakpi,'DD')) dia, valor"]).where(["portafolio_id = #{isportafolio} and etiqueta = 'db_GraficaRecaudoAcumuladoMesDia_1' and to_char(fechakpi,'MM-YYYY') = '#{fch1}'"]).order("fechakpi").each do |d|
+                          vlr << d.valor.to_i
+                          vlrHoy = d.valor.to_i
+                          diaFinish = d.dia.to_i
+                        end
+                        dt = 31 - diaFinish
+                        i = 0
+                        if dt > 0
+                          while i < dt
+                            vlr << vlrHoy.to_i
+                            i = i + 1
+                          end
+                        end
+                        ing = ing + 1
+                        if ing >= 10
+                          estado = true
+                        end
+                      %>
+                      {
+                          name: '<%=fch1.to_s %>',
+                          data: <%=vlr%>,
+                          visible: <%=estado%>
+                      },<% end %>]
+              });
+          });
+
+      });
+  </script>
+</head>
+<body>
+<div id="container" style="min-width: 280px; height: 350px; margin: 0 auto"></div>
+</body>
+</html>

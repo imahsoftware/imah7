@@ -1,0 +1,9 @@
+<% if @ruta == 'ABRIR' %>
+  $('#show_evaluacion<%= @showevaluacion %>').html('<%= j render 'evaluaciones/show_evaluacion' %>');
+  $("#abrir_evaluacion<%= @showevaluacion %>").addClass("hide");
+  $("#cerrar_evaluacion<%= @showevaluacion %>").removeClass("hide");
+<% else %>
+  $('#show_evaluacion<%= @showevaluacion %>').html('');
+  $("#abrir_evaluacion<%= @showevaluacion %>").removeClass("hide");
+  $("#cerrar_evaluacion<%= @showevaluacion %>").addClass("hide");
+<% end %>

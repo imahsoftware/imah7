@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Observación: <%= @veriserviciositem.descripcion rescue nil %></h4>
+</div>
+<div class="modal-body">
+  <%= simple_form_for @veriserviciosinota, :url => create2_veriserviciosinotas_path, :method => :post, remote: true do |f| %>
+    <%= hidden_field_tag :id, params[:id], value: @veriserviciositem.id %>
+    <div class="bs-callout">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= f.input :observacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<br/>
+
+
+

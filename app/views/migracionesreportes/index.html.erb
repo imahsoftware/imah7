@@ -1,0 +1,149 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesreportes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Consecutivo</th>
+      <th>Persona</th>
+      <th>Identificacion</th>
+      <th>Cli numdcto</th>
+      <th>Est codigo</th>
+      <th>Cli nombre comp</th>
+      <th>Correo personal</th>
+      <th>Correo institucional</th>
+      <th>Telefono residencia</th>
+      <th>Telefono movil</th>
+      <th>Direccion</th>
+      <th>Nivel academico</th>
+      <th>Programa</th>
+      <th>Niv formacion</th>
+      <th>Metodologia</th>
+      <th>Liquidacion</th>
+      <th>Estado liq</th>
+      <th>Valor liq</th>
+      <th>Valor matricula</th>
+      <th>Seccional</th>
+      <th>Tip estudiante</th>
+      <th>Periodo liq</th>
+      <th>Max periodo matric</th>
+      <th>Fecha pago</th>
+      <th>Fecha generacion</th>
+      <th>Tipo aspirante</th>
+      <th>Est sem academico</th>
+      <th>Est sem aprobado</th>
+      <th>Promedio acumulado</th>
+      <th>Promedio semestre</th>
+      <th>Semestre pensum</th>
+      <th>Caus virtual</th>
+      <th>Genero</th>
+      <th>Ciudad res</th>
+      <th>Depto</th>
+      <th>Barrio</th>
+      <th>Departamento</th>
+      <th>Cod jornada</th>
+      <th>Jornada</th>
+      <th>Ano grado colegio</th>
+      <th>Periodo real</th>
+      <th>Programa ajustado</th>
+      <th>Cod programa</th>
+      <th>Niv formacion2</th>
+      <th>Facultad</th>
+      <th>Extrae ta</th>
+      <th>Tipo aspirante2</th>
+      <th>Seccional2</th>
+      <th>Tip estudianteti</th>
+      <th>Est sem academico2</th>
+      <th>Depto conca</th>
+      <th>Nombre csu</th>
+      <th>Tipo csu</th>
+      <th>Ciudad csu</th>
+      <th>Departamento csu</th>
+      <th>Region csu</th>
+      <th>Estado csu</th>
+      <th>Grupo virtual</th>
+      <th>Edad</th>
+      <th>Red</th>
+      <th>Transferencias internas</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesreportes.each do |migracionesreporte| %>
+      <tr>
+        <td><%= migracionesreporte.user %></td>
+        <td><%= migracionesreporte.consecutivo %></td>
+        <td><%= migracionesreporte.persona %></td>
+        <td><%= migracionesreporte.identificacion %></td>
+        <td><%= migracionesreporte.cli_numdcto %></td>
+        <td><%= migracionesreporte.est_codigo %></td>
+        <td><%= migracionesreporte.cli_nombre_comp %></td>
+        <td><%= migracionesreporte.correo_personal %></td>
+        <td><%= migracionesreporte.correo_institucional %></td>
+        <td><%= migracionesreporte.telefono_residencia %></td>
+        <td><%= migracionesreporte.telefono_movil %></td>
+        <td><%= migracionesreporte.direccion %></td>
+        <td><%= migracionesreporte.nivel_academico %></td>
+        <td><%= migracionesreporte.programa %></td>
+        <td><%= migracionesreporte.niv_formacion %></td>
+        <td><%= migracionesreporte.metodologia %></td>
+        <td><%= migracionesreporte.liquidacion %></td>
+        <td><%= migracionesreporte.estado_liq %></td>
+        <td><%= migracionesreporte.valor_liq %></td>
+        <td><%= migracionesreporte.valor_matricula %></td>
+        <td><%= migracionesreporte.seccional %></td>
+        <td><%= migracionesreporte.tip_estudiante %></td>
+        <td><%= migracionesreporte.periodo_liq %></td>
+        <td><%= migracionesreporte.max_periodo_matric %></td>
+        <td><%= migracionesreporte.fecha_pago %></td>
+        <td><%= migracionesreporte.fecha_generacion %></td>
+        <td><%= migracionesreporte.tipo_aspirante %></td>
+        <td><%= migracionesreporte.est_sem_academico %></td>
+        <td><%= migracionesreporte.est_sem_aprobado %></td>
+        <td><%= migracionesreporte.promedio_acumulado %></td>
+        <td><%= migracionesreporte.promedio_semestre %></td>
+        <td><%= migracionesreporte.semestre_pensum %></td>
+        <td><%= migracionesreporte.caus_virtual %></td>
+        <td><%= migracionesreporte.genero %></td>
+        <td><%= migracionesreporte.ciudad_res %></td>
+        <td><%= migracionesreporte.depto %></td>
+        <td><%= migracionesreporte.barrio %></td>
+        <td><%= migracionesreporte.departamento %></td>
+        <td><%= migracionesreporte.cod_jornada %></td>
+        <td><%= migracionesreporte.jornada %></td>
+        <td><%= migracionesreporte.ano_grado_colegio %></td>
+        <td><%= migracionesreporte.periodo_real %></td>
+        <td><%= migracionesreporte.programa_ajustado %></td>
+        <td><%= migracionesreporte.cod_programa %></td>
+        <td><%= migracionesreporte.niv_formacion2 %></td>
+        <td><%= migracionesreporte.facultad %></td>
+        <td><%= migracionesreporte.extrae_ta %></td>
+        <td><%= migracionesreporte.tipo_aspirante2 %></td>
+        <td><%= migracionesreporte.seccional2 %></td>
+        <td><%= migracionesreporte.tip_estudianteti %></td>
+        <td><%= migracionesreporte.est_sem_academico2 %></td>
+        <td><%= migracionesreporte.depto_conca %></td>
+        <td><%= migracionesreporte.nombre_csu %></td>
+        <td><%= migracionesreporte.tipo_csu %></td>
+        <td><%= migracionesreporte.ciudad_csu %></td>
+        <td><%= migracionesreporte.departamento_csu %></td>
+        <td><%= migracionesreporte.region_csu %></td>
+        <td><%= migracionesreporte.estado_csu %></td>
+        <td><%= migracionesreporte.grupo_virtual %></td>
+        <td><%= migracionesreporte.edad %></td>
+        <td><%= migracionesreporte.red %></td>
+        <td><%= migracionesreporte.transferencias_internas %></td>
+        <td><%= link_to 'Show', migracionesreporte %></td>
+        <td><%= link_to 'Edit', edit_migracionesreporte_path(migracionesreporte) %></td>
+        <td><%= link_to 'Destroy', migracionesreporte, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesreporte', new_migracionesreporte_path %>

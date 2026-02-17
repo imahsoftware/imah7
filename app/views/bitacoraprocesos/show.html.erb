@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Codigo:</strong>
+  <%= @bitacoraproceso.codigo %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @bitacoraproceso.user_id %>
+</p>
+
+<p>
+  <strong>Proceso:</strong>
+  <%= @bitacoraproceso.proceso %>
+</p>
+
+<p>
+  <strong>Codigo recibido:</strong>
+  <%= @bitacoraproceso.codigo_recibido %>
+</p>
+
+<p>
+  <strong>Fecha firma:</strong>
+  <%= @bitacoraproceso.fecha_firma %>
+</p>
+
+<p>
+  <strong>Codigo firma:</strong>
+  <%= @bitacoraproceso.codigo_firma %>
+</p>
+
+<p>
+  <strong>Id tabla:</strong>
+  <%= @bitacoraproceso.id_tabla %>
+</p>
+
+<p>
+  <strong>Controlador tabla:</strong>
+  <%= @bitacoraproceso.controlador_tabla %>
+</p>
+
+<%= link_to 'Edit', edit_bitacoraproceso_path(@bitacoraproceso) %> |
+<%= link_to 'Back', bitacoraprocesos_path %>

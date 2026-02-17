@@ -1,0 +1,18 @@
+$("#otp<%= @contratossoleppsatencion.id %> .modal-content").html('<%= j render "contratossoleppsatenciones/otp" %>');
+$("#otp<%= @contratossoleppsatencion.id %> ").modal();
+
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+$('.tooltip').tooltip('hide');
+
+

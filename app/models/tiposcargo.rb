@@ -1,0 +1,2 @@
+class Tiposcargo < ApplicationRecord
+end

@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionescontratos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Contratoscargo</th>
+      <th>Contratosgrupo</th>
+      <th>Fecha inicio</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionescontratos.each do |migracionescontrato| %>
+      <tr>
+        <td><%= migracionescontrato.user %></td>
+        <td><%= migracionescontrato.archivo %></td>
+        <td><%= migracionescontrato.estado %></td>
+        <td><%= migracionescontrato.identificacion %></td>
+        <td><%= migracionescontrato.contratoscargo_id %></td>
+        <td><%= migracionescontrato.contratosgrupo_id %></td>
+        <td><%= migracionescontrato.fecha_inicio %></td>
+        <td><%= link_to 'Show', migracionescontrato %></td>
+        <td><%= link_to 'Edit', edit_migracionescontrato_path(migracionescontrato) %></td>
+        <td><%= link_to 'Destroy', migracionescontrato, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionescontrato', new_migracionescontrato_path %>

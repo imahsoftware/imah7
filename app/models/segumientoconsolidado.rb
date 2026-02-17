@@ -1,0 +1,2 @@
+class Segumientoconsolidado < ApplicationRecord
+end

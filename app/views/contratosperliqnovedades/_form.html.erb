@@ -1,0 +1,25 @@
+<%= simple_form_for([@contratosperliquidacion, @contratosperliqnovedad], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :tiposnovedad_id, collection: Tiposnovedad.where(["estado ='ACTIVO'"]).order(:descripcion).collect {|p| [ p.descripcionampliada, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Novedad" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :numero, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_novedad, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperliqnovedad.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperliqnovedad_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosperliquidacion_contratosperliqnovedad_path(@contratosperliquidacion, @contratosperliqnovedad), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

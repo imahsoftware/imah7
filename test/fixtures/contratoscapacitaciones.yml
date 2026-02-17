@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato_id: 1
+  user_id: 1
+  capacitacion_id: 1
+  fecha_real: 2023-11-12
+  fecha_programacion: 2023-11-12
+  user_supervisor: 1
+
+two:
+  contrato_id: 1
+  user_id: 1
+  capacitacion_id: 1
+  fecha_real: 2023-11-12
+  fecha_programacion: 2023-11-12
+  user_supervisor: 1

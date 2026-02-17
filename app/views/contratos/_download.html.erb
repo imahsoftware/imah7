@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Generación por Rango de Fechas</h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <tr>
+            <th width="30%" class="thcolor text-left">Periodo</th>
+            <td class="thcolor text-left" style="font-size:11px;">Informes</td>
+          </tr>
+          <% @contratosperfechas.each do |a| %>
+          <tr>
+            <th class="thcolor text-left"><%=a.fchincio %></th>
+            <td class="text-left" style="font-size:10px;">
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'DOCUMENTOS', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Documentos' do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'CONTRATOS', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar contratos firmados' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'AFILIACIONES', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Afiliaciones' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'DOTACION', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Dotación' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'DOTACIONP', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'DOTACIONPE', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica SIN CANTIDADES' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'INDUCCION', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Induccion' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: a.contrato_id, clase: 'CARTA', fch: a.fchincio.to_s), data: { toggle: 'tooltip' }, title: 'Descargar Carta Laboral' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+            </td>
+          </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

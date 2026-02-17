@@ -1,0 +1,7 @@
+<% if params[:estado] == 'ELIMINAR' %>
+$("#myTableRow<%= params[:contrato_id].to_i %><%= params[:contratosgrupo_id] %>").remove();
+<% else %>
+$("#showbotones<%= params[:contrato_id].to_s %><%= params[:contratosgrupo_id].to_s %>").html("<%= j render 'btrconsolidado_replace' %>")
+$("#cambioestado<%= params[:contrato_id].to_s %><%= params[:contratosgrupo_id].to_s %>").html("<%= j render 'btrestado_replace' %>")
+<% end %>
+$(".tooltip").tooltip("hide");

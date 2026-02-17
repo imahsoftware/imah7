@@ -1,0 +1,70 @@
+<% @is_auth_e_egreso = is_auth_e("egreso") %>
+ <% if egreso.estado.to_s == 'ANULADO' %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4>
+    Egreso Anulado por <%=User.find(egreso.user_anula).nombre rescue nil %> el <%=egreso.updated_at rescue nil %></div>
+  <% else %>
+    <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+         <tr>
+           <th width="10%" class="text-center" style="font-size: 11px; font-family: Tahoma;">Nro Factura</th>
+           <th width="13%" class="text-center" style="font-size: 11px; font-family: Tahoma;">Fecha de Factura</th>
+           <th width="10%" class="text-right" style="font-size: 11px; font-family: Tahoma;">Valor</th>
+           <th width="10%" class="text-center" style="font-size: 11px; font-family: Tahoma;">Compañia</th>
+           <th class="text-justify" style="font-size: 11px; font-family: Tahoma;">Concepto</th>
+         </tr>
+        </thead>
+      <% egreso.egresosdetalles.includes([:eproveedorescompra]).each do |egresosdetalle| %>
+        <% if egresosdetalle.eproveedorescompra_id.present? %>
+             <tr>
+               <td class="text-center" style="font-size: 11px; font-family: Tahoma;">
+                  <% if @is_auth_e_egreso %>
+                   <%= link_to cambio_egresos_path(id: egreso.id, eproveedorescompra_id: egresosdetalle.eproveedorescompra_id, estado: "DEPURAR"), data: {toggle: 'tooltip', confirm: "Seguro que desea Eliminar esta compra?"}, title: 'Eliminar compra del egreso' do %>
+                     <i class="fa fa-chrome"></i>
+                   <% end %>
+                 <% end %>
+                    <%=h egresosdetalle.eproveedorescompra.nro_factura rescue nil %></div></td>
+               <td class="text-center" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.eproveedorescompra.fecha rescue nil %></div></td>
+               <td class="text-right" style="font-size: 11px; font-family: Tahoma;"><%=camponumerico(egresosdetalle.total.to_f) rescue nil %></div></td>
+               <td class="text-center" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.eproveedorescompra.portafolio.nombre rescue nil %></div></td>
+              <td class="text-justify" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.concepto rescue nil %></div></td>
+             </tr>
+        <% elsif egresosdetalle.eproveedorestemegreso_id.present? %>
+            <tr>
+              <td class="text-center" style="font-size: 11px; font-family: Tahoma;">
+                <% if @is_auth_e_egreso and egreso.egresosdetalles.count.to_i > 1 %>
+                  <%= link_to cambio_egresos_path(id: egreso.id, eproveedorestemegreso_id: egresosdetalle.eproveedorestemegreso_id, estado: "DEPURAR_2"), data: {toggle: 'tooltip', confirm: "Seguro que desea Eliminar esta compra?"}, title: 'Eliminar compra del egreso' do %>
+                    <i class="fa fa-chrome"></i>
+                  <% end %>
+                <% end %> SIN INFO</td>
+              <td class="text-center" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.eproveedorestemegreso.fecha rescue nil %></div></td>
+              <td class="text-right" style="font-size: 11px; font-family: Tahoma;"><%=camponumerico(egresosdetalle.total.to_f) rescue nil %></div></td>
+              <td class="text-center" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.eproveedorestemegreso.portafolio.nombre rescue nil %></div></td>
+              <td class="text-justify" style="font-size: 11px; font-family: Tahoma;"><%=h egresosdetalle.concepto rescue nil %></div></td>
+            </tr>
+        <% end %>
+      <% end %>
+       <tr>
+         <td></td>
+         <td class="alert-danger" align="center" style="font-size: 11px; font-family: Tahoma;"><strong>Total</strong></td>
+         <td class="alert-danger" align="right" style="font-size: 11px; font-family: Tahoma;"><strong><%=camponumerico egreso.egresosdetalles.sum("total").to_f rescue nil %></strong></td>
+         <td></td>
+         <td></td>
+       </tr>
+    </table>
+  <% end %>
+  <% if egreso.egresosimagenes.exists? %><br/>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+        <tr>
+          <th class="text-left" style="font-size:10px;">Soportes Digitales del Egreso</th>
+        </tr>
+        </thead>
+        <% egreso.egresosimagenes.each do |a| %>
+          <tr>
+            <td align="left" style="font-size:10px;"><%= link_to a.egresoimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download text-danger"></i> <%=a.egresoimagen_file_name %>
+              <% end %></td>
+          </tr>
+        <%end %>
+      </table>
+  <% end %>

@@ -1,0 +1,2 @@
+class Migracionesestado < ApplicationRecord
+end

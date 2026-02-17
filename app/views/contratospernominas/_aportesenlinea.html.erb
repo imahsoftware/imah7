@@ -1,0 +1,249 @@
+<%
+  periodos = Periodosliquidacion.select("1 id, date_format(inicio,'%Y-%m') periodo")
+                                .where(["DATE_FORMAT(inicio,'%%Y-%%m') >= DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL -2 MONTH),'%%Y-%%m')
+                                         and id in (select distinct periodosliquidacion_id from contratospernominas)
+                                         and DATE_FORMAT(inicio,'%%Y-%%m') > '2022-12'"])
+                                .distinct.order("date_format(inicio,'%Y-%m') desc")
+  usr = User.find(is_admin)
+  estados = ["Pendientes", "Procesadas", "Ingresos", "Retiros"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.subetapa.to_s == p
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapars_contratospernominas_path(subetapa: p) do %>
+              <i class="fa fa-plane"></i>&nbsp<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if usr.subetapa.to_s == 'Pendientes' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if periodos.present? %>
+                <div class="table-responsive">
+                  <% periodos.each do |p|
+                    pendientes = Contratospernomina.joins(:contrato, :contratosgrupo)
+                                                   .select("distinct contratospernominas.contrato_id, contratos.nro_contrato,
+                                                          (select distinct 'X' from contratosprenimagenes where contrato_id = contratospernominas.contrato_id and contratosgrupo_id = contratospernominas.contratosgrupo_id) existedoc,
+                                                          (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                          contratospernominas.contratosgrupo_id,
+                                                          contratosgrupos.descripcion,
+                                                          contratospernominas.estado,
+                                                          count(9) cantidad,
+                                                          sum(contratospernominas.total) total,
+                                                          concat('#{p.periodo}',' : ',(select autobuscar from empresas where id = contratos.empresa_id),' : ',contratosgrupos.descripcion,' : ',contratos.nro_contrato) vcdetalle")
+                                                   .where(["contratospernominas.periodosliquidacion_id in (select id from periodosliquidaciones where date_format(inicio,'%%Y-%%m') = '#{p.periodo}')
+                                                    and  contratos.empresa_id in (select id from empresas where logo = 'logo_inicio_asear.png')
+                                                    AND contratospernominas.id IN (SELECT n.contratospernomina_id FROM contratospernovedades n, tiposnovedades t
+                                                                                   WHERE   n.contratospernomina_id = contratospernominas.id
+                                                                                   AND     n.tiposnovedad_id = t.id
+                                                                                   AND     t.tiposnaporte_id IS NOT NULL)
+                                                    and  contratospernominas.estado = 'CONSOLIDADO'
+                                                    and  (select distinct 'X' from ejecuciones where detalle = concat('#{p.periodo}',' : ',(select autobuscar from empresas where id = contratos.empresa_id),' : ',contratosgrupos.descripcion,' : ',contratos.nro_contrato)) is null"])
+                                                   .group("contratospernominas.contrato_id, contratospernominas.contratosgrupo_id, contratospernominas.estado, contratos.empresa_id")
+                                                   .order("contratospernominas.contrato_id")
+                  %>
+                    <legend>Periodo: <%= p.periodo %> <%= link_to informe_datas_path(infgrupo_id: 65, portafolio_id: p.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Periodo' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                      <% if @autorizaaporteslinea %>
+                        <div class="pull-right">
+                          <%= link_to ejecutarakeaportes_contratospernominas_path(periodo: p.periodo), data: { confirm: "Seguro que desea enviar todos los contratos pendientes? NO HAY REVERSION", toggle: 'tooltip' }, title: 'Enviar Aportes en Linea' do %>
+                            <code><i class="fa fa-hand-o-right"></i> <%= image_tag("logo_aportes.png", size: '50x13') %>
+                            </code>
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </legend>
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <th width="8%" class="text-left"></th>
+                          <th class="text-left">Empresa</th>
+                          <th width="40%" class="text-left">Grupo - Contrato</th>
+                          <th width="5%" class="text-center">Cant.</th>
+                        </tr>
+                        <% pendientes.each do |a| %>
+                          <tr>
+                            <td>
+                              <div align="center">
+                                <% if @autorizaaporteslinea %>
+                                  <%= link_to informe_datas_path(infgrupo_id: 64, portafolio_id: a.contrato_id.to_s + '-' + p.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Empresa' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                  <%= link_to enviar_novedad_annomes_contratospernominas_path(annomes: p.periodo, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, detalle: a.vcdetalle), data: { toggle: 'tooltip' }, title: 'Enviar Aportes en Linea' do %>
+                                    <button class="btn btn-xs btn-success"><i class="fa fa-h-square"></i></button>
+                                  <% end %>
+                                <% end %>
+                              </div>
+                            </td>
+                            <td class="text-left" style="font-size:10px;"><%= a.identnombre rescue nil %></td>
+                            <td class="text-left" style="font-size:10px;"><%= a.descripcion rescue nil %>
+                              <em><strong>(<%= a.nro_contrato rescue nil %>)</strong></em></td>
+                            <td class="text-center" style="font-size:10px;"><%= camponumerico2 a.cantidad rescue nil %></td>
+                          </tr>
+                        <% end %>
+                      </table>
+                      <div class="box-tools pull-right">
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                No hay
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Procesadas' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if periodos.present? %>
+                <div class="table-responsive">
+                  <% periodos.each do |p|
+                    procesadas = Contratospernomina.joins(:contrato, :contratosgrupo)
+                                                   .select("distinct contratospernominas.contrato_id, contratos.nro_contrato,
+                                                          (select distinct 'X' from contratosprenimagenes where contrato_id = contratospernominas.contrato_id and contratosgrupo_id = contratospernominas.contratosgrupo_id) existedoc,
+                                                          (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                          contratospernominas.contratosgrupo_id,
+                                                          contratosgrupos.descripcion,
+                                                          contratospernominas.estado,
+                                                          count(9) cantidad,
+                                                          sum(contratospernominas.total) total,
+                                                          concat('#{p.periodo}',' : ',(select autobuscar from empresas where id = contratos.empresa_id),' : ',contratosgrupos.descripcion,' : ',contratos.nro_contrato) vcdetalle,
+                                                          (select distinct 'X' from ejecuciones where detalle = concat('#{p.periodo}',' : ',(select autobuscar from empresas where id = contratos.empresa_id),' : ',contratosgrupos.descripcion,' : ',contratos.nro_contrato)) existeDetalle")
+                                                   .where(["contratospernominas.periodosliquidacion_id in (select id from periodosliquidaciones where date_format(inicio,'%%Y-%%m') = '#{p.periodo}')
+                                                    and  contratos.empresa_id in (select id from empresas where logo = 'logo_inicio_asear.png')
+                                                    AND contratospernominas.id IN (SELECT n.contratospernomina_id FROM contratospernovedades n, tiposnovedades t
+                                                                                   WHERE   n.contratospernomina_id = contratospernominas.id
+                                                                                   AND     n.tiposnovedad_id = t.id
+                                                                                   AND     t.tiposnaporte_id IS NOT NULL)
+                                                    and  contratospernominas.estado = 'CONSOLIDADO'
+                                                    and  (select distinct 'X' from ejecuciones where detalle = concat('#{p.periodo}',' : ',(select autobuscar from empresas where id = contratos.empresa_id),' : ',contratosgrupos.descripcion,' : ',contratos.nro_contrato)) = 'X'"])
+                                                   .group("contratospernominas.contrato_id, contratospernominas.contratosgrupo_id, contratospernominas.estado, contratos.empresa_id")
+                                                   .order("contratospernominas.contrato_id").paginate(:page => eval("params[:procesada#{p.periodo.gsub('-', '')}]"), :per_page => 8) %>
+                    <legend>Periodo: <%= p.periodo %> <%= link_to informe_datas_path(infgrupo_id: 65, portafolio_id: p.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Periodo' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                    </legend>
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <th width="5%" class="text-left"></th>
+                          <th class="text-left">Empresa</th>
+                          <th width="60%" class="text-left">Proceso</th>
+                        </tr>
+                        <% procesadas.each do |a| %>
+                          <tr>
+                            <td>
+                              <div align="center">
+                                <% if @autorizaaporteslinea %>
+                                  <%= link_to informe_datas_path(infgrupo_id: 64, portafolio_id: a.contrato_id.to_s + '-' + p.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Empresa' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                  <%= link_to enviar_novedad_annomes_contratospernominas_path(annomes: p.periodo, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, detalle: a.vcdetalle), data: { toggle: 'tooltip' }, title: 'REENVIAR Aportes en Linea' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-h-square"></i></button>
+                                  <% end %>
+                                <% end %>
+                              </div>
+                            </td>
+                            <td class="text-left" style="font-size:10px;"><%= a.identnombre rescue nil %>
+                              <br/>Grupo - Contrato: <%= a.descripcion rescue nil %>
+                              <em><strong>(<%= a.nro_contrato rescue nil %>) --
+                                (<%= camponumerico2 a.cantidad rescue nil %>)</strong></em></td>
+                            <td class="text-center" style="font-size:10px;">
+                              <table class="table table-bordered table-condensed table-striped">
+                                <tr class="thcolor">
+                                  <th class="text-left" style="font-size:8px;">Proceso</th>
+                                  <th width="10%" class="text-center" style="font-size:8px;">Estado</th>
+                                  <th width="15%" class="text-center" style="font-size:8px;">Inicio</th>
+                                  <th width="15%" class="text-center" style="font-size:8px;">Fin</th>
+                                </tr>
+                                <% Ejecucion.where("detalle = '#{a.vcdetalle}'").order("id desc").each do |a| %>
+                                  <tr>
+                                    <td class="text-left" style="font-size:8px;"><%= a.detalle rescue nil %>
+                                      <% if a.observacion.to_s != "" %><br/>Observacion: <%= a.observacion rescue nil %>
+                                      <% end %>
+                                    </td>
+                                    <td class="text-center" style="font-size:8px;"><%= a.estadocolor rescue nil %></td>
+                                    <td class="text-center" style="font-size:8px;"><%= a.inicioejecucion.strftime("%Y-%m-%d %X") rescue nil %></td>
+                                    <td class="text-center" style="font-size:8px;"><%= a.finejecucion.strftime("%Y-%m-%d %X") rescue nil %></td>
+                                  </tr>
+                                <% end %>
+                              </table>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    </div>
+                    <div class="box-tools pull-right">
+                      <%= will_paginate procesadas, :param_name => "procesada#{p.periodo.gsub('-', '')}", renderer: BootstrapPagination::Rails %>
+                    </div>
+                    <br/><br/>
+                  <% end %>
+                </div>
+              <% else %>
+                No hay
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Ingresos' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @autorizaaporteslinea %>
+                <%= render 'contratosperfechas/tabla2' %>
+              <% else %>
+                No tienes Acceso a esta transaccion
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Retiros' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @autorizaaporteslinea %>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="nav-tabs-custom">
+                      <ul class="nav nav-tabs">
+                        <li class="<%= @etapae == 'P' ? 'active' : nil %>">
+                          <%= link_to etapars_contratospernominas_path(subetapa: 'Retiros', etapae: "P") do %>
+                            <i class="fa fa-search"></i> Pendientes
+                          <% end %>
+                        </li>
+                        <li class="<%= @etapae == 'R' ? 'active' : nil %>">
+                          <%= link_to etapars_contratospernominas_path(subetapa: 'Retiros', etapae: "R") do %>
+                            <i class="fa fa-search"></i> Realizados
+                          <% end %>
+                        </li>
+                      </ul>
+                      <div class="tab-content">
+                        <% if @etapae == 'P' %>
+                          <%= render 'contratosperfechas/tabla3' %>
+                        <% elsif @etapae == 'R' %>
+                          <%= render 'contratosperfechas/tabla4' %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% else %>
+                No tienes Acceso a esta transaccion
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

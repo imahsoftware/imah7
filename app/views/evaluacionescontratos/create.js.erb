@@ -1,0 +1,11 @@
+<% if @evaluacion.evaluacionescontratos.present? %>
+	$("#evaluacionescontratos").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_evaluacionescontratos").prepend("<%= j render 'tr', evaluacionescontrato: @evaluacionescontrato %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#evaluacionescontrato_form").collapse("hide");

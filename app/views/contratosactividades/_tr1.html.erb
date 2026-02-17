@@ -1,0 +1,14 @@
+<tr id="contratosactividad_<%=a.id%>">
+  <td class="text-center">
+    <%= link_to seleccionar_contratosactividades_path(contratosactividad_id: a.id, contratosnodo_id: p.id, act: '0101010'), remote: true, data: {toggle: 'tooltip', confirm: "Seguro que desea marcar la realizacion de la actividad - #{a.detalle.to_s}?"} do %>
+      <i class="fa fa-check-square text-red"></i>
+    <% end %>
+    <%= link_to new2_contratosactejecuciones_path(contratosactividad_id: a.id, contratosnodo_id: p.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Observacion" do %>
+      <i class="fa fa-comments-o text-blue"></i>
+    <% end %>
+  </td>
+  <td class="text-justify">
+    <%=a.existeactejecutada(p.id,isadmin) %> <%=a.detalle rescue nil %></td>
+  <td class="text-center"><%=a.turno rescue nil %></td>
+  <td class="text-center"><%=a.horario rescue nil %></td>
+</tr>

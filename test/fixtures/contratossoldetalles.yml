@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratossolicitud: one
+  user: one
+  contratosinsumo: one
+  contratosmaquinaria: one
+  contratosotro: one
+  insumo: one
+  cantidad: 1
+  cantidad_real: 1
+  precio_unitario: 9.99
+  total: 9.99
+  user_act: 1
+
+two:
+  contratossolicitud: two
+  user: two
+  contratosinsumo: two
+  contratosmaquinaria: two
+  contratosotro: two
+  insumo: two
+  cantidad: 1
+  cantidad_real: 1
+  precio_unitario: 9.99
+  total: 9.99
+  user_act: 1

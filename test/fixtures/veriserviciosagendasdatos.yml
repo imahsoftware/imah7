@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  veriserviciosagenda_id: 1
+  clasificacion: MyString
+  orden: 1
+  total: MyString
+
+two:
+  veriserviciosagenda_id: 1
+  clasificacion: MyString
+  orden: 1
+  total: MyString

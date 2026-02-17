@@ -1,0 +1,16 @@
+<tr id="compromiso_<%= compromiso.id %>">
+  <td class="text-center">
+    <% if compromiso.visita.finalizacion.blank? %>
+      <%# if is_auth_e("compromiso")%>
+      <%= link_to edit_visita_compromiso_path(@visita, compromiso), remote: true, class: 'edit_compromiso_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to visita_compromiso_path(@visita, compromiso), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= compromiso.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= compromiso.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= compromiso.nota rescue nil %></td>
+</tr>

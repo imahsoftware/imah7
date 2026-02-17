@@ -1,0 +1,19 @@
+<tr id="contratosotro_<%= contratosotro.id %>">
+  <td class="text-center">
+    <% if is_auth_e("contratosotro")%>
+      <%= link_to edit_contrato_contratosotro_path(@contrato, contratosotro), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("contratosotro1")%>
+    <% #if Contratossoldetalle.exists?(contratosotro_id: contratosotro.id) == false %>
+      <%= link_to contrato_contratosotro_path(@contrato, contratosotro), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosotro.user_nombre.html_safe rescue nil %><%= contratosotro.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosotro.descripcion rescue nil %></td>
+  <td align="right"><%= camponumerico contratosotro.total rescue nil %></td>
+</tr>
+

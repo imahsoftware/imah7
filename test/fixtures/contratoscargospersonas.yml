@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratoscargo: one
+  user: one
+  identificacion: MyString
+  nombre: MyString
+  observacion: MyString
+  cargoimagen: 
+
+two:
+  contratoscargo: two
+  user: two
+  identificacion: MyString
+  nombre: MyString
+  observacion: MyString
+  cargoimagen: 

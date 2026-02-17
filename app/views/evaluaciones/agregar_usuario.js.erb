@@ -1,0 +1,6 @@
+$("#agregar_usuario<%= @evaluacion.id %> .modal-content").html('<%= j render "evaluaciones/agregar_usuario" %>');
+$("#agregar_usuario<%= @evaluacion.id %> ").modal();
+$(".datetimepicker").datetimepicker();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

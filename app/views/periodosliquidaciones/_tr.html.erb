@@ -1,0 +1,15 @@
+<tr id="periodosliquidacion_<%= periodosliquidacion.id %>">
+  	<td class="text-center">
+      <% if @is_auth_c_periodosliquidacion %>
+        <%= link_to edit_periodosliquidacion_path(periodosliquidacion), class: 'edit_periodosliquidacion_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+           <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+        <% end %>
+      <% end %>
+    </td>
+  <td class="text-center"><%= periodosliquidacion.id %></td>
+  <td class="text-center"><%= periodosliquidacion.inicio %></td>
+  <td class="text-center"><%= periodosliquidacion.fin %></td>
+  <td class="text-center"><%= periodosliquidacion.destado rescue nil %></td>
+  <td class="text-center"><%= periodosliquidacion.fecha_limite %></td>
+  <td class="text-center"><%= periodosliquidacion.visible %></td>
+</tr>

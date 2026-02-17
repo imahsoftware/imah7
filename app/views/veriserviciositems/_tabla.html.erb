@@ -1,0 +1,190 @@
+<div class="table-responsive">
+  <div id="mensaje" style="display: <%= @mensaje ? 'block' : 'none' %>;">
+    <div style="padding: 10px; background-color: #F83333; color: white; border-radius: 5px; font-size: 13px;">
+      Como se ha marcado el proceso con una calificación de 1, 2 o 3, es necesario realizar un agendamiento para la
+      próxima evaluación. Clic en la pestaña de
+      <i class="fa fa-calendar"></i> Agendas
+    </div>
+  </div>
+  <div id="mostrar_boton_cierre2" style="display: <%= @evaluador ? 'block' : 'none' %>;">
+    <%
+      if ['PENDIENTE', 'EN PROCESO'].include?(@veriservicio.estado_proceso) and
+        Veriserviciositem.where("veriservicio_id = #{@veriservicio.id} AND calificacion IS NOT NULL and calificacion not in (1,2,3)").present?
+    %>
+      <div style="padding: 10px; background-color: #c9302c; color: white; border-radius: 5px;font-size: 14px;">
+        <b><i class="fa fa-info-circle"></i> Has finalizado la verificación sin ninguna calificación en 1, 2 o 3. Para completar el proceso, debes ingresar en la pestaña de Agenda y realizar el proceso de firma digital.</b>
+      </div>
+    <% end %>
+  </div>
+  <br/>
+  <% @veriservicio.veriserviciositems.select(:clasificacion).distinct.each do |pp| %>
+    <legend><%= pp.clasificacion %><br/>
+      <code style="font-size: 12px; background-color: orange; color: black; padding: 5px;"> Marcar con un check la evaluación de las condiciones encontradas, siendo 1
+        deficiente y 5 excelente. En caso de
+        no aplicar, indicar en cada casilla N/A.</code></legend>
+    <table class="table table-bordered table-condensed table-striped table-hover">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-center text-table" width="10%"></th>
+        <th class="text-center text-table" width="3%"></th>
+        <th class="text-left text-table">Descripción</th>
+        <th class="text-center text-table" width="5%">N/A</th>
+        <th class="text-center text-table" width="5%">1</th>
+        <th class="text-center text-table" width="5%">2</th>
+        <th class="text-center text-table" width="5%">3</th>
+        <th class="text-center text-table" width="5%">4</th>
+        <th class="text-center text-table" width="5%">5</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_veriserviciositems">
+      <% @veriservicio.veriserviciositems.where(clasificacion: pp.clasificacion).order(orden: :asc).each do |veriserviciositem| %>
+        <tr id="veriserviciositem_<%= veriserviciositem.id %>">
+          <th class="text-center text-table" width="10%">
+            <%= link_to documento_veriserviciositems_path(id: veriserviciositem.id), remote: true, data: { toggle: 'tooltip' }, title: "Crear Documentos Digitales" do %>
+              <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+            <% end %>
+            <%= link_to nota_veriserviciositems_path(id: veriserviciositem.id), remote: true, data: { toggle: 'tooltip' }, title: "Crear Nota o Observación" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-book"></i></button>
+            <% end %>
+            <%= link_to compromiso_veriserviciositems_path(id: veriserviciositem.id), remote: true, data: { toggle: 'tooltip' }, title: "Crear Compromiso" do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-align-justify"></i></button>
+            <% end %>
+          </th>
+          <td align="center" class="text-table" width="3%"><%= veriserviciositem.orden %></td>
+          <td align="left" class="text-table"><%= veriserviciositem.descripcion %>
+            <% if veriserviciositem.observacion_calificacion.present? %>
+                <span id="observacion_calificacion_<%= veriserviciositem.id %>_span" style="font-size: 10px">
+                  <br/><code><b>Observación Calificación: </b><%= veriserviciositem.observacion_calificacion %></code>
+                </span>
+            <% else %>
+               <span id="observacion_calificacion_<%= veriserviciositem.id %>_span" class="hide"  style="font-size: 10px"></span>
+            <% end %>
+            <% if veriserviciositem.ver_detalle_opciones %>
+              <div id="abrir_item<%= veriserviciositem.id %>" class="pull-left" style="margin-right: 5px;">
+                <%= link_to show_detalle_veriserviciositems_path(id: veriserviciositem.id, ruta: 'ABRIR'), remote: true do %>
+                  &nbsp;
+                  <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para abrir detalle"></i>
+                <% end %>
+              </div>
+              <div id="cerrar_item<%= veriserviciositem.id %>" class="pull-left hide" style="margin-right: 5px;">
+                <%= link_to show_detalle_veriserviciositems_path(id: veriserviciositem.id, ruta: 'CERRAR'), remote: true do %>
+                  &nbsp;
+                  <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para cerrar detalle"></i>
+                <% end %>
+              </div>
+            <% end %>
+          </td>
+          <% (0..5).each do |rating| %>
+            <% if ['PENDIENTE', 'EN PROCESO'].include?(@veriservicio.estado_proceso) %>
+              <td align="center" class="text-table" width="5%">
+                <%= radio_button_tag "veriserviciositem_#{veriserviciositem.id}[calificacion]", rating, veriserviciositem.calificacion == rating, class: "radio-inline", data: { item_id: veriserviciositem.id, rating: rating } %>
+              </td>
+            <% else %>
+              <td align="center" class="text-table" width="5%">
+                <% if veriserviciositem.calificacion == rating %>
+                  <i class="fa fa-circle text-red"></i>
+                <% else %>
+                  <i class="fa fa-circle-thin"></i>
+                <% end %>
+              </td>
+            <% end %>
+          <% end %>
+        </tr>
+        <tr id="tr_show_item<%= veriserviciositem.id %>" class="hidden">
+          <td colspan="9">
+            <div id="abrir_detalle_item<%= veriserviciositem.id %>" style="padding-left: 30px; padding-right: 30px;"></div>
+          </td>
+        </tr>
+        <div class="modal fade" id="compromiso<%= veriserviciositem.id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+        <div class="modal fade" id="nota<%= veriserviciositem.id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+        <div class="modal fade" id="documento<%= veriserviciositem.id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+        <div class="modal fade" id="itemObs<%= veriserviciositem.id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">Observación de
+                  Calificación: <%= veriserviciositem.descripcion rescue nil %></h4>
+              </div>
+              <div class="modal-body">
+                <form id="formObservacion<%= veriserviciositem.id %>">
+                  <div class="form-group">
+                    <label for="observacion_calificacion_<%= veriserviciositem.id %>">Observación de la calificación
+                      Seleccionada</label>
+                    <textarea class="form-control" id="observacion_calificacion_<%= veriserviciositem.id %>" name="observacion_calificacion"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="guardarObservacion_<%= veriserviciositem.id %>">Guardar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.radio-inline').forEach(function (radioButton) {
+            radioButton.addEventListener('change', function () {
+                var itemId = this.dataset.itemId;
+                var rating = parseInt(this.dataset.rating);
+
+                // Envía la solicitud AJAX para actualizar la calificación
+                fetch(`/veriserviciositems/${itemId}/update_items`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ veriserviciositem: { calificacion: rating } })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelectorAll(`tr#veriserviciositem_${itemId} .radio-inline`).forEach(function (rb) {
+                                rb.checked = false;
+                            });
+                            radioButton.checked = true;
+
+                            const botonCierre = document.getElementById('mostrar_boton_cierre');
+                            botonCierre.style.display = data.evaluador ? 'block' : 'none';
+
+                            const botonCierre2 = document.getElementById('mostrar_boton_cierre2');
+                            botonCierre2.style.display = data.evaluador ? 'block' : 'none';
+
+                            const mensaje = document.getElementById('mensaje');
+                            mensaje.style.display = data.mensaje ? 'block' : 'none';
+
+                            // Redirige si la calificación es 1, 2 o 3
+                            if (rating === 1 || rating === 2 || rating === 3 || rating === 4 || rating === 5) {
+                                window.location.href = `/veriserviciositems/item?id=${itemId}`;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error parsing JSON:', error);
+                        alert('Error al procesar la respuesta del servidor.');
+                    });
+            });
+        });
+    });
+</script>

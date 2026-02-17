@@ -1,0 +1,328 @@
+<%
+  vcCampoEstado = is_auth_c('cambioestadoexamen')
+  permisoE = is_auth_e('contratospersona')
+  is_auth_c_prefacturaesespecial = is_auth_c('prefacturaesespecial')
+%>
+<div class="row">
+  <div class="col-md-11">
+    <legend>Información Facturación</legend>
+  </div>
+</div>
+<%
+  dato = @contrato.validacionfactura
+  if dato.to_s != "" %>
+  <div class="alert alert-danger">
+    <strong><%= t :atencion %> Para poder facturar electrónicamente te falta...</strong><br/><%= dato.html_safe %></div>
+<% end %>
+
+<% if @contrato.contratoscargos.where("cant_add > 0").exists? %>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="alert alert-danger">
+        <strong><%= t :atencion %> Hay personal adicional en este contrato.. Tengalo en cuenta en el proceso de
+          Facturacio...</strong></div>
+    </div>
+    <div class="col-md-8">
+      <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+        <tr>
+          <th class="text-left">Cargo</th>
+          <th width="15%" class="text-center">Salario</th>
+          <th width="15%" class="text-center">Adición</th>
+        </tr>
+        </thead>
+        <tbody id="tbody_contratoscargos">
+        <%
+          @contrato.contratoscargos.where("cant_add > 0").order(id: :desc).each do |contratoscargo| %>
+          <%= render 'contratoscargos/tr2', contratoscargo: contratoscargo %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          classactive10 = ""
+          if @subetapa == '10'
+            classactive10 = "active"
+          end
+        %>
+        <li class="<%= classactive10 %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id, subetapa: "10") do %>
+            <i class="fa fa-search"></i> <span></span> Prefacturas
+          <% end %>
+        </li>
+        <%
+          classactive11 = ""
+          if @subetapa == '11'
+            classactive11 = "active"
+          end
+        %>
+        <li class="<%= classactive11 %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id, subetapa: "11") do %>
+            <i class="fa fa-search"></i> <span></span> Pagos
+          <% end %>
+        </li>
+        <%
+          classactive13 = ""
+          if @subetapa == '13'
+            classactive13 = "active"
+          end
+        %>
+        <li class="<%= classactive13 %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id, subetapa: "13") do %>
+            <i class="fa fa-search"></i> <span></span> Retenciones
+          <% end %>
+        </li>
+        <%
+          classactive15 = ""
+          if @subetapa == '15'
+            classactive15 = "active"
+          end
+        %>
+        <li class="<%= classactive15 %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id, subetapa: "15") do %>
+            <i class="fa fa-search"></i> <span></span> Notas Debito
+          <% end %>
+        </li>
+        <%
+          classactive16 = ""
+          if @subetapa == '16'
+            classactive16 = "active"
+          end
+        %>
+        <li class="<%= classactive16 %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id, subetapa: "16") do %>
+            <i class="fa fa-search"></i> <span></span> Notas Credito
+          <% end %>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <% if @subetapa == '10' %>
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-blue"><strong>Pendientes</strong>
+                ( <%= camponumerico2 @contratosprefacturas.where(estado: 'PENDIENTE').count.to_i rescue 0 %>)
+                <br/>
+                $ <%= camponumerico2 @contratosprefacturas.where(estado: 'PENDIENTE').sum("total").to_f rescue 0 %>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-purple"><strong>Enviadas</strong>
+                ( <%= camponumerico2 @contratosprefacturas.where(estado: 'ENVIADO').count.to_i rescue 0 %>)
+                <br/> $ <%= camponumerico2 @contratosprefacturas.where(estado: 'ENVIADO').sum("total").to_f rescue 0 %>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-red"><strong>Aprobadas</strong>
+                ( <%= camponumerico2 @contratosprefacturas.where(estado: 'APROBADO').count.to_i rescue 0 %>)
+                <br/> $ <%= camponumerico2 @contratosprefacturas.where(estado: 'APROBADO').sum("total").to_f rescue 0 %>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-orange"><strong>Rechazadas</strong>
+                ( <%= camponumerico2 @contratosprefacturas.where(estado: 'RECHAZADA').count.to_i rescue 0 %>)
+                <br/>
+                $ <%= camponumerico2 @contratosprefacturas.where(estado: 'RECHAZADA').sum("total").to_f rescue 0 %>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-maroon"><strong>Pagadas</strong>
+                ( <%= camponumerico2 @contratosprefacturas.where(estado: 'APROBADO', saldo: 0).count.to_i rescue 0 %>)
+                <br/>
+                $ <%= camponumerico2 @contratosprefacturas.where(estado: 'APROBADO', saldo: 0).sum("recaudo").to_f rescue 0 %>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+              <div class="alert bg-light-blue"><strong>Recaudo</strong>
+                <br/> $ <%= camponumerico2 @contratosprefacturas.sum("recaudo").to_f rescue 0 %></div>
+            </div>
+          </div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-11">
+                <legend>Prefacturas
+                  <%= link_to informe_datas_path(infgrupo_id: 27, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe' do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+                  <% end %>
+                </legend>
+              </div>
+              <div class="col-md-1">
+                <%= link_to new_contratosprefactura_path(contrato_id: @contrato.id), data: { toggle: 'tooltip', confirm: "Seguro que desea crear una Prefactura?" }, title: 'Crear' do %>
+                  <button class="btn btn-info"><strong>Nuevo</strong></button>
+                <% end %>
+              </div>
+            </div>
+            <% if @contratosprefacturas.exists? %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="15%" class="text-center"></th>
+                        <th width="5%" class="text-center">Consecutivo</th>
+                        <th width="15%" class="text-center">Fecha</th>
+                        <th width="10%" class="text-center">Estado</th>
+                        <th width="10%" class="text-center">Total</th>
+                        <th width="10%" class="text-center">Abonos</th>
+                        <th width="10%" class="text-center">Notas Credito</th>
+                        <th width="10%" class="text-center">Saldo</th>
+                        <th width="5%" class="text-center">SiigoId</th>
+                        <th width="5%" class="text-center">SiigoNro</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratosprefacturas.includes([:user]).each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;"<% if p.existepag.to_s == 'X' %>rowspan="2"<% end %>>
+                            <%= link_to edit_contratosprefactura_path(id: p.id, etapa: 'A'), class: 'edit_contratosprefactura_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <% if p.estado.to_s == 'PENDIENTE' and p.siigo_id.to_s == "" %>
+                              <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                              <% end %>
+                            <% end %>
+                            <% if is_auth_c_prefacturaesespecial and p.estado.to_s == 'ENVIADO' %>
+                              <%= link_to cambioestado_contratosprefacturas_path(id: p.id, estado: "PENDIENTE"), data: { toggle: 'tooltip', confirm: "Seguro que desea reversar esta Prefactura?" }, title: 'Reversar prefactura' do %>
+                                <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                              <% end %>
+                            <% end %>
+                            <%= link_to contratosprefactura_path(id: p.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver prefactura ' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                            <% end %>
+                            <% if @idportafolio == 1 %>
+                              <% if p.siigo_id.to_s == "" and p.estado.to_s == 'APROBADO' and dato.to_s == "" %>
+                                <%= link_to generar_factura_contratosprefacturas_path(id: p.id), data: { toggle: 'tooltip' }, title: 'Generar Facturación Siigo 2' do %>
+                                  <button class="btn btn-xs btn-danger"><i class="fa fa-money"></i></button>
+                                <% end %>
+                              <% end %>
+                            <% else %>
+                              <% if p.siigo_id.to_s == "" and p.estado.to_s == 'APROBADO' and dato.to_s == "" %>
+                                <%= link_to generar_facturalocal_contratosprefacturas_path(id: p.id), data: { toggle: 'tooltip' }, title: 'Generar Factura' do %>
+                                  <button class="btn btn-xs btn-danger"><i class="fa fa-money"></i></button>
+                                <% end %>
+                              <% end %>
+                            <% end %>
+                            <%= link_to visualizar_contratosprefacturas_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Prefactura en Excel' do %>
+                              <button class="btn btn-xs btn-danger">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                            <% end %>
+                            <%= link_to replicar_contratosprefacturas_path(contrato_id: @contrato.id, id: p.id), data: { toggle: 'tooltip', confirm: "Seguro que desea Duplicar esta Prefactura?" }, title: 'Duplicar' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                            <% end %>
+                            <button class="btn btn-xs btn-info">
+                              <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= p.user_nombre.html_safe rescue nil %><%= p.user_actnombre.html_safe rescue nil %><%= p.siigoobs.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+                            </button>
+                          </td>
+                          <td class="text-center" style="font-size:11px;"><%= p.id rescue nil %></td>
+                          <td class="text-center" style="font-size:11px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                          <td class="text-center" style="font-size:11px;"><%= p.estado rescue nil %>
+                            <% if p.siigo_observacion.to_s != "" %>
+                              <div style="color:red;"><small><%= p.siigo_observacion.to_s rescue nil %></small></div>
+                            <% end %>
+                          </td>
+                          <td class="text-right" style="font-size:11px;"><%= camponumerico p.total rescue nil %></td>
+                          <td class="text-right" style="font-size:11px;"><%= camponumerico (p.recaudo + p.valor_retencion) rescue nil %></td>
+                          <td class="text-right" style="font-size:11px;"><%= camponumerico p.notacredito rescue nil %></td>
+                          <td class="text-right" style="font-size:11px;"><%= camponumerico p.saldo rescue nil %></td>
+                          <td class="text-center" style="font-size:11px;">
+                            <% if p.siigo_response.present? && p.siigo_id.blank? %>
+                              <div class="tiptext">
+                                <div class="description" style="width:60%; right: 200px;">
+                                  <%= JSON.parse(p.siigo_response) rescue  nil %>
+                                </div>
+                                 <i class='fa fa-info-circle text-red'></i>
+                              </div>
+                            <% end %>
+                            <% if p.siigo_id.present?  %>
+                              <button class="btn btn-xs btn-danger">
+                                <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= p.siigo_id.html_safe rescue nil %></div>"><i class="fa fa-barcode" aria-hidden="true"></i></span>
+                              </button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:11px;"><%= p.siigo_nro rescue nil %></td>
+                        </tr>
+                        <% if p.existepag.to_s == 'X' %>
+                          <tr>
+                            <td colspan="9">
+                              <a href="javascript:void(0);" onclick="SINO('demo_<%=p.id%>')">
+                                <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver recaudos"></i> Ver recaudos</a>
+                              <div id="demo_<%= p.id rescue nil %>" style="display:none;">
+                                <ul><br/>
+                                  <table class="table table-bordered table-condensed table-striped">
+                                    <thead class="thcolor">
+                                    <tr>
+                                      <td width="5%"></td>
+                                      <th width="10%" class="text-center">Nro Recibo</th>
+                                      <th width="10%" class="text-center">Fecha pago</th>
+                                      <th class="text-left">Tipo de cuenta</th>
+                                      <th class="text-right">Dinero</th>
+                                      <th class="text-right">Retenciones</th>
+                                      <th class="text-right">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbody_contratospagos">
+                                    <% p.contratospagos.each do |contratospago| %>
+                                      <tr id="contratospago_<%= contratospago.id %>">
+                                        <td class="text-center">
+                                          <%= link_to visualizar_contratospagos_path(id: contratospago.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver Recibo ' do %>
+                                            <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                                          <% end %>
+                                        </td>
+                                        <td align="center"><%= contratospago.id rescue nil %></td>
+                                        <td align="center"><%= contratospago.fecha_pago.strftime("%Y-%m-%d") rescue nil %></td>
+                                        <td align="left"><%= contratospago.tiposcuenta.entidad rescue nil %></td>
+                                        <td align="right"><%= camponumerico contratospago.valor rescue nil %></td>
+                                        <td align="right"><%= camponumerico contratospago.valor_retencion rescue nil %></td>
+                                        <td align="right"><%= camponumerico contratospago.totalgeneral rescue nil %></td>
+                                      </tr>
+                                    <% end %>
+                                    </tbody>
+                                  </table>
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger">
+                <strong><%= t :atencion %></strong> <%= t :atencion_msj %>
+              </div>
+            <% end %>
+          </div>
+        <% elsif @subetapa == '11' %>
+          <%= render 'contratospagos/contratospagos' %>
+        <% elsif @subetapa == '13' %>
+          <%= render 'contratosretenciones/contratosretenciones' %>
+        <% elsif @subetapa == '15' %>
+          <%= render 'contratosprefdebitos/contratosprefdebitos' %>
+        <% elsif @subetapa == '16' %>
+          <%= render 'contratosprefcreditos/contratosprefcreditos' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="temporal">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+
+
+

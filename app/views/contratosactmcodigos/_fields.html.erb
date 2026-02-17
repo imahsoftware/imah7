@@ -1,0 +1,37 @@
+
+  <% if clase == 'SERVICIO' %>
+    <td><strong><%= fe.tiposmevaluacion.descripcion rescue nil %></strong>
+      <small><br/><%= fe.tiposmevaluacion.detalle_esp rescue nil %></small></td>
+  <% elsif clase == 'PERSONAL' %>
+    <td><%= fe.tiposmevaluacion.detalle_esp rescue nil %></td>
+  <% end %>
+<% if clase == 'SERVICIO' %>
+    <% if clase == 'SERVICIO' and fe.tiposmevaluacion.descripcion.to_s == 'BRIGADAS'  %>
+      <td><div align="center">SI <%= f.radio_button("calificacion", fe.tiposmevaluacion.valor1) %></div></td>
+      <td><div align="center">NO  <%= f.radio_button("calificacion", fe.tiposmevaluacion.valor2) %></div></td>
+    <% else  %>
+      <td><div align="center"><%= f.radio_button("calificacion", fe.tiposmevaluacion.valor1) %></div></td>
+      <td><div align="center"><%= f.radio_button("calificacion", fe.tiposmevaluacion.valor2) %></div></td>
+    <% end  %>
+    <td><%= f.text_area(:observaciones, :cols => 80, :rows => 2,
+                        :onChange=> "javascript:this.value=this.value.toUpperCase();", :onFocus => "this.style.border='1px solid #f00'",
+                        :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%);") %>
+      <% if fe.calificacion.to_s == 0 and fe.observaciones.to_s == "" %>
+        <br/><span class="label label-danger">* Debes registrar la observación</span>
+      <% end %>
+    </td>
+<% elsif clase == 'PERSONAL' %>
+  <td><div align="center"><%= image_tag 'serio.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposmevaluacion.valor1) %></div></td>
+  <td><div align="center"><%= image_tag 'alegre.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposmevaluacion.valor2) %></div></td>
+  <td><div align="center"><%= image_tag 'triste.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposmevaluacion.valor3) %></div></td>
+  <td><%= f.text_area(:observaciones, :cols => 50, :rows => 4,
+                      :onChange=> "javascript:this.value=this.value.toUpperCase();", :onFocus => "this.style.border='1px solid #f00'",
+                      :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%);") %>
+    <% if (fe.calificacion.to_s == 'REGULAR' or fe.calificacion.to_s == 'MALO')  and fe.observaciones.to_s == "" %>
+      <br/><span class="label label-danger">* Debes registrar la observación</span>
+    <% end %>
+  </td>
+<% end %>

@@ -1,0 +1,17 @@
+$("#variable_form").collapse("hide");
+
+$("#variable_form").empty();
+
+<% if @active_record.present? %>
+	$("#variable_<%= @active_record.id %>").replaceWith("<%= j render 'tr', variable: @active_record %>");
+<% end %>
+
+$("#variable_<%= @variable.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#variable_<%= @variable.id %>").addClass("active_variable");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

@@ -1,0 +1,11 @@
+<% if @tarea.tareasdocs.present? %>
+	$("#tareasdocs").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_tareasdocs").prepend("<%= j render 'tr', tareasdoc: @tareasdoc %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#tareasdoc_form").collapse("hide");

@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratossolbitacoras</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratossolicitud</th>
+      <th>User</th>
+      <th>Estado</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratossolbitacoras.each do |contratossolbitacora| %>
+      <tr>
+        <td><%= contratossolbitacora.contratossolicitud %></td>
+        <td><%= contratossolbitacora.user %></td>
+        <td><%= contratossolbitacora.estado %></td>
+        <td><%= link_to 'Show', contratossolbitacora %></td>
+        <td><%= link_to 'Edit', edit_contratossolbitacora_path(contratossolbitacora) %></td>
+        <td><%= link_to 'Destroy', contratossolbitacora, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratossolbitacora', new_contratossolbitacora_path %>

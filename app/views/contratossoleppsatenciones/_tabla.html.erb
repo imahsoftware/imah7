@@ -1,0 +1,22 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+				<th width="15%" class="text-left text-table">Fecha</th>
+        <th width="30%" class="text-left text-table">Nombre</th>
+        <th class="text-left text-table" width="10%">Identificacion</th>
+				<th class="text-left text-table" width="20%">Cargo</th>
+				<th class="text-left text-table" width="10%">Celular</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratossoleppsatenciones">
+	    <% @contratossolepp.contratossoleppsatenciones.order(id: :desc).each do |contratossoleppsatencion| %>
+	      <%= render 'contratossoleppsatenciones/tr', contratossoleppsatencion: contratossoleppsatencion %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

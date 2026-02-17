@@ -1,0 +1,73 @@
+<% if @objetos.count.to_i > 0 %>
+  <% @objetos.each do |a|
+    c = Contrato.find(a.id)
+    contratosprefacturas = c.contratosprefacturas.where(["estado not in ('PENDIENTE','RECHAZADA')"]).order("id desc")
+  %>
+    <div class="box box-danger">
+      <div class="box-header with-border">
+        <h3 class="box-title">PREFACTURAS <%=c.empresa.identnombre rescue nil%></h3>
+        <div class="box-tools pull-right">
+          <a style="margin-top: 5px;" class="btn btn-xs btn-danger"> Nro. contrato: <%= c.nro_contrato rescue 0 %></a>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-body">
+              <% if contratosprefacturas.count.to_i > 0 %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="10%" class="text-center"></th>
+                    <th width="10%" class="text-center">Nro. Prefactura</th>
+                    <th width="15%" class="text-center">Fecha creación</th>
+                    <th width="13%" class="text-center">Valor Total</th>
+                    <th width="15%" class="text-center">Estado</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody">
+                  <% contratosprefacturas.each do |p| %>
+                    <tr>
+                      <td class="text-center" style="font-size:12px;">
+                        <%= link_to edit_contratosprefactura_path(id: p.id, etapa: 'A'), class: 'edit_contratosprefactura_button', data: { toggle: 'tooltip' }, title: "Editar" do %>
+                          <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                        <% end %>
+                        <%= link_to contratosprefactura_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver prefactura ' do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                        <% end %>
+                        <%= link_to visualizar_contratosprefacturas_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Prefactura en Excel' do %>
+                          <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                        <% end %>
+                        <%= link_to firma_contratosprefacturas_path(id: p.id, etapa: 'A'), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                          <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                        <% end %>
+                      </td>
+                      <td class="text-center" style="font-size:12px;"><%= p.id rescue nil%></td>
+                      <td class="text-center" style="font-size:12px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                      <td class="text-center" style="font-size:12px;"><button class="btn btn-xs btn-info"><strong>$ <%= camponumerico p.total rescue 0%></strong></button></td>
+                      <td class="text-center" style="font-size:12px;"><%= p.estado rescue nil%></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="alert alert-danger" align="justify"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>
+    No hay información de prefacturas asociada!
+  </div>
+<% end %>
+
+<div class="modal fade" id="firma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+

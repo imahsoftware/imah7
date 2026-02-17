@@ -1,0 +1,2 @@
+module EproveedorescimagenesHelper
+end

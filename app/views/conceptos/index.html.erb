@@ -1,0 +1,64 @@
+<div class="box box-danger">
+  <div class="box-header with-border">
+      <h3 class="box-title">
+        <%= link_to new_concepto_path, id: 'new_concepto_button', data: { toggle: 'tooltip' }, title: 'Agregar' do %>
+          <i class="fa fa-plus fa-fw text-success" aria-hidden="true"></i>
+        <% end %>Conceptos
+      </h3>
+    <div class="box-tools pull-right">
+      <%= search_form_for @q do |f| %>
+        <div class="input-group input-group-sm" style="width: 180px;">
+          <%= f.search_field :descripcion_cont, class: 'form-control pull-right', placeholder: 'Buscar...' %>
+          <div class="input-group-btn">
+            <%= button_tag(type: "submit", class: "btn btn-default") do %>
+              <i class="fa fa-search"></i>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div><!-- /.box-tools -->
+  </div><!-- /.box-header -->
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-12">
+          <% if @conceptos.present? %>
+            <div class="table-responsive">
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="10%" class="text-center"></th>
+                  <th width="15%" class="text-center">Código</th>
+                  <th>Descripción</th>
+                </tr>
+                </thead>
+                <tbody id="tbody_conceptos">
+                <% @conceptos.each do |concepto| %>
+                  <tr id="concepto_<%= concepto.id %>">
+                    <td class="text-center">
+                      <%= link_to edit_concepto_path(etapa: "A", id: concepto.id), class: 'edit_concepto_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %>
+                      <%= link_to concepto, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                      <% end %>
+                    </td>
+                    <td class="text-center"><%= concepto.cuenta rescue nil %></td>
+                    <td><%= concepto.descripcion rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="box-footer clear-fix">
+              <div class="box-tools pull-right">
+                <%= will_paginate @conceptos, renderer: BootstrapPagination::Rails %>
+              </div>
+            </div><!-- box-footer -->
+          <% else %>
+            <div class="alert alert-warning">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+</div>

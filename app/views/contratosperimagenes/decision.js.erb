@@ -1,0 +1,10 @@
+<% if @estado == 'APROBADO'  %>
+$('#tr_documento<%= @contratosperimagen.id %>').remove();
+<% elsif @estado == 'RECHAZADO' and @contratosperimagen.observacion_aprobacion.present?  %>
+$('#tr_documento<%= @contratosperimagen.id %>').remove();
+<% else %>
+<% if @contratosperimagen.observacion_aprobacion.blank? %>
+$('#observacion<%= @contratosperimagen.id %>').css("border-color", "red");
+$('#mensaje_error<%= @contratosperimagen.id %>').replaceWith("<div style='color: red; margin-top: -10px;' align='left'>* El campo es obligatorio</div>");
+<% end %>
+<% end %>

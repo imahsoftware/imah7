@@ -1,0 +1,16 @@
+<tr id="contratospersugerencia_<%= contratospersugerencia.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratospersugerencia")%>
+    <%= link_to edit_contratospersona_contratospersugerencia_path(@contratospersona, contratospersugerencia), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contratospersona_contratospersugerencia_path(@contratospersona, contratospersugerencia), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratospersugerencia.user_nombre.html_safe rescue nil %><%= contratospersugerencia.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratospersugerencia.fecha rescue nil %></td>
+  <td align="left"><%= contratospersugerencia.prevencion rescue nil %></td>
+  <td align="left"><%= contratospersugerencia.correccion rescue nil %></td>
+</tr>

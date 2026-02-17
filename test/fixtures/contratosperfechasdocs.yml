@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperfecha_id: 1
+  descripcion: MyString
+  soporte_digital: MyString
+
+two:
+  contratosperfecha_id: 1
+  descripcion: MyString
+  soporte_digital: MyString

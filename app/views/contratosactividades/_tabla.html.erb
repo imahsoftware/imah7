@@ -1,0 +1,27 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Actividad</th>
+        <th width="10%" class="text-left">Clase</th>
+        <th width="10%" class="text-left">Tipo</th>
+        <th width="20%" class="text-left">Sede</th>
+        <th width="10%" class="text-left">Dia Semana</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosactividades">
+	    <% @contratosactividades.each do |contratosactividad| %>
+	      <%= render 'contratosactividades/tr', contratosactividad: contratosactividad %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+<div class="box-tools pull-right" id="page_links">
+  <%= will_paginate @contratosactividades, :param_name => 'contratosactividades' , renderer: BootstrapPagination::Rails %>
+</div>
+
+
+
+

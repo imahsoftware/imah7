@@ -1,0 +1,220 @@
+<div align="center">
+  <%
+    evaluacionescontrato = evaluacionescontrato_id.present? ? true : false  rescue nil
+    if evaluacionescontrato
+      @evaluacionescontrato = Evaluacionescontrato.find(evaluacionescontrato_id)
+    end
+    evaluacion = evaluacion_id.present? ? true : false  rescue nil
+    if evaluacion
+      @evaluacion = Evaluacion.find(evaluacion_id)
+    end
+    contratosperfecha = contratosperfecha_id.present? ? true : false  rescue nil
+    if contratosperfecha
+      @contratosperfecha = Contratosperfecha.find(contratosperfecha_id)
+    end
+
+    isadminData = isadmin.present? ? true : false  rescue nil
+    if isadminData
+      @is_admin = isadmin
+    end
+
+
+
+  %>
+  <br/>
+  <table width="760" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data" id="sample">
+          <tr>
+            <td width="40%" height="20" class="td-table">
+              <div class="text-center">
+              <img src="https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png" alt="" width="80%">
+              </div>
+            </td>
+            <th width="40%" style="border:1px solid #CCCCCC; font-size: 14px; font-family: Tahoma;">
+              <div align="center">EVALUACIÓN DE DESEMPEÑO<br/>PERSONAL OPERATIVO</div>
+            </th>
+            <td width="20%" class="td-table">
+              <div align="center"><strong>Versión 3</strong></div>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data">
+          <tr>
+            <td width="15%" height="20" class="td-table"><b>Fecha</b></td>
+            <td width="25%" height="20" class="td-table"><%= @evaluacionescontrato.created_at.strftime("%Y-%m-%d") rescue nil %></td>
+            <td width="40%" class="td-table"><b>Número de cedula empleado:</b></td>
+            <td width="20%" class="td-table"><%= @contratosperfecha.contratospersona.identificacion rescue nil %></td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data">
+          <tr>
+            <td width="50%" height="20" class="td-table"><b>Nombre empleado a evaluar:</b></td>
+            <td width="50%" height="20" class="td-table"><%= @contratosperfecha.contratospersona.nombre_completo rescue nil %></td>
+          </tr>
+          <tr>
+            <td width="50%" height="20" class="td-table"><b>Cargo que desempeña: </b></td>
+            <td width="50%" height="20" class="td-table"><%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+          </tr>
+          <tr>
+            <td width="50%" height="20" class="td-table"><b>Centro de Trabajo:</b></td>
+            <td width="50%" height="20" class="td-table"><%= @contratosperfecha.contratosgrupo.descripcion rescue nil %>
+              -
+              <small>(<%= @contratosperfecha.contratosgrupo.termino rescue nil %>)</small></td>
+          </tr>
+          <tr>
+            <td width="50%" height="20" class="td-table"><b>Nombre del Evaluador:</b></td>
+            <td width="50%" height="20" class="td-table"><%= @evaluacionescontrato.created_at.strftime("%Y-%m-%d") rescue nil %></td>
+          </tr>
+          <tr>
+            <td width="100%" colspan="2" class="td-table">
+              <div align="center">
+                <b>OBJETIVO:</b> Realizar la Evalución de Desempeño de forma individual a cada trabajador. Tener en
+                cuenta lo siguiente: En el cuadro de calificación asignar un número, de acuerdo a: (4) = Excelente (3) =
+                Bueno. (2) = Regular. (1) = Deficiente. Así mismo describir en el campo de "DETALLE" el motivo que lo
+                lleva a asignar dicha calificiación
+              </div>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <%
+          descripciones = Iparametro.distinct.where(id: Iparametrosuser.where(user_id: @is_admin)
+            .pluck(:iparametro_id), campo: 'evaluacion_clase_prueba', descripcion: Evaluacionesdetalle.where(evaluacion_id: @evaluacion.id)
+            .distinct.pluck(:clase)).pluck(:descripcion)
+        %>
+        <% descripciones.each do |descripcion| %>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data">
+            <tr>
+              <td width="45%" class="td-table td-table-encabezado"><%= descripcion.capitalize rescue nil %></td>
+              <td width="10%" class="td-table td-table-encabezado">Calificación</td>
+              <td width="40%" class="td-table td-table-encabezado">Detalle</td>
+            </tr>
+            <%
+              @promedio = 0
+              cnt = 0
+              Evaluacionesejecucion.joins(:evaluacionesdetalle)
+                                   .select("evaluacionesejecuciones.*, evaluacionesdetalles.actividad evaluacionesdetalles_actividad,
+                                           evaluacionesdetalles.observacion evaluacionesdetalles_observacion,
+                                           evaluacionesdetalles.requieredoc evaluacionesdetalles_requieredoc,
+                                           (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                           (select distinct 'X' from evaluacionesejecucionesdocs where evaluacionesejecucion_id = evaluacionesejecuciones.id) tienedoc")
+                                   .where("evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                         and evaluacionesdetalles.clase = '#{descripcion}'
+                                         and evaluacionesejecuciones.user_responsable = #{@evaluacionescontrato.user_responsable}").each do |p|
+                @promedio += p.estado.to_i
+                cnt += 1
+            %>
+
+              <tr>
+                <td width="45%" height="20" class="td-table"><%= p.evaluacionesdetalles_actividad %></td>
+                <td width="10%" height="20" class="td-table">
+                  <div align="center">
+                    <% if p.estado.present? %>
+                      <%= p.estado_prueba rescue nil %>
+                    <% else %>
+                      Sin Evaluar
+                    <% end %>
+                  </div>
+                </td>
+                <td width="40%" height="20" class="td-table">
+                  <%= p.resultado rescue nil %>
+                </td>
+              </tr>
+            <% end %>
+            <tr>
+              <th width="45%" height="20" class="td-table">PROMEDIO</th>
+              <th width="10%" height="20" class="td-table">
+                  <%= camponumerico @promedio.to_f / cnt.to_f rescue 0 %>
+              </th>
+              <td width="40%" height="20" class="td-table">
+
+              </td>
+            </tr>
+            <tr>
+              <th width="45%" height="20" class="td-table">TOTAL PROMEDIO</th>
+              <th width="10%" height="20" class="td-table"><%= @evaluacionescontrato.estado.to_f rescue 0 %></th>
+              <td width="40%" height="20" class="td-table"></td>
+            </tr>
+
+          </table>
+        <% end %>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data">
+          <tr>
+            <th width="45%" height="20" class="td-table">RESULTADO</th>
+            <th height="20" class="td-table" colspan="2">
+              <% if @evaluacionescontrato.estado.to_f >= 3.53 %>
+                <b>SOBRESALIENTE</b>
+              <% elsif @evaluacionescontrato.estado.to_f >= 2.53 %>
+                <b>SATISFACTORIO</b>
+              <% elsif @evaluacionescontrato.estado.to_f <= 1.52 %>
+                <b>NO SATISFACTORIO</b>
+              <% else %>
+                <b>NECESITA MEJORAR REALIZAR PLAN DE ACCION</b>
+              <% end %>
+            </th>
+          </tr>
+        </table>
+        <br/>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="table-data-sinborder">
+          <tr valign="top">
+            <td width="60%" height="20" class="td-table-sinborder"><b>Firma de quien evalua</b>
+              <% if @evaluacionescontrato.codigo_firma.present? %>
+                <br/><br/><strong>EVALUACIÓN FIRMADA CORRECTAMENTE</strong><br/>
+                <b>Empleado:</b> <%= @evaluacionescontrato.user.nombre rescue nil %><br/>
+                <b>CC:</b> <%= camponumerico2(@evaluacionescontrato.user.identificacion) rescue nil %><br/>
+                <b>Firma Digital:</b> <%= @evaluacionescontrato.codigo_firma %><br/>
+                <b>Fecha Firma:</b> <%= @evaluacionescontrato.codigo_firma.strftime("%Y-%m-%d %X") rescue nil %><br/>
+                * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+              <% else %>
+                <br/>Pendiente de Firmar
+              <% end %>
+            </td>
+          </tr>
+        </table>
+
+        <br/>
+        <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+          - <%= User.find(isadmin).nombre rescue nil %>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<style>
+    .table-data {
+        border: 1px solid #CCCCCC;
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .td-table {
+        border: 1px solid #CCCCCC;
+        font-size: 11px;
+        font-family: Tahoma;
+        padding: 5px;
+    }
+
+    .table-data-sinborder {
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .td-table-sinborder{
+        font-size: 11px;
+        font-family: Tahoma;
+        padding: 5px;
+    }
+
+    .td-table-encabezado {
+        background-color: #C40909;
+        color: white;
+        font-weight: 800;
+    }
+</style>

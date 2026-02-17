@@ -1,0 +1,39 @@
+<%# if p.estado.blank? %>
+  <button type="button" class="btn btn-<%= p.boton_estado %> btn-xs">
+    <%= render 'evaluacionesejecuciones/estado_evaluacion', p: p %></button>
+  <button type="button" class="btn btn-<%= p.boton_estado %> dropdown-toggle  btn-xs" data-toggle="dropdown">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <%= link_to cargar_evaluacionesejecuciones_path(id: p.id), remote: true do %>
+        <i class="fa fa-file-pdf-o text-red"></i> Agregar documentos
+      <% end %>
+    </li>
+    <%# if p.estado.blank? %>
+      <li>
+        <%= link_to finalizar_evaluacionesejecuciones_path(id: p.id, estado: '1', user_responsable_id: user_responsable_id), remote: true do %>
+          <i class="fa fa-check"></i> Cumple
+        <% end %>
+      </li>
+      <li>
+        <%= link_to finalizar_evaluacionesejecuciones_path(id: p.id, estado: '0', user_responsable_id: user_responsable_id), remote: true do %>
+          <i class="fa fa-check"></i> No Cumple
+        <% end %>
+      </li>
+      <li>
+        <%= link_to finalizar_evaluacionesejecuciones_path(id: p.id, estado: '1.0', user_responsable_id: user_responsable_id), remote: true do %>
+          <i class="fa fa-check"></i> No Aplica
+        <% end %>
+      </li>
+      <li>
+        <%= link_to finalizar_evaluacionesejecuciones_path(id: p.id, estado: '0.5', user_responsable_id: user_responsable_id), remote: true do %>
+          <i class="fa fa-check"></i> Parcialmente
+        <% end %>
+      </li>
+    <%# end %>
+  </ul>
+<%# else %>
+  <%#= render 'evaluacionesejecuciones/estado_evaluacion', p: p %>
+<%# end %>

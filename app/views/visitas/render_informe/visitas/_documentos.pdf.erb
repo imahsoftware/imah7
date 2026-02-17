@@ -1,0 +1,38 @@
+<br/>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+  <tr>
+    <th style="font-size: 12px; font-family: Tahoma;">
+      <div align="left">DOCUMENTOS DIGITALES DE LAS VISITAS</div>
+    </th>
+  </tr>
+</table>
+<hr>
+<% if @documentos.present? %>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>Fecha Registro</strong></div></td>
+      <td width="35%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>Visita</strong></td>
+      <td width="25%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>Tipo</strong></div></td>
+      <td style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>Documento</strong></div></td>
+    </tr>
+    <% @documentos.each do |documento| %>
+      <tr>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= documento.created_at.strftime("%d/%m/%Y %X") rescue nil %></div></td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">
+          <b>Contrato:</b> <%= documento.visita.contrato.empresa.identnombre rescue nil %><%= documento.visita.contrato.nro_contrato rescue nil %><br/>
+          <b>Visita:</b> <%= documento.visita.descripcion rescue nil %><br/>
+          <b>Fecha Inicio: </b> <%= documento.visita.created_at.strftime("%d/%m/%Y %X") rescue nil %><br/>
+          <b>Fecha Fin: </b> <%= documento.visita.finalizacion.strftime("%d/%m/%Y %X") rescue nil %>
+        </td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= documento.tipo_descripcion rescue nil %></td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= link_to documento.docvisita.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+            <i class="fa fa-cloud-download"></i> <%= documento.docvisita_file_name rescue nil %>
+          <% end %></td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+    informacion
+  </div>
+<% end %>

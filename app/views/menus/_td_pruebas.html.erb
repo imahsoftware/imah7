@@ -1,0 +1,38 @@
+<td class="text-left text-table-10" style="padding: 7px;">
+  <div id="abrir_evaluacion<%= evaluacionescontrato.id.to_s %>_<%= evaluacionescontrato.evaluacion_id.to_s %>">
+    <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacionescontrato.evaluacion_id, ruta: 'ABRIR', usuario: evaluacionescontrato.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black; ' do %>
+      <i class="fa fa-plus text-success"></i>
+      <%= contratosperfecha.contratospersona.identificacion rescue nil %>
+      - <%= contratosperfecha.contratospersona.nombre_completo rescue nil %>
+    <% end %>
+  </div>
+  <div class="hide" id="cerrar_evaluacion<%= evaluacionescontrato.id.to_s %>_<%= evaluacionescontrato.evaluacion_id.to_s %>">
+    <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacionescontrato.evaluacion_id, ruta: 'CERRAR', usuario: evaluacionescontrato.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black;' do %>
+      <i class="fa fa-minus text-danger"></i>
+      <%= contratosperfecha.contratospersona.identificacion rescue nil %>
+      - <%= contratosperfecha.contratospersona.nombre_completo rescue nil %>
+    <% end %>
+  </div>
+</td>
+<td class="text-center text-table-10">
+  <%= evaluacionescontrato.estado.to_f rescue nil %>
+</td>
+<td class="text-center text-table-10" style="padding: 7px;">
+  <% if Evaluacionescontrato.where("evaluacion_id = #{evaluacionescontrato.evaluacion_id} and user_responsable = #{evaluacionescontrato.user_responsable}").first.estado.to_i == 0 %>
+    <div class="pull-center">
+      <%= link_to proceso_evaluacionesejecuciones_path(user_responsable: evaluacionescontrato.user_responsable, evaluacion_id: evaluacionescontrato.evaluacion_id), data: { toggle: 'tooltip' }, title: "Ingresar en la Evaluación" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-bookmark"></i> Continuar
+          Evaluando
+        </button>
+      <% end %>
+    </div>
+  <% else %>
+    <%= evaluacionescontrato.estadoepp.to_s rescue nil %>
+  <% end %>
+</td>
+
+<div class="modal fade" id="abrir_modal<%= evaluacionescontrato.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

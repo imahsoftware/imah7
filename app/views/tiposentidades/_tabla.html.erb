@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <th width="5%"></th>
+        <th class="text-left">Identificacion</th>
+        <th class="text-left">Nombre</th>
+        <th class="text-left">Clase</th>
+        <th class="text-center">Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposentidades">
+      <% @tiposentidades.each do |tiposentidad| %>
+        <%= render 'tiposentidades/tr', tiposentidad: tiposentidad %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

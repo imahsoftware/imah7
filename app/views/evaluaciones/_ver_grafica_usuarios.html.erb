@@ -1,0 +1,78 @@
+<%
+
+  datos = Evaluacionesejecucion
+    .select("(SELECT nombre FROM users WHERE id = evaluacionescontratos.user_responsable) AS nombreuser,
+           COUNT(CASE WHEN evaluacionesejecuciones.estado IS NULL THEN 1 END) AS pendientes,
+           COUNT(CASE WHEN evaluacionesejecuciones.estado = '0' THEN 1 END) AS no_cumplido,
+           COUNT(CASE WHEN evaluacionesejecuciones.estado = '1' THEN 1 END) AS cumplido,
+           COUNT(CASE WHEN evaluacionesejecuciones.estado = '1.0' THEN 1 END) AS no_aplica,
+           COUNT(CASE WHEN evaluacionesejecuciones.estado = '0.5' THEN 1 END) AS parcialmente")
+    .joins(:evaluacionescontrato)
+    .where(evaluacion_id: @evaluacion.id)
+    .group("evaluacionescontratos.user_responsable").order("2 asc")
+
+  labels = []
+  valores0 = []
+  valores1 = []
+  valores2 = []
+  valores3 = []
+  valores4 = []
+  colores0 = []
+  colores1 = []
+  colores2 = []
+  colores3 = []
+  colores4 = []
+  colores5 = []
+  datos.each do |registro2|
+    labels << registro2.nombreuser rescue nil
+    valores0 << registro2.pendientes rescue 0
+    valores1 << registro2.no_cumplido rescue 0
+    valores2 << registro2.cumplido rescue 0
+    valores3 << registro2.no_aplica rescue 0
+    valores4 << registro2.parcialmente rescue 0
+    colores0 << "#31708f"
+    colores1 << "#dd4b39"
+    colores2 << "#00a65a"
+    colores3 << "#e08e0b"
+    colores4 << "#BC09D5"
+  end
+%>
+<canvas id="miGraficoBarras2" width="340" height="250"></canvas>
+<script>
+    var ctx = document.getElementById("miGraficoBarras2").getContext("2d");
+
+    var data = {
+        labels: <%= labels.to_json.html_safe %>,
+        datasets: [
+            {label: 'Pendiente', data: <%= valores0.to_json.html_safe %>, backgroundColor: <%= colores0.to_json.html_safe %>},
+            {label: 'No Cumplido',data: <%= valores1.to_json.html_safe %>,backgroundColor: <%= colores1.to_json.html_safe %>},
+            {label: 'Cumplido',data: <%= valores2.to_json.html_safe %>,backgroundColor: <%= colores2.to_json.html_safe %>},
+            {label: 'No Aplica',data: <%= valores3.to_json.html_safe %>,backgroundColor: <%= colores3.to_json.html_safe %>},
+            {label: 'Parcialmente',data: <%= valores4.to_json.html_safe %>,backgroundColor: <%= colores4.to_json.html_safe %>},]
+    };
+
+    var options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        title: {
+            display: true,
+            text: '<%= @evaluacion.tema.capitalize rescue nil %>'
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    fontSize: 10 // Ajusta el tamaño de la letra aquí
+                }
+            }
+        }
+    };
+
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+</script>

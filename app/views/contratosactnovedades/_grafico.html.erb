@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#individual" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i>
+            Individual</a>
+        </li>
+        <li><a href="#consolidado" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i>
+          Consolidado</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="individual">
+          <% @contratosactnovedades.select("estado").distinct.each do |contratosactnovedad| %>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="box box-primary">
+                    <IFRAME SRC=<%= "/contratosactnovedades/dash_seguimientos?estado=#{contratosactnovedad.estado.gsub(' ', '_')}" %> WIDTH="100%" HEIGHT="400" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="tab-pane" id="consolidado">
+          <% @contratosactnovedades.select("estado").distinct.each do |contratosactnovedad| %>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="box box-primary">
+                    <IFRAME SRC=<%= "/contratosactnovedades/dash_seguimientosacumulado?estado=#{contratosactnovedad.estado.gsub(' ', '_')}" %> WIDTH="100%" HEIGHT="400" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

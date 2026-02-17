@@ -1,0 +1,59 @@
+<%= simple_form_for([@visita, @visitassede], remote: true) do |f| %>
+  <%= f.hidden_field :latitude %>
+  <%= f.hidden_field :longitude %>
+  <%= f.hidden_field :direccion %>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10">
+    <% if @sede %>
+        <%= f.input :contratossede_id, collection: Contratossede.where(["contrato_id = #{@visita.contrato_id}"]).order(:nombre).collect { |p| [p.nombre, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Sede Visita" %>
+    <% else %>
+        <%= f.input :sede_direccion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sede Visita" %>
+    <% end %>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-2"><%= f.input :viaticos, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <% if @visitassede.new_record? %>
+        <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#visitassede_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+      <% else %>
+        <%= link_to "#{t :cancelar}", visita_visitassede_path(@visita, @visitassede), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+      <% end %>
+    </div>
+    <div class="col-md-6">
+      <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+    </div>
+  </div>
+
+  <script type="text/javascript" charset="utf-8">
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+              var latitude = position.coords.latitude;
+              var longitude = position.coords.longitude;
+
+              // Actualizar los campos de latitud y longitud
+              document.getElementById('visitassede_latitude').value = latitude;
+              document.getElementById('visitassede_longitude').value = longitude;
+
+              // Hacer una solicitud a Nominatim para obtener la dirección
+              fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+                  .then(response => response.json())
+                  .then(data => {
+                      var address = data.display_name;
+                      document.getElementById('visitassede_direccion').value = address;
+
+                      if (address) {
+                          console.log(`La dirección es: ${address}`);
+                      } else {
+                          console.log('No se pudo determinar la dirección.');
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error al obtener la dirección:', error);
+                  });
+          });
+      }
+  </script>
+<% end %>
+<br/>

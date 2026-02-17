@@ -1,0 +1,61 @@
+<legend style="margin-top: -19px;">Proceso de Nomina por Empresa</legend>
+<% usr = User.find(is_admin) %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <div class="tab-content">
+        <div class="box-body">
+          <div class="box-body table-responsive">
+            <% e = 'QUINCENAL'
+              periodos = Periodosliquidacion.select("id, concat(inicio,' - ',fin) periodo").where(["termino = '#{e}' and id in (select distinct periodosliquidacion_id from contratospernominas where contrato_id = #{usr.contrato_id})"]).distinct.order("id desc")
+            %>
+            <div class="box-body">
+              <% #if cantperiodos.to_i > 0 %>
+              <% if periodos.present? %>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr  class="thcolor">
+                      <th width="15%" class="text-left"></th>
+                      <th class="text-left">Empresa</th>
+                      <th width="25%" class="text-left">Grupo - Contrato</th>
+                      <th width="5%" class="text-center">Cant.</th>
+                      <th width="10%" class="text-right">Valor Total</th>
+                      <th width="10%" class="text-center">Estado</th>
+                    </tr>
+                  <% periodos.each do |p| %>
+                      <% Contratospernomina.joins(:contrato, :contratosgrupo).select("distinct contratospernominas.contrato_id, contratos.nro_contrato, contratospernominas.contratosgrupo_id, contratosgrupos.descripcion, contratospernominas.estado, count(9) cantidad, sum(contratospernominas.total) total")
+                                           .where(["contratospernominas.periodosliquidacion_id = #{p.id} and contratospernominas.contrato_id = #{usr.contrato_id}"]).group("contratospernominas.contrato_id, contratospernominas.contratosgrupo_id, contratospernominas.estado").order("contratospernominas.id desc").each do |a| %>
+                        <tr>
+                          <td><div align="center">
+                            <%= link_to informe_datas_path(infgrupo_id: 25, portafolio_id: a.contrato_id.to_s+'-'+p.id.to_s+'-'+a.contratosgrupo_id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Nomina' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                            <%end %>
+                            <%= link_to tirilla_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Tirilla PDF' do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                            <% end %>
+                            <%= link_to informe_datas_path(infgrupo_id: 48, portafolio_id: a.contrato_id.to_s+'-'+p.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Empresa' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-bolt"></i></button>
+                            <%end %>
+                          </div>
+                          </td>
+                          <td class="text-left" style="font-size:11px;"><%= a.contrato.empresa.identnombre rescue nil%>
+                            <br/><small class="text-red"><strong>Periodo: </strong><%=p.periodo %></small>
+                          </td>
+                          <td class="text-left" style="font-size:10px;"><%= a.descripcion rescue nil%> <em><br/><strong>(<%= a.nro_contrato rescue nil%>)</strong></em></td>
+                          <td class="text-center" style="font-size:10px;"><%= camponumerico2 a.cantidad rescue nil%></td>
+                          <td class="text-right" style="font-size:10px;"><%=camponumerico a.total rescue nil%></td>
+                          <td class="text-center" style="font-size:10px;"><strong><%if a.estado.to_s == 'CONSOLIDADO' %><small class="text-red"><%= a.estado rescue nil%></small><%else %><small class="text-blue"><%= a.estado rescue nil%></small><%end %></strong></td>
+                        </tr>
+                      <% end %>
+                  <% end %>
+                  </table>
+                </div>
+              <% end %>
+
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

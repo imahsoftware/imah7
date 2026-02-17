@@ -1,0 +1,128 @@
+<%
+  isadmin = is_admin
+  @logo = 'logo_inicio_asear.png'
+  portafolio = Portafolio.find(1)
+%>
+<div align="center">
+  <table width="94%">
+    <tr>
+      <td>
+        <table width="100%" border="0">
+          <tr valign="top">
+            <td width="30%">
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+                <strong><div style="font-size: 18px; font-family: Tahoma;">NOVEDAD NRO <%= @contratosactnovedad.id rescue nil%></div></strong>
+              </div>
+            </td>
+            <td>
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+                <tr>
+                  <td width="25%" height="25" style="background: #E8E3E3;"><strong>Fecha: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.fecha rescue nil%></td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Sede: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.contratossede.nombre rescue nil%></td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Nodo: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.nodo rescue nil%></td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Usuario: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.user.nombre rescue nil%> (<em><%= @contratosactnovedad.user.email rescue nil%></em>)</td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Tipo Evaluacion: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.tiposevaluacion.detalle_esp2 rescue nil%></td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Observacion: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.observaciones rescue nil%></td>
+                </tr>
+                <tr>
+                  <td height="25" style="background: #E8E3E3;"><strong>Estado: </strong></td>
+                  <td>&nbsp;<%= @contratosactnovedad.estado rescue nil%></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <br/>
+        <strong><div style="font-size: 14px; font-family: Tahoma;">SEGUIMIENTO</div></strong>
+        <br/>
+        <% if @contratosactnovedad.contratosactnovnotas.present? == false %>
+          <div style="font-size: 12px; font-family: Verdana, Geneva, sans-serif;"><em>No hay Informacion</em></div>
+        <% else %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td height="25" style="background: #E8E3E3;" class="text-left"><strong>Fecha</strong></td>
+              <td width="80%" style="background: #E8E3E3;" class="text-left"><strong>Observacion</strong></td>
+            </tr>
+            <% @contratosactnovedad.contratosactnovnotas.includes([:user]).order(id: :desc).each do |contratosactnovnota| %>
+              <tr>
+                <td align="left" height="25" ><%= contratosactnovnota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                  <br/><small><%= contratosactnovnota.user.nombre rescue nil %></small></td>
+                <td align="justify"><%= contratosactnovnota.observacion rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+        <br/>
+        <strong><div style="font-size: 14px; font-family: Tahoma;">ASIGNACIONES</div></strong>
+        <br/>
+        <% if @contratosactnovedad.contratosactnovusers.present? == false %>
+          <div style="font-size: 12px; font-family: Verdana, Geneva, sans-serif;"><em>No hay Informacion</em></div>
+        <% else %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td height="25" style="background: #E8E3E3;" class="text-left"><strong>Fecha</strong></td>
+              <td width="80%" style="background: #E8E3E3;" class="text-left"><strong>Usuario Asignado</strong></td>
+            </tr>
+            <% @contratosactnovedad.contratosactnovusers.order(id: :desc).each do |contratosactnovuser| %>
+              <tr>
+                <td align="left" height="25" ><%= contratosactnovuser.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                  <br/><small><%= contratosactnovuser.user.nombre rescue nil %></small></td>
+                <td align="justify"><%= User.find(contratosactnovuser.user_asig).nombre rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+        <br/>
+        <strong><div style="font-size: 14px; font-family: Tahoma;">DOCUMENTOS DIGITALES</div></strong>
+        <br/>
+        <% if @contratosactnovedad.contratosactnovdocs.present? == false %>
+          <div style="font-size: 12px; font-family: Verdana, Geneva, sans-serif;"><em>No hay Informacion</em></div>
+        <% else %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="20%" height="25" style="background: #E8E3E3;" class="text-left"><strong>Fecha</strong></td>
+              <td width="25%" style="background: #E8E3E3;" class="text-left"><strong>Tipo de Imagen</strong></td>
+              <td style="background: #E8E3E3;" class="text-left"><strong>Imagen</strong></td>
+            </tr>
+            <% @contratosactnovedad.contratosactnovdocs.order(id: :desc).each do |contratosactnovdoc| %>
+              <tr>
+                <td align="left" height="25" ><%= contratosactnovdoc.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                  <br/><small><%= contratosactnovdoc.user.nombre rescue nil %></small></td>
+                <td align="left"><%= contratosactnovdoc.descripcion rescue nil %></td>
+                <td align="left"><%= contratosactnovdoc.novedad_file_name rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+        <br/>
+      </td>
+    </tr>
+  </table>
+  <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+</div>
+
+
+
+
+

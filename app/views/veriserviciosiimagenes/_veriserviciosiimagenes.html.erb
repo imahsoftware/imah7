@@ -1,0 +1,37 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Documentos Digitales</strong></h3>
+  <div class="box-tools pull-right">
+    <%= link_to captura_veriserviciosiimagenes_path(veriserviciositem_id: @veriserviciositem.id), remote: true, class: 'btn btn-sm btn-warning' do %>
+      <i class="fa fa-camera"> </i> <span>Capturar Delantera</span>
+    <% end %>
+    <%= link_to captura_trasera_veriserviciosiimagenes_path(veriserviciositem_id: @veriserviciositem.id), remote: true, class: 'btn btn-sm btn-warning' do %>
+      <i class="fa fa-camera"> </i> <span>Capturar Trasera</span>
+    <% end %>
+
+    <%= link_to new_veriserviciositem_veriserviciosiimagen_path(@veriserviciositem), id: 'new_veriserviciosiimagen_button', class: 'btn btn-sm btn-info', remote: true do %>
+      <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+    <% end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="veriserviciosiimagen_form" class="collapse"></div>
+  <div id="veriserviciosiimagenes">
+    <% if @veriserviciositem.veriserviciosiimagenes.present? %>
+      <%= render 'veriserviciosiimagenes/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="modal fade" id="captura<%= @veriserviciositem.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade" id="captura_trasera<%= @veriserviciositem.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

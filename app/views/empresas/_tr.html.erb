@@ -1,0 +1,85 @@
+<tr id="empresa_<%= empresa.id %>">
+  <td class="text-center">
+    <%= link_to edit_empresa_path(empresa, etapa: 'A'), class: 'edit_empresa_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+  </td>
+  <td><%= empresa.identnombre rescue nil %>
+    <% if empresa.contratos.exists? %><br/><br/>
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="5%" class="text-center" style="font-size:10px;"></th>
+            <th width="15%" class="text-center" style="font-size:10px;">Nro Contrato</th>
+            <th class="text-justify" style="font-size:10px;">Objeto</th>
+          </tr>
+          </thead>
+          <tbody id="tbody">
+          <% empresa.contratos.order("fecha_inicio desc").each do |p| %>
+            <tr>
+              <td class="text-center" style="font-size:12px;">
+                <%= link_to edit_contrato_path(id: p.id, etapa: 'A'), class: 'edit_contrato_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                  <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                <% end %>
+              </td>
+              <td class="text-center" style="font-size:12px;"><%= p.nro_contrato rescue nil%></td>
+              <td class="text-justify" style="font-size:10px;"><%= p.objeto.upcase rescue nil%>
+                <br/><strong>Tipo de Contrato: <%= p.tiposcontrato.descripcion rescue nil%></strong>
+                <br/><strong>Fecha Inicio: </strong><%= p.fecha_inicio.strftime("%Y-%m-%d") rescue nil%>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <% if @recibo.to_s != "" %><div align="center">
+                  <% if p.contratospagos.where("consecutivo = '#{@recibo}'").exists? %>
+                    <table width="50%" class="table table-bordered table-condensed table-striped">
+                      <thead>
+                      <tr class="thcolor">
+                        <th colspan="10" class="text-left">Recibos</th>
+                      </tr>
+                      <tr class="thcolor">
+                        <td width="5%"></td>
+                        <th width="8%" class="text-center" style="font-size:10px;">PreFactura</th>
+                        <th width="8%" class="text-center" style="font-size:10px;">Factura</th>
+                        <th width="10%" class="text-center" style="font-size:10px;">Fecha Factura</th>
+                        <th width="8%" class="text-center" style="font-size:10px;">Nro Recibo</th>
+                        <th width="10%" class="text-center" style="font-size:10px;">Fecha pago</th>
+                        <th class="text-left" style="font-size:10px;">Tipo de cuenta</th>
+                        <th class="text-right" style="font-size:10px;">Dinero</th>
+                        <th class="text-right" style="font-size:10px;">Retenciones</th>
+                        <th class="text-right" style="font-size:10px;">Total</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% p.contratospagos.where("consecutivo = '#{@recibo}'").order("id desc").each do |p|%>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to visualizar_contratospagos_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Recibo ' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                            <% end %>
+                          </td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura_id rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura.siigo_nro rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura.created_at.strftime("%Y-%m-%d")  rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.consecutivo rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.fecha_pago.strftime("%Y-%m-%d") rescue nil %></td>
+                          <td align="left" style="font-size:10px;"><%= p.tiposcuenta.entidad rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.valor rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.valor_retencion rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.totalgeneral rescue nil %></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table></div>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </td>
+</tr>

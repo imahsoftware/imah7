@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item: MyString
+  cantidad_aprobada: 1
+  cantidad_restante: 1
+
+two:
+  item: MyString
+  cantidad_aprobada: 1
+  cantidad_restante: 1

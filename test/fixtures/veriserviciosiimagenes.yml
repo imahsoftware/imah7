@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  veriserviciositem: one
+  user: one
+  descripcion: MyString
+  veriimagen: 
+
+two:
+  veriserviciositem: two
+  user: two
+  descripcion: MyString
+  veriimagen: 

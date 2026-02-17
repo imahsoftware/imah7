@@ -1,0 +1,26 @@
+<div>
+  <table class="table table-bordered">
+    <thead>
+    <tr class="thcolor">
+      <th width="5%" class="text-table"></th>
+      <th class="text-table text-left">Documento</th>
+    </tr>
+    </thead>
+    <% @contratosperinvdetalle.contratosperdetallesdocs.each do |contratosperdetallesdoc| %>
+      <tr>
+        <td class="text-center">
+          <%= link_to contratosperinvdetalle_contratosperdetallesdoc_path(id: contratosperdetallesdoc.id, contratosperinvdetalle_id: contratosperdetallesdoc.contratosperinvdetalle_id), method: :delete, data: { toggle: 'tooltip' }, title: "Eliminar Documento" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+          <% end %>
+        </td>
+        <td class="text-table text-left">
+          <% if contratosperdetallesdoc.invdetalle_doc_file_name.present? %>
+            <%= link_to contratosperdetallesdoc.invdetalle_doc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+              <i class="fa fa-cloud-download text-danger"></i> <%= contratosperdetallesdoc.invdetalle_doc_file_name rescue nil %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

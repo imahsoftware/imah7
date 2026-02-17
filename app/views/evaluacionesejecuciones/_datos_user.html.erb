@@ -1,0 +1,4 @@
+<div id="usuario_marca<%= p.id %><%= user_responsable_id %>">
+  <b><i class="fa fa-user"></i> Usuario:</b> <%= User.find(p.user_marca).nombre rescue nil %><br/>
+  <b><i class="fa fa-calendar"></i> Fecha:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+</div>

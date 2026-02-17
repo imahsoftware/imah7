@@ -1,0 +1,292 @@
+<% if @objetos.count.to_i > 0 %>
+  <div class="box-header" style="margin-top: -19px; width: 500px;">
+    <h3 class="box-title"><a href="/assets/pdfs/Asear-paso_a_paso.pdf", target="_blank", align="right", style="margin-top: -5px;" class="btn btn-xs btn-danger"><i class="fa fa-cloud-download"></i> Descargar Paso a paso</a> <strong>Bienvenido!!!! </strong></h3>
+  </div>
+<% end %>
+<%
+   accesoempresa = is_auth_c("informacionempresa")
+   isadmin = is_admin
+%>
+<% if @objetos.count.to_i > 0 %>
+  <% @objetos.each do |a|
+    c = Contrato.find(a.id)
+    if a.tipo.to_s == 'INTERVENTOR'
+      periodos = Contratossolicitud.select("periodo, count(9) cant").where(contrato_id: c.id).group("periodo").order("periodo desc")
+      contratossolicitudes = c.contratossolicitudes.select("contratossolicitudes.*, (select nombre from users where id = contratossolicitudes.user_id) nombreuser").order("id desc")
+    else
+      periodos = Contratossolicitud.select("periodo, count(9) cant").where(contrato_id: c.id, user_id: isadmin).group("periodo").order("periodo desc")
+      contratossolicitudes = c.contratossolicitudes.select("contratossolicitudes.*, (select nombre from users where id = contratossolicitudes.user_id) nombreuser")
+                                                   .where(user_id: isadmin).order("id desc")
+    end
+  %>
+    <div class="alert alert-info"><strong>IMPORTANTE: </strong> A partir del próximo mes, favor hacer los pedidos maximo el
+      <%if c.tiposcontrato_id == 24%>20<%else%>15<%end%> de cada mes. Gracias</div>
+    <div class="box box-danger">
+      <div class="box-header with-border">
+        <h3 class="box-title"> <%=c.empresa.identnombre rescue nil%> (<%=Portafolio.find(c.empresa.portafolio_id).nombre rescue nil%>)</h3>
+        <div class="box-tools pull-right">
+          <a style="margin-top: 5px;" class="btn btn-xs btn-danger"> Nro. contrato: <%= c.nro_contrato rescue 0 %></a>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box-body">
+              <% if periodos.present? %>
+                <%= link_to informe_datas_path(infgrupo_id: 28, portafolio_id: periodos.first.periodo.to_s+'-'+c.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Info periodo' do %>
+                  <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Informe Periodo</button>
+                <%end %>
+              <%end %>
+              <% if c.contratossolicitudes.where(["user_id = #{a.user_interventor} and DATE_FORMAT(created_at,'%%Y-%%m') = DATE_FORMAT(now(),'%%Y-%%m')"]).exists? == false %>
+                  <%= link_to new_contratossolicitud_path(contrato_id: c.id), data: {toggle: 'tooltip', confirm: "Seguro que desea crear una Solicitud?"}, title: 'Crear' do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i> <span>Crear nueva solicitud</span></button>
+                  <% end %><br/><br/>
+              <% elsif a.multiples_solicitudes.to_s == 'SI'%>
+                  <%= link_to new_contratossolicitud_path(contrato_id: c.id), data: {toggle: 'tooltip', confirm: "Seguro que desea crear una Solicitud?"}, title: 'Crear' do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i> <span>Crear nueva solicitud</span></button>
+                  <% end %><br/><br/>
+              <% end %>
+              <% if contratossolicitudes.present? %>
+                <% cont = 0
+                   periodos.each do |p|
+                     if cont == 0
+                       cont = 1
+                 %>
+                        <table class="table table-bordered table-condensed table-striped">
+                          <thead>
+                          <tr class="thcolor">
+                            <th width="15%" class="text-center"></th>
+                            <th width="10%" class="text-center">Nro. Solicitud</th>
+                            <th width="15%" class="text-center">Fecha creación</th>
+                            <th class="text-left">Solicitante</th>
+                            <th width="10%" class="text-center">Periodo</th>
+                            <th width="13%" class="text-right">Valor Total</th>
+                            <th width="10%" class="text-center">Estado solicitud</th>
+                          </tr>
+                          </thead>
+                          <tbody id="tbody">
+                          <% contratossolicitudes.where(periodo: p.periodo.to_s).each do |p| %>
+                            <tr>
+                              <td class="text-center" style="font-size:12px;">
+                                <% if p.user_id == isadmin or a.tipo.to_s == 'INTERVENTOR'%>
+                                  <%= link_to edit_contratossolicitud_path(id: p.id, etapa: 'A'), class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <% if p.estado.to_s == 'PENDIENTE' and p.user_id == isadmin %>
+                                  <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <%= link_to contratossolicitud_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver solicitud ' do %>
+                                  <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                                <% end %>
+                                <% if a.marca_noreal.to_s == 'SI' and p.estado != 'PARA FACTURAR' %>
+                                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "PARA FACTURAR"), data: {toggle: 'tooltip', confirm: "Cambio de estado?"}, title: 'Procesar para FACTURAR' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <% if a.marca_entrega_sitio.to_s == 'SI' and p.estado == 'PENDIENTE' %>
+                                  <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: 'ENTREGA EN SITIO'), data: {toggle: 'tooltip', confirm: "Cambio de estado?"}, title: 'Procesar para ENTREGA EN SITIO' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes ' do %>
+                                  <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                <% end %>
+                                <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel' do %>
+                                  <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                <% end %>
+                                <% if p.estado == 'FINALIZADOS' %>
+                                  <%= link_to firma_contratossolicitudes_path(id: p.id, etapa: 'A'), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <% if accesoempresa %>
+                                  <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes (Empresa) ' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                  <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel (Empresa)' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                  <% end %>
+                                <% end %>
+                                <% if p.created_at.strftime("%Y-%m").to_s == Time.now.strftime("%Y-%m").to_s and p.user_id == isadmin
+                                     #c.contratossolicitudes.where(["user_id = #{a.user_interventor} and DATE_FORMAT(created_at,'%%Y-%%m') = DATE_FORMAT(now(),'%%Y-%%m')"]).present? %>
+                                  <%= link_to replicar_contratossolicitudes_path(contrato_id: c.id, id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Duplicar una Solicitud?"}, title: 'Duplicar' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                                  <% end %>
+                                <% elsif a.multiples_solicitudes.to_s == 'SI'%>
+                                  <%= link_to replicar_contratossolicitudes_path(contrato_id: c.id, id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Duplicar una Solicitud?"}, title: 'Duplicar' do %>
+                                    <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                                  <% end %>
+                                <% end %>
+                              </td>
+                              <td class="text-center" style="font-size:12px;"><%= p.id rescue nil%></td>
+                              <td class="text-center" style="font-size:12px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                              <td class="text-left" style="font-size:12px;"><%= p.nombreuser rescue nil%>
+                                <% if p.estado.to_s == 'PENDIENTE' and p.solicitud_aprobacion.to_s != "" %>
+                                  <br/><small><strong>Solicitud de aprobación <%=p.solicitud_aprobacion.strftime("%Y-%m-%d") rescue nil %></strong></small>
+                                <% end %>
+                                <% if p.contrato.visualiza_iva.to_s == 'SI'
+                                     detalle = Contratossoldetalle.select("DISTINCT porc_iva, SUM(total) valortotal").where(["contratossolicitud_id = #{p.id} AND cantidad > 0"]).group("porc_iva")
+                                     if detalle.present?
+                                %>
+                                    <table class="table table-bordered table-condensed table-striped">
+                                      <thead>
+                                      <tr class="thcolor">
+                                        <th width="35%" class="text-center">Porc IVA</th>
+                                        <th class="text-center">Total en la solicitud</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody id="tbody">
+                                      <% detalle.each do |a| %>
+                                        <tr>
+                                          <td class="text-center" style="font-size:12px;"><%= a.porc_iva rescue nil%>%</td>
+                                          <td class="text-center" style="font-size:12px;"><%= camponumerico a.valortotal rescue nil%></td>
+                                        </tr>
+                                      <% end %>
+                                      </tbody>
+                                    </table>
+                                  <%   end
+                                       end %>
+
+                                  <%  sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{p.contrato.id} and user_interventor = #{p.user_id})"]).order(id: :asc)
+                                      sedesactivas.each do |a|
+                                        dato = " contratossolicitud_id = #{p.id} and contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+                                        if Contratossoldetalle.where(["#{dato.to_s}"]).present? %>
+                                          <div style="font-size:11px;" align="left">--> Sede: <%=a.nombre.to_s rescue nil%></div>
+                                  <%      
+                                        end
+                                      end %>
+                              </td>
+                              <td class="text-center" style="font-size:12px;"><%= p.periodo rescue nil%></td>
+                              <td class="text-right" style="font-size:12px;"><strong><%= camponumerico p.valor_total rescue 0%></strong></td>
+                              <td class="text-center" style="font-size:12px;"><%= p.estado rescue nil%></td>
+                            </tr>
+                          <% end %>
+                          </tbody>
+                        </table>
+                        <br/>
+                    <% else %>
+                      <% if cont == 1
+                           cont = 2%>
+                        <table class="table table-bordered table-condensed table-striped">
+                          <tbody>
+                      <% end %>
+                      <% if p.cant.to_i > 0 %>
+                      <tr>
+                        <td width="5%">
+                          <div align="center">
+                            <%= link_to informe_datas_path(infgrupo_id: 28, portafolio_id: p.periodo.to_s+'-'+c.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Info periodo' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Informe</button>
+                            <%end %>
+                          </div>
+                        </td>
+                        <td class="text-left" style="font-size:11px;">
+                          <a href="javascript:void(0);" onclick="SINO('solicitudes_<%=p.periodo%>_<%=c.id%>')">
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            Periodo <%=p.periodo %> (<%=p.cant rescue 0 %>)
+                          </a>
+                          <div id="solicitudes_<%=p.periodo%>_<%=c.id%>" style="display:none;">
+                            <br/>
+                            <table class="table table-bordered table-condensed table-striped">
+                              <thead>
+                              <tr class="thcolor">
+                                <th width="15%" class="text-center"></th>
+                                <th width="10%" class="text-center">Nro. Solicitud</th>
+                                <th width="15%" class="text-center">Fecha creación</th>
+                                <th class="text-left">Solicitante</th>
+                                <th width="13%" class="text-right">Valor Total</th>
+                                <th width="10%" class="text-center">Estado solicitud</th>
+                              </tr>
+                              </thead>
+                              <tbody id="tbody">
+                              <% contratossolicitudes.where(periodo: p.periodo.to_s).each do |p| %>
+                                <tr>
+                                  <td class="text-center" style="font-size:12px;">
+                                    <% if p.user_id == isadmin or a.tipo.to_s == 'INTERVENTOR'%>
+                                      <%= link_to edit_contratossolicitud_path(id: p.id, etapa: 'A'), class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <% if p.estado.to_s == 'PENDIENTE' and p.user_id == isadmin %>
+                                      <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <%= link_to contratossolicitud_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver solicitud ' do %>
+                                      <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                                    <% end %>
+                                    <% if a.marca_noreal.to_s == 'SI' and p.estado != 'PARA FACTURAR' %>
+                                      <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "PARA FACTURAR"), data: {toggle: 'tooltip', confirm: "Cambio de estado?"}, title: 'Procesar para FACTURAR' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <% if a.marca_entrega_sitio.to_s == 'SI' and p.estado == 'PENDIENTE' %>
+                                      <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: 'ENTREGA EN SITIO'), data: {toggle: 'tooltip', confirm: "Cambio de estado?"}, title: 'Procesar para ENTREGA EN SITIO' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes ' do %>
+                                      <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                    <% end %>
+                                    <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel' do %>
+                                      <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                    <% end %>
+                                    <% if p.estado == 'FINALIZADOS' %>
+                                      <%= link_to firma_contratossolicitudes_path(id: p.id, etapa: 'A'), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                                        <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <% if accesoempresa %>
+                                      <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes (Empresa) ' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                                      <% end %>
+                                      <%= link_to visualizare_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel (Empresa)' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                      <% end %>
+                                    <% end %>
+                                    <% if p.created_at.strftime("%Y-%m").to_s == Time.now.strftime("%Y-%m").to_s
+                                         #c.contratossolicitudes.where(["user_id = #{a.user_interventor} and DATE_FORMAT(created_at,'%%Y-%%m') = DATE_FORMAT(now(),'%%Y-%%m')"]).present? %>
+                                      <%= link_to replicar_contratossolicitudes_path(contrato_id: c.id, id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Duplicar una Solicitud?"}, title: 'Duplicar' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                                      <% end %>
+                                    <% elsif a.multiples_solicitudes.to_s == 'SI'%>
+                                      <%= link_to replicar_contratossolicitudes_path(contrato_id: c.id, id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Duplicar una Solicitud?"}, title: 'Duplicar' do %>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                                      <% end %>
+                                    <% end %>
+                                  </td>
+                                  <td class="text-center" style="font-size:11px;"><%= p.id rescue nil%></td>
+                                  <td class="text-center" style="font-size:11px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                                  <td class="text-left" style="font-size:11px;"><%= p.nombreuser rescue nil%></td>
+                                  <td class="text-right" style="font-size:12px;"><strong><%= camponumerico p.valor_total rescue 0%></strong></td>
+                                  <td class="text-center" style="font-size:11px;"><%= p.estado rescue nil%></td>
+                                </tr>
+                              <% end %>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                      <% end %>
+                    <% end %>
+                 <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<div class="modal fade" id="firma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+

@@ -1,0 +1,41 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <%
+    portafolio = Portafolio.find(@user.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  %>
+  <br/>
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <%= render 'visitas/render_informe/encabezados/enc_visitas.pdf.erb', titulo: 'Informe Mensual de las Visitas' %>
+        <%= render 'visitas/render_informe/visitas/visita.pdf.erb' %>
+        <%= render 'visitas/render_informe/visitas/contratosinicio.pdf.erb' %>
+        <%= render 'visitas/render_informe/visitas/contratosfin.pdf.erb' %>
+        <%= render 'visitas/render_informe/capacitaciones/capacitacion.pdf.erb' %>
+        <%= render 'visitas/render_informe/evaluaciones/evaluaciones.pdf.erb' %>
+        <%= render 'visitas/render_informe/retiros/retiro.pdf.erb' %>
+        <%= render 'visitas/render_informe/procesos/procesos.pdf.erb' %>
+      </td>
+    </tr>
+  </table>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

@@ -1,0 +1,29 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Detalle</th>
+        <th width="5%" class="text-center">Cant</th>
+        <th width="5%" class="text-center">Valor<br/>Unitario</th>
+        <th width="5%" class="text-center">Valor Descuento</th>
+        <th width="5%" class="text-center">VlrUnitario<br/>Desc</th>
+        <th width="5%" class="text-center">Porc<br/>IVA</th>
+        <th width="5%" class="text-center">Subtotal</th>
+        <th width="5%" class="text-center">Valor IVA</th>
+        <th width="10%" class="text-right">Valor Total</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosprefdetalles">
+      <% @contratosprefactura.contratosprefdetalles.order(id: :desc).each do |contratosprefdetalle| %>
+	      <%= render 'contratosprefdetalles/tr', contratosprefdetalle: contratosprefdetalle %>
+	    <% end %>
+	  </tbody>
+    <tr>
+      <th class="thcolor text-center" colspan="7">Totales</th>
+      <th class="thcolor text-right"><div id="idSubtotal<%= @contratosprefactura.id %>"><%=camponumerico @contratosprefactura.contratosprefdetalles.sum("subtotal") rescue 0 %></div></th>
+      <th class="thcolor text-right"><div id="idValor_iva<%= @contratosprefactura.id %>"><%= camponumerico @contratosprefactura.contratosprefdetalles.sum("valor_iva") rescue 0 %></div></th>
+      <th class="thcolor text-right"><div id="idValor_total<%= @contratosprefactura.id %>"><%= camponumerico @contratosprefactura.contratosprefdetalles.sum("total") rescue 0 %></div></th>
+    </tr>
+	</table>
+</div>

@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  contratosperfecha: one
+  user: one
+  fecha_inicio: 2021-10-27
+  dias_disfrute: 1
+  dias_pago: 1
+  fecha_fin: 2021-10-27
+  valor_disfrute: 9.99
+  valor_salud: 9.99
+  valor_pension: 9.99
+  valor_pago: 9.99
+  valor_total: 9.99
+  estado: MyString
+  user_aprueba: 1
+  user_paga: 1
+
+two:
+  contratospersona: two
+  contratosperfecha: two
+  user: two
+  fecha_inicio: 2021-10-27
+  dias_disfrute: 1
+  dias_pago: 1
+  fecha_fin: 2021-10-27
+  valor_disfrute: 9.99
+  valor_salud: 9.99
+  valor_pension: 9.99
+  valor_pago: 9.99
+  valor_total: 9.99
+  estado: MyString
+  user_aprueba: 1
+  user_paga: 1

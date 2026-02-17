@@ -1,0 +1,50 @@
+<% if @contratosperdotaciones.present? %>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th class="text-left">Contratos</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @contratosperdotaciones.select("contrato_id").distinct.each do |c| %>
+      <tr>
+        <td class="text-left" style="font-size:11px;">
+          <div id="abrir_contrato_entrega<%= c.contrato_id %><%= @fechaparams %>" class="pull-left">
+            <%= link_to show_detalle_contrato_entrega_menus_path(contrato_id: c.contrato_id, fecha: @fecha, ruta: 'ABRIR'), remote: true do %>
+              <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+              <%= c.identcontrato rescue nil %>
+            <% end %>
+          </div>
+          <div id="cerrar_contrato_entregan<%= c.contrato_id %><%= @fechaparams %>" class="pull-left hide">
+            <%= link_to show_detalle_contrato_entrega_menus_path(contrato_id: c.contrato_id, fecha: @fecha, ruta: 'CERRAR'), remote: true do %>
+              <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+              <%= c.identcontrato rescue nil %>
+            <% end %>
+          </div>
+          <div class="pull-right" style="margin-left: 25px;">
+            <b class="text-red"><%= Contratosperdotacion.where(contrato_id: c.contrato_id, fecha_prox_entrega: @fecha, estado: 'PENDIENTE').count rescue nil %></b>
+            <i class="fa fa-certificate text-red"></i> &nbsp;
+            <b class="text-blue"><%= Contratosperdotacion.where("contrato_id = #{c.contrato_id} and fecha_prox_entrega = '#{@fecha}' and estado not in ('ENTREGADO','PENDIENTE')").count rescue nil %></b>
+            <i class="fa fa-certificate text-orange"></i> &nbsp;
+            <b class="text-green"><%= Contratosperdotacion.where(contrato_id: c.contrato_id, fecha_prox_entrega: @fecha, estado: 'ENTREGADO').count rescue nil %></b>
+            <i class="fa fa-certificate text-green"></i>
+          </div>
+
+          <% if Contratosperdotacion.where("contrato_id = #{c.contrato_id} and fecha_prox_entrega = '#{@fechaparams.gsub('_','-')}' and estado = 'PENDIENTE' and perdotacion_original_id is null").present? %>
+            <div class="pull-right">
+              <%= link_to entregar_todo_contratosperdotaciones_path(contrato_id: c.contrato_id, periodo: @fechaparams), data: { confirm: 'Estas Seguro de Marcar como Entregado Todo?' }, remote: true do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Entregar Todo</button>
+              <% end %>
+            </div>
+          <% end %>
+        </td>
+      </tr>
+      <tr id="tr_show_dotacion_contrato_entrega<%= c.contrato_id %><%= @fechaparams %>" class="hidden">
+        <td>
+          <div id="abrir_detalle_contrato_entrega<%= c.contrato_id %><%= @fechaparams %>" style="padding-left: 50px; padding-right: 50px;"></div>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

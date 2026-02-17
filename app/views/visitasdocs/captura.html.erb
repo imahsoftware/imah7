@@ -1,0 +1,142 @@
+<section class="content-header">
+  <h1>
+    Captura de Imagen
+
+    <div id="antes<%= @visita.id %>" class="pull-right <%= 'hide' unless @visita.visitasdocs.exists?(tipo: "CAPTURA IMAGEN") %>">
+      <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Regresar", class: 'btn btn-xs btn-warning' do %>
+        <i class="fa fa-angle-left"></i> Continuar con el proceso
+      <% end %>
+    </div>
+  </h1>
+</section>
+<section class="content">
+  <div class="box box-primary hidden-xs hidden-sm">
+    <%= render 'visitas/table_md' %>
+  </div>
+  <div class="box box-primary hidden-md hidden-lg">
+    <%= render 'visitas/table_xs' %>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Cámara</h3>
+          <div class="pull-right"><div id="message" style="display: none;"></div></div>
+          <button id="requestLocationButton" class="btn btn-primary btn-xs">Habilitar <i class="fa fa-map-pin"></i> </button>
+          <script type="text/javascript">
+              if ("geolocation" in navigator) {
+                  navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+                      if (result.state === 'granted') {
+                          showMessage('El acceso a la ubicación está permitido');
+                          hideButton();
+                      } else {
+                          showMessage('El acceso a la ubicación no está permitido, reinicia tu navegador');
+                      }
+                  });
+              } else {
+                  showMessage('El navegador no soporta geolocalización');
+              }
+
+              function showMessage(message) {
+                  var messageElement = document.getElementById('message');
+                  messageElement.textContent = message;
+                  messageElement.style.display = 'block';
+              }
+
+              function hideButton() {
+                  var button = document.getElementById('requestLocationButton');
+                  button.style.display = 'none';
+              }
+          </script>
+        </div>
+        <div class="box-body">
+          <video id="video" width="100%" height="100%" autoplay></video>
+          <button id="snap" class="btn btn-primary">
+            <i class="fa fa-camera"></i> Tomar Foto
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Resultado</h3>
+        </div>
+        <div class="box-body">
+          <div class="canvas-container text-center">
+            <canvas id="canvas"></canvas>
+            <%= form_for @image, url: '/save_image', method: :post, html: { id: 'image-form' } do |form| %>
+              <%= form.hidden_field :tipo, id: 'image-title' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+    .canvas-container {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    #canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<script>
+
+
+    var boton = document.getElementById('antes<%= @visita.id %>');
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var snap = document.getElementById('snap');
+
+    navigator.mediaDevices.getUserMedia({video: true})
+      .then(function (stream) {
+          video.srcObject = stream;
+          video.play();
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+
+    snap.addEventListener('click', function () {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        var image_data = canvas.toDataURL('image/png');
+
+        var form_data = new FormData(document.getElementById('image-form'));
+        form_data.append('image[image_data]', image_data.split(',')[1]);
+        form_data.append('visita_id', <%= @visita.id %>);
+
+        $.ajax({
+            type: 'POST',
+            url: 'captura_imagen',
+            data: form_data,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success && response.antesExists) {
+                    boton.classList.remove("hide");
+                    window.location.href = response.redirect_path; // Asegúrate de usar response.redirect_path
+                } else {
+                    boton.classList.add("hide");
+                }
+            },
+            error: function(error) {
+                console.error('Error al realizar la solicitud: ', error);
+            }
+        });
+
+    });
+
+</script>

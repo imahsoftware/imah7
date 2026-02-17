@@ -1,0 +1,27 @@
+<html>
+<head>
+  <script>
+      function number_pages() {
+          var vars={};
+          var x=document.location.search.substring(1).split('&');
+          for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = decodeURIComponent(z[1]);}
+          var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+          for(var i in x) {
+              var y = document.getElementsByClassName(x[i]);
+              for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+          }
+      }
+  </script>
+</head>
+<body onload="number_pages()" style="font-size: 8px;">
+
+<div style="font-size: 9px; font-family: Tahoma; margin-left: 30px">
+  Pagina <span class="page"></span> de <span class="topage"></span>
+</div>
+<div align="center" style="font-size: 9px; font-family: Tahoma;">
+  Principal: Bogota Av. de las Americas 58-51 Telefono: 7441929 pagina WEB www.sistemcobro.com - Cali: Calle 18N No. 3N - 24 Of. 404 Telefono: 2359846<br/>
+  Medellin Cra. 50 No. 50 - 14 Telefono: 6045168<br/>
+  Barranquilla Cra. 58 No. 75-158 Of. 701 Edificio Banco Davivienda Telefono: 3852028
+</div>
+</body>
+</html>

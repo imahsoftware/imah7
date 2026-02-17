@@ -1,0 +1,26 @@
+var contratoId = <%= @contratosperdotacion.id %>;
+
+// Construir el selector para el elemento que deseas modificar
+var selector = "#cambio_estado" + contratoId;
+
+// Definir el nuevo contenido HTML que quieres insertar dentro del elemento seleccionado
+var nuevoContenido = '<div class="text-table-10" id="cambio_estado' + contratoId + '">ENTREGADO</div>';
+
+// Usar jQuery para seleccionar el elemento por su ID y actualizar su contenido HTML
+$(selector).html(nuevoContenido);
+
+<% if @contratosperdotacion.estado == 'ENTREGADO' %>
+  $('#marcar<%= @contratosperdotacion.id %>').remove();
+  $('#entregar_elemento<%= @contratosperdotacion.id %>').remove();
+  $('#marcar2<%= @contratosperdotacion.id %>').remove();
+<% end %>
+
+
+$('[data-toggle="tooltip"]').tooltip();
+
+
+$("#otp_entregas<%= @contratosperdotacion.id %>").html("<%= j(render partial: "contratosperdotaciones/boton_otp", locals: { contratosperdotacion: @contratosperdotacion }) %>")
+
+// Activar los tooltips después de la actualización del contenido
+$('[data-toggle="tooltip"]').tooltip();
+$(".tooltip").tooltip("hide");

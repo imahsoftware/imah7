@@ -1,0 +1,28 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">×</span></button>
+    <h4 class="modal-title"><%= @evaluacionesejecucion.evaluacionesdetalle.actividad rescue nil %></h4>
+  </div>
+  <%= simple_form_for([@evaluacionesejecucion, @evaluacionesejecucionesdoc], remote: true) do |f| %>
+    <%= hidden_field_tag :evaluacionesejecucion_id, @evaluacionesejecucion.id %>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :tipo, label: "Descripción" %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :docevaluacion, as: :file, label: 'Archivo a cargar' %>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <%= f.button :submit, "Guardar", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+
+
+

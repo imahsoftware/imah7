@@ -1,0 +1,12 @@
+<% if @contratosgrupos.present? %>
+  $('#contratospermasiva_contratosgrupo_id').empty();
+  $('#contratospermasiva_contratosgrupo_id').append('<option selected>Seleccione</option>');
+<% @contratosgrupos.each do |contratosgrupo| %>
+  $('#contratospermasiva_contratosgrupo_id').append('<option value="<%= contratosgrupo.id %>"><%= contratosgrupo.descripcion %></option>');
+<% end %>
+  $('#contratospermasiva_contratosgrupo_id').prop('disabled', false);
+<% else %>
+  $('#contratospermasiva_contratosgrupo_id').empty();
+  $('#contratospermasiva_contratosgrupo_id').append('<option selected>Seleccione</option>');
+  $('#contratospermasiva_contratosgrupo_id').prop('disabled', true);
+<% end %>

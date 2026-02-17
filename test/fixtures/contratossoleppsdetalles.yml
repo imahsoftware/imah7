@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratossolepp: one
+  item: MyString
+  observacion: MyString
+  cantidad: 1
+  cant_aprobada: 1
+
+two:
+  contratossolepp: two
+  item: MyString
+  observacion: MyString
+  cantidad: 1
+  cant_aprobada: 1

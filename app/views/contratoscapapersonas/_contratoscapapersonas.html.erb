@@ -1,0 +1,35 @@
+<legend>Agregar por Cargo del contrato Actual</legend>
+<% Contratoscargo.select("contratoscargos.*, (select distinct 'X' from contratoscapapersonas where contratoscapacitacion_id = #{contratoscapacitacion.id} and estado_evaluacion = 'PENDIENTE'
+                                              and ruta = 'B' and contratosperfecha_id in (select id from contratosperfechas where contratoscargo_id = contratoscargos.id)) yatiene")
+                 .where("contrato_id in (select contrato_id from contratoscapacitaciones where id = #{contratoscapacitacion.id})").each do |a| %>
+  <%=a.perfil.to_s %>  <%= link_to marcar_todo_contratos_path(contratoscapacitacion_id: contratoscapacitacion.id, interno: 'NN', contratoscargoid: a.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Incluir solo este cargo" do %>
+    <i class="fa fa-check text-success"></i>
+  <% end %>
+  <% if a.yatiene.to_s == 'X' %>
+    <%= link_to marcar_todo_contratos_path(contratoscapacitacion_id: contratoscapacitacion.id, interno: 'RR', contratoscargoid: a.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Eliminar solo este cargo" do %>
+      <i class="fa fa-check text-red"></i>
+    <% end %>
+  <% end %>
+  <br/>
+<% end %>
+
+<div class="box-header">
+  <h3 class="box-title"><strong>Agregar Otros Empleados</strong></h3>
+  <div class="box-tools pull-right">
+      <%= link_to new_contratoscapacitacion_contratoscapapersona_path(contratoscapacitacion), id: 'new_contratoscapapersona_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratoscapapersona_form" class="collapse"></div>
+  <div id="contratoscapapersonas">
+    <% if contratoscapacitacion.contratoscapapersonas.where("ruta = 'B' and estado_evaluacion = 'PENDIENTE'").order("created_at desc").present? %>
+      <%= render 'contratoscapapersonas/tabla', contratoscapacitacion: contratoscapacitacion %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+      </div>
+    <% end %>
+  </div>
+</div>

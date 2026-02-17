@@ -1,0 +1,41 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  empresa: one
+  nro_contrato: MyString
+  objeto: 
+  tiposcontrato: one
+  estado: MyString
+  valor: 9.99
+  plazo_mes: 1
+  plazo_dia: 1
+  fecha_firma: 2020-07-17
+  fecha_inicio: 2020-07-17
+  fecha_fin: 2020-07-17
+  anticipo: MyString
+  valor_anticipo: 9.99
+  fecha_liquidacion: 2020-07-17
+  fechamasmodi: 2020-07-17
+  valormasmodi: 9.99
+  user: one
+  user_act: 1
+
+two:
+  empresa: two
+  nro_contrato: MyString
+  objeto: 
+  tiposcontrato: two
+  estado: MyString
+  valor: 9.99
+  plazo_mes: 1
+  plazo_dia: 1
+  fecha_firma: 2020-07-17
+  fecha_inicio: 2020-07-17
+  fecha_fin: 2020-07-17
+  anticipo: MyString
+  valor_anticipo: 9.99
+  fecha_liquidacion: 2020-07-17
+  fechamasmodi: 2020-07-17
+  valormasmodi: 9.99
+  user: two
+  user_act: 1

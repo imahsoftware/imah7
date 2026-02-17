@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  periodosliquidacion: one
+  estado: MyString
+
+two:
+  user: two
+  periodosliquidacion: two
+  estado: MyString

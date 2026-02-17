@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosactnotas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosactividad</th>
+      <th>Contratossede</th>
+      <th>User</th>
+      <th>Nota</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosactnotas.each do |contratosactnota| %>
+      <tr>
+        <td><%= contratosactnota.contratosactividad %></td>
+        <td><%= contratosactnota.contratossede %></td>
+        <td><%= contratosactnota.user %></td>
+        <td><%= contratosactnota.nota %></td>
+        <td><%= link_to 'Show', contratosactnota %></td>
+        <td><%= link_to 'Edit', edit_contratosactnota_path(contratosactnota) %></td>
+        <td><%= link_to 'Destroy', contratosactnota, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosactnota', new_contratosactnota_path %>

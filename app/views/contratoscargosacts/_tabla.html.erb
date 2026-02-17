@@ -1,0 +1,17 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead>
+	    <tr class="thcolor">
+        <td width="8%"><div align="center"></div></td>
+        <td width="10%" class="text-center">Fecha</td>
+        <td class="text-left">Actividad</td>
+        <td class="text-center">Estado</td>
+	    </tr>
+	  </thead>
+	  <tbody id="tbody_contratoscargosacts">
+      <% @contratoscargo.contratoscargosacts.order("id desc").each do |contratoscargosact| %>
+	      <%= render 'contratoscargosacts/tr', contratoscargosact: contratoscargosact %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

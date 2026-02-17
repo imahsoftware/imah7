@@ -1,0 +1,45 @@
+<div class="box box-default color-palette-box">
+  <div class="box-header with-border">
+    <h3 class="box-title"><i class="fa fa-tag"></i> Informe General</h3>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <!-- <li class="<%#= @etapa == "A" ? 'active' : nil %>">
+              <%#= link_to informe_general_visitas_path(etapa: 'A') do %>
+                <i class="fa fa-users"></i> Por Supervisores
+              <%# end %>
+            </li> -->
+            <li class="<%= @etapa == "A" ? 'active' : nil %>">
+              <%= link_to informe_general_visitas_path(etapa: 'A') do %>
+                <i class="fa fa-industry"></i> Por Empresas
+              <% end %>
+            </li>
+            <li class="<%= @etapa == "C" ? 'active' : nil %>">
+              <%= link_to informe_general_visitas_path(etapa: 'C') do %>
+                <i class="fa fa-sticky-note-o"></i> Por Periodos
+              <% end %>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <%# if @etapa == 'A' %>
+              <%#= render 'visitas/periodos', is_auth_c_exception_visita: @is_auth_c_exception_visita, isadmin: @isadmin %>
+            <%# end %>
+            <% if @etapa == 'A' %>
+              <%= render 'visitas/periodos_empresas', is_auth_c_exception_visita: @is_auth_c_exception_visita, isadmin: @isadmin %>
+            <% end %>
+            <% if @etapa == 'C' %>
+              <%= render 'visitas/periodos_annos', is_auth_c_exception_visita: @is_auth_c_exception_visita, isadmin: @isadmin %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

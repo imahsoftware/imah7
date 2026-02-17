@@ -1,0 +1,30 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Interventores</strong></h3>
+  <%= link_to new2_userstemporales_path, remote: true, data: {toggle: 'tooltip'}, title: 'Crear Persona' do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-users"></i> </button>
+  <% end -%>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('contratosuser') %>
+      <%= link_to new_contrato_contratosuser_path(@contrato), id: 'new_contratosuser_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosuser_form" class="collapse"></div>
+  <div id="contratosusers">
+    <% if @contrato.contratosusers.present? %>
+      <%= render 'contratosusers/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="modal fade" id="temporal">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<tr id="eproveedoresrecibo_<%= eproveedoresrecibo.id %>">
+  <td class="text-center">
+      <%= link_to edit_eproveedor_eproveedoresrecibo_path(@eproveedor, eproveedoresrecibo), remote: true, class: 'edit_eproveedorsmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to eproveedor_eproveedoresrecibo_path(@eproveedor, eproveedoresrecibo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= eproveedoresrecibo.user_nombre.html_safe rescue nil %><%= eproveedoresrecibo.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="center"><%= eproveedoresrecibo.fecha %></td>
+  <td align="center"><%= eproveedoresrecibo.eproveedorescompra.nro_factura %></td>
+  <td align="center"><%= eproveedoresrecibo.forma_pago %></td>
+  <td align="right"><%= camponumerico eproveedoresrecibo.total %></td>
+</tr>
+
+
+

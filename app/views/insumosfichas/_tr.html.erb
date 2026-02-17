@@ -1,0 +1,24 @@
+<tr id="insumosficha_<%= insumosficha.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("insumosficha")%>
+    <%= link_to edit_insumo_insumosficha_path(@insumo, insumosficha), remote: true, class: 'edit_insumosficha_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to insumo_insumosficha_path(@insumo, insumosficha), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= insumosficha.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= insumosficha.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= insumosficha.marca rescue nil %>
+    <% if insumosficha.docficha_file_name.present? %><br/>
+      <%= link_to insumosficha.docficha.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <%= insumosficha.docficha_file_name rescue nil %>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= insumosficha.referencia rescue nil %></td>
+  <td align="center" class="text-table"><%= insumosficha.fecha_version rescue nil %></td>
+  <td align="center" class="text-table"><%= insumosficha.fecha_vencimiento rescue nil %></td>
+  <td align="center" class="text-table"><%= insumosficha.estado rescue nil %></td>
+</tr>

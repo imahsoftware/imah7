@@ -1,0 +1,92 @@
+<%= form_for(migracionestalla) do |f| %>
+  <% if migracionestalla.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(migracionestalla.errors.count, "error") %> prohibited this migracionestalla from being saved:</h2>
+
+      <ul>
+      <% migracionestalla.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :archivo_id %>
+    <%= f.text_field :archivo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado %>
+    <%= f.text_field :estado %>
+  </div>
+
+  <div class="field">
+    <%= f.label :identificacion %>
+    <%= f.text_field :identificacion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :talla_pantalon %>
+    <%= f.text_field :talla_pantalon %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cant_pantalon %>
+    <%= f.text_field :cant_pantalon %>
+  </div>
+
+  <div class="field">
+    <%= f.label :talla_camisa %>
+    <%= f.text_field :talla_camisa %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cant_camisa %>
+    <%= f.text_field :cant_camisa %>
+  </div>
+
+  <div class="field">
+    <%= f.label :talla_zapatos %>
+    <%= f.text_field :talla_zapatos %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cant_zapatos %>
+    <%= f.text_field :cant_zapatos %>
+  </div>
+
+  <div class="field">
+    <%= f.label :zapatos %>
+    <%= f.text_field :zapatos %>
+  </div>
+
+  <div class="field">
+    <%= f.label :guantes %>
+    <%= f.text_field :guantes %>
+  </div>
+
+  <div class="field">
+    <%= f.label :tapabocas %>
+    <%= f.text_field :tapabocas %>
+  </div>
+
+  <div class="field">
+    <%= f.label :monogafas %>
+    <%= f.text_field :monogafas %>
+  </div>
+
+  <div class="field">
+    <%= f.label :casco %>
+    <%= f.text_field :casco %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

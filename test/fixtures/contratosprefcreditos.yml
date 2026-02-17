@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  contratosprefactura: one
+  user: one
+  fecha: 2021-09-28
+  valor: 9.99
+  observacion: MyString
+
+two:
+  contrato: two
+  contratosprefactura: two
+  user: two
+  fecha: 2021-09-28
+  valor: 9.99
+  observacion: MyString

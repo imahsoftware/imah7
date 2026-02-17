@@ -1,0 +1,86 @@
+<%= render "form" %>
+<% unless @formato.new_record? %>
+  <%
+    estados = ["Tabla Inicio","Contenido","Firmas"]
+    estados2 = ["1","2","3"]
+    isadmin = is_admin
+    usr = User.find(isadmin)
+  %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <%
+            estados2.each do |p|
+              pos = estados2.find_index(p)
+              if usr.etapa.to_s == p
+                clase = "active"
+              else
+                clase = ""
+              end
+          %>
+            <li class="<%= clase %>">
+              <%= link_to etapar_formatos_path(id: @formato.id, etapa: p.to_s) do %>
+                <i class="fa fa-search" ></i> <span></span> <%=estados[pos].to_s %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <div class="tab-content">
+          <% if usr.etapa.to_s == '1' %>
+            <legend>Tabla Inicio </legend>
+            <%= render 'formatosvariables/formatosvariables' %>
+          <% elsif usr.etapa.to_s == '2' %>
+            <div class="box-header">
+              <legend>Contenido del Formato</legend>
+              <div class="box-tools pull-right">
+                <% if @formato.contratosperfecha_id.present? %>
+                  <%= link_to preliminar_formatos_path(id: @formato.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver' do %>
+                    <i class="fa fa-file-pdf-o"></i> Preview!
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <%= simple_form_for(@formato) do |f| %>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                    <%= f.input :detalle, as: :text, input_html: {rows: 34, class: 'wysihtml5 clean' } %>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                    <label>Variables</label><br/>
+                    <% Variable.where("segmento = '#{@formato.segmento}'").order("nombre asc").each do |s| %>
+                      <%=s.nombre %><br/>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="box-footer">
+                <div class="box-tools pull-right">
+                  <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+                </div><!-- /.box-tools -->
+              </div>
+            <% end %>
+          <% elsif usr.etapa.to_s == '3' %>
+            <legend>Firmas </legend>
+            <%= simple_form_for(@formato) do |f| %>
+              <div class="box box-danger">
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :firma_representante, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: 'Firma representante legal?' %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :firma_empleado, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: 'Firma Empleado' %></div>
+                  </div>
+                </div>
+                <div class="box-footer">
+                  <div class="box-tools pull-right">
+                    <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+                  </div><!-- /.box-tools -->
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

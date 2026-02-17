@@ -1,0 +1,87 @@
+<%
+  isadmin = is_admin
+  @contratosperfecha = Contratosperfecha.find(@formato.contratosperfecha_id)
+  contratospersona = @contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.idportafolio)
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  textoori = @formato.detalle
+  vcLeyenda = @formato.leyenda
+  Variable.select("CONCAT('([*',nombre,'*])') variable, CONCAT('([*</b>',nombre,'<b>*])') variable2, campo campo")
+          .where("segmento = '#{@formato.segmento}'").each do |a|
+    puts a.variable.to_s
+    puts a.campo.to_s
+    textoori = textoori.gsub(a.variable,"#{eval(a.campo) rescue nil}")
+    textoori = textoori.gsub(a.variable2,"#{eval(a.campo) rescue nil}")
+  end
+
+%>
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<table width="100%" border="0">
+  <tr>
+    <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+      <div align="center">
+        <strong><div class="StyleType18"><%=vcLeyenda rescue nil %></div></strong>
+      </div>
+    </td>
+    <td width="30%">
+      <div align="center">
+        <% if portafolio.logo_file_name %>
+          <%= image_tag "http://tempometa-tempoaseo.com/system/logos/#{portafolio.id}/thumb/#{portafolio.logo_file_name}"%>
+        <% end %>
+      </div>
+    </td>
+  </tr>
+</table>
+<div align="justify" style="font-size: 14px; font-family: Tahoma;">
+  <% if @formato.formatosvariables.present? %>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 14px; font-family: Tahoma;">
+      <% @formato.formatosvariables.order("orden asc").each do |a| %>
+        <tr>
+          <td width="40%" height="25" class="StyleBgColor" align="left"><strong><%=a.titulo %>:&nbsp;</strong></td>
+          <td>&nbsp;<%=eval(a.variable.campo) rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+    <br/><br/>
+  <% end %>
+  <%= textoori.html_safe %>
+  <% if @formato.firma_empleado.to_s == 'SI' or @formato.firma_representante.to_s == 'SI' %>
+    <br/><br/>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px; font-size: 12px; font-family: Tahoma;">
+      <tr>
+        <% if @formato.firma_representante.to_s == 'SI' %>
+          <td width="40%" height="20" ALIGN="center"><strong>EL EMPLEADOR</strong></td>
+          <td>&nbsp;</td>
+        <% end %>
+        <% if @formato.firma_empleado.to_s == 'SI' %>
+          <td width="55%" height="20" ALIGN="center"><strong>EL TRABAJADOR</strong></td>
+        <% end %>
+      </tr>
+      <tr>
+        <% if @formato.firma_representante.to_s == 'SI' %>
+          <td height="50" style="background: #E8E3E3;">
+              <br/><br/><br/><br/>
+              <strong><%= @nombre_firma rescue nil %><br/>
+                Representante Legal<br/>
+                <%= @nombre_empresa rescue nil %></strong>
+          </td>
+          <td >&nbsp</td>
+        <% end %>
+        <% if @formato.firma_empleado.to_s == 'SI' %>
+          <td height="50" style="background: #E8E3E3;">
+              <br/><br/><br/><br/>
+              <%= contratospersona.nombre_completo rescue nil %><br/>
+              <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+              <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+          </td>
+        <% end %>
+      </tr>
+    </table>
+  <% end %>
+
+</div>
+
+
+

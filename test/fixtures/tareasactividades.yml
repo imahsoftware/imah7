@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tarea_id: 1
+  area: MyString
+  descripcion: MyString
+  resultado: MyString
+  estado: MyString
+
+two:
+  tarea_id: 1
+  area: MyString
+  descripcion: MyString
+  resultado: MyString
+  estado: MyString

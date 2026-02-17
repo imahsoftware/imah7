@@ -1,0 +1,59 @@
+<tr id="contratossoldetalle_<%= contratossoldetalle.id %>">
+  <td class="text-center">
+    <% if @contratossolicitud.estado.to_s == 'PENDIENTE_NOUSAR' %>
+      <%= link_to edit_contratossolicitud_contratossoldetalle_path(@contratossolicitud, contratossoldetalle), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratossolicitud_contratossoldetalle_path(@contratossolicitud, contratossoldetalle), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <% if @visualiza_iva.to_s == 'SI' and @contratossolicitud.estado.to_s == 'PENDIENTE'  %>
+      <%= link_to contratossolicitud_contratossoldetalle_path(@contratossolicitud, contratossoldetalle), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% else %>
+      <% if contratossoldetalle.cantidad.to_i > 0 %>
+        <i class="fa fa-adn text-red"></i>
+      <% end %>
+    <% end %>
+  </td>
+  <% if @contratossolicitud.etapa.to_s == 'A'
+       imagenexi = contratossoldetalle.existeimg.to_s rescue nil
+  %>
+    <td align="justify">
+      <% if imagenexi == 'X'
+          Contratosinsimagen.where(contratosinsumo_id: contratossoldetalle.contratosinsumo_id).each do |b| %>
+          <%= link_to b.insumosimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+            <i class="fa fa-picture-o text-danger"></i>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= contratossoldetalle.contratosinsumo.insumo_cliente rescue nil %>
+      <% if contratossoldetalle.presentacion %>
+        <%= link_to fichatecnica_contratossoldetalles_path(contratossoldetalle_id: contratossoldetalle.id), data: { toggle: 'tooltip' }, title: 'Ficha', remote: true do %>
+          <i class="fa fa-life-ring text-red"></i>
+        <% end %>
+      <% end %>
+    </td>
+  <% elsif @contratossolicitud.etapa.to_s == 'B' %>
+    <td align="justify"><%= contratossoldetalle.contratosmaquinaria.insumo.insumodetalle rescue nil %></td>
+  <% elsif @contratossolicitud.etapa.to_s == 'C' %>
+    <td align="justify"><%= contratossoldetalle.contratosotro.descripcion rescue nil %></td>
+  <% elsif @contratossolicitud.etapa.to_s == 'D' %>
+    <td align="justify"><%= contratossoldetalle.contratosotro.descripcion rescue nil %></td>
+  <% end %>
+  <td align="center"><%= camponumerico contratossoldetalle.cantidad rescue nil %></td>
+  <% if @visualiza_iva.to_s == 'SI' %>
+    <td align="right"><%= camponumerico contratossoldetalle.precio_siniva rescue nil %></td>
+    <td align="right"><%= camponumerico contratossoldetalle.porc_iva rescue nil %></td>
+    <td align="right"><%= camponumerico contratossoldetalle.valor_iva rescue nil %></td>
+    <td align="right"><%= camponumerico contratossoldetalle.precio_unitario rescue nil %></td>
+  <% else %>
+    <td align="right"><%= camponumerico contratossoldetalle.precio_unitario rescue nil %></td>
+  <% end %>
+  <td align="right"><%= camponumerico contratossoldetalle.total rescue nil %></td>
+</tr>
+
+
+

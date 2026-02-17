@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  tipo_identificacion: MyString
+  identificacion: 1
+  nombre: MyString
+  parentesco: MyString
+  user: one
+  user_act: 1
+
+two:
+  contratospersona: two
+  tipo_identificacion: MyString
+  identificacion: 1
+  nombre: MyString
+  parentesco: MyString
+  user: two
+  user_act: 1

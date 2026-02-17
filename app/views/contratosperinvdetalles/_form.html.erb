@@ -1,0 +1,26 @@
+<%= simple_form_for([@contratosperinventario, @contratosperinvdetalle], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :item, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Item" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :nro_placa,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nro Placa" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado_item, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor, as: :moneda, label: 'Valor'%></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :observaciones, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Observación" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperinvdetalle.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperinvdetalle_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosperinventario_contratosperinvdetalle_path(@contratosperinventario, @contratosperinvdetalle), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

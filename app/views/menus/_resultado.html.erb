@@ -1,0 +1,24 @@
+<div class="table-responsive">
+  <% if contratosperfechas.count.to_i > 0 %><br/>
+    <div class="box-body no-padding" style="background-color: #ffffff;">
+      <% contratosperfechas.each do |contratosperfecha| %>
+        <div align="center">
+          <br/><br/><strong>CONTRATO FIRMADO CORRECTAMENTE</strong><br/><br/>
+          <b>Empleado:</b> <%= contratosperfecha.contratospersona.nombre_completo rescue nil %><br/><br/>
+          <b>CC:</b> <%= camponumerico2(contratosperfecha.contratospersona.identificacion) rescue nil %><br/><br/>
+          <b>Cargo:</b> <%= contratosperfecha.contratoscargo.perfil rescue nil %><br/><br/>
+          <b>Firma Digital:</b> <%= contratosperfecha.codigo_firma %><br/><br/>
+          <b>Fecha Firma:</b> <%= contratosperfecha.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %><br/><br/>
+          <% if contratosperfecha.firma_agent.to_s != "" %>
+            <b>Navegador:</b> <%= contratosperfecha.firma_agent.to_s rescue nil %><br/><br/>
+          <% end %>
+          <b>Direccion IP:</b> <%= contratosperfecha.firma_ip.to_s rescue nil %><br/><br/>
+          * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+    </div>
+  <% end %>
+</div>

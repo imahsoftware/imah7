@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  controledor: MyString
+  metodo: MyString
+  id_registro: MyString
+  codigo_otp: MyString
+  respuesta_otp: MyString
+  codigo_otp2: MyString
+  respuesta_otp2: MyString
+  estado: MyString
+
+two:
+  controledor: MyString
+  metodo: MyString
+  id_registro: MyString
+  codigo_otp: MyString
+  respuesta_otp: MyString
+  codigo_otp2: MyString
+  respuesta_otp2: MyString
+  estado: MyString

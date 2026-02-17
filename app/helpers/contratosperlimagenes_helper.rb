@@ -1,0 +1,2 @@
+module ContratosperlimagenesHelper
+end

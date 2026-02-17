@@ -1,0 +1,13 @@
+<% if @ruta == 'ABRIR' %>
+$("#contratosespdetalle<%= @consecutivo %>").html('<%= j render "contratosespdetalle", solicitudes: @datos  %>');
+$("#abrir<%= @consecutivo %>").addClass("hide");
+$("#cerrar<%= @consecutivo %>").removeClass("hide");
+<% else %>
+$("#abrir<%= @consecutivo %>").removeClass("hide");
+$("#cerrar<%= @consecutivo %>").addClass("hide");
+$("#contratosespdetalle<%= @consecutivo %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

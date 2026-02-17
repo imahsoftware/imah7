@@ -1,0 +1,17 @@
+
+<table class="table table-bordered table-condensed table-striped miestilo">
+  <thead>
+  <tr class="thcolor">
+    <th width="35%" class="text-left text-table cancelcenter" data-titulo="Nro Radicado: ">Capacitación</th>
+    <th width="35%" class="text-left text-table">Objetivo</th>
+    <th width="35%" class="text-left text-table">Tema</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td data-titulo="Capacitación: " class="text-left text-table-bold"><%= @contratoscapapersona.capacitacion.descripcion rescue nil %></td>
+    <td data-titulo="Objetivo: " class="text-left text-table-bold"><%= @contratoscapapersona.capacitacion.objetivo rescue nil %></td>
+    <td data-titulo="Tema: " class="text-left text-table-bold"><%= @contratoscapapersona.capacitacion.temas rescue nil %></td>
+  </tr>
+  </tbody>
+</table>

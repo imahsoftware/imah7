@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionesprorroga.user %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionesprorroga.archivo %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionesprorroga.estado %>
+</p>
+
+<p>
+  <strong>Identificacion:</strong>
+  <%= @migracionesprorroga.identificacion %>
+</p>
+
+<p>
+  <strong>Contratosperfecha:</strong>
+  <%= @migracionesprorroga.contratosperfecha_id %>
+</p>
+
+<p>
+  <strong>Contratospersona:</strong>
+  <%= @migracionesprorroga.contratospersona_id %>
+</p>
+
+<p>
+  <strong>Fecha fin:</strong>
+  <%= @migracionesprorroga.fecha_fin %>
+</p>
+
+<%= link_to 'Edit', edit_migracionesprorroga_path(@migracionesprorroga) %> |
+<%= link_to 'Back', migracionesprorrogas_path %>

@@ -1,0 +1,12 @@
+<% if @contratosgrupos.present? %>
+  $('#contratospersona_contratosgrupo_id').empty();
+  $('#contratospersona_contratosgrupo_id').append('<option selected>Seleccione</option>');
+<% @contratosgrupos.each do |contratosgrupo| %>
+  $('#contratospersona_contratosgrupo_id').append('<option value="<%= contratosgrupo.id %>"><%= contratosgrupo.descripcion %></option>');
+<% end %>
+  $('#contratospersona_contratosgrupo_id').prop('disabled', false);
+<% else %>
+  $('#contratospersona_contratosgrupo_id').empty();
+  $('#contratospersona_contratosgrupo_id').append('<option selected>Seleccione</option>');
+  $('#contratospersona_contratosgrupo_id').prop('disabled', true);
+<% end %>

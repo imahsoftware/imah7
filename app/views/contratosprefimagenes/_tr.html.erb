@@ -1,0 +1,17 @@
+<tr id="contratosprefimagen_<%= contratosprefimagen.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosprefimagen")%>
+    <% if @contratosprefactura.estado.to_s =='PENDIENTE' or @contratosprefactura.estado.to_s == 'RECHAZADA' %>
+      <%= link_to contratosprefactura_contratosprefimagen_path(@contratosprefactura, contratosprefimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to contratosprefimagen.facturasimagen.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i></button>
+    <% end %>
+  </td>
+  <td align="left"><%= contratosprefimagen.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratosprefimagen.user.nombre rescue nil %></small></td>
+  <td align="left"><%= contratosprefimagen.descripcion rescue nil %></td>
+  <td align="left"><%= contratosprefimagen.facturasimagen_file_name rescue nil %></td>
+</tr>

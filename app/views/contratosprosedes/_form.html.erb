@@ -1,0 +1,19 @@
+<%= simple_form_for([@contratosproyecto, @contratosprosede], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-12"><%= f.input :contratossede_id, collection: Contratossede.where("contrato_id = #{@contratosproyecto.contrato_id} and id not in (select contratossede_id from contratosprosedes)").collect { |tq| [tq.nombre, tq.id] }, as: :select, input_html: { data: { width: '100%' }, class: 'select2 clean', include_blank: true }, label: 'Sede' %></div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+      <div class="col-md-6">
+        <% if @contratosprosede.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: "#contratosprosede_form#{@contratosproyecto.id}" }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosproyecto_contratosprosede_path(@contratosproyecto, @contratosprosede), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>

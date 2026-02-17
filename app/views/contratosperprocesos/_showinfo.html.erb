@@ -1,0 +1,58 @@
+<br/><br/>
+<%
+
+  is_auth_e_versalarioenempleado = is_auth_e('versalarioenempleado')
+
+  %>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th class="text-center text-table" width="7%"></th>
+      <th class="text-center text-table" width="5%">ID</th>
+      <th class="text-left text-table" width="35%">Empleado / Contrato</th>
+      <th class="text-left text-table">Detalle</th>
+    </tr>
+    </thead>
+    <% @contratosperprocesos.each do |contratosperproceso| %>
+      <tr id="contratosperproceso_<%= contratosperproceso.id %>">
+        <td class="text-center">
+          <%= link_to general_contratosperprocesos_path(id: contratosperproceso.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+          <%= link_to editproceso_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: contratosperproceso.contratospersona_id, etapa: '1'), data: { toggle: 'tooltip' }, title: "Ingresar al proceso" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+          <% end %>
+        </td>
+        <td class="text-center"><%= contratosperproceso.id rescue nil %></td>
+        <td class="text-left text-table">
+          <%= link_to edit_contratospersona_path(id: contratosperproceso.contratospersona_id, etapa: 'F'), data: { toggle: 'tooltip' }, title: "Ir al Contrto" do %>
+            <i class="fa fa-child text-blue"></i>
+          <% end %>
+          <b><%= contratosperproceso.nombrepersona rescue nil %></b>
+          <br/><%= contratosperproceso.identnombre rescue nil %>
+          <br/><strong>Nro Contrato : </strong><%= contratosperproceso.nro_contrato rescue nil %>
+          <br/><strong>Cargo : </strong><%= contratosperproceso.perfil rescue nil %>
+          <% if is_auth_e_versalarioenempleado %>
+            ( <%= camponumerico contratosperproceso.salariocargo.to_i rescue nil %>)
+          <% end %>
+          <br/><strong>Grupo Nomina : </strong><%= contratosperproceso.descripcion rescue nil %>
+          <small>(<%= contratosperproceso.termino rescue nil %>)</small>
+          <% if contratosperproceso.seccionnombre.present? %>
+            <br/><strong>Sección : </strong><%= contratosperproceso.seccionnombre rescue nil %>
+            -<%= contratosperproceso.autobuscar_municipios rescue nil %>
+          <% end %>
+        </td>
+        <td align="justify" class="text-table">
+          <strong>Creacion: </strong><%= contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+          <br/><strong>Fecha de los Hechos: </strong><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %>
+          <br/><strong>Creado por : </strong><%= contratosperproceso.userpronombre rescue nil %> -
+          <strong>Cel:</strong> <%= contratosperproceso.mostrar_movil rescue nil %>
+          <small><br/><strong>DETALLE: </strong><%= contratosperproceso.detalle.upcase rescue nil %>
+          </small>
+          <% if contratosperproceso.citacion_detalle.present? %>
+            <br/><br/><small class="text-red"><%= contratosperproceso.citacion_detalle.html_safe rescue nil %></small>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>

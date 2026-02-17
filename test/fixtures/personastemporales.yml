@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrata: one
+  user: one
+  tipo_identificacion: MyString
+  identificacion: MyString
+  nombres: MyString
+  apellidos: MyString
+  telefono: MyString
+  movil: MyString
+  cargo: MyString
+  user_asignado: 1
+  autobuscar: MyString
+  nombre_completo: MyString
+  tipo_usuario: MyString
+
+two:
+  contrata: two
+  user: two
+  tipo_identificacion: MyString
+  identificacion: MyString
+  nombres: MyString
+  apellidos: MyString
+  telefono: MyString
+  movil: MyString
+  cargo: MyString
+  user_asignado: 1
+  autobuscar: MyString
+  nombre_completo: MyString
+  tipo_usuario: MyString

@@ -1,0 +1,24 @@
+<tr id="contratoscargospersona_<%=contratoscargospersona.id %>">
+  <td class="text-center">
+    <%= link_to contratoscargo_contratoscargospersona_path(@contratoscargo, contratoscargospersona), remote: true, method: :delete, data: {confirm: "#{t :elimina_confirma}", toggle: 'tooltip'}, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratoscargospersona.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= contratoscargospersona.user.username rescue nil %>
+      <br/><%= contratoscargospersona.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(contratoscargospersona.user_anula).username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td class="text-left" style="font-size: 11px;"><%= contratoscargospersona.identificacion rescue nil %> <%= contratoscargospersona.nombre rescue nil %> <%= contratoscargospersona.primer_apellido rescue nil %> <%= contratoscargospersona.segundo_apellido rescue nil %></td>
+  <td class="text-left" style="font-size: 11px;">
+    <div style="font-size:8px;">Celular: <%= contratoscargospersona.celular rescue nil %></div>
+    <div style="font-size:8px;">Celular2: <%= contratoscargospersona.celular2 rescue nil %></div>
+    <div style="font-size:8px;">Email: <%= contratoscargospersona.correo rescue nil %></div>
+    <div style="font-size:8px;">Recomendado por: <%= contratoscargospersona.recomendado_por rescue nil %></div>
+    <div style="font-size:8px;">Doc Digital
+      <% if contratoscargospersona.cargoimagen_file_name.to_s != "" %>
+        <%= link_to contratoscargospersona.cargoimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+          <i class="fa fa-cloud-download text-danger"></i> <%=contratoscargospersona.cargoimagen_file_name %>
+        <% end %>
+      <% end %></div></td>
+  <td class="text-center" style="font-size: 11px;"><%= contratoscargospersona.estado rescue nil %></td>
+</tr>

@@ -1,0 +1,25 @@
+<%= simple_form_for([@contrato, @contratosautoinsumo], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+          <%= f.input :insumo_id, collection: Insumo.where(["tipo = 'CONSUMO' and clase = 'GENERAL'
+                                                             and   estado = 'ACTIVO'
+                                                             and   id not in (select insumo_id from contratosinsumos where contrato_id = #{@contrato.id} and insumo_id is not null)
+                                                             and   id not in (select insumo_id from contratosautoinsumos where contrato_id = #{@contrato.id} and insumo_id is not null)"]).order(:bien_servicio).collect {|p| [ p.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosautoinsumo.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosautoinsumo_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosautoinsumo_path(@contrato, @contratosautoinsumo), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

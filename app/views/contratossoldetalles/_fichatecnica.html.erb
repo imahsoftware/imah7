@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Ficha Tecnica</h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <table class="table table-bordered table-condensed table-striped">
+        <tr>
+          <td width="20%" class="thcolor text-center">Item:</td>
+          <td class="text-left"><%= @contratossoldetalle.nombreinsumo rescue nil%></td>
+        </tr>
+        <tr>
+          <td class="thcolor text-center">Presentacion:</td>
+          <td class="text-left"><%= @contratossoldetalle.presentacion rescue nil%></td>
+        </tr>
+        <tr>
+          <td class="thcolor text-center">Imagen:</td>
+          <td class="text-left">
+            <% if @contratossoldetalle.existeimg.to_s == "X"
+                 Contratosinsimagen.where(contratosinsumo_id: @contratossoldetalle.contratosinsumo_id).each do |b| %>
+                <div style="color:red; font-size:10px;"><%= link_to b.insumosimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <i class="fa fa-cloud-download text-danger"></i><%=b.insumosimagen_file_name %></div>
+                  <% end %>
+              <% end %>
+            <% else %>
+                No hay Imagen
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+

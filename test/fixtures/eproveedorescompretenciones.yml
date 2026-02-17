@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedorescompra: one
+  tipospretencion: one
+  valor: 9.99
+
+two:
+  eproveedorescompra: two
+  tipospretencion: two
+  valor: 9.99

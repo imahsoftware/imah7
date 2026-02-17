@@ -1,0 +1,7 @@
+<% title 'FirmaDigital' %>
+<legend style="margin-top: -19px;">Hola, <%= @usr.nombre rescue nil %></legend>
+<% if @existeContratoPendiente.to_s == 'SI' %>
+  <%= render 'firma_otp' %><!-- CONTRATOS -->
+<% elsif @existeContratoFirmaPendiente.to_s == 'SI' %>
+  <%= render 'firma_otp_otros' %> <!-- DOCUMENTOS -->
+<% end %>

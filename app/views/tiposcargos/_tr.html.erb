@@ -1,0 +1,15 @@
+<tr id="tiposcargo_<%= tiposcargo.id %>">
+  <% if is_auth_c('tiposcargo') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposcargo_path(tiposcargo), class: 'edit_tiposcargo_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposcargo, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= tiposcargo.id %></td>
+  <td><%= tiposcargo.descripcion %></td>
+  <td class="text-justify"><%= tiposcargo.perfil %></td>
+</tr>

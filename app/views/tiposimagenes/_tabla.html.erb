@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposimagen') %>
+          <th width="10%"></th>
+        <% end %>
+        <th width="10%">ID</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposimagenes">
+      <% @tiposimagenes.each do |tiposimagen| %>
+        <%= render 'tiposimagenes/tr', tiposimagen: tiposimagen %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

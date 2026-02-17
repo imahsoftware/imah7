@@ -1,0 +1,223 @@
+<%
+  datos_pendientes = @compromisosp #.where(estado: 'PENDIENTE').order("fecha_entrega asc")
+  datos_rechazados = @compromisosr #.where(estado: 'RECHAZADO').order("fecha_entrega desc")
+  datos_firmados = @compromisosf #.where(estado: 'FINALIZADO').order("fecha_entrega desc")
+%>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#pendiente<%= @fechaparams %>" data-toggle="tab"><i class="fa fa-info-circle"></i> PENDIENTE (<%= Compromiso.where("DATE_FORMAT(fecha_entrega, '%Y-%m') = '#{@fecha}' and estado = 'PENDIENTE'").count rescue 0 %>)</a>
+        </li>
+        <li>
+          <a href="#rechazado<%= @fechaparams %>" data-toggle="tab"><i class="fa fa-close"></i> RECHAZADO (<%= Compromiso.where("DATE_FORMAT(fecha_entrega, '%Y-%m') = '#{@fecha}' and estado = 'RECHAZADO'").count rescue 0 %>)</a>
+        </li>
+        <li>
+          <a href="#finalizado<%= @fechaparams %>" data-toggle="tab"><i class="fa fa-check"></i> FINALIZADO (<%= Compromiso.where("DATE_FORMAT(fecha_entrega, '%Y-%m') = '#{@fecha}' and estado = 'FINALIZADO'").count rescue 0 %>)</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="pendiente<%= @fechaparams %>">
+          <% if datos_pendientes.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-center" width="5%"></th>
+                <th class="text-left">Empleado</th>
+                <th class="text-left" width="25%">Documento Digital</th>
+                <th class="text-center" width="10%">Fecha Entrega</th>
+                <th class="text-left" width="30%">Observación</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% datos_pendientes.each do |compromiso| %>
+                <tr>
+                  <td class="text-center" style="font-size:10px;">
+                    <% if compromiso.imagen.to_s == 'X' %>
+                      <%= link_to ver_documentos_compromisos_path(compromiso_id: compromiso.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos del Compromiso" do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style="font-size:10px;">
+                    <% if compromiso.contratosperfecha_id.present? %>
+                      <b><%= compromiso.identinombre rescue nil %></b><br/>
+                      <small><%= compromiso.empresa rescue nil %> -
+                        <br/><strong>Nro Contrato : </strong><%= compromiso.nro_contrato rescue nil %>
+                        <br/><strong>Cargo : </strong><%= compromiso.cargo rescue nil %>
+                        <br/><strong>Grupo Nomina : </strong><%= compromiso.grupo rescue nil %>
+                        <% if compromiso.seccion.present? %>
+                          <br/><strong>Sección : </strong><%= compromiso.seccion rescue nil %>
+                        <% end %>
+                        <br/><strong>Dirección : </strong><%= compromiso.direcciontelefono rescue nil %>
+                      </small>
+                    <% else %>
+                      <b><%= compromiso.formulario rescue nil %></b>
+                      <% if compromiso.imagen.to_s != 'X' %>
+                        <br/><code>Pediente de cargar el documento</code>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style=font-size:10px;">
+                    <%= compromiso.docdesc rescue nil %>
+                  </td>
+                  <td class="text-center" style="font-size:10px;">
+                    <%= compromiso.fecha_entrega rescue nil %>
+                  </td>
+                  <td class="text-justify" style="font-size:10px;">
+                    <%= compromiso.observacion rescue nil %>
+                  </td>
+                </tr>
+                <div class="modal fade" id="ver_documentos<%= compromiso.id rescue nil %>">
+                  <div class="modal-dialog modal-dialog-responsive" role="document">
+                    <div class="modal-content">
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-danger">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+
+
+        <div class="tab-pane" id="rechazado<%= @fechaparams %>">
+          <% if datos_rechazados.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-center" width="5%"></th>
+                <th class="text-left">Empleado</th>
+                <th class="text-left" width="25%">Documento Digital</th>
+                <th class="text-center" width="10%">Fecha Entrega</th>
+                <th class="text-left" width="30%">Observación</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% datos_rechazados.each do |compromiso| %>
+                <tr>
+                  <td class="text-center" style="font-size:10px;">
+                    <% if compromiso.imagen.to_s == 'X' %>
+                      <%= link_to ver_documentos_compromisos_path(compromiso_id: compromiso.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos del Compromiso" do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style="font-size:10px;">
+                    <% if compromiso.contratosperfecha_id.present? %>
+                      <b><%= compromiso.identinombre rescue nil %></b><br/>
+                      <small><%= compromiso.empresa rescue nil %> -
+                        <br/><strong>Nro Contrato : </strong><%= compromiso.nro_contrato rescue nil %>
+                        <br/><strong>Cargo : </strong><%= compromiso.cargo rescue nil %>
+                        <br/><strong>Grupo Nomina : </strong><%= compromiso.grupo rescue nil %>
+                        <% if compromiso.seccion.present? %>
+                          <br/><strong>Sección : </strong><%= compromiso.seccion rescue nil %>
+                        <% end %>
+                        <br/><strong>Dirección : </strong><%= compromiso.direcciontelefono rescue nil %>
+                      </small>
+                    <% else %>
+                      <b><%= compromiso.formulario rescue nil %></b>
+                      <% if compromiso.imagen.to_s != 'X' %>
+                        <br/><code>Pediente de cargar el documento</code>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style=font-size:10px;">
+                    <%= compromiso.docdesc rescue nil %>
+                  </td>
+                  <td class="text-center" style="font-size:10px;">
+                    <%= compromiso.fecha_entrega rescue nil %>
+                  </td>
+                  <td class="text-justify" style="font-size:10px;">
+                    <%= compromiso.observacion rescue nil %>
+                  </td>
+                </tr>
+                <div class="modal fade" id="ver_documentos<%= compromiso.id rescue nil %>">
+                  <div class="modal-dialog modal-dialog-responsive" role="document">
+                    <div class="modal-content">
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-danger">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+
+        <div class="tab-pane" id="finalizado<%= @fechaparams %>">
+          <% if datos_firmados.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="text-center" width="5%"></th>
+                <th class="text-left">Empleado</th>
+                <th class="text-left" width="25%">Documento Digital</th>
+                <th class="text-center" width="10%">Fecha Entrega</th>
+                <th class="text-left" width="30%">Observación</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% datos_firmados.each do |compromiso| %>
+                <tr>
+                  <td class="text-center" style="font-size:10px;">
+                    <% if compromiso.imagen.to_s == 'X' %>
+                      <%= link_to ver_documentos_compromisos_path(compromiso_id: compromiso.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos del Compromiso" do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style="font-size:10px;">
+                    <% if compromiso.contratosperfecha_id.present? %>
+                      <b><%= compromiso.identinombre rescue nil %></b><br/>
+                      <small><%= compromiso.empresa rescue nil %> -
+                        <br/><strong>Nro Contrato : </strong><%= compromiso.nro_contrato rescue nil %>
+                        <br/><strong>Cargo : </strong><%= compromiso.cargo rescue nil %>
+                        <br/><strong>Grupo Nomina : </strong><%= compromiso.grupo rescue nil %>
+                        <% if compromiso.seccion.present? %>
+                          <br/><strong>Sección : </strong><%= compromiso.seccion rescue nil %>
+                        <% end %>
+                        <br/><strong>Dirección : </strong><%= compromiso.direcciontelefono rescue nil %>
+                      </small>
+                    <% else %>
+                      <b><%= compromiso.formulario rescue nil %></b>
+                      <% if compromiso.imagen.to_s != 'X' %>
+                        <br/><code>Pediente de cargar el documento</code>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-left" style=font-size:10px;">
+                    <%= compromiso.docdesc rescue nil %>
+                  </td>
+                  <td class="text-center" style="font-size:10px;">
+                    <%= compromiso.fecha_entrega rescue nil %>
+                  </td>
+                  <td class="text-justify" style="font-size:10px;">
+                    <%= compromiso.observacion rescue nil %>
+                  </td>
+                </tr>
+                <div class="modal fade" id="ver_documentos<%= compromiso.id rescue nil %>">
+                  <div class="modal-dialog modal-dialog-responsive" role="document">
+                    <div class="modal-content">
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-danger">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

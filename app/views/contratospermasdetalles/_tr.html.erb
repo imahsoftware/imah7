@@ -1,0 +1,12 @@
+<tr id="contratospermasdetalle_<%= contratospermasdetalle.id %>">
+  <td class="text-center">
+    <% if @contratospermasiva.estado.to_s == 'PENDIENTE' %>
+      <%= link_to contratospermasiva_contratospermasdetalle_path(@contratospermasiva, contratospermasdetalle), remote: true, method: :delete, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%=contratospermasdetalle.contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+  <td align="center"><%=contratospermasdetalle.contratosperfecha.fecha_inicio rescue nil %></td>
+  <td align="right"><%=camponumerico contratospermasdetalle.contratosperfecha.contratoscargo.salario rescue nil %></td>
+</tr>

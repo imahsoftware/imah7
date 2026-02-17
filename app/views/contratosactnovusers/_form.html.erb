@@ -1,0 +1,26 @@
+<%= simple_form_for([@contratosactnovedad, @contratosactnovuser], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <% if !@contratosactnovuser.new_record? %>
+          <%= f.input :user_asig, collection: User.where(["id = #{@contratosactnovuser.user_asig}"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true, label: "Usuario - Metro"%>
+        <% else %>
+          <%= f.input :user_asig, collection: User.where(["tipoconsulta != 'METRO' and activo = 'S'"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true, label: "Usuario - Metro"%>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosactnovuser.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosactnovuser_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosactnovedad_contratosactnovuser_path(@contratosactnovedad, @contratosactnovuser), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

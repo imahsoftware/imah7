@@ -1,0 +1,294 @@
+
+<legend style="margin-top: -19px;">Proceso de Nomina y Liquidación</legend>
+<% usr = User.find(is_admin)
+   acceso = is_auth_c("marcarestados")
+   @autorizacionnomina
+   estados = []
+   Userspermiso.joins(:objeto).where(["userspermisos.user_id = #{usr.id} and objetos.descripcion like 'nomina%%'"])
+                              .select("replace(objetos.descripcion,'nomina','') descr")
+                              .order("objetos.id asc").each do |a|
+     estados << a.descr.upcase
+   end
+   #estados = ["QUINCENAL", "MENSUAL", "COMPLETO", "LIQUIDACION", "VACACIONES", "PROCESOS", "APORTESENLINEA", "TRASLADOS"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p # .estado2
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_contratospernominas_path(etapa: p) do %>
+              <i class="fa fa-adn"></i>&nbsp;<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% cont = 0
+           clase = ""
+           estados.each do |e|
+             if usr.etapa.to_s == e
+        %>
+            <div class="tab-pane active" id="<%= e %>">
+              <div class="box-body">
+                <% if e.to_s == 'COMPLETO' %>
+                  <% if @autorizacionnomina %>
+                    <legend>Generacion de Proceso Masivo</legend>
+                    <%= simple_form_for(Contratospernomina.new, url: nominaesp_contratospernominas_path, :method => :get) do |f| %>
+                      <% @termino = e %>
+                      <div class="box-body">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <label>Periodo</label><br/>
+                              <%= select_tag 'ubicacion[periodosliquidacion_id]', options_from_collection_for_select(select_periodosliq, :id, :descripcion), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                            </div>
+                            <div class="col-md-1">
+                              <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                  <legend>Generacion de Nomina Individual</legend>
+                  <%= simple_form_for(Contratospernomina.new, url: nominaindividual_contratospernominas_path, :method => :get) do |f| %>
+                    <div class="box-body">
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-md-3">
+                            <label>Periodo</label><br/>
+                            <%= select_tag 'ubicacion[periodosliquidacionindividual_id]', options_from_collection_for_select(select_periodosliqmanual, :id, :descripcion), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                          </div>
+                          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <%= f.input :autobuscar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Identificación" %>
+                          </div>
+                          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                            <%= f.input :estado, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Deseas consolidarlo?" %>
+                          </div>
+                          <div class="col-md-1">
+                            <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+                              <i class="fa fa-search" aria-hidden="true"></i>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr class="thcolor">
+                      <th width="8%" class="text-left"></th>
+                      <th width="15%" class="text-center">Periodo</th>
+                      <th class="text-left">Empleado</th>
+                      <th width="30%" class="text-left">Empresa - Grupo - Contrato</th>
+                      <th width="10%" class="text-center">Estado</th>
+                    </tr>
+                    <% Contratospernomina.joins(:contrato, :contratosgrupo)
+                                         .select("(select autobuscar from contratospersonas where id = contratospernominas.contratospersona_id) nombreempleado,
+                                                        contratos.nro_contrato,
+                                                        (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                        contratosgrupos.descripcion, contratospernominas.estado, contratospernominas.id, contratospernominas.contratospersona_id,
+                                                        (SELECT CONCAT(inicio,' - ',fin) FROM periodosliquidaciones where id = contratospernominas.periodosliquidacion_id) periodoliq")
+                                         .where(["manual = 'SI' and periodosliquidacion_id in (select id from periodosliquidaciones where visible = 'SI')"])
+                                         .order("contratospernominas.id desc").each do |m| %>
+                      <tr>
+                        <td>
+                          <div align="center">
+                            <%= link_to tirilla_contratospernominas_path(idnomina: m.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                            <% end %>
+                            <%= link_to edit_contratospersona_path(id: m.contratospersona_id, etapa: 'F'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "Ir al contrato" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-user"></i></button>
+                            <% end %>
+                          </div>
+                        </td>
+                        <td class="text-center" style="font-size:11px;"><%= m.periodoliq rescue nil %></td>
+                        <td class="text-left" style="font-size:11px;"><%= m.nombreempleado rescue nil %></td>
+                        <td class="text-left" style="font-size:10px;"><%= m.identnombre rescue nil %>
+                          <br/><%= m.descripcion rescue nil %>
+                          <em><strong>(<%= m.nro_contrato rescue nil %>)</strong></em></td>
+                        <td class="text-center" style="font-size:10px;"><strong>
+                          <% if m.estado.to_s == 'CONSOLIDADO' %>
+                            <small class="text-red"><%= m.estado rescue nil %></small>
+                          <% else %><small class="text-blue"><%= m.estado rescue nil %></small>
+                          <% end %></strong></td>
+                      </tr>
+                    <% end %>
+                  </table>
+                  <legend><small>Periodos Anteriores:</small></legend>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <% datos = Periodosliquidacion.select("CONCAT(inicio,' - ',fin) periodo, id,
+                                                           (select count(9) from contratospernominas where manual = 'SI' and periodosliquidacion_id = periodosliquidaciones.id) cant")
+                                                  .where(["id in (select distinct periodosliquidacion_id from contratospernominas where manual = 'SI')"])
+                                                  .order("inicio desc")
+                       datos.each do |p| %>
+                      <tr>
+                        <td class="text-table text-left">
+                          <div id="abrir_perliq<%=p.id%>_completo" class="pull-left">
+                            <%= link_to showinfo_periodosliquidaciones_path(ruta: 'ABRIR', periodo: p.id.to_s), style: "color: black;", remote: true do %>
+                              <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver la informacion"></i>
+                              <i class="fa fa-arrow-circle-down text-success"></i> <%=p.periodo rescue nil %> (<%=p.cant %>)
+                            <% end %>
+                          </div>
+                          <div id="cerrar_perliq<%=p.id%>_completo" class="pull-left hide">
+                            <%= link_to showinfo_periodosliquidaciones_path(ruta: 'CERRAR', periodo: p.id.to_s), style: "color: black;", remote: true do %>
+                              <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para cerrar la informacion"></i>
+                              <i class="fa fa-star text-red"></i> <%=p.periodo rescue nil %> (<%=p.cant %>)
+                            <% end %>
+                          </div>
+                          <div id="abrir_detalle_perliq<%= p.id %>_completo"></div>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </table>
+
+                <% elsif e.to_s == 'LIQUIDACION' %>
+                  <%= render 'retiros' %>
+                <% elsif e.to_s == 'VACACIONES' %>
+                  <%= render 'vacaciones' %>
+                <% elsif e.to_s == 'PROCESOS' %>
+                  <%= render 'procesos' %>
+                <% elsif e.to_s == 'APORTESENLINEA' %>
+                  <%= render 'aportesenlinea' %>
+                <% elsif e.to_s == 'TRASLADOS' %>
+                  <%= render 'traslado' %>
+                <% else %>
+                  <%= simple_form_for(Contratospernomina.new, url: nomina_contratospernominas_path, :method => :get) do |f| %>
+                    <% @termino = e %>
+                    <div class="box-body">
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-md-3">
+                            <label>Periodo</label><br/>
+                            <%= select_tag 'ubicacion[periodosliquidacion_id]', options_from_collection_for_select(select_periodosliquidaciones(e), :id, :descripcion), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                          </div>
+                          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                            <label>Contrato</label>
+                            <select class="form-control select2ContratoIndex<%= e %> select2" style="width:100%;" name="ubicacion[contrato_id]" id="ubicacion_contrato_id">
+                              <option selected="selected" value="<%= f.object.contrato_id -%>">
+                                <%= "#{f.object.descripcion_contrato}" -%>
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-md-6">
+                            <%= f.input :contratosgrupo_id, as: :select, input_html: { class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Grupo', disabled: true %>
+                          </div>
+                          <div class="col-md-1">
+                            <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+                              <i class="fa fa-search" aria-hidden="true"></i>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                  <%
+                    periodos = Periodosliquidacion.select("id, concat(inicio,' - ',fin) periodo").where(["termino = '#{e}' and visible = 'SI' and id in (select distinct periodosliquidacion_id from contratospernominas)"]).distinct.order("id desc")
+                    @autorizaciondesconsolidarnomina = is_auth_c("autorizaciondesconsolidarnomina")
+                    #cantperiodos = Periodosliquidacion.where(["termino = '#{e}' and visible = 'SI' and id in (select distinct periodosliquidacion_id from contratospernominas)"]).count.to_i rescue 0
+                  %>
+                  <div class="box-body">
+                    <% #if cantperiodos.to_i > 0 %>
+                    <% if periodos.present? %>
+                      <div class="table-responsive">
+                        <% periodos.each do |p| %>
+                          <legend><%= p.periodo %>
+                            <%= link_to archivoplano_contratospernominas_path(periodosliquidacion_id: p.id, entidad: 'TODOS'), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                              <i class="fa fa-download"></i>
+                            <% end %>
+                            <%= link_to informe_datas_path(infgrupo_id: 34, portafolio_id: p.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Grupos Faltantes' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                            <% end %>
+                            <div class="pull-right" style="padding-right: 15px;">
+                              <% if Ejecucion.where(periodosliquidacion_id: p.id, estado: 'PENDIENTE', portafolio_id: is_portafolio, tipo: 'DIAN').exists? %>
+                                <code>Se encuentra programado el Envio a la Dian - 10:00 PM</code>
+                                <%= link_to cancelar_ejecutarake_contratospernominas_path(periodosliquidacion_id: p.id), data: { toggle: 'tooltip' }, title: 'Cancelar Envio de la Dian' do %>
+                                  <code style="background-color: #76D5E5"><i class="fa fa-close"></i> Cancelar
+                                    Envio</code>
+                                <% end %>
+                              <% else %>
+                                <%= link_to ejecutarake_contratospernominas_path(periodosliquidacion_id: p.id), data: { toggle: 'tooltip' }, title: 'Enviar Nomina a la Dian' do %>
+                                  <code><i class="fa fa-hand-o-right"></i> <%= image_tag("logo_dian.png", size: '50x13') %>
+                                  </code>
+                                <% end %>
+                              <% end %>
+                            </div>
+                          </legend>
+                          <table class="table table-bordered table-condensed table-striped">
+                            <tr class="thcolor">
+                              <th width="15%" class="text-left"></th>
+                              <th class="text-left">Empresa</th>
+                              <th width="25%" class="text-left">Grupo - Contrato</th>
+                              <th width="5%" class="text-center">Cant.</th>
+                              <th width="10%" class="text-right">Valor Total</th>
+                              <th width="10%" class="text-center">Estado</th>
+                            </tr>
+                            <% Contratospernomina.joins(:contrato, :contratosgrupo)
+                                                 .select("distinct contratospernominas.contrato_id, contratos.nro_contrato,
+                                                          (select distinct 'X' from contratosprenimagenes where contrato_id = contratospernominas.contrato_id and contratosgrupo_id = contratospernominas.contratosgrupo_id) existedoc,
+                                                          (select autobuscar from empresas where id = contratos.empresa_id) identnombre, contratospernominas.contratosgrupo_id, contratosgrupos.descripcion, contratospernominas.estado, count(9) cantidad, sum(contratospernominas.total) total")
+                                                 .where(["contratospernominas.periodosliquidacion_id = #{p.id}"])
+                                                 .group("contratospernominas.contrato_id, contratospernominas.contratosgrupo_id, contratospernominas.estado, contratos.empresa_id")
+                                                 .order("contratospernominas.id desc").each do |a| %>
+                              <tr id="myTableRow<%= a.contrato_id %><%= a.contratosgrupo_id %>">
+                                <td>
+                                  <div align="center" id="showbotones<%= a.contrato_id %><%= a.contratosgrupo_id %>">
+                                    <%= render 'btrconsolidado', a: a, p: p %>
+                                  </div>
+                                </td>
+                                <td class="text-left" style="font-size:10px;"><%= a.identnombre rescue nil %>
+                                  <% if a.existedoc.to_s == 'X'
+                                       Contratosprenimagen.where(contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id).each do |b| %>
+                                      <div style="color:red; font-size:10px;">Soporte
+                                        Pago <%= link_to b.nominasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                          <i class="fa fa-cloud-download text-danger"></i></div>
+                                        <% end %>
+                                    <% end %>
+                                  <% end %>
+                                </td>
+                                <td class="text-left" style="font-size:10px;"><%= a.descripcion rescue nil %>
+                                  <em><strong>(<%= a.nro_contrato rescue nil %>)</strong></em></td>
+                                <td class="text-center" style="font-size:10px;"><%= camponumerico2 a.cantidad rescue nil %></td>
+                                <td class="text-right" style="font-size:10px;"><%= camponumerico a.total rescue nil %></td>
+                                <td class="text-center">
+                                  <div style="font-size:10px;" id="cambioestado<%= a.contrato_id %><%= a.contratosgrupo_id %>">
+                                    <%= render 'btrestado', a: a, p: p %>
+                                  </div>
+                                </td>
+                              </tr>
+                            <% end %>
+                          </table>
+                          <div class="modal fade" id="adddocumento">
+                            <div class="modal-dialog modal-dialog-responsive" role="document">
+                              <div class="modal-content"></div>
+                            </div>
+                          </div>
+                          <div class="modal fade" id="archivosplano">
+                            <div class="modal-dialog modal-dialog-responsive" role="document">
+                              <div class="modal-content"></div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      No hay
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

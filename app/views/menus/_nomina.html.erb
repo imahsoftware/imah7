@@ -1,0 +1,76 @@
+<%
+  if Contratospersona.where(["identificacion = '#{@usr.identificacion}'"]).exists?
+    dtid = Contratospersona.where(["identificacion = '#{@usr.identificacion}'
+                                    and id in (select distinct contratospersona_id
+                                               from   contratosperfechas 
+                                               where  contratospersona_id = contratospersonas.id 
+                                               and   (fecha_fin is null or DATE_ADD(fecha_fin, INTERVAL 15 DAY) >= curdate()))"])[0]
+    if dtid.present?
+      if dtid.id.to_s != "" %>
+      <div class="col-md-5">
+        <div class="alert alert-danger" align="justify"><h4><%= dtid.nombre_completo.upcase rescue nil %></h4>
+          <a href="javascript:void(0);" onclick="SINO('demo_<%=@usr.identificacion%>')">
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>Aqui puedes ver tus comprobantes de pago.
+          </a>
+          <div id="demo_<%= @usr.identificacion rescue nil %>" style="display:none;">
+            <br/>
+            <%= link_to cartam_contratosperfechas_path(id: dtid.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Laboral Completa en PDF' do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-cloud-download"></i> Carta Laboral</button>
+            <% end %>
+            <br/>
+            <% if Contratospernomina.where(contratospersona_id: dtid.id).exists? %>
+              <table width="100%" border="0" style="font-size: 10px; font-family: Tahoma;">
+                <% Contratosperfecha.where("contratospersona_id = #{dtid.id} and id in (select distinct contratosperfecha_id from contratospernominas where contratospersona_id = #{dtid.id})").each do |f| %>
+                  <tr>
+                    <td width="50%">
+                      <% f.contratospernominas.joins(:periodosliquidacion)
+                          .select("CONCAT(DATE_FORMAT(periodosliquidaciones.inicio,'%Y-%m-%d'),' - ', DATE_FORMAT(periodosliquidaciones.fin,'%Y-%m-%d')) periodoliqnom, contratospernominas.* ")
+                          .where(["contratospernominas.estado = 'CONSOLIDADO'"])
+                          .order("id desc").limit(4).each do |a| %>
+                        <li><%= link_to tirilla_contratospernominas_path(idnomina: a.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+                            <i class="fa fa-cloud-download"></i> Periodo: <%= a.periodoliqnom rescue nil %>
+                          <% end %></li>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= link_to tirilla_masive_contratospernominas_path(contratosperfecha_id: f.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirillas consolidadas' do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-cloud-download"></i> Ver tirillas
+                          consolidadas
+                        </button>
+                      <% end %>
+                      <% if f.contratospervacaciones.where("estado in ('APROBADA','LIQUIDADA','PAGADA')").exists? %>
+                        <%= link_to vacacion_contratospervacaciones_path(contratosperfecha_id: f.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+                          <button class="btn btn-xs btn-warning"><i class="fa fa-cloud-download"></i> Comprobante
+                            vacaciones
+                          </button>
+                        <% end %>
+                        <%= link_to carta_contratospervacaciones_path(contratosperfecha_id: f.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-cloud-download"></i> Carta de vacaciones
+                          </button>
+                        <% end %>
+                      <% end %>
+                      <% if is_admin == 1 %>
+                        <% if Contratospermasdetalle.includes([:contratospermasiva]).joins([:contratospermasiva]).where(["contratospermasdetalles.contratosperfecha_id = #{f.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).exists? %>
+                          <% Contratospermasdetalle.includes([:contratospermasiva]).joins([:contratospermasiva]).where(["contratospermasdetalles.contratosperfecha_id = #{f.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).each do |a| %>
+                            <%= link_to proceso_contratospermasdetalles_path(id: a.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: a.contratospermasiva.proceso do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-cloud-download"></i>
+                                Pago <%= a.contratospermasiva.proceso rescue nil %></button>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-md-5">
+      <div class="alert alert-danger" align="justify"><h4><%= dtid.nombre_completo.upcase rescue nil %> - SIN CONTRATO ACTIVO....</h4></div>
+    </div>
+  <% end %>
+<% end %>

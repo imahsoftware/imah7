@@ -1,0 +1,21 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Notas</strong></h3>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('contratosperpronota') %>
+      <%= link_to new_contratosperproceso_contratosperpronota_path(@contratosperproceso), id: 'new_contratosperpronota_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosperpronota_form" class="collapse"></div>
+  <div id="contratosperpronotas">
+    <% if @contratosperproceso.contratosperpronotas.present? %>
+      <%= render 'contratosperpronotas/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>

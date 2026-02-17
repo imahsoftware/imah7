@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Bitacoraprocesos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Codigo</th>
+      <th>User</th>
+      <th>Proceso</th>
+      <th>Codigo recibido</th>
+      <th>Fecha firma</th>
+      <th>Codigo firma</th>
+      <th>Id tabla</th>
+      <th>Controlador tabla</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bitacoraprocesos.each do |bitacoraproceso| %>
+      <tr>
+        <td><%= bitacoraproceso.codigo %></td>
+        <td><%= bitacoraproceso.user_id %></td>
+        <td><%= bitacoraproceso.proceso %></td>
+        <td><%= bitacoraproceso.codigo_recibido %></td>
+        <td><%= bitacoraproceso.fecha_firma %></td>
+        <td><%= bitacoraproceso.codigo_firma %></td>
+        <td><%= bitacoraproceso.id_tabla %></td>
+        <td><%= bitacoraproceso.controlador_tabla %></td>
+        <td><%= link_to 'Show', bitacoraproceso %></td>
+        <td><%= link_to 'Edit', edit_bitacoraproceso_path(bitacoraproceso) %></td>
+        <td><%= link_to 'Destroy', bitacoraproceso, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Bitacoraproceso', new_bitacoraproceso_path %>

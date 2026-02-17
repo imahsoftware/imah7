@@ -1,0 +1,18 @@
+$("#marcacion<%= @contratosperfecha.id %><%= @contratoscapacitacion.id %>").hide();
+
+$("#tiempo<%= @contratosperfecha.id %><%= @contratoscapacitacion.id %>").html("<div><%= Time.now.strftime("%Y-%m-%d %X") %></div>");
+
+$("#iniciar_capacitacion<%= @contratoscapacitacion.contrato_id %><%= @contratoscapacitacion.id %>").html(
+    '<%= link_to iniciar_capacitacion_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: "tooltip", confirm: "Estas Seguro?" }, title: "Iniciar Capacitación" do %>' +
+    '<button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Iniciar Capacitación</button>' +
+    '<% end %>'
+);
+
+$("#iniciar_capacitacion2<%= @contratoscapacitacion.contrato_id %><%= @contratoscapacitacion.id %>").html(
+    '<%= link_to iniciar_capacitacion_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: "tooltip", confirm: "Estas Seguro?" }, title: "Iniciar Capacitación" do %>' +
+    '<button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Iniciar Capacitación</button>' +
+    '<% end %>'
+);
+
+
+

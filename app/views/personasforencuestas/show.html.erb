@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Personasformulario:</strong>
+  <%= @personasforencuesta.personasformulario_id %>
+</p>
+
+<p>
+  <strong>Encuesta:</strong>
+  <%= @personasforencuesta.encuesta_id %>
+</p>
+
+<p>
+  <strong>Encuestaspregunta:</strong>
+  <%= @personasforencuesta.encuestaspregunta_id %>
+</p>
+
+<p>
+  <strong>Encuestapreopcion:</strong>
+  <%= @personasforencuesta.encuestapreopcion_id %>
+</p>
+
+<p>
+  <strong>Calificacion:</strong>
+  <%= @personasforencuesta.calificacion %>
+</p>
+
+<%= link_to 'Edit', edit_personasforencuesta_path(@personasforencuesta) %> |
+<%= link_to 'Back', personasforencuestas_path %>

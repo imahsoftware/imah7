@@ -1,0 +1,9 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @capacitacionevaluacion.id %>").html('<%= j render "capacitacionevaluaciones/abrir_detalle"  %>');
+$("#abrir_capacitacion<%= @capacitacionevaluacion.id %>").addClass("hide");
+$("#cerrar_capacitacion<%= @capacitacionevaluacion.id %>").removeClass("hide");
+<% else %>
+$("#abrir_capacitacion<%= @capacitacionevaluacion.id %>").removeClass("hide");
+$("#cerrar_capacitacion<%= @capacitacionevaluacion.id %>").addClass("hide");
+$("#abrir_detalle<%= @capacitacionevaluacion.id %>").html(null);
+<% end %>

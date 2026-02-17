@@ -1,0 +1,15 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Motivo de no Aceptacion</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosperestados">
+	    <% @contratospersona.contratosperestados.order(id: :desc).each do |contratosperestado| %>
+	      <%= render 'contratosperestados/tr', contratosperestado: contratosperestado %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

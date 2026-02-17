@@ -1,0 +1,29 @@
+$("#grafica<%= @tarea.id %> .modal-content").html('<%= j render "tareas/ver_grafica_general" %>');
+$("#grafica<%= @tarea.id %> ").modal();
+
+$("#grafica<%= @tarea.id %> ").on('shown.bs.modal', function () {
+    inicializarGrafico();
+});
+
+var ctx = document.getElementById("miGraficoTorta<%= @tarea.id %>").getContext("2d");
+
+var data = {
+    labels: ["Pendiente (<%=@pendientes%>)", "En Proceso (<%=@procesos%>)", "Finalizado (<%=@finalizados%>)"],
+    datasets: [{
+        data: [<%= @pendientes %>, <%= @procesos %>, <%= @finalizados %>],
+        backgroundColor: ["#EE2727", "#FFCE56", "#28AF10"]
+    }]
+};
+
+var options = {
+    title: {
+        display: true,
+        text: 'Estado de las actividades programadas'
+    }
+};
+
+var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: options
+});

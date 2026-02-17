@@ -1,0 +1,26 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @visita.visitasdocs.count == 1 %>
+	$("#visitasdocs").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_visitasdocs").prepend("<%= j render 'tr', visitasdoc: @visitasdoc %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#visitasdoc_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);

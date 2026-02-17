@@ -1,0 +1,720 @@
+<% examen = @personasformulario.personasformulariosexamenes.where("estado = 'PENDIENTE'").first rescue nil %>
+<div class="alert alert-info alert-dismissible" style="font-size: 14px;">
+  <h4><i class="icon fa fa-info"></i> Bienvenido a la plataforma de ASEAR S.A.S. E.S.P.</h4>
+  Este proceso de selección y contratación se realizará de manera VIRTUAL, por lo que lo invitamos gestionar o buscar
+  los medios mínimos como: correo electrónico, computador o celular con acceso a internet o datos para que pueda
+  realizar su proceso sin tropiezos y evitar así el desplazamiento hasta la oficina.
+</div>
+<div class="box box-danger">
+  <div class="box-header">
+    <legend>
+      Hola, <%= @personasformulario.nombre rescue nil %>
+      <div class="pull-right">
+        <b>Estado:</b> <%= @personasformulario.estado_formulario.html_safe rescue nil %>
+      </div>
+    </legend>
+  </div>
+  <% if examen.present? %>
+    <div class="alert alert-danger alert-dismissible" style="font-size: 14px;">
+      <h4><i class="icon fa fa-info"></i> Agendamiento Examen de Ingreso!</h4>
+      Recuerda que tienes programado para el día <b><%= examen.fecha.to_date.strftime("%d-%m-%Y") rescue nil %></b> a
+      las <b><%= examen.hora rescue nil %></b>, en <b><%= examen.descripcion rescue nil %></b> en la
+      direccion <b><%= examen.direccion rescue nil %></b>.
+      <% if examen.recomendaciones.present? %><br/>
+        Ten en cuenta las siguientes recomendaciones: <b><%= examen.recomendaciones rescue nil %></b>.
+      <% end %>
+    </div>
+  <% end %>
+  <div class="box-body" style="padding-top: 0px;">
+    <% if @personasformulario.valida_total_campos && @personasformulario.valida_total_documentos && @personasformulario.valida_encuesta %>
+      <% if @personasformulario.estado == 'PENDIENTE' %>
+        <div class="callout callout-info">
+          <h4><i class="fa fa-info"></i> Felicitaciones has finalizado el diligenciamiento de tu inscripción, recuerda que al momento del envio seran analizados tus documentos cargados</h4>
+          <p>Para enviar el formulario dar clic aquí
+            <% if @personasformulario.valida_estado %>
+              <%= link_to envio_formulario_personasformularios_path(id: @personasformulario, estado: 'COMPLETADO'), remote: true, data: { toggle: 'tooltip' }, title: "Enviar Formulario" do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-hand-pointer-o"></i></button>
+              <% end %>
+            <% end %>
+          </p>
+        </div>
+      <% elsif @personasformulario.estado == 'COMPLETADO' %>
+        <div class="callout callout-info" style="background-color: #F9EE89 !important; color: red !important;">
+          <h4><i class="fa fa-info"></i> Tu inscripción se ha enviado con Exito!!!</h4>
+        </div>
+      <% elsif @personasformulario.estado == 'DEVUELTO' %>
+        <div class="callout callout-danger">
+          <h4><i class="fa fa-info"></i> <%= @personasformulario.mensaje_documentos rescue nil %> </h4>
+          <p>Para enviar el formulario dar clic aquí
+            <% if @personasformulario.valida_estado %>
+              <%= link_to envio_formulario_personasformularios_path(id: @personasformulario, estado: 'COMPLETADO'), remote: true, data: { toggle: 'tooltip' }, title: "Enviar Formulario" do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-hand-pointer-o"></i></button>
+              <% end %>
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+    <% end %>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="<%= @etapa == "1" ? 'active' : nil %>"> <%= link_to registro_personasformularios_path(etapa: '1', personasformulario_id: @personasformulario.id) do %>
+                <i class="fa fa-user"></i> Información
+              <% end %></li>
+            <li class="<%= @etapa == "2" ? 'active' : nil %>"> <%= link_to registro_personasformularios_path(etapa: '2', personasformulario_id: @personasformulario.id) do %>
+                <i class="fa fa-image"></i> Documentos Digitales
+              <% end %></li>
+            <% if @personasformulario.parcargo.encuesta_id.present? %>
+              <li class="<%= @etapa == "3" ? 'active' : nil %>"> <%= link_to registro_personasformularios_path(etapa: '3', personasformulario_id: @personasformulario.id) do %>
+                  <i class="fa fa-file-word-o"></i> Encuesta Ofimatica
+                <% end %></li>
+            <% end %>
+          </ul>
+          <div class="tab-content">
+            <% if @etapa == "1" %>
+              <%= simple_form_for @personasformulario, :url => update2_personasformularios_path(id: @personasformulario.id), :method => :post do |f| %>
+                <% @validaC = true %>
+                <% @validaP = true %>
+                <% @validaS = true %>
+                <% @validaZ = true %>
+                <% if @personasformulario.genero == "MASCULINO" %>
+                  <% @validaC = true %>
+                  <% @validaP = false %>
+                  <% @validaS = false %>
+                  <% @validaZ = false %>
+                <% elsif @personasformulario.genero == "FEMENINO" %>
+                  <% @validaC = false %>
+                  <% @validaP = true %>
+                  <% @validaS = true %>
+                  <% @validaZ = false %>
+                <% end %>
+                <div style="font-size: 12px; width: 100%; background-color: #d73925; color: white; height: auto; border-radius: 5px; padding: 10px;">
+                  IMPORTANTE: La ZONA o REGIÓN en la que te encuentras tiene un COORDINADOR ASIGNADO, con el cual puedes
+                  resolver todas las dudas durante este proceso y durante todo el contrato.
+                  Nombre: <%= User.find(@personasformulario.user_asignado).nombre rescue nil %>.
+                  Cel: <%= User.find(@personasformulario.user_asignado).celular rescue nil %>. Si necesitas ayuda puedes
+                  llamarlo(a).
+                </div>
+                <br/>
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :tipo_identificacion, collection: Iparametro.where(campo: 'tipo_identificacion').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :identificacion, id: "ide", input_html: { onkeypress: "return justNumbers(event);", maxlength: 15 }, disabled: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_expedicion, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :municipio_lugar_expedicion, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Lugar expedición" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :primer_apellido, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Primer apellido" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :segundo_apellido, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Segundo apellido" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :genero, collection: Iparametro.where(campo: 'genero').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Genero" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_nacimiento, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :tipo_sangre, as: :select, collection: select_tipo_sangre, input_html: { data: { width: '100%' }, class: 'select2' }, label: "RH" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :municipio_lugar_nacimiento, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :direccion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :municipio_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Ciudad de la dirección" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :telefono, as: :integer %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :celular, as: :integer %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :celular2, as: :integer %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4"><%= f.input :correo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado_civil, collection: Iparametro.where(campo: 'estado_civil').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :estrato, collection: Iparametro.where(campo: 'estrato').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3"><%= f.input :nivel_educacion, collection: Iparametro.where(campo: 'nivel_educacion').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :nro_hijos, as: :integer %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4"><%= f.input :eps, collection: Iparametro.where("campo = 'eps' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fondo_pension, collection: Iparametro.where("campo = 'fondo_pension' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :personas_acargo, as: :integer, label: "Nro Personas a Cargo?" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :contacto_nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Contacto en caso de emergencia" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :contacto_telefono, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Teléfono contacto" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 text-red"><%= f.input :victimas, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Es victima de conflicto armado?" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4 text-red"><%= f.input :retirado_pension, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Usted ha retirado los aportes del fondo de pensiones?" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4 text-red"><%= f.input :regimen_excepcion, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Pertenece a un regimen de excepción?" %></div>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <legend>Dotación</legend>
+                </div>
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :talla_conjunto, as: :select, collection: select_talla_conjunto, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Talla Conjunto", disabled: @validaC %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :talla_pantalon, as: :select, collection: select_talla_pantalon, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Talla Pantalon", disabled: @validaP %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :talla_camisa, as: :select, collection: select_talla_camiseta, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Talla Camisa", disabled: @validaS %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :talla_zapatos, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Talla Zapatos", disabled: @validaZ %></div>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <legend>Anexo perfil sociodemografico</legend>
+                </div>
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :orientacion_sexual, as: :select, collection: select_orientacion_sexual, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Orientación sexual" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_religion, as: :select, collection: select_tipo_religion, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de religión" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4"><%= f.input :tipo_etnia, as: :select, collection: select_tipo_etnia, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de etnia" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :madre_cabeza, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Madre o padre cabeza de hogar" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_vivienda, as: :select, collection: select_tipo_vivienda, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de vivienda" %></div>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <legend>Información Familiar</legend>
+                </div>
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label: "Nombre esposa(o) o compañera(o)" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :ocupacion_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Profesión, ocupación u oficio" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :empresa_trabaja_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Empresa donde trabaja" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :cargo_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Cargo actual" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :direccion_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Dirección" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :telefono_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label: "Teléfono" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :ciudad_familiar, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Ciudad" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nro_personas_depende_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 10 }, label: "Nro de personas que dependen económicamente del solicitante" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :parentesto_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 50 }, label: "Parentesco" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :edad_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label: "Edades" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre_padre_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label: "Nombre(s) padre(s)" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :profesion_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Profesión, ocupación u oficio" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :telefono_familiar2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label: "Teléfono" %></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre_herm_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label: "Nombre(s) hermano(s)" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :profesion_herm_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 255 }, label: "Profesión, ocupación u oficio" %></div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :telefono_herm_familiar, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label: "Teléfono" %></div>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <legend>Educación y Aptitudes
+                  </legend>
+                </div>
+                <div class="box-body">
+                  <div class="box-body">
+                    <div class="row">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <th width="10%" class=" text-table">ESTUDIOS</th>
+                          <th width="10%" class="text-center text-table">TIPO</th>
+                          <th width="10%" class="text-center text-table">AÑO DE FINALIZACION</th>
+                          <th width="10%" class="text-center text-table">AÑOS CURSADO</th>
+                          <th width="20%" class="text-center text-table">TITULO OBTENIDO</th>
+                          <th width="20%" class="text-center text-table">NOMBRE DE LA INSTITUCION</th>
+                          <th width="20%" class="text-center text-table">CIUDAD</th>
+                        </tr>
+                        <tr>
+                          <th>Primaria</th>
+                          <th></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_primaria_anno_fin, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_primaria_anno_cur, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_primaria_titulo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_primaria_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_primaria_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: false %></div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>Bachillerato</th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_tipo, as: :select, collection: select_tipo_bachiller, input_html: { data: { width: '100%' }, class: 'select2' }, label: false %></div>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_anno_fin, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_anno_cur, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_titulo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div></th>
+                          <th><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_bachiller_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: false %></div></th>
+                        </tr>
+                        <tr>
+                          <th>Educación Superior</th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <%= f.input :est_edu_superior_tipo, as: :select, collection: select_tipo_educacion, input_html: { data: { width: '100%' }, class: 'select2' }, label: false %>
+                            </div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_edu_superior_anno_fin, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_edu_superior_anno_cur, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_edu_superior_titulo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_edu_superior_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_edu_superior_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: false %></div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>Postgrado</th>
+                          <th></th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_postgrado_anno_fin, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_postgrado_anno_cur, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_postgrado_titulo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_postgrado_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: false %></div>
+                          </th>
+                          <th>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :est_postgrado_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: false %></div>
+                          </th>
+                        </tr>
+                      </table>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr>
+                          <th width="10%" class=" text-table">Otros: cursos, diplomados, seminarios</th>
+                          <th width="15%" class="text-left text-table">
+                            <%= f.input :est_otro_intensidad, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Intensidad horario" %>
+                          </th>
+                          <th width="30%" class="text-left text-table">
+                            <%= f.input :est_otro_nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre del programa" %>
+                          </th>
+                          <th width="30%" class="text-left text-table">
+                            <%= f.input :est_otro_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Institución" %>
+                          </th>
+                        </tr>
+                      </table>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr>
+                          <th width="15%" class="text-left text-table">
+                            <%= f.input :est_estudia_actualmente, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "¿Cursa estudios actualmente?" %>
+                          </th>
+                          <th width="15%" class="text-left text-table">
+                            <%= f.input :est_estudia_tipo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "¿Que tipo de estudios?" %>
+                          </th>
+                          <th width="30%" class="text-left text-table">
+                            <%= f.input :est_estudia_duracion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Duración (años, semestres, meses)" %>
+                          </th>
+                          <th width="30%" class="text-left text-table">
+                            <%= f.input :est_estudia_semestre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Año / semestre que cursa" %>
+                          </th>
+                        </tr>
+                      </table>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr>
+                          <th class="text-left text-table">
+                            <%= f.input :est_nombre_institucion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de la institución" %>
+                          </th>
+                          <th width="15%" class="text-left text-table">
+                            <%= f.input :est_horario, as: :select, collection: select_horario_educacion, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Horario" %>
+                          </th>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <legend>Experiencia Laboral<br/>
+                    <em><small style="font-size: 10px">
+                      FAVOR RELACIONAR LOS ULTIMOS TRES EMPLEOS QUE USTED HA DESEMPEÑADO, COMENZANDO POR EL ULTIMO O ACTUAL. ESTOS DATOS SERAN VERIFICADOS Y SU MANEJO SERA CONFIDENCIAL.
+                    </small></em></legend>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="nav-tabs-custom">
+                      <ul class="nav nav-tabs">
+                        <li class="active"><a href="#experiencia" data-toggle="tab">Experiencia</a></li>
+                        <li><a href="#experiencia2" data-toggle="tab">Experiencia 2</a></li>
+                        <li><a href="#experiencia3" data-toggle="tab">Experiencia 3</a></li>
+                      </ul>
+                      <div class="tab-content">
+                        <div class="tab-pane active" id="experiencia">
+                          <div class="box-body">
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de la última o actual empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_direccion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Dirección" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_telefono, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Teléfono" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_cargo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre_jefe, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de su jefe inmediato" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_ingreso, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha ingreso" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_retiro, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha retiro" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_total_servicio, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Total tiempo servido" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_inicial, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo inicial" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_final, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo final" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_cargo_desempenado, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo(s) desempeñado(s) por usted" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_funciones, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Funciones realizadas" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_logros, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Logros obtenidos" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                <%= f.input :exp_tipo_contrato, as: :select, collection: select_tipo_contrato_form, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de Contrato" %>
+                              </div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_tiempo_contrato, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cuanto tiempo?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4"><%= f.input :exp_contrato_empresa, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato directo con la empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4"><%= f.input :exp_contrato_agencia, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato por medio de la agencia" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_otro, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Otro?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :exp_contrato_cual, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cual?" %></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane" id="experiencia2">
+                          <div class="box-body">
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de la última o actual empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_direccion2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Dirección" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_telefono2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Teléfono" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_cargo2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre_jefe2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de su jefe inmediato" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_ingreso2, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha ingreso" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_retiro2, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha retiro" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_total_servicio2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Total tiempo servido" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_inicial2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo inicial" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_final2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo final" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_cargo_desempenado2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo(s) desempeñado(s) por usted" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_funciones2, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Funciones realizadas" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_logros2, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Logros obtenidos" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                <%= f.input :exp_tipo_contrato2, as: :select, collection: select_tipo_contrato_form, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de Contrato" %>
+                              </div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_tiempo_contrato2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cuanto tiempo?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_empresa2, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato directo con la empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_agencia2, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato por medio de la agencia" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_otro2, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Otro?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_cual2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cual?" %></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane" id="experiencia3">
+                          <div class="box-body">
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de la última o actual empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_direccion3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Dirección" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_telefono3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Teléfono" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :exp_cargo3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_nombre_jefe3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nombre de su jefe inmediato" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_ingreso3, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha ingreso" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_fecha_retiro3, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: "Fecha retiro" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_total_servicio3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Total tiempo servido" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_inicial3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo inicial" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_sueldo_final3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Sueldo final" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :exp_cargo_desempenado3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cargo(s) desempeñado(s) por usted" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_funciones3, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Funnciones realizadas" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <%= f.input :exp_logros3, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Logros obtenidos" %></div>
+                            </div>
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                <%= f.input :exp_tipo_contrato3, as: :select, collection: select_tipo_contrato_form, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de Contrato" %>
+                              </div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_tiempo_contrato3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cuanto tiempo?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_empresa3, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato directo con la empresa" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_agencia3, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Contrato por medio de la agencia" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_otro3, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Otro?" %></div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :exp_contrato_cual3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cual?" %></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="box-header">
+                  <legend>Referencias personales</legend>
+                </div>
+                <div class="row">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr class="thcolor">
+                      <th colspan="4" class=" text-table text-center">Relacione dos nombres de personas distintas a familiares o empleadores
+                      </th>
+                    </tr>
+                    <tr>
+                      <th width="30%" class=" text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_nombre1, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label:"Nombre" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_ocupacion1, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Ocupación" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_direccion1, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Dirección" %></div>
+                      </th>
+                      <th width="20%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_telefono1, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label:"Teléfono" %></div>
+                      </th>
+                    </tr>
+                    <tr>
+                      <th width="30%" class=" text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_nombre2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Nombre" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_ocupacion2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Ocupación" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_direccion2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label:"Dirección" %></div>
+                      </th>
+                      <th width="20%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_telefono2, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label:"Teléfono" %></div>
+                      </th>
+                    </tr>
+                    <tr class="thcolor">
+                      <th colspan="4" class=" text-table text-center">Nombre de un familiar que podemos contactar en
+                        caso de no localizarlo a usted directamente
+                      </th>
+                    </tr>
+                    <tr>
+                      <th width="30%" class=" text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_nombre3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Nombre" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_ocupacion3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 60 }, label:"Ocupación" %></div>
+                      </th>
+                      <th width="25%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_direccion3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 100 }, label:"Dirección" %></div>
+                      </th>
+                      <th width="20%" class="text-left text-table">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :ref_telefono3, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();",:maxlength => 20 }, label:"Teléfono" %></div>
+                      </th>
+                    </tr>
+                  </table>
+                </div>
+
+
+                <div class="box-header">
+                  <h4 class="box-title"><i class="fa fa-user-secret"></i> Información de Tratamientos de Datos</h4>
+                  <hr>
+                </div>
+
+                <div class="row" style="margin-top: -15px;">
+                  <% if @personasformulario.tratamiento_datos == "SI" %>
+                    <div class="col-md-2">
+                      <div style='color: white; background-color: red; border-color: red; height: 30px;padding: 5px;border-radius: 10px;'>
+                        <i class='fa fa-check'></i> Tratamiendo de datos Aceptado
+                      </div>
+                    </div>
+                  <% else %>
+                    <div class="col-md-2">
+                      <%= f.input :tratamiento_datos, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { id: "tratamiento_datos2_check", 'data-toggle': "modal", 'data-target': "#myModal", class: "checkbox" }, label: false %>
+                    </div>
+                    <div class="col-md-2" style="right: 180px !important; top: 10px">
+                      Tratamiento de Datos
+                    </div>
+                  <% end %>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document" style="width: 70%;">
+                    <div class="modal-content">
+                      <div class="modal-header" style="background-color: #F1F1F1">
+                        <h4 class="modal-title" id="myModalLabel">
+                          <div align="center">
+                            <%= image_tag ("logo_inicio_asear.png"), size: "230x70" %>
+                          </div>
+                        </h4>
+                      </div>
+                      <div class="modal-body" style="padding: 10px 55px 10px 55px;">
+                        <div class="row">
+                          <div class="col-md-12" style="padding: 15px">
+                            <%= render "tratamiento_datos" %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% if @personasformulario.valida_estado %>
+                  <div class="box-footer">
+                    <div class="box-tools pull-right">
+                      <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+                    </div><!-- /.box-tools -->
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+            <% if @etapa == "2" %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div style="font-size: 10px; width: 100%; background-color: #d73925; color: white; height: auto; border-radius: 5px; padding: 10px;">
+                    <strong>MENSAJE SENSIBLE:</strong><br/>
+                    PARA ASEAR S.A.S. E.S.P ES DE GRAN IMPORTANCIA QUE TANTO USTED COMO SU GRUPO FAMILIAR QUEDEN
+                    COMPLETAMENTE AFILIADOS A LAS DIFERENTES ENTIDADES (EPS, COMFAMA, AFP, ARL) POR ELLO LOS DOCUMENTOS
+                    QUE CARGUE EN LA PLATAFORMA DEBEN QUEDAR COMPLETOS Y LEGIBLES.
+                    PARA QUE SU GRUPO FAMILIAR NO TENGA PROBLEMAS DE ATENCIÓN PROCURE CARGAR TODOS LOS DOCUMENTOS
+                    NECESARIOS PARA LA AFILIACIÓN, DE LO CONTRARIO SERÁ SU RESPONSABILIDAD LA CUALQUIER NOVEDAD QUE
+                    OCURRA CON ELLOS.
+                  </div>
+                  <br/>
+                  <% if @personasformulario.parcargo_id.to_i > 0 %>
+                    <table style="width: 100%" class="table table-bordered table-condensed table-striped">
+                      <% Parcargosdoc.select("parcargosdocs.*, (select distinct 'X' from personasformulariosdocs where personasformulario_id = #{@personasformulario.id} and parcargosdoc_id = parcargosdocs.id) existedoc ")
+                                     .where("parcargo_id = #{@personasformulario.parcargo_id}").each do |p| %>
+                        <tr>
+                          <th class="text-left text-table" width="30%">
+                            <div style="padding: 20px 10px 30px 10px;"><%= p.descripcion %><br/>
+                              <small><em>Obligatorio: (<%= p.obligatorio rescue nil %>)</em></small>
+                              <br/>
+                              <div class="text-red" style='font-size: 10px;'>NOTA: <%= p.observacion rescue nil %></div>
+                            </div>
+                          </th>
+                          <td width="5%">
+                            <div align="center" style="padding: 20px 10px 30px 10px;">
+                              <% if ["PENDIENTE", "DEVUELTO"].include?(@personasformulario.estado) %>
+                                <%= link_to abrir_documento_personasformulariosdocs_path(parcargosdoc_id: p.id, personasformulario_id: @personasformulario.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Soporte Digital" do %>
+                                  <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                <% end %>
+                              <% end %>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="box-body paddin-body">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <% if p.existedoc.to_s == 'X' %>
+                                    <table class="table table-bordered table-condensed table-striped">
+                                      <thead>
+                                      <tr class="thcolor">
+                                        <th width="5%"></th>
+                                        <th width="15%" class="text-center text-table">Fecha</th>
+                                        <th width="15%" class="text-center text-table">Estado</th>
+                                        <th class="text-left text-table">Soporte Digital</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody id="tbody_personasformulariosdocs">
+                                      <% @personasformulario.personasformulariosdocs.where("parcargosdoc_id = #{p.id}").each do |personasformulariosdoc| %>
+                                        <tr id="personasformulariosdoc_<%= personasformulariosdoc.id %>">
+                                          <td class="text-center">
+                                            <% if ["PENDIENTE", "DEVUELTO", "RECHAZADO"].include?(@personasformulario.estado) %>
+                                              <% if ["PENDIENTE", "RECHAZADO"].include?(personasformulariosdoc.estado) %>
+                                                <%= link_to personasformulario_personasformulariosdoc_path(@personasformulario, personasformulariosdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                                  <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i>
+                                                  </button>
+                                                <% end %>
+                                              <% end %>
+                                            <% end %>
+                                          </td>
+                                          <td class="text-center text-table"><%= personasformulariosdoc.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                                          <td class="text-center text-table"><%= personasformulariosdoc.estado_documento.html_safe rescue nil %></td>
+                                          <td class="text-left text-table">
+                                            <% if personasformulariosdoc.soporte_digital_file_name.present? %>
+                                              <%= link_to personasformulariosdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                                <i class="fa fa-cloud-download"></i> <%= personasformulariosdoc.soporte_digital_file_name rescue nil %>
+                                              <% end %>
+                                              <% if personasformulariosdoc.observacion.present? %>
+                                                <div class="text-justify text-red">
+                                                  <small><b>Observacion: </b> <%= personasformulariosdoc.observacion rescue nil %>
+                                                  </small>
+                                                </div>
+                                              <% end %>
+                                            <% end %>
+                                          </td>
+                                        </tr>
+                                      <% end %>
+                                      </tbody>
+                                    </table>
+                                  <% else %>
+                                    <div style="font-size: 14px; width: 100%; background-color: #d73925; color: white; height: auto; border-radius: 5px; padding: 10px;">
+                                      No hay documentos cargados
+                                    </div>
+                                  <% end %>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <div class="modal fade" id="abrirdoc<%= p.id %>">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </table>
+                  <% else %>
+                    <div style="font-size: 14px; width: 100%; background-color: #d73925; color: white; height: auto; border-radius: 5px; padding: 10px;">
+                      No hay documentos cargados
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+            <% if @etapa == "3"
+                 # Para los casos en los que no hay encuesta, el sistema la crea automaticamente
+                 if Personasforencuesta.where("personasformulario_id = #{@personasformulario.id}").present? == false
+                   ActiveRecord::Base.connection.execute("
+                     INSERT INTO personasforencuestas (id, personasformulario_id, encuesta_id, encuestaspregunta_id, created_at, updated_at)
+                     SELECT 0, f.id, e.id, p.id, NOW(), NOW()
+                     FROM   encuestapreguntas p
+                     LEFT JOIN encuestas e ON e.id = p.encuesta_id
+                     LEFT JOIN parcargos g ON g.encuesta_id = e.id
+                     LEFT JOIN personasformularios f ON f.parcargo_id = g.id
+                     WHERE f.id = #{@personasformulario.id}
+                     ORDER BY f.id, p.id ASC, g.id ASC")
+                 end
+            %>
+              <%= render "personasformularios/encuestas" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+    $('input[name="openmodal"]').on('change', function (e) {
+        if (e.target.checked) {
+            $('#myModal').modal();
+        }
+    });
+
+    $('#borrarcheck').on("click", function () {
+        $(".checkbox input:checked").prop('checked', false);
+
+    });
+
+    $('#aceptarcheck').on("click", function () {
+        $("label[for='tratamiento_datos2_check']").html("<div style='color: #752D67; background-color: #F6B400; height: 30px;padding: 5px;border-radius: 10px;'><i class='fa fa-check'></i> Tratamiendo de datos Aceptado</div>");
+    });
+</script>
+
+
+

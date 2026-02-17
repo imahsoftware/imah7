@@ -1,0 +1,22 @@
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="13%"></td>
+        <th class="text-left">Contrato</th>
+        <th width="10%" class="text-center">Fecha Inicio</th>
+        <th width="10%" class="text-center">Fecha Fin</th>
+        <th width="10%" class="text-right">Salario</th>
+        <th width="10%" class="text-center">Estado</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosperfechas">
+	    <%
+        @contratospersona.contratosperfechas.includes([:contrato,:contratoscargo,:contratosgrupo]).order(id: :desc).each do |contratosperfecha| %>
+	      <%= render 'contratosperfechas/tr', contratosperfecha: contratosperfecha %>
+	    <% end %>
+	  </tbody>
+	</table>
+<div class="modal fade" id="cargosnota">
+	<div class="modal-dialog modal-dialog-responsive" role="document">
+		<div class="modal-content"></div>
+	</div></div>

@@ -1,0 +1,11 @@
+<% if @encuesta.encuestapreguntas.present? %>
+	$("#encuestapreguntas").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_encuestapreguntas").prepend("<%= j render 'tr', encuestapregunta: @encuestapregunta %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#encuestapregunta_form").collapse("hide");

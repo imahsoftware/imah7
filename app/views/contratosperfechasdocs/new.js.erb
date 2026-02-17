@@ -1,0 +1,5 @@
+$("#newasignado<%= @contratosperfecha.id %><%= @estado %> .modal-content").html('<%= j render "new" %>');
+$("#newasignado<%= @contratosperfecha.id %><%= @estado %> ").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

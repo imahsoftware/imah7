@@ -1,0 +1,6 @@
+<% if (Contratosperuser.where("user_id = #{is_admin} and fecha_fin is null and contratospersona_id = #{@contratosperfecha.contratospersona_id}").present? and @contratosperfecha.fecha_inicio_real.present? and Contratoscargosact.where("contratoscargo_id = #{@contratosperfecha.contratoscargo_id}").present?) or is_sygma %>
+  <%= link_to evaluacion_contratospersonas_path(id: @contratosperfecha.contratospersona_id, contratosperfecha_id: @contratosperfecha.id), data: { toggle: 'tooltip' }, title: 'Evaluación', remote: true do %>
+    <button class="btn btn-xs btn-primary"><i class="fa fa-users"></i>
+    </button>
+  <% end %>
+<% end %>

@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Eproveedorescompretenciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Eproveedorescompra</th>
+      <th>Tipospretencion</th>
+      <th>Valor</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @eproveedorescompretenciones.each do |eproveedorescompretencion| %>
+      <tr>
+        <td><%= eproveedorescompretencion.eproveedorescompra %></td>
+        <td><%= eproveedorescompretencion.tipospretencion %></td>
+        <td><%= eproveedorescompretencion.valor %></td>
+        <td><%= link_to 'Show', eproveedorescompretencion %></td>
+        <td><%= link_to 'Edit', edit_eproveedorescompretencion_path(eproveedorescompretencion) %></td>
+        <td><%= link_to 'Destroy', eproveedorescompretencion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Eproveedorescompretencion', new_eproveedorescompretencion_path %>

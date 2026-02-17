@@ -1,0 +1,26 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @veriserviciositem.veriserviciosiimagenes.count == 1 %>
+	$("#veriserviciosiimagenes").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_veriserviciosiimagenes").prepend("<%= j render 'tr', veriserviciosiimagen: @veriserviciosiimagen %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#veriserviciosiimagen_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);

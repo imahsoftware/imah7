@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h3 class="modal-title"><strong>Sedes Asociadas</strong>
+    <p><small style="font-size: 14px"><%= @contratosproyecto.descripcion %></small></p>
+    <div class="box-tools pull-right" style="position: absolute;right: 25px;top: 35px;">
+      <%= link_to new_contratosproyecto_contratosprosede_path(@contratosproyecto), id: "new_contratosprosede_button", class: 'btn btn-sm btn-success', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+      <% end %>
+    </div>
+  </h3>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <%= render 'contratosprosedes/contratosprosedes' %>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal">Cerrar</button>
+  <div class="box-tools pull-right">
+  </div><!-- /.box-tools -->
+</div><!-- box-footer -->
+

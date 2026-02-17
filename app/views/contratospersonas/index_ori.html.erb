@@ -1,0 +1,155 @@
+<div class="box ">
+<div class="box-header with-border">
+  <legend>Empleados
+    <% if @vcAutoCon %>
+      <%= link_to informe_datas_path(infgrupo_id: 31, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+      <% end %>
+      <%= link_to new_contratospersona_path, data: { toggle: 'tooltip' }, title: 'Crear' do %>
+        <button class="btn btn-xs btn-info"><strong>Nuevo</strong></button>
+      <% end %>
+      <%
+        cant = User.where(["unlock_token is not null"]).count
+      %>
+      <% if cant.to_i > 0 %>
+        <%= link_to desbloquearusuariof_users_path, data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Desbloquear todos los usuarios' do %>
+          <button class="btn btn-xs btn-info"><i class="fa fa-unlock"> <%= cant %> Usuarios Bloqueados</i></button>
+        <% end %>
+      <% end %>
+
+    <% elsif @existesuper %>
+      <%= link_to informe_datas_path(infgrupo_id: 32, portafolio_id: is_admin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+      <% end %>
+      <%= link_to informe_datas_path(infgrupo_id: 33, portafolio_id: is_admin, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Novedades periodo actual' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Novedades</button>
+      <% end %>
+    <% end %>
+
+  </legend>
+</div>
+<% if @existesuper and @asignacionesnuevas.present? %>
+  <div class="box-body">
+    <div class="table-responsive">
+      <a href="javascript:void(0);" onclick="SINO('asignaciones')" style="font-size:14px; color:red;">
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+        Hola... tienes nuevas asignaciones..(<%= @asignacionesnuevas.count rescue 0 %>)
+      </a>
+      <div id="asignaciones" style="display:none;">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+            <th width="50%" class="text-left">Empresa</th>
+          </tr>
+          </thead>
+          <tbody id="tbody">
+          <% @asignacionesnuevas.each do |p| %>
+            <tr>
+              <td class="text-left" style="font-size:11px;"><%= p.contratospersona.identificacion rescue nil %> <%= p.contratospersona.nombre_completo rescue nil %>
+                <br/><em>Telefono: <%= p.contratospersona.movil rescue nil %></em></td>
+              <td class="text-left" style="font-size:11px;">
+                <% a = p.contratospersona.contratosperfechas.where("estado = 'ACTIVO'")[0] %>
+                <%= a.contrato.empresa.identnombre rescue nil %>
+                <br/><strong>Nro Contrato : </strong><%= a.contrato.nro_contrato rescue nil %> -
+                <strong>Grupo : </strong><%= a.contratosgrupo.descripcion rescue nil %>
+                <small>(<%= a.contratosgrupo.termino rescue nil %>)</small><br/>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= form_tag request.path, method: :get, class: 'form-inline' do %>
+  <div class="box-body">
+    <div class="form-group">
+      <%= label_tag :nombre, 'Identificación - Nombre' %><br/>
+      <%= text_field_tag :nombre, params[:nombre], class: 'form-control', style: 'width:250px;', autocomplete: 'off' %>
+    </div>
+    <div class="form-group">
+      <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+        <i class="fa fa-search" aria-hidden="true"></i>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<div class="box-header with-border">
+  <% if @contratospersonas.count.to_i > 0 %>
+    <div class="box-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="8%" class="text-center"></th>
+            <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+            <th width="50%" class="text-left">Empresa</th>
+          </tr>
+          </thead>
+          <tbody id="tbody">
+          <% @contratospersonas.each do |p| %>
+            <tr>
+              <td class="text-center" style="font-size:12px;">
+                <% if @vcAutoCon or @vcAutoConb %>
+                  <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                  <% end %>
+                  <%= link_to tirilla_masive_contratospernominas_path(contratospersona_id: p.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirillas consolidadas' do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                  <% end %>
+                <% end %>
+                <% if @vcAutoCon or @existesuper %>
+                  <%= link_to novedad_contratospersonas_path(id: p.id), data: { toggle: 'tooltip' }, title: 'Novedades', remote: true do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-cc-mastercard"></i></button>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="text-left" style="font-size:12px;"><%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %>
+                <% Contratospernomina.where(contratospersona_id: p.id).order("id desc").each do |a| %>
+                  <div align="justify" style="font-size: 10px; font-family: Tahoma;">
+                    <%= link_to tirilla_contratospernominas_path(periodosliquidacion_id: a.periodosliquidacion_id, contrato_id: a.contrato_id, contratospersona_id: p.id, contratosgrupo_id: a.contratosgrupo_id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+                      <i class="fa fa-file-pdf-o"></i> Periodo: <%= a.periodosliquidacion.descripcion rescue nil %>
+                    <% end %>
+                  </div>
+                <% end %>
+              </td>
+              <td class="text-left" style="font-size:11px;">
+                <% p.contratosperfechas.where("estado = 'ACTIVO'").each do |a| %>
+                  <%= a.contrato.empresa.identnombre rescue nil %>
+                  <br/><strong>Nro Contrato : </strong><%= a.contrato.nro_contrato rescue nil %> -
+                  <strong>Grupo : </strong><%= a.contratosgrupo.descripcion rescue nil %>
+                  <small>(<%= a.contratosgrupo.termino rescue nil %>)</small>
+                  <% if @vcAutoCon or @existesuper %>
+                    <%= link_to new_solicitudesretiro_path(contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, contratospersona_id: p.id), remote: true, data: { toggle: 'tooltip' }, title: 'Solicitar Retiro' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-rocket"></i></button>
+                    <% end %>
+                  <% end %><br/>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="box-tools pull-right">
+        <%= will_paginate @contratospersonas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+      </div><!-- /.box-tools -->
+    </div>
+  <% else %>
+    <div class="alert alert-danger">
+      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+    </div>
+  <% end %>
+</div>
+<div class="modal fade" id="novedad">
+<div class="modal-dialog modal-dialog-responsive" role="document">
+  <div class="modal-content"></div>
+</div>
+</div>
+<div class="modal fade" id="addsolicitud">
+<div class="modal-dialog modal-dialog-responsive" role="document">
+  <div class="modal-content"></div>
+</div>
+</div>

@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  codigo: MyString
+  user_id: 1
+  proceso: MyString
+  codigo_recibido: MyString
+  fecha_firma: 2023-12-03
+  codigo_firma: MyString
+  id_tabla: MyString
+  controlador_tabla: MyString
+
+two:
+  codigo: MyString
+  user_id: 1
+  proceso: MyString
+  codigo_recibido: MyString
+  fecha_firma: 2023-12-03
+  codigo_firma: MyString
+  id_tabla: MyString
+  controlador_tabla: MyString

@@ -1,0 +1,29 @@
+<%= simple_form_for([@contratosperproceso, @contratosperprosancion], remote: true) do |f| %>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <%= f.input :sancion, input_html: { class: "uppercaseInput" }, label: "Sanción" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :desvinculacion, as: :select, collection: select_sino, input_html: { class: 'select2' } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_desvinculacion, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <%= f.input :reglamento, as: :text,  input_html: { class: "uppercaseInput" }, label: "Reglamento" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperprosancion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperprosancion_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosperproceso_contratosperprosancion_path(@contratosperproceso, @contratosperprosancion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

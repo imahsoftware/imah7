@@ -1,0 +1,22 @@
+<% if @ruta_paginador == 'paginate_carnet' %>
+$(document).ready(function () {
+    url = "<%= menus_path("car_entregado"=>"#{@paginadorcarnet}") %>";
+    $(location).attr("href", url);
+});
+<% elsif @ruta_paginador == 'paginate_dotacion' %>
+$(document).ready(function () {
+    url = "<%= menus_path("dota_entregado"=>"#{@paginadordotacion}") %>";
+    $(location).attr("href", url);
+});
+<% elsif @ruta_paginador == 'paginate_salud_pendiente' %>
+$(document).ready(function () {
+    url = "<%= menus_path("sal_pendiente"=>"#{@paginadordotacion}") %>";
+    $(location).attr("href", url);
+});
+<% elsif @ruta_paginador == 'paginate_salud_afiliado' %>
+$(document).ready(function () {
+    url = "<%= menus_path("sal_afiliado"=>"#{@paginadordotacion}") %>";
+    $(location).attr("href", url);
+});
+<% end %>
+

@@ -1,0 +1,2 @@
+module ContratosperinvatencionesHelper
+end

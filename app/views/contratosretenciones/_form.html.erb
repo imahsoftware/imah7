@@ -1,0 +1,23 @@
+<%= simple_form_for([@contrato, @contratosretencion], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <%= f.input :tipospretencion_id, collection: Tipospretencion.where(["clase = 'CONTRATO' and id not in (select tipospretencion_id from contratosretenciones where contrato_id = #{@contrato.id})"]).order("id asc").collect {|p| [ p.detalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Tipo retención"%>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosretencion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosretencion_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosretencion_path(@contrato, @contratosretencion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

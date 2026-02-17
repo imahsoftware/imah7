@@ -1,0 +1,10 @@
+<% if @descripcion.present? %>
+$("#buscador2").html("<%= j render 'contratossecciones/resultado', contratossecciones: @contratossecciones %>");
+$("#tabla").remove();
+$("#search").remove();
+<% else %>
+$(document).ready( function() {
+    url = "<%= edit_contrato_path(id: @contrato.id, etapa: 'P1', subetapa: '1') %>"
+    $(location).attr("href", url);
+});
+<% end %>

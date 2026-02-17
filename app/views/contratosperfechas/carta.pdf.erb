@@ -1,0 +1,61 @@
+<%
+  isadmin = is_admin
+  contratospersona = @contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperfechas.contrato.empresa.portafolio_id)
+  @logo = portafolio.logo_empresa
+  @logo_firma = portafolio.logo_firma
+%>
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<div align="center">
+  <table width="94%">
+    <tr>
+      <td><div align="left"><%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %></div></td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 18px; font-family: Verdana, Geneva, sans-serif;">
+          <br/>
+          <div align="center">A QUIEN PUEDA INTERESAR</div><br/>
+          La empresa <%=portafolio.razon_social rescue nil %>, con Nit <%=portafolio.identificacion rescue nil %>-<%=portafolio.digito rescue nil %> y domicilio en la ciudad de Medellín <%=portafolio.direccion rescue nil %>, teléfono <%=portafolio.telefono_empresa rescue nil %> Ext 101.
+          <br/><br/><br/>
+          <div align="center">CERTIFICA QUE:</div>
+          <br/><br/>
+          El (a) señor (a) <strong><%=contratospersona.nombre_completo rescue nil%></strong> identificado (a) con cedula de ciudadanía número <strong><%=camponumerico2(contratospersona.identificacion) rescue nil%></strong> desempeñó (a) el cargo de <strong><%=@contratosperfecha.contratoscargo.perfil rescue nil%></strong> con un salario mensual de <strong>$ <%=camponumerico2 @contratosperfecha.salariofinal rescue nil%></strong> (<%=numero_a_palabras @contratosperfecha.salariofinal rescue nil%> PESOS M.L).
+          <br/><br/><br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th width="30%" height="25" style="background: #E8E3E3;">FECHA DE INICIO</th>
+              <th width="30%" style="background: #E8E3E3;">FECHA DE TERMINACIÓN</th>
+              <th width="40%" style="background: #E8E3E3;">TIPO DE CONTRATO</th>
+            </tr>
+            <tr>
+              <td height="25"><div align="center"><%=@contratosperfecha.fecha_inicio.strftime("%d-%m-%Y") rescue nil %></div></td>
+              <td><div align="center"><% if @contratosperfecha.estado.to_s == 'INACTIVO' %><%=@contratosperfecha.fecha_fin.strftime("%d-%m-%Y") rescue nil %><% end %></div></td>
+              <td><div align="center"><%=@contratosperfecha.tipo_contrato rescue nil %></div></td>
+            </tr>
+          </table>
+          <br/><br/>
+          Se expide el presente certificado a solicitud del interesado el <%=namedate(Time.now) rescue nil %>.
+          <br/><br/>
+          Para mayor información favor comunicarse telefónicamente al <%=portafolio.telefono_empresa rescue nil %> ext 101.
+          <br/><br/><br/>
+          Atentamente,
+          <br/><br/><br/>
+          <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+          <b style="font-size: 16px; font-family: Tahoma; margin-top: -30px;position: relative;z-index: 9999">
+            <%=portafolio.nombre_rep rescue nil %><br/>
+            C.C. <%=camponumerico2 portafolio.identificacion_rep rescue nil %><br/>
+            GERENTE<br/>
+            <%=portafolio.razon_social rescue nil %><br/>
+            TLFNO: <%=portafolio.telefono_empresa rescue nil %> EXT 101<br/></b>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+

@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesterminaciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Contratosperfecha</th>
+      <th>Contratospersona</th>
+      <th>Fecha fin</th>
+      <th>Contratospervalidacion</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesterminaciones.each do |migracionesterminacion| %>
+      <tr>
+        <td><%= migracionesterminacion.user %></td>
+        <td><%= migracionesterminacion.archivo %></td>
+        <td><%= migracionesterminacion.estado %></td>
+        <td><%= migracionesterminacion.identificacion %></td>
+        <td><%= migracionesterminacion.contratosperfecha %></td>
+        <td><%= migracionesterminacion.contratospersona %></td>
+        <td><%= migracionesterminacion.fecha_fin %></td>
+        <td><%= migracionesterminacion.contratospervalidacion %></td>
+        <td><%= link_to 'Show', migracionesterminacion %></td>
+        <td><%= link_to 'Edit', edit_migracionesterminacion_path(migracionesterminacion) %></td>
+        <td><%= link_to 'Destroy', migracionesterminacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesterminacion', new_migracionesterminacion_path %>

@@ -1,0 +1,28 @@
+<tr id="contratossede_<%= contratossede.id %>">
+  <td class="text-center">
+    <%# if @contrato.contratosusers.exists?(empresassede_id: contratossede.empresassede_id) == false and @contrato.contratoscargos.exists?(empresassede_id: contratossede.empresassede_id) == false  %>
+    <%= link_to edit_contrato_contratossede_path(@contrato, contratossede), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <% if !Contratossede.where("id in (select contratossede_id from contratosprosedes where contratosproyecto_id in (select id from contratosproyectos where contrato_id = #{@contrato.id}))").present? %>
+      <%= link_to contrato_contratossede_path(@contrato, contratossede), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info">
+      <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratossede.user_nombre.html_safe rescue nil %><%= contratossede.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+    </button>
+  </td>
+  <td align="left"><%= contratossede.nombre rescue nil %>
+    <% if contratossede.tipos.to_s != "" %>
+      <br/><em><small>Nodos habilitados: <strong><%= contratossede.tipos.to_s %></strong></small></em>
+    <% end %>
+    <% Contratosprosede.where(contratossede_id: contratossede.id).each do |a|   %>
+      <br/><em class="text-red"><small>Asociado al proyecto: <strong><%= a.contratosproyecto.descripcion.to_s rescue nil%></strong></small></em>
+    <% end %>
+  </td>
+  <td align="left"><%= contratossede.municipio rescue nil %>
+    <small>(<%= contratossede.departamento rescue nil %>)</small></td>
+  <td align="left"><%= contratossede.direccion rescue nil %></td>
+</tr>

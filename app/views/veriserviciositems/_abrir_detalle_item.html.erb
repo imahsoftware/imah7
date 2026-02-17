@@ -1,0 +1,123 @@
+<legend style="font-size: 16px;">Detalle del Item</legend>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#documentos<%= @veriserviciositem.id %>" data-toggle="tab"><i class="fa fa-image"></i> DOCUMENTOS
+            DIGITALES </a>
+        </li>
+        <li>
+          <a href="#observaciones<%= @veriserviciositem.id %>" data-toggle="tab"><i class="fa fa-book"></i>
+            OBSERVACIONES </a>
+        </li>
+        <li>
+          <a href="#compromisos<%= @veriserviciositem.id %>" data-toggle="tab"><i class="fa fa-align-justify"></i>
+            COMPROMISOS </a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="documentos<%= @veriserviciositem.id %>">
+          <% if @veriserviciositem.veriserviciosiimagenes.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor">
+              <tr>
+                <td width="5%"></td>
+                <th width="15%" class="text-left text-table">Fecha</th>
+                <th class="text-left text-table" width="40%">Descripción</th>
+                <th class="text-left text-table">Documento</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_veriserviciosagendas">
+              <% @veriserviciositem.veriserviciosiimagenes.order(id: :desc).each do |veriserviciosiimagen| %>
+                <tr>
+                  <td class="text-center">
+
+                  </td>
+                  <td align="left" class="text-table"><%= veriserviciosiimagen.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                    <br/>
+                    <%= veriserviciosiimagen.user.nombre rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosiimagen.descripcion rescue nil %></td>
+                  <td align="left" class="text-table">
+                    <%= link_to veriserviciosiimagen.veriimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                      <i class="fa fa-cloud-download text-danger"></i> <%= veriserviciosiimagen.veriimagen_file_name rescue nil %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+          <% end %>
+        </div>
+
+
+        <div class="tab-pane" id="observaciones<%= @veriserviciositem.id %>">
+          <% if @veriserviciositem.veriserviciosinotas.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor">
+              <tr>
+                <td width="5%"></td>
+                <th width="15%" class="text-left text-table">Fecha</th>
+                <th class="text-left text-table">Observación</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_veriserviciosagendas">
+              <% @veriserviciositem.veriserviciosinotas.order(id: :desc).each do |veriserviciosinota| %>
+                <tr>
+                  <td class="text-center">
+
+                  </td>
+                  <td align="left" class="text-table"><%= veriserviciosinota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                    <br/>
+                    <%= veriserviciosinota.user.nombre rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosinota.observacion rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+          <% end %>
+        </div>
+
+        <div class="tab-pane" id="compromisos<%= @veriserviciositem.id %>">
+          <% if @veriserviciositem.veriserviciosicompromisos.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor">
+              <tr>
+                <td width="5%"></td>
+                <th width="15%" class="text-left text-table">Fecha</th>
+                <th class="text-left text-table">Compromiso</th>
+                <th class="text-center text-table" width="15%">Fecha Compromiso</th>
+                <th class="text-center text-table" width="12%">Estado</th>
+                <th class="text-left text-table" width="30%">Observación</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_veriserviciosagendas">
+              <% @veriserviciositem.veriserviciosicompromisos.order(id: :desc).each do |veriserviciosicompromiso| %>
+                <tr>
+                  <td class="text-center">
+
+                  </td>
+                  <td align="left" class="text-table"><%= veriserviciosicompromiso.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                    <br/>
+                    <%= veriserviciosicompromiso.user.nombre rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosicompromiso.compromiso rescue nil %></td>
+                  <td align="center" class="text-table"><%= veriserviciosicompromiso.fecha rescue nil %></td>
+                  <td align="center" class="text-table"><%= veriserviciosicompromiso.estado rescue nil %></td>
+                  <td align="left" class="text-table"><%= veriserviciosicompromiso.observacion_estado rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

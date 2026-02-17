@@ -1,0 +1,26 @@
+$("#contratosperexamen_form").collapse("hide");
+
+$("#contratosperexamen_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratosperexamen_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratosperexamen: @active_record %>");
+<% end %>
+
+$("#contratosperexamen_<%= @contratosperexamen.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#contratosperexamen_<%= @contratosperexamen.id %>").addClass("active_contratosperexamen");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});

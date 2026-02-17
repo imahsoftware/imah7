@@ -1,0 +1,22 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposevaluacion') %>
+          <th width="8%"></th>
+        <% end %>
+        <th>Nodo</th>
+        <th>Descripción</th>
+        <th>Rta 1</th>
+        <th>Rta 2</th>
+        <th>Rta 3</th>
+        <th>Clase</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposevaluaciones">
+      <% @tiposevaluaciones.order("tipo").each do |tiposevaluacion| %>
+        <%= render 'tiposevaluaciones/tr', tiposevaluacion: tiposevaluacion %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

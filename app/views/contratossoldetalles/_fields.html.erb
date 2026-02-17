@@ -1,0 +1,9 @@
+<td class="fijocolumna"><small><%= fe rescue nil %></small></td>
+<td align="center"><%= f.text_field :cantidad, {:class => "camposnumeros", :size => 6, :onFocus => "this.style.border='1px solid #f00'",:onBlur => "this.style.border='1px solid #bbb';", :style => "font-size: 11px; font-family: Tahoma; text-align: center;", :disabled => true} %></td>
+<% ce.each do |a|
+   dato = ":cantsede_"+a.ordensede.to_s
+%>
+  <td align="center"><%= f.text_field eval(dato), {:class => "camposnumeros", :size => 5, :onFocus => "this.style.border='1px solid #f00'",
+                                                   :onBlur => "this.style.border='1px solid #bbb';", :style => "font-size: 11px; font-family: Tahoma; text-align: center;"} %></td>
+<% end %>
+

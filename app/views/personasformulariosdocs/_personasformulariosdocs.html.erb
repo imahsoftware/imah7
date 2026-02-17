@@ -1,0 +1,19 @@
+<div class="box-body paddin-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div id="personasformulariosdoc_form" class="collapse"></div>
+          <div id="personasformulariosdocs" style="margin-top: 10px;">
+            <%# if @personasformulario.personasformulariosdocs.any? %>
+              <%= render 'personasformulariosdocs/tabla' %>
+            <%# else %>
+              <%#= render 'layouts/procesos/alert_message' %>
+            <%# end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  veriserviciositem: one
+  user: one
+  compromiso: MyString
+  fecha: 2024-08-07
+  estado: MyString
+  observacion_estado: MyString
+
+two:
+  veriserviciositem: two
+  user: two
+  compromiso: MyString
+  fecha: 2024-08-07
+  estado: MyString
+  observacion_estado: MyString

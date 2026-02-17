@@ -1,0 +1,16 @@
+<% if @tipo == 'FEMENINO' %>
+$('#personasformulario_talla_conjunto').prop('disabled', false);
+$('#personasformulario_talla_zapatos').prop('disabled', false);
+$('#personasformulario_talla_pantalon').prop('disabled', true);
+$('#personasformulario_talla_camisa').prop('disabled', true);
+<% elsif @tipo == 'MASCULINO' %>
+$('#personasformulario_talla_conjunto').prop('disabled', true);
+$('#personasformulario_talla_zapatos').prop('disabled', false);
+$('#personasformulario_talla_pantalon').prop('disabled', false);
+$('#personasformulario_talla_camisa').prop('disabled', false);
+<% else %>
+$('#personasformulario_talla_conjunto').prop('disabled', true);
+$('#personasformulario_talla_zapatos').prop('disabled', true);
+$('#personasformulario_talla_pantalon').prop('disabled', true);
+$('#personasformulario_talla_camisa').prop('disabled', true);
+<% end %>

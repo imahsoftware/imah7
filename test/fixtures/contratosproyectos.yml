@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  descripcion: MyString
+  valor: 9.99
+  usado: 9.99
+  saldo: 9.99
+
+two:
+  contrato: two
+  user: two
+  descripcion: MyString
+  valor: 9.99
+  usado: 9.99
+  saldo: 9.99

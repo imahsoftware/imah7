@@ -1,0 +1,19 @@
+<tr id="empresassede_<%= empresassede.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("empresassede")%>
+    <%= link_to edit_empresa_empresassede_path(@empresa, empresassede), remote: true, class: 'edit_empresasmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <% if Contratossede.exists?(empresassede_id: empresassede.id) == false %>
+      <%= link_to empresa_empresassede_path(@empresa, empresassede), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%= empresassede.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= empresassede.user.nombre rescue nil %></small></td>
+  <td align="left"><%= empresassede.nombre rescue nil %></td>
+  <td align="left"><%= empresassede.municipio.autobuscar rescue nil %></td>
+  <td align="left"><%= empresassede.direccion rescue nil %></td>
+</tr>
+

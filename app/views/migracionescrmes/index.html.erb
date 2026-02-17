@@ -1,0 +1,77 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionescrmes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Consecutivo</th>
+      <th>Persona</th>
+      <th>Detalle</th>
+      <th>Checksum</th>
+      <th>Fecha modificacion</th>
+      <th>Primer</th>
+      <th>Site</th>
+      <th>Autor</th>
+      <th>Nombre</th>
+      <th>Oportunidad</th>
+      <th>Tipo oportunidad</th>
+      <th>Estudiante</th>
+      <th>Identificacion</th>
+      <th>Telefono</th>
+      <th>Correo</th>
+      <th>Enrollment</th>
+      <th>Sub enrollment</th>
+      <th>Carrera</th>
+      <th>Tipo carrera</th>
+      <th>Modalidad</th>
+      <th>Origen carga</th>
+      <th>Periodo</th>
+      <th>Sub periodo</th>
+      <th>Fecha creacion</th>
+      <th>Estado</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionescrmes.each do |migracionescrm| %>
+      <tr>
+        <td><%= migracionescrm.user %></td>
+        <td><%= migracionescrm.consecutivo %></td>
+        <td><%= migracionescrm.persona %></td>
+        <td><%= migracionescrm.detalle %></td>
+        <td><%= migracionescrm.checksum %></td>
+        <td><%= migracionescrm.fecha_modificacion %></td>
+        <td><%= migracionescrm.primer %></td>
+        <td><%= migracionescrm.site %></td>
+        <td><%= migracionescrm.autor %></td>
+        <td><%= migracionescrm.nombre %></td>
+        <td><%= migracionescrm.oportunidad %></td>
+        <td><%= migracionescrm.tipo_oportunidad %></td>
+        <td><%= migracionescrm.estudiante %></td>
+        <td><%= migracionescrm.identificacion %></td>
+        <td><%= migracionescrm.telefono %></td>
+        <td><%= migracionescrm.correo %></td>
+        <td><%= migracionescrm.enrollment %></td>
+        <td><%= migracionescrm.sub_enrollment %></td>
+        <td><%= migracionescrm.carrera %></td>
+        <td><%= migracionescrm.tipo_carrera %></td>
+        <td><%= migracionescrm.modalidad %></td>
+        <td><%= migracionescrm.origen_carga %></td>
+        <td><%= migracionescrm.periodo %></td>
+        <td><%= migracionescrm.sub_periodo %></td>
+        <td><%= migracionescrm.fecha_creacion %></td>
+        <td><%= migracionescrm.estado %></td>
+        <td><%= link_to 'Show', migracionescrm %></td>
+        <td><%= link_to 'Edit', edit_migracionescrm_path(migracionescrm) %></td>
+        <td><%= link_to 'Destroy', migracionescrm, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionescrm', new_migracionescrm_path %>

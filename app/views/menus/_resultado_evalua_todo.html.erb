@@ -1,0 +1,75 @@
+<% e = current_user.etapa.gsub("EVAL_", "")
+   puts e.to_s
+%>
+<% if @contratosperimagenes.present? %>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th class="text-left" style="font-size:12px;">Empleado - Documento</th>
+      <th width="20%" class="text-left">Observación Usuario</th>
+      <th width="30%" class="text-left">Observación Supervisor</th>
+      <th width="10%" class="text-center"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @contratosperimagenes.each do |p| %>
+      <tr id="tr_documento<%= p.id %>">
+        <td class="text-left" style="font-size:11px;">
+          <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= p.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+          <strong><%= p.contratospersona.identificacion rescue nil %> <%= p.contratospersona.nombre_completo rescue nil %></strong>
+          <br/><%= link_to p.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+            <i class="fa fa-cloud-download"></i> <%= p.descripcion rescue nil %>
+          <% end %><br/>
+          <small><%= p.contratosperfecha.contrato.empresa.identnombre rescue nil %> - <strong>Nro Contrato : </strong><%= p.contratosperfecha.contrato.nro_contrato rescue nil %>
+            <br/><strong>Cargo : </strong><%= p.contratosperfecha.contratoscargo.perfil rescue nil %> - <strong>Grupo Nomina : </strong><%= p.contratosperfecha.contratosgrupo.descripcion rescue nil %>
+            <% if p.contratosperfecha.contratosseccion_id.present? %>
+              <br/><strong>Sección : </strong><%= p.contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+            <% end %>
+          </small>
+        </td>
+        <td class="text-left text-table" style="font-size:11px;">
+          <%= p.observacion_documento rescue nil %>
+        </td>
+        <td class="text-center text-table">
+          <%= simple_form_for p, :url => update_observacion_contratosperimagenes_path(id: p.id), id: "target#{p.id}", :method => :post, remote: true do |f| %>
+            <div class="row">
+              <% if e == 'PENDIENTE' %>
+                <div class="col-md-12 text-center">
+                  <%= f.input :observacion_aprobacion, as: :text, :input_html => { id: "observacion#{p.id}", :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: false %>
+                  <div id="mensaje_error<%= p.id %>"></div>
+                </div>
+              <% else %>
+                <div class="col-md-12 text-left text-table">
+                  <%= p.observacion_aprobacion rescue nil %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          <script type="text/javascript" charset="utf-8">
+              $('#observacion<%= p.id %>').change(function () {
+                  $('#observacion<%= p.id %>').submit();
+              });
+          </script>
+        </td>
+        <td class="text-center" style="font-size:11px;">
+          <% if p.estado == 'PENDIENTE' %>
+            <%= link_to decision_contratosperimagenes_path(id: p.id, estado: 'APROBADO'), remote: true, data: { confirm: "Esta Seguro?", toggle: 'tooltip' }, title: "Aprobar Documento" do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+            <% end %>
+            <%= link_to decision_contratosperimagenes_path(id: p.id, estado: 'RECHAZADO'), remote: true, data: { confirm: "Esta Seguro?", toggle: 'tooltip' }, title: "Rechazar Documento" do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-close"></i></button>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <div class="box-tools pull-right">
+    <%= will_paginate @contratosperimagenes, :param_name => "eval_#{@p.downcase.to_s}", remote: true, renderer: BootstrapPagination::Rails %>
+  </div><!-- /.box-tools -->
+<% else %>
+  <div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+<% end %>

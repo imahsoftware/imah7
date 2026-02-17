@@ -1,0 +1,41 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nro_egreso: 1
+  eproveedor: one
+  fecha: 2022-02-14
+  subtotal: 9.99
+  iva: 9.99
+  descuento: 9.99
+  total: 9.99
+  user: one
+  estado: MyString
+  retecre: 9.99
+  saldo: 9.99
+  total_final: 9.99
+  cuenta: one
+  user_anula: 1
+  nro_cheque: MyString
+  eproveedorescompra: one
+  centroscosto: one
+  forma_pago: MyString
+
+two:
+  nro_egreso: 1
+  eproveedor: two
+  fecha: 2022-02-14
+  subtotal: 9.99
+  iva: 9.99
+  descuento: 9.99
+  total: 9.99
+  user: two
+  estado: MyString
+  retecre: 9.99
+  saldo: 9.99
+  total_final: 9.99
+  cuenta: two
+  user_anula: 1
+  nro_cheque: MyString
+  eproveedorescompra: two
+  centroscosto: two
+  forma_pago: MyString

@@ -1,0 +1,96 @@
+<%
+  # 2023-06-16: Se valida cuando la persona no tiene ID en users...
+  existe = User.where("contratospersona_id = #{@contratosperfecha.contratospersona_id}").present?
+  bloqueoNov = ""
+%>
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Documentos habilitados para firma del contrato</h4>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th width="35%" class="text-left">Empleado</th>
+      <th width="65%" class="text-left">Contrato</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td class="text-left text-table"><%= @contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+      <td class="text-left text-table">
+        <small><%= @contratosperfecha.contrato.empresa.identnombre rescue nil %>
+          <br/><strong>Nro Contrato : </strong><%= @contratosperfecha.contrato.nro_contrato rescue nil %> -
+          <strong>Cargo : </strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %>
+          <br/><strong>Grupo de nomina : </strong><%= @contratosperfecha.contratosgrupo.descripcion rescue nil %>
+          <% if @contratosperfecha.contratosseccion_id.present? %>
+            <br/><strong>Sección : </strong><%= @contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+          <% end %>
+        </small>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <% if existe %>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <tr>
+            <th width="40%" class="text-left">Tipo de Documento</th>
+            <th class="text-left">Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% Controlformato.select(["controlformatos.*, (select estado from controlfirmas where id_registro = #{@contratosperfecha.id} and controlformato_id = controlformatos.id limit 1) est,
+                                    (select id from controlfirmas where id_registro = #{@contratosperfecha.id} and controlformato_id = controlformatos.id limit 1) idcontrolfirma,
+                                    (select created_at from controlfirmas where id_registro = #{@contratosperfecha.id} and controlformato_id = controlformatos.id limit 1) fchsolicitud,
+                                    (select (select nombre from users where id = controlfirmas.user_solicitante) from controlfirmas where id_registro = #{@contratosperfecha.id} and controlformato_id = controlformatos.id limit 1) solicitante"])
+                           .where("proceso = 'CONTRATO' and publicada = 'SI'").each do |cf|
+            bloqueoNov = ""
+            if cf.requiere_fecha.to_s == 'SI' and @contratosperfecha.fecha_fin.to_s == ""
+              bloqueoNov = 'SI'
+            end
+          %>
+            <tr>
+              <td class="text-left text-table"><%= cf.tipo_documento rescue nil %></td>
+              <td class="text-left text-table">
+                <% if bloqueoNov.to_s == "" %>
+                  <%= link_to control_firma_digital_menus_path(id_registro: @contratosperfecha.id, controlfirma_id: cf.id, user_firma:  User.where("contratospersona_id = #{@contratosperfecha.contratospersona_id}").first.id),
+                              data: { toggle: 'tooltip', confirm: "Seguro que desea solicitarlo?" }, title: "Solicitar Firma Digital"  do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-hand-o-up"></i></button>
+                  <% end %>
+                <% else %>
+                  <div class="text-red" style='font-size: 10px;'><strong>Falta fecha de terminacion del contrato</strong></div>
+                <% end %>
+                <% if cf.est.to_s != "" %>
+                  <div class="text-red" style='font-size: 10px;'><strong>SOLICITADO EL (<%=cf.fchsolicitud.strftime("%Y-%m-%d %X") rescue nil %>) POR (<%=cf.solicitante rescue nil %>) y en estado.. <%=cf.est %></strong></div>
+                  <% controlfirma = Controlfirma.find(cf.idcontrolfirma) %>
+                  <%= link_to pdfdocumento_controlfirmas_path(controlfirmaid: cf.idcontrolfirma, format: :pdf), data: { toggle: 'tooltip' }, title: 'PDF' do %>
+                    <i class="fa fa-file-pdf-o"></i> ver Documento en PDF
+                  <% end %>
+                  <% if cf.est.to_s == 'PENDIENTE' %>
+                    <%= link_to levantarfirma_controlfirmas_path(id: cf.idcontrolfirma), remote: true, data: { toggle: 'tooltip' }, title: 'Levantar Firma documento' do %>
+                      <i class="fa fa-key text-red"></i>
+                    <% end %>
+                  <% end %>
+                <% end %>
+
+                <% Controlfirma.where(controlformato_id: cf.id, id_registro: @contratosperfecha.id).order("created_at desc").each do |a| %>
+                  <br/>
+                  <%= link_to pdfdocumento_controlfirmas_path(controlfirmaid: a.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'PDF' do %>
+                    <i class="fa fa-file-pdf-o"></i> Documento solicitado el <%=a.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="text-red" style='font-size: 10px;'><strong>Hay un problema de asociacion</strong></div>
+      <% end %>
+    </div>
+  </div>
+</div>

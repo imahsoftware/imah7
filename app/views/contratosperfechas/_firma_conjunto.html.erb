@@ -1,0 +1,25 @@
+<div class="modal-content">
+  <div class="modal-body">
+    <div class="callout callout-danger">
+      <h4>Info!</h4>
+      <p>Con el propósito de finalizar la firma conjunta del contrato, el sistema ha enviado un mensaje de texto al
+        teléfono celular del empleado <b><%= @contratospersona.nombre_completo rescue nil %></b>. Este codigo que fue
+        enviado al teléfono celular deberá ser ingresado para continuar con el proceso.</p>
+    </div>
+    <div class="box-body" style="margin-right: 10px;" id="contrato_firmar<%= @contratosperfecha.id %>">
+      <%= form_tag firmar_conjunto_otp_contratosperfechas_path(contratosperfecha_id: @contratosperfecha.id, contratospersona_id: @contratospersona.id), remote: true, method: :post, class: 'form-inline' do %>
+        <%= render 'menus/input_otp' %>
+        <div class="row" id="mensaje_conjunto<%= @contratosperfecha.id %>">
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+            <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+              Verificar Codigo -- <%=@contratosperfecha.codigo_conjunto rescue nil %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

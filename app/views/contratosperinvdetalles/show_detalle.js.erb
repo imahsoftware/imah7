@@ -1,0 +1,9 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @contratosperinvdetalle.id %>").html('<%= j render "contratosperinvdetalles/abrir_detalle"  %>');
+$("#abrir_documentos<%= @contratosperinvdetalle.id %>").addClass("hide");
+$("#cerrar_documentos<%= @contratosperinvdetalle.id %>").removeClass("hide");
+<% else %>
+$("#abrir_documentos<%= @contratosperinvdetalle.id %>").removeClass("hide");
+$("#cerrar_documentos<%= @contratosperinvdetalle.id %>").addClass("hide");
+$("#abrir_detalle<%= @contratosperinvdetalle.id %>").html(null);
+<% end %>

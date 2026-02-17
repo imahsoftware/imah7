@@ -1,0 +1,9 @@
+<% if @active_record.present? %>
+	$("#proveedoresimagen_<%= @active_record.id %>").replaceWith("<%= j render 'tr', proveedoresimagen: @active_record %>");
+<% end %>
+$("#proveedoresimagen_form").html("<%= j render 'form' %>");
+$(".datetimepicker").datetimepicker();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#proveedoresimagen_form").collapse("show");
+$(".select2").select2();

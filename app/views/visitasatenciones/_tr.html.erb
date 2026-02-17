@@ -1,0 +1,38 @@
+<tr id="visitasatencion_<%= visitasatencion.id %>">
+  <td class="text-center">
+    <% if visitasatencion.visita.finalizacion.blank? and visitasatencion.codigo_firma.blank? %>
+      <%# if is_auth_e("visitasatencion")%>
+      <%= link_to edit_visita_visitasatencion_path(@visita, visitasatencion), remote: true, class: 'edit_visitasatencion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to visita_visitasatencion_path(@visita, visitasatencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+      <%= link_to otp_visitasatenciones_path(id: visitasatencion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Visita' do %>
+        <button class="btn btn-xs btn-success"><i class="fa fa-paint-brush"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= visitasatencion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= visitasatencion.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= visitasatencion.nombre rescue nil %>
+    <% if visitasatencion.codigo_firma.present? %>
+      <div>
+        <em>
+          <b>Firmado:</b> <i class="fa fa-check text-success"></i> -
+          <b>Fecha: </b><%= visitasatencion.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %>
+        </em>
+      </div>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= visitasatencion.identificacion rescue nil %></td>
+  <td align="left" class="text-table"><%= visitasatencion.cargo rescue nil %></td>
+  <td align="left" class="text-table"><%= visitasatencion.celular rescue nil %></td>
+</tr>
+
+<div class="modal fade" id="otp<%= visitasatencion.id rescue nil %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

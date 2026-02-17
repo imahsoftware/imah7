@@ -1,0 +1,39 @@
+
+<% if @iparametros != nil %>
+	<% if @iparametros.present? %>
+	  $('#contratospersona_talla_pantalon').empty();
+	  $('#contratospersona_talla_pantalon').append('<option selected>Seleccione</option>');
+	  <% @iparametros.each do |iparametro| %>
+	    $('#contratospersona_talla_pantalon').append('<option value="<%= iparametro.descripcion %>"><%= iparametro.descripcion %></option>');
+	  <% end %>
+	  $('#contratospersona_talla_pantalon').prop('disabled', false);
+	<% else %>
+	  $('#contratospersona_talla_pantalon').empty();
+	  $('#contratospersona_talla_pantalon').append('<option selected>Seleccione</option>');
+	  $('#contratospersona_talla_pantalon').prop('disabled', true);
+	<% end %>
+<% else %>
+  $('#contratospersona_talla_pantalon').empty();
+  $('#contratospersona_talla_pantalon').append('<option selected>Seleccione</option>');
+  $('#contratospersona_talla_pantalon').prop('disabled', true);
+<% end %>
+
+<% if @iparametroscamisas != nil %>
+<% if @iparametroscamisas.present? %>
+$('#contratospersona_talla_camisa').empty();
+$('#contratospersona_talla_camisa').append('<option selected>Seleccione</option>');
+<% @iparametroscamisas.each do |iparametro| %>
+$('#contratospersona_talla_camisa').append('<option value="<%= iparametro.descripcion %>"><%= iparametro.descripcion %></option>');
+<% end %>
+$('#contratospersona_talla_camisa').prop('disabled', false);
+<% else %>
+$('#contratospersona_talla_camisa').empty();
+$('#contratospersona_talla_camisa').append('<option selected>Seleccione</option>');
+$('#contratospersona_talla_camisa').prop('disabled', true);
+<% end %>
+<% else %>
+$('#contratospersona_talla_camisa').empty();
+$('#contratospersona_talla_camisa').append('<option selected>Seleccione</option>');
+$('#contratospersona_talla_camisa').prop('disabled', true);
+<% end %>
+

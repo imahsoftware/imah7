@@ -1,0 +1,51 @@
+<div class="box-body">
+  <div class="callout callout-danger">
+    <h4>Hola, <%= @contratospersona.nombres rescue nil %></h4>
+    <p>Para proseguir en nuestra plataforma, es indispensable que concluyas el proceso de firmar la entrega de
+      dotación.</p>
+  </div>
+  <div class="box box-default">
+    <div class="box-body">
+      <table class="table table-bordered table-condensed table-striped  table-hover miestilo">
+        <thead class="thcolor">
+        <tr>
+          <th width="100%" colspan="6" data-titulo="CAPACITACIONES PENDIENTES POR REALIZAR: ">
+            <div align="center"><b>ENTREGA DE ELEMENTOS</b></div>
+          </th>
+        </tr>
+        <tr>
+          <th width="10%" class="text-center"></th>
+          <th class="text-left text-table">Contrato</th>
+          <th class="text-center text-table-10" width="12%">Pantalon</th>
+          <th class="text-center text-table-10" width="12%">Camisa</th>
+          <th class="text-center text-table-10" width="12%">Zapatos</th>
+          <th class="text-center text-table-10" width="15%">Fecha</th>
+        </tr>
+        </thead>
+        <% @contratosperdotaciones.each do |contratosperdotacion| %>
+          <tr>
+            <td class="text-center">
+              <% if contratosperdotacion.estado == 'ENTREGADO' %>
+                <%= link_to otp_contratosperdotaciones_path(id: contratosperdotacion.id, ruta: 'EMPLEADO'), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Digitalmente' do %>
+                  <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i> Firmar Entrega</button>
+                <% end %>
+              <% end %>
+            </td>
+            <td class=" text-table-10"><%= contratosperdotacion.describe_contrato rescue nil %></td>
+            <td class=" text-table-10 text-center"><%= contratosperdotacion.pantalon_desc rescue nil %></td>
+            <td class=" text-table-10 text-center"><%= contratosperdotacion.camisa_desc rescue nil %></td>
+            <td class=" text-table-10 text-center"><%= contratosperdotacion.zapatos_desc rescue nil %></td>
+            <td class=" text-table-10 text-center"><%= contratosperdotacion.fecha_prox_entrega rescue nil %></td>
+          </tr>
+          <div class="modal fade" id="otp<%= contratosperdotacion.id rescue nil %><%= contratosperdotacion.contrato_id %>">
+            <div class="modal-dialog modal-dialog-responsive" role="document">
+              <div class="modal-content">
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+

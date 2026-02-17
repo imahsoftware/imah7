@@ -1,0 +1,19 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposcargo') %>
+          <th width="10%"></th>
+        <% end %>
+        <th width="5%">ID</th>
+        <th width="20%">Descripcion</th>
+        <th>Perfil</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposcargos">
+      <% @tiposcargos.each do |tiposcargo| %>
+        <%= render 'tiposcargos/tr', tiposcargo: tiposcargo %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

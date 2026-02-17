@@ -1,0 +1,23 @@
+<tr id="tipospretencion_<%= tipospretencion.id %>">
+  	<td class="text-center">
+      <%= link_to edit_tipospretencion_path(tipospretencion), class: 'edit_tipospretencion_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <% if !Conceptosretencion.where(tipospretencion_id: tipospretencion.id).exists? %>
+        <%= link_to tipospretencion, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+    </td>
+  <td class="text-center"><%= tipospretencion.clase %></td>
+  <td><%= tipospretencion.descripcion %>
+    <% if Conceptosretencion.where(tipospretencion_id: -1).exists? %>
+      <br/><small><strong>Asociado a los conceptos:</strong>
+      <% Conceptosretencion.where(tipospretencion_id: tipospretencion.id).each do |a| %>
+           <%=a.concepto.descripcion rescue nil %>,
+      <% end %>
+      </small>
+    <% end %>
+  </td>
+  <td class="text-center"><%= tipospretencion.estado %></td>
+</tr>

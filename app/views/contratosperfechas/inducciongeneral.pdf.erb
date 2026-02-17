@@ -1,0 +1,1314 @@
+<%
+  pgh = Parametro.find(4) # Firma Gestion Humana
+  contrato = object rescue nil
+  vcFch = object0 rescue nil
+  idPortafolio = Objeto.find_by_sql("select portafolio_id from empresas
+                                     where  id = (select empresa_id from contratos where id = #{contrato})")[0].portafolio_id rescue nil
+  portafolio = Portafolio.find(idPortafolio)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  if vcFch == '-1'
+    @contratosperfechas = Contratosperfecha.joins(:contratospersona)
+                                           .where("contratosperfechas.contrato_id = #{contrato} AND contratosperfechas.codigo_firma IS NOT NULL")
+  else
+    @contratosperfechas = Contratosperfecha.joins(:contratospersona)
+                                           .where("contratosperfechas.contrato_id = #{contrato} and date_format(contratosperfechas.fecha_inicio,'%Y-%m') = '#{vcFch}'
+                                                   AND contratosperfechas.codigo_firma IS NOT NULL")
+  end
+  @contratosperfechas.each do |c|
+    @contratosperfecha = c
+    contratospersona = @contratosperfecha.contratospersona
+%>
+  <style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+    <% if portafolio.id == 5 # AsearTemporal %>
+      <div align="center">
+        <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+                <thead>
+                <tr>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma;"><div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div></td>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</b></div></td>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"> <div align="center"> <b>Versión 8<br/> Fecha Actualización: 10 de junio de 2023</b> </div></td>
+                </tr>
+                <tr>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>INDUCCIÓN Y/O REINDUCCIÓN</b></div></td>
+                </tr>
+                </thead>
+              </table><br/>
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                <tr>
+                  <td width="40%" style="background: #E8E3E3;"><strong>Razón Social : </strong></td>
+                  <td>&nbsp;<%= portafolio.razon_social rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>NIT : </strong></td>
+                  <td>&nbsp;<%= portafolio.identificacion rescue nil %>-<%= portafolio.digito rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Dirección : </strong></td>
+                  <td>&nbsp;<%= portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Administradora de Riesgos Laborales : </strong></td>
+                  <td>&nbsp;ARL SURA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Representante Legal : </strong></td>
+                  <td>&nbsp;<%= portafolio.nombre_rep rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Página Web : </strong></td>
+                  <td>&nbsp;<%= portafolio.sitio_web rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Actividad Económica Principal : </strong></td>
+                  <td><div align="justify">Actividades de Agencias de empleo temporal</div></td>
+                </tr>
+              </table>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLÍTICA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> es una empresa de servicios temporales dedicada al suministro de personal para abarcar las diferentes necesidades de nuestros clientes, por lo tanto para la alta dirección y el área de seguridad y salud en el trabajo, el recurso humano constituye nuestra base principal para la prestación de un excelente servicio, es por ello que se establece la presente <strong>Política</strong> como parte de nuestras prioridades para el mejoramiento continuo de nuestro Sistema de Gestión de Seguridad y Salud en el Trabajo SG – SST.<br/><br/>
+                Para la alta dirección y todas las partes interesadas de la empresa es de total interés mantener y cumplir con la <strong>Política de SST</strong> y el logro de los <strong>Objetivos de SST</strong> planteados en el SG SST y es primordial garantizar el bienestar integral de los empleados en su lugar de trabajo, mejorando su calidad de vida, generando satisfacción, sentido de pertenencia con la empresa y la empresa cliente, ofreciendo lugares de trabajo seguros y adecuados que minimicen la ocurrencia de accidentes y enfermedades de presunto origen laboral, para bien de la empresa y de los colaboradores.<br/><br/>
+                Nuestros <strong>compromisos</strong> para el cumplimiento del anterior propósito son:<br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con los <strong>requisitos legales</strong> en cuanto a seguridad y salud en el trabajo que como empresa nos aplique y aquellos que se deriven de nuestra actividad económica y otros requisitos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la identificación de peligros, la evaluación y valoración de los riesgos de todas las actividades que se desarrollan en función de la empresa, estableciendo los controles necesarios, iniciando por la <strong>eliminación de los peligros</strong> y continuando con la reducción de los riesgos para la seguridad y salud en el trabajo. Así mismo realizar el seguimiento de los controles garantizando su efectividad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proporcionar a todos nuestros trabajadores condiciones, elementos o herramientas que permitan desarrollar sus actividades de trabajo garantizando su seguridad y su salud con el fin de prevenir lesiones y deterioro de la salud relacionados con los factores de riesgo a los cuales van a estar expuestos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Vincular a todos los trabajadores y partes interesadas para que conozcan, consulten, participen y den cumplimiento a todas las medidas adoptadas y que hacen parte del SG SST, así como informar a través de los canales de comunicación definidos cualquier condición, suceso o anomalía que valla en contra de la Política, Objetivos y Manual del SG SST o cualquier otro requisito definido por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la <strong>Mejora Continua</strong> del SG SST garantizando la actuación sobre las acciones tomadas para el alcance de los resultados previstos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Establecer medidas, programas o estrategias adecuadas para el control de los riesgos prioritarios identificados para la empresa.</li>
+                </ol><br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><H1 class=SaltoDePagina>&nbsp;</H1>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>OBJETIVOS DEL SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong>Objetivo general</strong><br/><br/>
+                Apuntar al cumplimiento de la Política de Seguridad y Salud en el trabajo y al desarrollo acertado de la intervención que garantice la mejora continua el Sistema de Gestión de la Seguridad y Salud en el trabajo SG-SST, logrando prevenir y disminuir la ocurrencia de accidentes y enfermedades laborales a los trabajadores o partes interesadas<br/><br/>
+                <strong>Objetivos específicos</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento mediante indicadores al cumplimiento de las normas que le competen a la empresa a través de una Matriz de Requisitos Legales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento al control de riesgos a través de una Matriz de identificación, valoración y evaluación de riesgos basada en la metodología de la GTC 45.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar una Matriz de adquisición y entrega de los elementos de protección personal necesarios para cada labor identificada en la empresa y llevar a cabo los programas, procedimientos, estándares, AROS, instructivos y demás establecidos en el SG SST que apunten a garantizar la seguridad y la salud de los trabajadores en sus puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la participación del 100% de los empleados en todas las actividades planteadas dentro del SG SST como: capacitaciones, charlas, programas de bienestar, atención a las comunicaciones y notificación de accidentes, incidentes laborales o notificación de afectaciones a la salud.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la medición de indicadores definidos en el SG SST con el fin revisar el análisis y eficacia de las medidas tomadas para su reducción y realizar ajustes en las medidas y toma de acciones que garanticen la mejora continua, llevando un control documentado de una Matriz de mejoras para seguimiento al cumplimiento de las acciones tomadas en cualquiera de las etapas del desarrollo del SG SST.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar programas, procesos o procedimientos para el control de los riesgos prioritarios identificados en la Matriz de valoración y evaluación de riesgos.</li>
+                </ol><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLITICA DE ALCOHOL Y DROGAS</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> como empresa temporal para dar cumplimiento con Ley 9 de 1979 en sus Artículos 84, 85 y 125, Ley 1335 de julio 21 de 2009, Ley 1566 de julio 31 de 2012, Decreto-Ley 1295 de 1994 Cap. 10 Art. 91 inciso b, Resolución 2400 / 79 Cap. III Art. 3 inciso f, Resolución 1075 de marzo 24 de 1992, Resolución 4225 de mayo de 29 de 1992. y consiente de la necesidad de brindar a sus trabajadores y clientes un ambiente de trabajo sano y libre de la farmacodependencia y alcoholismo, que generan efectos contraproducentes a la salud de los trabajadores, al ambiente de trabajo, al desempeño y la productividad de cada uno; se desarrolla esta política institucional para todos los empleados de la empresa.<br/><br/>
+                Las directrices a cumplir dentro de la empresa y en las instalaciones de los puestos de trabajo, son las siguientes:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe a todos los empleados presentarse al sitio de trabajo, en estado de embriaguez o bajo influencia de sustancias psicoactivas o abuso de medicamentos que alteren su capacidad de reacción física y mental.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe el consumo de cigarrillo, uso de vapeador, consumo de alcohol o sustancias psicoactivas en las instalaciones de la empresa o lugar de trabajo asignado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibida la posesión y/o comercialización de drogas psicoactivas, bebidas embriagantes, cigarrillos o vapeadores en los puestos de trabajo asignados por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">El personal debe participar en los programas de sensibilización y capacitación de la política de no alcohol, drogas y cigarrillo o vapeador.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los empleados facilitaran la realización de las pruebas necesarias para establecer indicios de abuso de drogas y/o alcohol, en cualquier momento durante el desarrollo de su contrato.</li>
+                </ul><br/>
+                Igualmente se prohíbe el uso de cualquier sustancia que pueda atentar contra la seguridad de cada individuo o compañeros e interrumpir el normal desempeño laboral.<br/><br/>
+                Con el desacato persistente a alguna de estas normas nos veremos en el deber de realizar llamado de atención o dar por terminada la relación laboral.<br/><br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>ROLES Y RESPONSABILIDADES CON EL ÁREA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                Como nuevo integrante de la empresa usted debe:
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y velar por el cumplimiento de los Programas, Procedimientos, Instructivos, Protocolos y Estándares de seguridad elaborados por el área de seguridad y salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y tener clara la Política, Objetivos, roles y responsabilidades de SST; así mismo dar cumplimiento a estos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participar en la elaboración del diagnóstico del riesgo e informar cualquier condición que genere peligro en los puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asistir a las capacitaciones, brigadas de salud y demás actividades programadas por el área de seguridad y salud en el trabajo para la prevención de accidentes y enfermedades laborales de la empresa temporal o de la empresa usuaria.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la normatividad vigente en materia de Seguridad y Salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los elementos de protección personal y dotación durante la labor y de forma correcta</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la Política de alcohol y drogas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con el Protocolo de Bioseguridad para la prevención de Riesgo Biológico de la empresa temporal y de la empresa usuaria.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar cualquier cambio o condición que afecte su salud</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Procurar el cuidado integral de su salud y autocuidado en el lugar de trabajo, realizando las actividades de forma segura con el fin de evitar la materialización de un accidente o enfermedad laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Velar por el cuidado de las demás personas, estando atentos a las condiciones de riesgo e informando a tiempo, así mismo no poner en riesgo la integridad misma o la de otras personas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No realizar trabajos de alto riesgo (alturas, trabajos en caliente, energías peligrosas etc) sin autorización previa del supervisor de la empresa temporal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar inmediatamente todos los accidentes e incidentes que ocurren en el lugar de trabajo al supervisor o coordinador por parte de la empresa temporal o al área de SST de la empresa Temporal y participar de la investigación del AT o de la EL</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar en primera instancia a su empleador (<strong><%= portafolio.razon_social rescue nil %></strong>) cualquier novedad de riesgo o condición que pueda afectar su salud o que este perturbando el ambiente laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir las normas de seguridad e higiene establecidas por la empresa temporal o por la empresa usuaria.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Suministrar información clara, completa, veraz y de forma escrita sobre su estado de salud.</li>
+                </ol><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.</strong></div><br/>
+                Establece los riesgos existentes de nuestras actividades y destaca la obligación que tenemos todos los empleados de participar en las capacitaciones y orientaciones que se desarrollen como medidas preventivas.<br/>
+                La empresa se compromete a dar cumplimiento a las disposiciones legales vigentes, tendientes a garantizar los mecanismos que aseguren una oportuna y adecuada prevención de los accidentes de trabajo y enfermedades laborales, de conformidad con lo establecido en la normatividad vigente.<br/><br/>
+                Nombre de la ARL a la que está afiliada la empresa: <strong>ARL SURA</strong><br/>
+                Clase o tipo de riesgo asignado por la ARL: <strong>1, 2, 3, 4 Y 5 Según el riesgo de la empresa usuaria.</strong><br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>RIESGOS A LOS CUALES ESTA EXPUESTO EL TRABAJADOR</strong></div><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Riesgo Identificado</strong></td>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Actividades</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Biológico:</strong><br/>Por exposición o contacto con macroorganismos (picaduras, mordeduras), microorganismos (incluido Covid-19 y sus variantes), contacto con fluidos o excrementos.</td>
+                    <td>Transmisión a través de objetos o material contaminado.<br/>Todos los cargos que realizan actividades de aseo, limpieza y desinfección.<br/>Todos los cargos que realizan mantenimiento y sostenimiento de instalaciones locativas<br/>Todo el personal que realiza atención al público.<br/>Todo el personal que realiza recolección de residuos.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Físico:</strong><br/>Exposición a ruido, exceso o deficiencia de iluminación, vibración, temperaturas extremas, radiaciones ionizantes.</td>
+                    <td>Todos los cargos que manipulan maquinas o herramientas que generan ruido y/o vibración.<br/>Todos los que manipulan greca o bebidas calientes.<br/>Todos los trabajadores expuestos al sol.<br/>Personal Administrativo que manipula equipos audio visuales o se encuentra en una oficina.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Químico:</strong><br/>Exposición a gases y vapores, líquidos (nieblas y rocíos), humos metálicos y cualquier agente químico.</td>
+                    <td>Todos los cargos que manipulan sustancias químicas.<br/>Todas las personas que manipulan sustancias para fumigación.<br/>Personal que realiza soldadura.</td>
+                  <tr>
+                    <td><strong>Riesgo Biomecánico:</strong><br/>Por movimientos repetitivos, manipulación de cargas, sobreesfuerzo o posturas forzadas o prolongadas.</td>
+                    <td>Todos los cargos vinculados a la empresa sin importar su lugar de trabajo.</td>
+                  <tr>
+                    <td><strong>Condiciones de Seguridad:</strong><br/>Mecánico (elementos de máquinas, herramientas, piezas a trabajar, materiales proyectados sólidos o fluidos), eléctrico (alta y baja tensión, estática), accidentes de tránsito, Trabajo en alturas, trabajos en espacios confinados, tecnológico (explosión, fuga, derrame, incendio), Locativo (almacenamiento, superficies de trabajo (irregularidades, deslizantes, con diferencia del nivel) condiciones de orden y aseo, caídas de objeto)</td>
+                    <td>Todos los operarios que realicen trabajo de alturas, trabajos en espacios confinados, personal eléctrico.<br/>A las condiciones de seguridad a nivel locativo: Están expuestos todo el personal que se contrato para la empresa sin diferenciar cargo.</td>
+                  <tr>
+                    <td><strong>Riesgo Mecánico:</strong><br/>Manejo de maquinas y herramientas, proyección de partículas, superficies o herramientas cortantes o punzantes, objetos salientes que ruedan o caen, superficies calientes.</td>
+                    <td>Todos los cargos de la empresa se pueden ver expuestos a este tipo de riesgo.</td>
+                  <tr>
+                    <td><strong>Riesgo Psicosocial:</strong><br/>Condiciones de la tarea (carga mental, contenido de la tarea, demandas emocionales, sistemas de control, definición de roles, monotonía, etc)</td>
+                    <td>Todos los cargos de la empresa se pueden ver expuestos a este tipo de riesgo.</td>
+                  </tr>
+                </table>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>DEFINICIONES IMPORTANTES</strong></div><br/>
+                <strong>ACTO O COMPORTAMIENTO INSEGURO</strong><br/><br/>
+                Se refieren a todas la acciones y decisiones humanas, que pueden causar una situación insegura o incidente, con consecuencias para el trabajador, la producción, el medio ambiente y otras personas. También el comportamiento inseguro incluye la falta de acciones para informar o corregir condiciones inseguras.<br/><br/>
+                <strong>CONDICIÓN INSEGURA</strong><br/><br/>
+                Es todo elemento de los equipos, la materia prima, las herramientas, las máquinas, las instalaciones o el medio ambiente que se convierte en un peligro para las personas, los bienes, la operación y el medio ambiente y que bajo determinadas condiciones puede generar un incidente.<br/><br/>
+                <strong>ACCIDENTE DE TRABAJO: (Decreto 1562 de 2012 - Art. 3).</strong><br/><br/>
+                Es todo suceso repentino que sobrevenga por causa o con ocasión del trabajo, y que produzca en el trabajador una lesión orgánica, una perturbación funcional o psiquiátrica, una invalidez o la muerte.<br/><br/>
+                Es también accidente de trabajo aquel que se produce durante la ejecución de órdenes del empleador, o contratante durante la ejecución de una labor bajo su autoridad, aún fuera del lugar y horas de trabajo.<br/><br/>
+                Igualmente se considera accidente de trabajo el que se produzca durante el traslado de los trabajadores o contratistas desde su residencia a los lugares de trabajo o viceversa, cuando el transporte lo suministre el empleador.<br/><br/>
+                También se considerará como accidente de trabajo el ocurrido durante el ejercicio de la función sindical, aunque el trabajador se encuentre en permiso sindical siempre que el accidente se produzca en cumplimiento de dicha función.<br/><br/>
+                De igual forma se considera accidente de trabajo el que se produzca por la ejecución de actividades recreativas, deportivas o culturales, cuando se actúe por cuenta o en representación del empleador o de la empresa usuaria cuando se trate de trabajadores de empresas de servidos temporales que se encuentren en misión.<br/><br/>
+                <strong>INCIDENTE DE TRABAJO.</strong><br/><br/>
+                Suceso acaecido en el curso del trabajo o en relación con éste, que tuvo el potencial de ser un accidente, en el que hubo personas involucradas sin que sufrieran lesiones corporales o se presentaran daños a la propiedad y/o pérdida en los procesos.<br/><br/>
+                <strong>EN CASO DE ACCIDENTE DE TRABAJO</strong><br/><br/>
+                La ARL en la que se encuentra afiliada la empresa es <strong>ARL SURA</strong><br/><br/>
+                Cualquier accidente, incidente o novedad debe ser informado inmediatamente al área de seguridad y salud en el trabajo: <br/>
+                Correo: coordinacionsst@asearesp.com. Teléfono: 604 3222278 ext: 109.<br/><br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>PROCEDIMIENTO REPORTE DE ACCIDENTE O INCIDENTE DE TRABAJO</strong></div><br/>
+                <strong>Trabajadores:</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de todo el personal perteneciente a la organización reportar al jefe y de forma inmediata todos los accidentes o incidentes con y sin lesión ocurridos dentro y fuera de la organización que tengan relación directa o indirecta con la labor para la que fue contratado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sufrir algún evento, deberá participar en la investigación del mismo bien sea como persona afectada o como testigo de algún evento. Esta participación se hará siempre y cuando no se encuentre incapacitado o limitado para participar de manera telefónica o presencial.</li>
+                </ol><br/>
+                <strong>Supervisores:</strong><br/><br/>
+                Realizar la llamada a la línea de ARL SURA para realizar el reporte telefónicamente y direccionar al empleado al centro médico más cercano.<br/>
+                Teléfono: 604 4444578 ó Línea Gratuita: 018000941414<br/><br/>
+                <strong>ENFERMEDAD LABORAL. (Decreto 1562 de 2012 - Art. 4).</strong><br/><br/>
+                Es enfermedad laboral la contraída como resultado de la exposición a factores de riesgo inherentes a la actividad laboral o del medio en el que el trabajador se ha visto obligado a trabajar. El Gobierno Nacional, determinará, en forma periódica, las enfermedades que se consideran como laborales y en los casos en que una enfermedad no figure en la tabla de enfermedades laborales, pero se demuestre· la relación de causalidad con los factores de riesgo ocupacionales será reconocida como enfermedad laboral, conforme lo establecido en las normas legales vigentes.<br/><br/>
+                <strong>PROCEDIMIENTO REPORTE DE ENFERMEDAD LABORAL </strong><br/><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 15px; font-family: Tahoma;">
+                  <tr>
+                    <td width="80%" style="background: #E8E3E3;"><div align="center"><strong>DESCRIPCIÓN</strong></div></td>
+                    <td width="20%" style="background: #E8E3E3;"><div align="center"><strong>RESPONSABLE</strong></div></td>
+                  </tr>
+                  <tr>
+                    <td>Si el trabajador considera que presenta una enfermedad laboral, debe dirigirse al centro médico adscripto en su EPS, e iniciar un proceso, cuando el médico general lo considere necesario remitirá el caso al médico laboral de la EPS para que emita un concepto con la presunta enfermedad laboral.</td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Informar a Seguridad y Salud en el Trabajo, si el concepto médico de la EPS denota la sospecha o aparición de una enfermedad laboral.</td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Gestionar los trámites de calificación del origen de la enfermedad en primera oportunidad ante la EPS.</td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>El FUREL se debe diligenciar cuando la EPS, ARL o AFP lo soliciten para calificar en primero oportunidad el origen de la enfermedad.</td>
+                    <td><div align="center">Empleador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Realizar el proceso de calificación del origen de la enfermedad en primera instancia.</td>
+                    <td><div align="center">EPS</div></td>
+                  </tr>
+                  <tr>
+                    <td>Revisar y emitir concepto de aceptación o no aceptación del origen de la enfermedad en estudio:<br/>
+                      No hay controversia sobre la calificación, la ARL procede al reconocimiento y pago de prestaciones asistenciales y económicas a que tenga derecho el trabajador y le envía las recomendaciones al empleador sobre el manejo en su puesto de trabajo (reubicación, readaptación de tareas, o rediseños al puesto de trabajo).<br/>
+                      Si surge controversia o el funcionario no está de acuerdo, las discrepancias serán resueltas por una junta integrada por representantes de las entidades administradoras de salud y de riesgos profesionales.<br/>
+                      De persistir el desacuerdo se inicia el proceso de calificación por parte de las Juntas de Calificación de Invalidez</td>
+                    <td><div align="center">EPS – ARL – Juntas de Calificaciones.</div></td>
+                  </tr>
+                  <tr>
+                    <td>Investigación de enfermedad laboral </td>
+                    <td><div align="center">Equipo investigador</div></td>
+                  </tr>
+                  <tr>
+                    <td>La empresa de acuerdo al origen de la enfermedad realiza su registro.<br/>Si la enfermedad es de origen común se archiva en la hoja de vida del trabajador y se vincula al programa de vigilancia epidemiológico que corresponda.<br/>Si es de origen laboral, se realiza el ingreso del caso a la carpeta de seguimiento recomendaciones médicas y al programa de vigilancia epidemiológico que corresponda</td>
+                    <td><div align="center">Seguridad y Salud en el Trabajo.</div></td>
+                  </tr>
+                </table><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>ESTANDAR DE SEGURIDAD GENERAL EN EL LUGAR DE TRABAJO</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> hace la invitación a sus trabajadores en misión, como parte de la estrategia de prevención y minimización de lesiones o accidentes laborales a tener en cuenta las siguientes normas de seguridad.<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Trabaje de forma segura, si observa algún riesgo repórtelo a su supervisor o jefe directo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilice el equipo de protección personal asignado según la actividad que realiza (guantes, gafas de seguridad, protección respiratoria, protección auditiva, entre otros).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíben las bromas y juegos, que puedan provocar accidentes dentro de las instituciones de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Comunique de inmediato cualquier dolencia o problemas a su salud a su supervisor o jefe directo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reporte todo incidente y accidente para de esta forma tomar las medidas correctivas necesarias que eviten situaciones inseguras en el futuro</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manténgase a la defensiva cuando se encuentre expuesto a una atmosfera peligrosa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cuando use herramientas manuales corto punzantes o con filo realice la actividad de manera pausada y no pierda la concentración.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proteja su salud en todo momento adopte posturas seguras para realizar sus tareas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No salte de lugares altos.</li>
+                </ul><br/>
+                <strong>ELEMENTOS DE PROTECCIÓN PERSONAL</strong><br/><br/>
+                Los Elementos de Protección Personal tienen como función principal proteger diferentes partes del cuerpo, para evitar que un trabajador tenga contacto directo con factores de riesgo que le pueden ocasionar una lesión o enfermedad, no evitan el accidente o el contacto con elementos agresivos, pero ayudan a que la lesión sea menos grave.<br/><br/>
+                Es responsabilidad del empleador o de la empresa Usuaria:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Suministrar los equipos y elementos de protección personal certificados, adecuados según la naturaleza del riesgo, la exigencia de sus trabajadores, su uso y la matriz de EPP (Elementos de Protección Personal), de modo tal que reúnan las condiciones de seguridad y eficiencia para el usuario.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Capacitar en el uso y cuidado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Inspeccionar periódicamente el uso y estado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reponer inmediatamente los elementos y equipos de protección personal cuando estos se deterioren por su uso, o pérdida de los mismos.</li>
+                </ul><br/>
+                Es responsabilidad de los trabajadores en misión:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de cada trabajador, cuidar sus Elementos de Protección Personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar adecuadamente, con carácter obligatorio, los equipos y elementos de protección personal asignados, por compromiso con su propia seguridad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al jefe Inmediato y/o personal de SST la falta o deterioro de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No iniciar labores si no dispone de los elementos o equipos de protección personal requeridos según la naturaleza del riesgo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar el no uso o uso inadecuado de los elementos y equipos de protección personal por parte de sus compañeros o personal a cargo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Todos los trabajadores que laboren con la empresa <strong><%= portafolio.razon_social rescue nil %></strong>, está comprometido a preservar su salud física y mental y la de sus compañeros, promoviendo las conductas de autocuidado y el uso adecuado de los Elementos de Protección Personal (EPP).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Bajo ninguna circunstancia, los trabajadores podrán desempeñar sus actividades sin el uso de EPP.</li>
+                </ul><br/>
+                <strong>TRABAJO DE ALTURAS.</strong><br/><br/>
+                Es toda actividad que realiza un trabajador que ocasione la suspensión y/o desplazamiento, en el que se vea expuesto a un riesgo de caída, mayor a 2.0 metros, con relación del plano de los pies del trabajador al plano horizontal inferior más cercano a él.<br/><br/>
+                Se prohíbe a los empleados de <strong><%= portafolio.razon_social rescue nil %></strong>, realizar cualquier tipo de trabajo que implique actividades de alturas o por encima de 2.0 metros sobre un nivel inferior, a menos de que haya sido contratado para este cargo y que cumpla con todos los requerimientos de ley establecidos en la resolución 4272 de 2021 para trabajo seguro en alturas y demás requerimientos de dados por la empresa.<br/><br/>
+                <strong>PLAN DE EMERGENCIAS DEL CONTRATO:</strong><br/><br/>
+                La gestión del riesgo incorpora la preparación atención y recuperación de las emergencias, que tiene como uno de los propósitos primordiales la implementación de las medidas preventivas, de atención oportuna y respuesta ante incidentes y accidentes que comprometen la seguridad del personal.<br/><br/>
+                Se debe preguntar en cada una de las instituciones o centros de trabajo cual es el plan de emergencia e identificar rutas de evacuación, punto de encuentro y coordinador o responsable del plan de emergencias.<br/><br/>
+                Sin embargo, ante una emergencia usted debe:<br/><br/>
+                <strong>Antes</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conozca y apoye el trabajo del Plan de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique la señalización para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realice un recorrido por la empresa y reconozca personalmente las rutas y sitios para evacuación, además recuérdeselo a otros compañeros y visitantes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elimine obstáculos en puertas y rutas de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asegúrese de conocer el sistema de alarma.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siga las instrucciones del Plan de Evacuación en caso de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participe en los simulacros de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique las personas de su área que tengan dificultades de movilidad, o que en caso de emergencias hayan tenido comportamientos fuera de lo normal, aprenda cómo deben ser ayudadas.</li>
+                </ul><br/>
+                <strong>Durante</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">No pierda tiempo, interrumpa sus labores inmediatamente y siga las instrucciones de los Líderes de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconecte enchufes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga libre la línea telefónica y similares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No corra, camine con paso rápido y por la derecha.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga la calma y no fomente situaciones alarmistas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Emprenda la evacuación hacia el sitio especificado, con rapidez, sin gritos ni aglomeraciones, no se regrese por ningún motivo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente llevar consigo los objetos personales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente recuperar ningún objeto que se caiga.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Promueva la ayuda mutua (controlar reacciones nerviosas).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No vuelva a entrar en el área después de evacuada.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga el orden y la tranquilidad en las áreas de seguridad, si el evento es por terrorismo no use lo teléfonos móviles – celulares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conserve la calma y siga las rutas establecidas para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a salir a las personas que tienen limitaciones físicas o dificultades para desplazarse.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de humo salga gateando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sismo ubíquese en un área segura, utilice la posición de seguridad y cuando pase el movimiento si se da la orden de evacuación salga al sitio determinado como de encuentro final</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diríjase al punto de reunión indicado con base en las instrucciones impartidas y espere allí.</li>
+                </ul><br/>
+                <strong>Después</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el sitio den encuentro repórtese con el coordinador o líder de evacuación asignado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a informar sobre otras personas que no estén presentes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No se retire del lugar seguro hasta no recibir la orden por parte de los coordinadores o líder de la evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Una vez el Comité de Emergencias, haya dado la orden para volver nuevamente a la edificación o área evacuada, apoye el ingreso organizado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si por algún caso no se puede regresar a la edificación o área evacuada, conserve la calma y espere que le den indicaciones.</li>
+                </ul><br/>
+                <strong>MANEJO Y USOS EFICIENTE DE LOS RECUSROS NATURALES</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manejo adecuado de los residuos sólidos, prácticas de separar, reutilizar y aprovechar los residuos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconectar todos los equipos eléctricos y electrónicos que no se estén utilizando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Apagar las luces que se encuentren encendidas en oficinas, aulas y demás lugares donde no haya personas y que esta no sea requerida.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar los equipos que tengan la opción en modo de ahorro de energía.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar en la medida de lo posible balde con agua en vez de la manguera.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de utilizar la manguera que esta tenga pistola de presión para controlar la salida del agua.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No dejar las llaves o canillas abiertas mientras realizamos otras actividades como enjabonar o estregar, cerrar la llave cuando no necesitemos el agua para enjuagar o lavar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar productos de fácil biodegradabilidad o que contengan concentraciones que no afecten el medio ambiente</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar iluminación natural en los espacios que sea posible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar luminarias ahorradoras.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Examinar las llaves de agua, cañerías y tuberías de los exteriores por si tienen fugas. Gota a gota el agua se agota.</li>
+                </ul><br/>
+                <strong>MANEJO ADECUADO DE LAS SUSTANCIAS QUIMICAS</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer el punto donde se almacenan las hojas de seguridad de los productos químicos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes de usar un producto químico verificar bien cuáles son los riesgos que tiene partiendo de la lectura del pictograma de peligrosidad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los Elementos de Protección Personal según lo definido en la hoja de seguridad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Garantizar que los recipientes de los productos siempre estén rotulados CORRECTAMENTE Y DE MANERA LEGIBLE.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Separar los productos químicos de manera adecuada según la matriz de almacenamiento de sustancias químicas.</li>
+                </ul><br/>
+                <strong>PRESENTACIÓN PERSONAL</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">El uso del uniforme es de obligatorio cumplimiento</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siempre se debe portar el uniforme limpio, completo y planchado, Usar maquillaje discreto, zapatos lustrados, los accesorios y medias deben ser acordes con el uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los hombres deberán conservar un afeitado y motilado adecuado, además llevarán la camisa por dentro de la pretina del pantalón, los zapatos lustrados, usar correa negra.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Portar siempre el carné y usarlo en un lugar visible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el lugar de trabajo durante la realización de la labor está prohibido el uso de anillos, reloj, pulseras, cadenas y piercing. Debe de usar aretes sobrios y pequeños acordes con su uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga el cabello recogido y aseado con chulos, moños y/o hebillas de color acorde al uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga sus uñas limpias y cortas, si usa esmalte que sea en colores claros.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No consuma chicle durante la jornada laboral, resulta de muy mala educación, sobre todo en el ámbito laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Estar en buenas condiciones de higiene para lo cual es importante el cambio diario del uniforme, uso de desodorante y una buena higiene bucal. No uso de lociones fuertes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibido el uso de calzado diferente al asignado por la empresa, en caso de necesitar otro tipo de calzado comunicarse con su jefe inmediato quién le dará la asesoría.</li>
+                </ul><br/>
+                <strong>RELACIONES DE TRABAJO, PERMISOS, FALTAS Y SANCIONES.</strong><br/><br/>
+                Recuerde que siempre debe reportar a su supervisor o jefe inmediato todas las novedades concernientes a usted, tales como permisos, situaciones de salud, diligencias personales que interfieran o que se crucen con el desarrollo de sus actividades en el puesto de trabajo, esto lo debe realizar con anticipación, si son citas médicas, diligencias o permisos personales, mínimo con tres días de anticipación, con la salvedad de que sea en caso de fuerza mayor podrán ser el mismo día.<br/><br/>
+                <strong>REGLAMENTO INTERNO DE TRABAJO.</strong><br/><br/>
+                El reglamento interno de trabajo tiene por objeto dar a conocer a sus empleados y directivos sus derechos y deberes tanto a nivel interno de la empresa como fuera de ella, los cuales están contemplados en normas de carácter legal, y son de obligatorio cumplimiento.<br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>PREVENCIÓN DE EXPOSICIÓN A RIESGO BIOLOGICO (Resolución 2468 de 2022)</strong></div><br/>
+                <strong>PROTOCOLOS DE BIOSEGURIDAD</strong><br/><br/>
+                Todos los trabajadores de la empresa deberán cumplir con las medidas de prevención adoptadas en los centros de trabajo o por la empresa propia.<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asistir a las capacitaciones realizadas por el empleador, contratante o la ARL</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Poner en practica las técnicas de higiene, hábitos saludables y lavado de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar los elementos de protección personal y responder por el uso adecuado de dichos elementos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cuidar su salud (autocuidado) y suministrar información clara, veraz y completa de su estado de salud.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer el Plan de Gestión Integral de Residuos de la empresa en la cual desempeña su labor.</li>
+                </ul><br/>
+                Recomendaciones estándar:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Higiene de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Adecuada manipulación de elementos cortopunzantes</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Limpieza, desinfección e higiene</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Uso de elementos de protección personal</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Adecuado Manejo de residuos y disposición final de elementos cortopunzantes.</li>
+                </ul><br/>
+                Lavado de Manos:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes y después de consumir los alimentos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes y después de utilizar el baño</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de sonarse la nariz, toser o estornudar</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de haber tocado animales o alimento para animales o excrementos de animales</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de haber manipulado o tocado bolsa con residuos</li>
+                </ul><br/>
+                Tener en cuenta:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">El uso de guantes no sustituye el lavado de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se recomienda tener un adecuado cuidado de la piel para aumentar la eficacia de la fricción y el lavado de manos.</li>
+                </ul><br/>
+                <div align="center">
+                  <%= image_tag 'https://appasearesp.com/assets/lavadomanos-f22cf9f649e6f3180cd5ab0c75a19a16a8f32afda57d9bc1fa21e269d04e9bc5.png', size: "600x600" %>
+                </div><br/><br/>
+                Recomendaciones Generales para Riesgo Biologico:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al supervisor de <strong><%= portafolio.razon_social rescue nil %></strong> o al área de seguridad y salud en el trabajo cualquier caso de contagio que se llegase a presentar en el lugar de trabajo o su familia, para que se adopten las medidas correspondientes</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al supervisor de <strong><%= portafolio.razon_social rescue nil %></strong> o al área de SST cualquier situación de riesgo en el lugar de trabajo que ponga en riesgo el cumplimiento de los protocolos de Bioseguridad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Depositar adecuadamente en el guardían las agujas o elementos cortopunzantes utilizados para su disposición final</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los trabajadores que utilicen objetos cortantes o punzantes no desechables deben depositarlos personalmente en el lugar asignado (recipiente adecuado).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar dejar objetos cortantes o punzantes abandonados sobre una superficie o en el suelo, ya que existe riesgo de que otras persoas se puedan accidentar.</li>
+                </ul><br/>
+                Si usted sufre un pinchazo con aguja, realice inmediatamente las siguientes acciones:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Enjuage la herida con agua y jabón</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informe inmediatamente al supervisor de ASEAR o al Área de SST</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siga las instrucciones dadas para atención de accidente de trabajo por riesgo biologico.</li>
+                </ul><br/>
+                Para un correcto uso y durabilidad del elemento de protección usted debe:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizarlos exclusivamente en las actividades para las que se han establecido</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar su contaminación en otras áreas y superficies o que contaminen otros lugares</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intercambiarse o compartir los elementos de protección personal con los compañeros de trabajo o cualquier otra persona</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Deben mantenerse limpios y adecuadamente almacenados en un área especifica donde se garantice ventilación e iluminación, libres de polvo o contaminantes que puedan afectar su vida util o la garantía de protección.</li>
+                </ul><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>COVID-19</strong></div><br/>
+                <strong>Contacto Estrecho:</strong> Contracto entre personas en un espacio de 2 mestros o menos de distancia, en una habitación o en el área de atención de un caso de COVID-19 confirmado o probable, durante un tiempo mayor a 15 minutos, o contacto directo con secreciones de un caso probable o confirmado mientras el paciente es condiserado infeccioso.<br/><br/>
+                Generalidades que se deben de cumplir:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar al supervisor o área de SST cualquier novedad relacionada con caso de Covid-19.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con las medidas de seguridad de uso de los elementos de protección personal</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con las tecnicas de lavado de manos tal como se indica anteriormente</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Importante que para una mayor protección tenga su esquema de vacunación completo contra Covid-19.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si es un lugar donde ya no requiere la exigencia del uso de tapabocas, este debe usarse en caso de tener sintomas de gripa o sintomas asociados.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si va a toser o estornudar, hágalo en el pliegue anterior del codo o utilice pañuelos y éstos debe desecharlos inmediatamente. Evitar taparse la boca con las manos en ese instante.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar recibir y compartir los alimentos y utensilios.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No llegar al lugar de trabajo con el uniforme, deberá llevarlo para cambiarse en dicho lugar</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En las instalaciones donde sea de uso obligatorio el tapabocas deberá usarlo de forma correcta</li>
+                </ul><br/>
+                <strong>USO DEL TAPABOCAS</strong><br/><br/>
+                El uso de tapabocas es una medida complementaria y debe ser acompañada del lavado de manos, el aislamiento y el distanciamiento social para evitar el contagio<br/>
+                <div align="center">
+                  <%= image_tag 'https://appasearesp.com/assets/usotapabocas-482755fe7184cd00774355736110506c63aabc9f1bdd236a81056a77ec9b3eae.png', size: "400x400" %>
+                </div>
+              </div>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                Yo, <strong><%= contratospersona.nombre_completo rescue nil %></strong> con C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong> Manifiesto haber recibido toda la información consignada en este plan y me comprometo a poner en práctica todo lo aprendido con el fin de garantizar mi integridad física siguiendo los estándares de seguridad y garantizando la calidad del servicio que presto.<br/><br/><br/>
+                <table width="50%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td height="50" style="background: #E8E3E3;">
+                      <% if @contratosperfecha.codigo_firma.present? %>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                        * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                      <% else %>
+                        <br/><br/><br/><br/>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    <% elsif portafolio.id == 3 # Construmater %>
+      <div align="center">
+        <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+                <thead>
+                <tr>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma;"><div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div></td>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</b></div></td>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"> <div align="center"> <b>Versión 8<br/> Fecha Actualización: 10 de junio de 2023</b> </div></td>
+                </tr>
+                <tr>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>INDUCCIÓN Y/O REINDUCCIÓN</b></div></td>
+                </tr>
+                </thead>
+              </table><br/>
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                <tr>
+                  <td width="40%" style="background: #E8E3E3;"><strong>Razón Social : </strong></td>
+                  <td>&nbsp;<%= portafolio.razon_social rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>NIT : </strong></td>
+                  <td>&nbsp;<%= portafolio.identificacion rescue nil %>-<%= portafolio.digito rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Dirección : </strong></td>
+                  <td>&nbsp;<%= portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Administradora de Riesgos Laborales : </strong></td>
+                  <td>&nbsp;ARL SURA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Representante Legal : </strong></td>
+                  <td>&nbsp;<%= portafolio.nombre_rep rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Página Web : </strong></td>
+                  <td>&nbsp;<%= portafolio.sitio_web rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Actividad Económica Principal : </strong></td>
+                  <td><div align="justify">Construcción de Proyectos de Servicio Público</div></td>
+                </tr>
+              </table>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLÍTICA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> es una empresa del sector privado, dedicada al desarrollo de proyectos, asesoría, consultoría del sector público y privado, a la comercialización de materiales, productos y maquinaria para la construcción y a la proyección, construcción, comercialización de obras civiles a nivel local y nacional, por lo que para la <strong>Alta Dirección</strong> y el área de seguridad y salud en el trabajo el recurso humano constituye nuestra base principal para la prestación de un excelente servicio, es por ello que la empresa establece la presente Política como parte de nuestras prioridades para el mejoramiento continuo de nuestro Sistema de Gestión de Seguridad y Salud en el Trabajo SG – SST.<br/><br/>
+                Para la Alta Dirección y todas las partes interesadas de la empresa es de total interés mantener y cumplir con la <strong>Política de SST</strong> y el logro de los <strong>Objetivos de SST</strong> planteados en el SG SST y es primordial garantizar el bienestar integral del empleado en su lugar de trabajo, mejorando su calidad de vida, generando satisfacción, sentido de pertenencia con la empresa y la empresa cliente, ofreciendo lugares de trabajo seguros y adecuados que minimicen la ocurrencia de accidentes y enfermedades de presunto origen laboral, para bien de la empresa y de los trabajadores.<br/><br/>
+                Nuestros <strong>compromisos</strong> para el cumplimiento del anterior propósito son:<br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con los <strong>requisitos legales</strong> en cuanto a seguridad y salud en el trabajo que como empresa nos aplique y aquellos que se deriven de nuestra actividad económica y otros requisitos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la identificación de peligros, la evaluación y valoración de los riesgos de todas las actividades que se desarrollan en función de la empresa, estableciendo los controles necesarios, iniciando por la <strong>eliminación de los peligros</strong> y continuando con la reducción de los riesgos para la seguridad y salud en el trabajo. Así mismo realizar el seguimiento de los controles garantizando su efectividad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proporcionar a todos nuestros trabajadores condiciones, elementos o herramientas que permitan desarrollar sus actividades de trabajo garantizando su seguridad y su salud con el fin de prevenir lesiones y deterioro de la salud relacionados con los factores de riesgo a los cuales van a estar expuestos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Vincular a todos los trabajadores y partes interesadas para que conozcan, consulten, participen y den cumplimiento a todas las medidas adoptadas y que hacen parte del SG SST, así como informar a través de los canales de comunicación definidos cualquier condición, suceso o anomalía que valla en contra de la Política, Objetivos y Manual del SG SST o cualquier otro requisito definido por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la <strong>Mejora Continua</strong> del SG SST garantizando la actuación sobre las acciones tomadas para el alcance de los resultados previstos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Establecer medidas, programas o estrategias adecuadas para el control de los riesgos prioritarios identificados para la empresa.</li>
+                </ol>
+                <br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><H1 class=SaltoDePagina>&nbsp;</H1>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>OBJETIVOS DEL SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong>Objetivo general</strong><br/><br/>
+                Apuntar al cumplimiento de la Política de Seguridad y Salud en el trabajo y al desarrollo acertado de la intervención que garantice la mejora continua el Sistema de Gestión de la Seguridad y Salud en el trabajo SG-SST, logrando prevenir y disminuir la ocurrencia de accidentes y enfermedades laborales a los trabajadores o partes interesadas de la empresa que se vean involucradas en el desarrollo de cualquiera de los procesos de la empresa <strong><%= portafolio.razon_social rescue nil %></strong>.<br/><br/>
+                <strong>Objetivos específicos</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento mediante indicadores al cumplimiento de las normas que le competen a la empresa a través de una Matriz de Requisitos Legales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento al control de riesgos a través de una Matriz de identificación, valoración y evaluación de riesgos basada en la metodología de la GTC 45.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar una Matriz de adquisición y entrega de los elementos de protección personal necesarios para cada labor identificada en la empresa y llevar a cabo los programas, procedimientos, estándares, AROS, instructivos y demás establecidos en el SG SST que apunten a garantizar la seguridad y la salud de los trabajadores en sus puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la participación del 100% de los empleados en todas las actividades planteadas dentro del SG SST como: capacitaciones, charlas, programas de bienestar, atención a las comunicaciones y notificación de accidentes, incidentes laborales o notificación de afectaciones a la salud.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la medición de indicadores definidos en el SG SST con el fin revisar el análisis y eficacia de las medidas tomadas para su reducción y realizar ajustes en las medidas y toma de acciones que garanticen la mejora continua, llevando un control documentado de una Matriz de mejoras para seguimiento al cumplimiento de las acciones tomadas en cualquiera de las etapas del desarrollo del SG SST.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar programas, procesos o procedimientos para el control de los riesgos prioritarios identificados en la Matriz de valoración y evaluación de riesgos.</li>
+                </ol><br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLITICA DE ALCOHOL Y DROGAS</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> tiene la responsabilidad y el compromiso con la salud, la seguridad y el bienestar de todos sus Colaboradores, reconociendo que el alcoholismo, tabaquismo y la drogadicción pueden causar enfermedades y además, que los individuos bajo los efectos de drogas, alcohol u otras sustancias controladas pueden constituir un grave peligro hacia la seguridad y la salud, no sólo de sí mismos, sino de quienes trabajan con ellos. Por tal motivo, tanto la compañía como todos sus colaboradores están comprometidos con mantener un ambiente de trabajo libre de alcohol, tabaco y drogas   a través del desarrollo del Programa de Prevención del No Uso de las Sustancias Psicoactivas, alcohol y tabaco en los Lugares de trabajo.<br/><br/>
+                Además, dando cumplimiento a la resolución 1956 de 2008, resuelve emitir las siguientes directrices dentro de la empresa y en las instalaciones de los puestos de trabajo:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe a todos los empleados presentarse al sitio de trabajo bajo influencia del alcohol o sustancias psicoactivas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe el consumo de cigarrillo, alcohol o sustancias psicoactivas en la empresa, en los puestos de trabajo o en las actividades laborales dispuestas por la empresa</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En nuestros ambientes de trabajo no se deben consumir, portar o distribuir sustancias psicoactivas o alcohólicas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los Colaboradores que consideren tener problemas de dependencia de alcohol o sustancias psicoactivas, deben buscar asesoría y seguir un tratamiento en forma inmediata y apropiada, antes que el problema se convierta en un obstáculo para un adecuado desempeño.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibida la posesión y/o comercialización de sustancias psicoactivas, bebidas embriagantes y cigarrillos en los puestos de trabajo de la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">El personal debe participar en los programas de sensibilización y capacitación de la política de no alcohol, drogas y cigarrillo</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los empleados facilitarán la realización de las pruebas necesarias para establecer indicios de abuso de drogas y/o alcohol</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los empleados que por razones médicas deban usar medicamentos bajo prescripción cuya acción pueda afectarlos durante su trabajo, deberán informar antes de iniciar sus labores a su jefe inmediato y a seguridad y salud en el trabajo, evidenciando mediante concepto médico.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si durante la investigación de un accidente o incidente se comprueba por medio de pruebas clínicas y para clínicas que al momento de la ocurrencia del accidente o incidente el Empleado involucrado o responsable se encontraba bajo los efectos de alcohol o sustancias psicoactivas o alucinógenas, se considerará una falta grave y se seguirá el proceso disciplinario establecido en el Reglamento Interno de Trabajo.</li>
+                </ul><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> efectuará, sí lo considera necesario, requisas, inspecciones y pruebas ya sea aleatorias o confirmatorias, en cualquier momento, con el fin de supervisar el cumplimiento de la presente política.<br/><br/>
+                El Programa está dirigido a todos los empleados incluyend contratistas de <strong><%= portafolio.razon_social rescue nil %></strong> este programa será direccionado por Talento Humano y el sistema de Gestión de Seguridad y Salud en el Trabajo.<br/><br/>
+                Con el desacato persistente a alguna de estas normas nos veremos en el deber de realizar llamado de atención o dar por terminado la elación laboral<br/><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong>, ha designado los recursos necesarios para dar cumplimiento a esta política y espera por su parte, la colaboración de todos los empleados.<br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>ROLES Y RESPONSABILIDADES CON EL ÁREA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                Tienen Responsabilidades para con el SG SST de <strong><%= portafolio.razon_social rescue nil %></strong>, los siguientes:<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Gerencia y/o subgerencia</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Responsable del Sistema de Gestión de Seguridad y Salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Coordinadores de SST</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ingenieros Residentes o directores de Obras</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Colaboradores o trabajadores</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Vigía de Seguridad y Salud en el trabajo</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Comité de Convivencia</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Coordinadores de Alturas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Brigada de Emergencia</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Contratistas (en caso de haberlos)</li>
+                </ul><br/>
+                TRABAJADORES EN GENERAL<br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y velar por el cumplimiento de los Programas, Procedimientos, Instructivos, Protocolos y Estándares de seguridad elaborados por el área de seguridad y salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y tener clara la Política, Objetivos, roles y responsabilidades de SST; así mismo dar cumplimiento a estos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participar en la elaboración del diagnóstico del riesgo e informar cualquier condición que genere peligro en los puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asistir a las capacitaciones, brigadas de salud y demás actividades programadas por el área de seguridad y salud en el trabajo para la prevención de accidentes y enfermedades laborales</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la normatividad vigente en materia de Seguridad y Salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los elementos de protección personas durante la labor y de forma correcta</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la Política de alcohol y drogas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con el Protocolo de Bioseguridad para la prevención de Riesgo Biológico</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar cualquier cambio o condición que afecte su salud</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Procurar el cuidado integral de su salud y autocuidado en el lugar de trabajo, realizando las actividades de forma segura con el fin de evitar la materialización de un accidente o enfermedad laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Velar por el cuidado de las demás personas, estando atentos a las condiciones de riesgo e informando a tiempo, así mismo no poner en riesgo la integridad misma o la de otras personas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No realizar trabajos de alturas, en caso de no cumplir con todos los requisitos establecidos en la Resolución 4272 de 2021 y con el programa de protección contra caídas establecido por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar inmediatamente todos los accidentes e incidentes que ocurran en su lugar de trabajo o bajo ordenes de su jefe inmediato.</li>
+                </ol><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.</strong></div><br/>
+                Establece los riesgos existentes de nuestras actividades y destaca la obligación que tenemos todos los empleados de participar en las capacitaciones y orientaciones que se desarrollen como medidas preventivas.<br/>
+                La empresa se compromete a dar cumplimiento a las disposiciones legales vigentes, tendientes a garantizar los mecanismos que aseguren una oportuna y adecuada prevención de los accidentes de trabajo y enfermedades laborales, de conformidad con lo establecido en la normatividad vigente.<br/><br/>
+                Nombre de la ARL a la que está afiliada la empresa: <strong>ARL SURA</strong><br/>
+                Clase o tipo de riesgo asignado por la ARL: <strong>1, 2, 3, 4 Y 5</strong><br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>RIESGOS A LOS CUALES ESTA EXPUESTO EL TRABAJADOR</strong></div><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Riesgo Identificado</strong></td>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Actividades</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Biológico:</strong><br/>Por exposición o contacto con macroorganismos (picaduras, mordeduras), microorganismos (incluido Covid-19 y sus variantes), contacto con fluidos o excrementos.</td>
+                    <td>Transmisión a través de objetos o material contaminado.<br/>Totos los cargos que realizan actividades de obra a la intemperie.<br/>Todo el personal que realiza actividades en centros de atención en Salud.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Físico:</strong><br/>Exposición a ruido, exceso o deficiencia de iluminación, vibración, temperaturas extremas, radiaciones ionizantes.</td>
+                    <td>Todo el personal Operativo que se encuentra en obra y que este expuesto a maquinas que generan ruido o a ambientes ruidosos.<br/>Personal que se encuentre en obras a la intemperie.<br/>Personal administrativo que usa computador durante la jornada.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Químico:</strong><br/>Exposición a gases y vapores, líquidos (nieblas y rocíos), humos metálicos y cualquier agente químico.</td>
+                    <td>Todos los cargos que manipulan sustancias químicas (para los diferentes procesos de reformas, obra civil, obra blanca y en general mantenimiento de infraestructura).<br/>
+                      Todo personal que realiza soldadura.</td>
+                  <tr>
+                    <td><strong>Riesgo Biomecánico:</strong><br/>Por movimientos repetitivos, manipulación de cargas, sobreesfuerzo o posturas forzadas o prolongadas.</td>
+                    <td>Todos los cargos vinculados a la empresa sin importar su lugar de trabajo.</td>
+                  <tr>
+                    <td><strong>Condiciones de Seguridad:</strong><br/>Mecánico (elementos de máquinas, herramientas, piezas a trabajar, materiales proyectados sólidos o fluidos), eléctrico (alta y baja tensión, estática), accidentes de tránsito, Trabajo en alturas, trabajos en espacios confinados, tecnológico (explosión, fuga, derrame, incendio), Locativo (almacenamiento, superficies de trabajo (irregularidades, deslizantes, con diferencia del nivel) condiciones de orden y aseo, caídas de objeto).</td>
+                    <td>Todos los operarios que realicen trabajo de alturas, trabajos en espacios confinados, personal eléctrico.<br/>A las condiciones de seguridad a nivel locativo: Están expuestos todo el personal que se contrató para la empresa sin diferenciar cargo.</td>
+                  <tr>
+                    <td><strong>Riesgo Mecánico:</strong><br/>Manejo de maquinas y herramientas, proyección de partículas, superficies o herramientas cortantes o punzantes, objetos salientes que ruedan o caen, superficies calientes.</td>
+                    <td>Todos los cargos de la empresa.</td>
+                  <tr>
+                    <td><strong>Riesgo Psicosocial:</strong><br/>Condiciones de la tarea (carga mental, contenido de la tarea, demandas emocionales, sistemas de control, definición de roles, monotonía, etc)</td>
+                    <td>Todos los cargos de la empresa.</td>
+                  </tr>
+                </table>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>DEFINICIONES IMPORTANTES</strong></div><br/>
+                <strong>ACTO O COMPORTAMIENTO INSEGURO</strong><br/><br/>
+                Se refieren a todas la acciones y decisiones humanas, que pueden causar una situación insegura o incidente, con consecuencias para el trabajador, la producción, el medio ambiente y otras personas. También el comportamiento inseguro incluye la falta de acciones para informar o corregir condiciones inseguras.<br/><br/>
+                <strong>CONDICIÓN INSEGURA</strong><br/><br/>
+                Es todo elemento de los equipos, la materia prima, las herramientas, las máquinas, las instalaciones o el medio ambiente que se convierte en un peligro para las personas, los bienes, la operación y el medio ambiente y que bajo determinadas condiciones puede generar un incidente.<br/><br/>
+                <strong>ACCIDENTE DE TRABAJO: (Decreto 1562 de 2012 - Art. 3).</strong><br/><br/>
+                Es todo suceso repentino que sobrevenga por causa o con ocasión del trabajo, y que produzca en el trabajador una lesión orgánica, una perturbación funcional o psiquiátrica, una invalidez o la muerte.<br/><br/>
+                Es también accidente de trabajo aquel que se produce durante la ejecución de órdenes del empleador, o contratante durante la ejecución de una labor bajo su autoridad, aún fuera del lugar y horas de trabajo.<br/><br/>
+                Igualmente se considera accidente de trabajo el que se produzca durante el traslado de los trabajadores o contratistas desde su residencia a los lugares de trabajo o viceversa, cuando el transporte lo suministre el empleador.<br/><br/>
+                También se considerará como accidente de trabajo el ocurrido durante el ejercicio de la función sindical, aunque el trabajador se encuentre en permiso sindical siempre que el accidente se produzca en cumplimiento de dicha función.<br/><br/>
+                De igual forma se considera accidente de trabajo el que se produzca por la ejecución de actividades recreativas, deportivas o culturales, cuando se actúe por cuenta o en representación del empleador o de la empresa usuaria cuando se trate de trabajadores de empresas de servidos temporales que se encuentren en misión.<br/><br/>
+                <strong>INCIDENTE DE TRABAJO.</strong><br/><br/>
+                Suceso acaecido en el curso del trabajo o en relación con éste, que tuvo el potencial de ser un accidente, en el que hubo personas involucradas sin que sufrieran lesiones corporales o se presentaran daños a la propiedad y/o pérdida en los procesos.<br/><br/>
+                <strong>EN CASO DE ACCIDENTE DE TRABAJO</strong><br/><br/>
+                La ARL en la que se encuentra afiliada la empresa es <strong>ARL SURA</strong><br/><br/>
+                Cualquier accidente, incidente o novedad debe ser informado inmediatamente a su jefe inmediato o a la empresa.<br/><br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>PROCEDIMIENTO REPORTE DE ACCIDENTE O INCIDENTE DE TRABAJO</strong></div><br/>
+                <strong>Trabajadores:</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de todo el personal perteneciente a la empresa reportar al jefe inmediato o Ingeniero Residente o persona de SST y de forma inmediata todos los accidentes o incidentes con y sin lesión ocurridos dentro y fuera de la organización que tengan relación directa o indirecta con la labor para la que fue contratado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sufrir algún evento, deberá participar en la investigación del mismo bien sea como persona afectada o como testigo de algún evento. Esta participación se hará siempre y cuando no se encuentre incapacitado o limitado para participar de manera telefónica o presencial.</li>
+                </ol><br/>
+                <strong>Ingenieros Residentes o Personal de SST:</strong><br/><br/>
+                Realizar la llamada a la línea de ARL SURA (018000941414 – 604 4444578) para realizar el reporte telefónicamente y direccionar al empleado al centro médico más cercano<br/><br/><br/>
+                <strong>ESTANDAR DE SEGURIDAD GENERAL EN EL LUGAR DE TRABAJO</strong><br/><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> hace la invitación a sus empleados, como parte de la estrategia de prevención y minimización de lesiones o accidentes laborales a tener en cuenta las siguientes normas de seguridad.<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Trabaje de forma segura, si observa algún riesgo repórtelo a su supervisor o jefe directo o al SISO de la Obra.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilice el equipo de protección personal asignado según la actividad que realiza (casco, guantes, gafas de seguridad, protección respiratoria, protección auditiva, entre otros).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíben las bromas y juegos, que puedan provocar accidentes dentro de las instituciones de trabajo o de inicio a peleas o malos tratos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Comunique de inmediato cualquier dolencia o problemas a su salud a su supervisor o jefe directo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reporte todo incidente y accidente para de esta forma tomar las medidas correctivas necesarias que eviten situaciones inseguras en el futuro</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manténgase a la defensiva cuando se encuentre expuesto a una atmosfera peligrosa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cuando use herramientas mecánicas o manuales corto punzantes o con filo realice la actividad de manera pausada y no pierda la concentración.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proteja su salud en todo momento adopte posturas seguras para realizar sus tareas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No salte de lugares altos.</li>
+                </ul><br/>
+                <strong>ELEMENTOS DE PROTECCIÓN PERSONAL</strong><br/><br/>
+                Los Elementos de Protección Personal tienen como función principal proteger diferentes partes del cuerpo, para evitar que un trabajador tenga contacto directo con factores de riesgo que le pueden ocasionar una lesión o enfermedad, no evitan el accidente o el contacto con elementos agresivos, pero ayudan a que la lesión sea menos grave.<br/><br/>
+                Es responsabilidad del empleador:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Suministrar los equipos y elementos de protección personal certificados, adecuados según la naturaleza del riesgo, la exigencia de sus trabajadores, su uso y la matriz de EPP (Elementos de Protección Personal), de modo tal que reúnan las condiciones de seguridad y eficiencia para el trabajador.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Capacitar en el uso y cuidado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Inspeccionar periódicamente el uso y estado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reponer inmediatamente los elementos y equipos de protección personal cuando estos se deterioren por su uso, o pérdida de los mismos.</li>
+                </ul><br/>
+                Es responsabilidad de los trabajadores:<br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de cada trabajador, cuidar sus Elementos de Protección Personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar adecuadamente, con carácter obligatorio, los equipos y elementos de protección personal asignados, por compromiso con su propia seguridad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al jefe Inmediato y/o personal de SST la falta o deterioro de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No iniciar labores si no dispone de los elementos o equipos de protección personal requeridos según la naturaleza del riesgo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar el no uso o uso inadecuado de los elementos y equipos de protección personal por parte de sus compañeros o personal a cargo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Todos los trabajadores que laboren con la empresa, está comprometido a preservar su salud física y mental y la de sus compañeros, promoviendo las conductas de autocuidado y el uso adecuado de los Elementos de Protección Personal (EPP).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Bajo ninguna circunstancia, los trabajadores podrán desempeñar sus actividades sin el uso de EPP.</li>
+                </ul><br/>
+                <strong>TRABAJO DE ALTURAS.</strong><br/><br/>
+                Es toda actividad que realiza un trabajador que ocasione la suspensión y/o desplazamiento, en el que se vea expuesto a un riesgo de caída, mayor a 2.0 metros, con relación del plano de los pies del trabajador al plano horizontal inferior más cercano a él.<br/><br/>
+                Se prohíbe a los empleados., realizar cualquier tipo de trabajo que implique actividades de alturas o por encima de 2.0 metros sobre un nivel inferior, a menos de que haya sido contratado para este cargo y que cumpla con todos los requerimientos de ley establecidos en la resolución 4272 de 2021 para trabajo seguro en alturas y con el programa de protección contra caídas de la empresa.<br/><br/>
+                <strong>PLAN DE EMERGENCIAS:</strong><br/><br/>
+                La gestión del riesgo incorpora la preparación atención y recuperación de las emergencias, que tiene como uno de los propósitos primordiales la implementación de las medidas preventivas, de atención oportuna y respuesta ante incidentes y accidentes que comprometen la seguridad del personal.<br/>
+                En las Obras o cualquier lugar donde se encuentre laborando debe identificar rutas de evacuación, punto de encuentro y coordinador o responsable del plan de emergencias.<br/><br/>
+                Sin embargo, ante una emergencia usted debe:<br/><br/>
+                <strong>Antes</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conozca y apoye el trabajo del Plan de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique la señalización para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realice un recorrido por la Obra o empresa y reconozca personalmente las rutas y sitios para evacuación, además recuérdeselo a otros compañeros y visitantes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elimine obstáculos en puertas, salidas o rutas de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asegúrese de conocer el sistema de alarma.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siga las instrucciones del Plan de Evacuación en caso de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participe en los simulacros de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique las personas de su área que tengan dificultades de movilidad, o que en caso de emergencias hayan tenido comportamientos fuera de lo normal, aprenda cómo deben ser ayudadas.</li>
+                </ul><br/>
+                <strong>Durante</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">No pierda tiempo, interrumpa sus labores inmediatamente y siga las instrucciones de los Líderes de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconecte enchufes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga libre la línea telefónica y similares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No corra, camine con paso rápido y por la derecha.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga la calma y no fomente situaciones alarmistas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Emprenda la evacuación hacia el sitio especificado, con rapidez, sin gritos ni aglomeraciones, no se regrese por ningún motivo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente llevar consigo los objetos personales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente recuperar ningún objeto que se caiga.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Promueva la ayuda mutua (controlar reacciones nerviosas).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No vuelva a entrar en el área después de evacuada.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga el orden y la tranquilidad en las áreas de seguridad, si el evento es por terrorismo no use lo teléfonos móviles – celulares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conserve la calma y siga las rutas establecidas para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a salir a las personas que tienen limitaciones físicas o dificultades para desplazarse.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de humo salga gateando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sismo ubíquese en un área segura, utilice la posición de seguridad y cuando pase el movimiento si se da la orden de evacuación salga al sitio determinado como de encuentro final</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diríjase al punto de reunión indicado con base en las instrucciones impartidas y espere allí.</li>
+                </ul><br/>
+                <strong>Despues</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el sitio den encuentro repórtese con el coordinador o líder de evacuación asignado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a informar sobre otras personas que no estén presentes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No se retire del lugar seguro hasta no recibir la orden por parte de los coordinadores o líder de la evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Una vez el Comité de Emergencias, haya dado la orden para volver nuevamente a la edificación o área evacuada, apoye el ingreso organizado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si por algún caso no se puede regresar a la edificación o área evacuada, conserve la calma y espere que le den indicaciones.</li>
+                </ul><br/>
+                <strong>MANEJO Y USOS EFICIENTE DE LOS RECUSROS NATURALES</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manejo adecuado de los residuos sólidos, prácticas de separar, reutilizar y aprovechar los residuos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconectar todos los equipos eléctricos y electrónicos que no se estén utilizando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Apagar las luces que se encuentren encendidas en lugares donde no haya personas y que esta no sea requerida.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar los equipos que tengan la opción en modo de ahorro de energía.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar en la medida de lo posible balde con agua en vez de la manguera.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de utilizar la manguera que esta tenga pistola de presión para controlar la salida del agua.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No dejar las llaves o canillas abiertas mientras realizamos otras actividades como enjabonar o estregar, cerrar la llave cuando no necesitemos el agua para enjuagar o lavar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar productos de fácil biodegradabilidad o que contengan concentraciones que no afecten el medio ambiente</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar iluminación natural en los espacios que sea posible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar luminarias ahorradoras.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Examinar las llaves de agua, cañerías y tuberías de los exteriores por si tienen fugas. Gota a gota el agua se agota.</li>
+                </ul><br/>
+                <strong>MANEJO ADECUADO DE LAS SUSTANCIAS QUIMICAS</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer el punto donde se almacenan las hojas de seguridad de los productos químicos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes de usar un producto químico verificar bien cuáles son los riesgos que tiene partiendo de la lectura del pictograma de peligrosidad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los Elementos de Protección Personal según lo definido en la hoja de seguridad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Garantizar que los recipientes de los productos siempre estén rotulados CORRECTAMENTE Y DE MANERA LEGIBLE.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Separar los productos químicos de manera adecuada según la matriz de almacenamiento de sustancias químicas.</li>
+                </ul><br/>
+                <strong>PRESENTACIÓN PERSONAL:</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">El uso de la dotación es de obligatorio cumplimiento (Reglamento interno de trabajo Art. 49 Literal L).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siempre se debe portar el uniforme limpio y completo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Portar siempre el carné y usarlo en un lugar visible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el lugar de trabajo durante la realización de la labor está prohibido el uso de anillos, reloj, pulseras, cadenas y piercing.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Estar en buenas condiciones de higiene para lo cual es importante el cambio diario del uniforme, uso de desodorante y una buena higiene bucal</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibido el uso de calzado diferente al asignado por la empresa, en caso de necesitar otro tipo de calzado comunicarse con su jefe inmediato quién le dará la asesoría.</li>
+                </ul><br/>
+                <strong>RELACIONES DE TRABAJO, PERMISOS, FALTAS Y SANCIONES.</strong><br/><br/>
+                Recuerde que siempre debe reportar a su supervisor o jefe inmediato todas las novedades concernientes a usted, tales como permisos, situaciones de salud, diligencias personales que interfieran o que se crucen con el desarrollo de sus actividades en el puesto de trabajo, esto lo debe realizar con anticipación, si son citas médicas, diligencias o permisos personales, mínimo el día antes al mismo, con la salvedad de que sea en caso de fuerza mayor podrán ser el mismo día.<br/><br/>
+                <strong>REGLAMENTO INTERNO DE TRABAJO.</strong><br/><br/>
+                El reglamento interno de trabajo tiene por objeto dar a conocer a sus empleados y directivos sus derechos y deberes tanto a nivel interno de la empresa como fuera de ella, los cuales están contemplados en normas de carácter legal, y son de obligatorio cumplimiento.<br/><br/>
+                <strong>El Artículo 49.</strong> Establece las faltas y sanciones disciplinarias establecidas para todo el personal de empleados de la empresa.<br/>
+                <strong>El artículo 50.</strong> Se establecen las justas causas para terminación unilateral del contrato de trabajo.<br/>
+              </div>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                Yo, <strong><%= contratospersona.nombre_completo rescue nil %></strong> con C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong> Manifiesto haber recibido toda la información consignada en este plan y me comprometo a poner en práctica todo lo aprendido con el fin de garantizar mi integridad física siguiendo los estándares de seguridad y garantizando la calidad del servicio que presto.<br/><br/><br/>
+                <table width="50%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td height="50" style="background: #E8E3E3;">
+                      <% if @contratosperfecha.codigo_firma.present? %>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                        * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                      <% else %>
+                        <br/><br/><br/><br/>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    <% elsif portafolio.id == 1 %>
+      <div align="center">
+        <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td>
+              <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+                <thead>
+                <tr>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma;"><div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div></td>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</b></div></td>
+                  <td rowspan="2" style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"> <div align="center"> <b>Versión 8<br/> Fecha Actualización: 10 de junio de 2023</b> </div></td>
+                </tr>
+                <tr>
+                  <td style="border:1px solid #CCCCCC; font-size: 12px; padding: 5px; font-family: Tahoma;"><div align="center"><b>INDUCCIÓN Y/O REINDUCCIÓN</b></div></td>
+                </tr>
+                </thead>
+              </table><br/>
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                <tr>
+                  <td width="40%" style="background: #E8E3E3;"><strong>Razón Social : </strong></td>
+                  <td>&nbsp;<%= portafolio.razon_social rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>NIT : </strong></td>
+                  <td>&nbsp;<%= portafolio.identificacion rescue nil %>-<%= portafolio.digito rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Dirección : </strong></td>
+                  <td>&nbsp;<%= portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Administradora de Riesgos Laborales : </strong></td>
+                  <td>&nbsp;ARL SURA</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Representante Legal : </strong></td>
+                  <td>&nbsp;<%= portafolio.nombre_rep rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Página Web : </strong></td>
+                  <td>&nbsp;http://www.sitio.asearesp.com</td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3;"><strong>Actividad Económica Principal : </strong></td>
+                  <td><div align="justify">Prestar los servicios de aseo, limpieza, desinfección, atención de cafetería, mantenimiento básico a instalaciones, jardinería, piscineros, salvavidas, trabajo de alturas, lavado de fachada, mantenimiento de pisos y tapetes, trabajo de espacios confinados, trabajos administrativos como: secretarias, recepcionistas, auxiliares de biblioteca, profesionales entre otras áreas de conocimiento.</div></td>
+                </tr>
+              </table>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLÍTICA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> es una empresa dedicada al suministro de personal e insumos y maquinaria para labores de aseo, mantenimiento en general y otras necesidades, por lo que, para la alta gerencia y el área de seguridad y salud en el trabajo, el recurso humano constituye nuestra base principal para la prestación de un excelente servicio, es por ello que se establece la presente <strong>Política</strong> como parte de nuestras prioridades para el mejoramiento continuo de nuestro Sistema de Gestión de Seguridad y Salud en el Trabajo SG – SST.<br/><br/>
+                Para la Gerencia y todas las partes interesadas de la empresa es de total interés mantener y cumplir con la <strong>Política de SST</strong> y el logro de los <strong>Objetivos de SST</strong> planteados en el SG SST y es primordial garantizar el bienestar integral del empleado en su lugar de trabajo, mejorando su calidad de vida, generando satisfacción, sentido de pertenencia con la empresa y la empresa cliente, ofreciendo lugares de trabajo seguros y adecuados que minimicen la ocurrencia de accidentes y enfermedades de presunto origen laboral, para bien de la empresa y de los colaboradores.<br/><br/>
+                Nuestros compromisos para el cumplimiento del anterior propósito son:<br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con los requisitos legales en cuanto a seguridad y salud en el trabajo que como empresa nos aplique y aquellos que se deriven de nuestra actividad económica y otros requisitos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la identificación de peligros, la evaluación y valoración de los riesgos de todas las actividades que se desarrollan en función de la empresa, estableciendo los controles necesarios, iniciando por la eliminación de los peligros y continuando con la reducción de los riesgos para la seguridad y salud en el trabajo. Así mismo realizar el seguimiento de los controles garantizando su efectividad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proporcionar a todos nuestros trabajadores condiciones, elementos o herramientas que permitan desarrollar sus actividades de trabajo garantizando su seguridad y su salud con el fin de prevenir lesiones y deterioro de la salud relacionados con los factores de riesgo a los cuales van a estar expuestos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Vincular a todos los trabajadores y partes interesadas para que conozcan, consulten, participen y den cumplimiento a todas las medidas adoptadas y que hacen parte del SG SST, así como informar a través de los canales de comunicación definidos cualquier condición, suceso o anomalía que valla en contra de la Política, Objetivos y Manual del SG SST o cualquier otro requisito definido por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la Mejora Continua del SG SST garantizando la actuación sobre las acciones tomadas para el alcance de los resultados previstos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Establecer medidas, programas o estrategias adecuadas para el control de los riesgos prioritarios identificados para la empresa.</li>
+                </ol>
+                <br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>OBJETIVOS DEL SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                <strong>Objetivo general</strong><br/><br/>
+                Apuntar al cumplimiento de la Política de Seguridad y Salud en el trabajo y al desarrollo acertado de la intervención que garantice la mejora continua el Sistema de Gestión de la Seguridad y Salud en el trabajo SG-SST, logrando prevenir y disminuir la ocurrencia de accidentes y enfermedades laborales a los trabajadores o partes interesadas de la empresa que se vean involucradas en el desarrollo de cualquiera de los procesos de la empresa <strong><%= portafolio.razon_social rescue nil %></strong>.<br/><br/>
+                <strong>Objetivos específicos</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento mediante indicadores al cumplimiento de las normas que le competen a la empresa a través de una Matriz de Requisitos Legales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elaborar, actualizar y hacer seguimiento al control de riesgos a través de una Matriz de identificación, valoración y evaluación de riesgos basada en la metodología de la GTC 45.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar una Matriz de adquisición y entrega de los elementos de protección personal necesarios para cada labor identificada en la empresa y llevar a cabo los programas, procedimientos, estándares, AROS, instructivos y demás establecidos en el SG SST que apunten a garantizar la seguridad y la salud de los trabajadores en sus puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Lograr la participación del 100% de los empleados en todas las actividades planteadas dentro del SG SST como: capacitaciones, charlas, programas de bienestar, atención a las comunicaciones y notificación de accidentes, incidentes laborales o notificación de afectaciones a la salud.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realizar la medición de indicadores definidos en el SG SST con el fin revisar el análisis y eficacia de las medidas tomadas para su reducción y realizar ajustes en las medidas y toma de acciones que garanticen la mejora continua, llevando un control documentado de una Matriz de mejoras para seguimiento al cumplimiento de las acciones tomadas en cualquiera de las etapas del desarrollo del SG SST.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diseñar e implementar programas, procesos o procedimientos para el control de los riesgos prioritarios identificados en la Matriz de valoración y evaluación de riesgos.</li>
+                </ol><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>POLITICA DE ALCOHOL Y DROGAS</strong></div><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> para dar cumplimiento con Ley 9 de 1979 en sus Artículos 84, 85 y 125, Ley 1335 de julio 21 de 2009, Ley 1566 de julio 31 de 2012, Decreto-Ley 1295 de 1994 Cap. 10 Art. 91 inciso b, Resolución 2400 / 79 Cap. III Art. 3 inciso f, Resolución 1075 de marzo 24 de 1992, Resolución 4225 de mayo de 29 de 1992. y consiente de la necesidad de brindar a sus trabajadores y clientes un ambiente de trabajo sano y libre de la farmacodependencia y alcoholismo, que generan efectos contraproducentes a la salud de los trabajadores, al ambiente de trabajo, al desempeño y la productividad de cada uno; se desarrolla esta política institucional para todos los empleados de la empresa <strong><%= portafolio.razon_social rescue nil %></strong><br/><br/>
+                <strong>Las directrices a cumplir dentro de la empresa y en las instalaciones de los puestos de trabajo, son las siguientes:</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe a todos los empleados presentarse al sitio de trabajo, en estado de embriaguez o bajo influencia de sustancias psicoactivas o abuso de medicamentos que alteren su capacidad de reacción física y mental.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíbe el consumo de cigarrillo, uso de vapeador, consumo de alcohol o sustancias psicoactivas en las instalaciones de la empresa o lugar de trabajo asignado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibida la posesión y/o comercialización de drogas psicoactivas, bebidas embriagantes, cigarrillos o vapeadores en los puestos de trabajo asignados por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">El personal debe participar en los programas de sensibilización y capacitación de la política de no alcohol, drogas y cigarrillo o vapeador.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los empleados facilitaran la realización de las pruebas necesarias para establecer indicios de abuso de drogas y/o alcohol, en cualquier momento durante el desarrollo de su contrato.</li>
+                </ul><br/>
+                Igualmente se prohíbe el uso de cualquier sustancia que pueda atentar contra la seguridad de cada individuo o compañeros e interrumpir el normal desempeño laboral.<br/><br/>
+                Con el desacato persistente a alguna de estas normas nos veremos en el deber de realizar llamado de atención o dar por terminada la relación laboral.<br/>
+                <br/><br/>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><strong><%= @nombre_firma rescue nil %></strong><br/>
+                Representante Legal<br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>ROLES Y RESPONSABILIDADES CON EL ÁREA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong></div><br/>
+                Como nuevo integrante de la empresa usted debe:<br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>COLABORADORES O TRABAJADORES EN GENERAL</strong></div><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y velar por el cumplimiento de los Programas, Procedimientos, Instructivos, Protocolos y Estándares de seguridad elaborados por el área de seguridad y salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer y tener clara la Política, Objetivos, roles y responsabilidades de SST; así mismo dar cumplimiento a estos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participar en la elaboración del diagnóstico del riesgo e informar cualquier condición que genere peligro en los puestos de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asistir a las capacitaciones, brigadas de salud y demás actividades programadas por el área de seguridad y salud en el trabajo para la prevención de accidentes y enfermedades laborales</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la normatividad vigente en materia de Seguridad y Salud en el trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los elementos de protección personas durante la labor y de forma correcta</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con la Política de alcohol y drogas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con el Protocolo de Bioseguridad para la prevención de Riesgo Biológico</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar cualquier cambio o condición que afecte su salud</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Procurar el cuidado integral de su salud y autocuidado en el lugar de trabajo, realizando las actividades de forma segura con el fin de evitar la materialización de un accidente o enfermedad laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Velar por el cuidado de las demás personas, estando atentos a las condiciones de riesgo e informando a tiempo, así mismo no poner en riesgo la integridad misma o la de otras personas</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No realizar trabajos de alturas, en caso de no cumplir con todos los requisitos establecidos en la Resolución 4272 de 2021 y con el programa de protección contra caídas establecido por la empresa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar inmediatamente todos los accidentes e incidentes que ocurren en el lugar de trabajo</li>
+                </ol><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL.</strong></div><br/>
+                Establece los riesgos existentes de nuestras actividades y destaca la obligación que tenemos todos los empleados de participar en las capacitaciones y orientaciones que se desarrollen como medidas preventivas.<br/><br/>
+                La empresa se compromete a dar cumplimiento a las disposiciones legales vigentes, tendientes a garantizar los mecanismos que aseguren una oportuna y adecuada prevención de los accidentes de trabajo y enfermedades laborales, de conformidad con lo establecido en la normatividad vigente.<br/><br/>
+                Nombre de la ARL a la que está afiliada la empresa: <strong>ARL SURA</strong><br/>
+                Clase o tipo de riesgo asignado por la ARL: <strong>1, 2, 3, 4 Y 5</strong><br/><br/>
+                <H1 class=SaltoDePagina>&nbsp;</H1>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>RIESGOS A LOS CUALES ESTA EXPUESTO EL TRABAJADOR</strong></div><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Riesgo Identificado</strong></td>
+                    <td width="50%" style="background: #E8E3E3;"><strong>Actividades</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Biológico:</strong><br/>Por exposición o contacto con macroorganismos (picaduras, mordeduras), microorganismos (incluido Covid-19 y sus variantes), contacto con fluidos o excrementos.</td>
+                    <td>Transmisión a través de objetos o material contaminado.<br/>Todos los cargos que realizan actividades de aseo, limpieza y desinfección.<br/>
+                      Todos los cargos que realizan mantenimiento y sostenimiento de instalaciones locativas.<br/>Todo el personal que realiza atención al público.<br/>Todo el personal que realiza recolección de residuos.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Físico:</strong><br/>Exposición a ruido, exceso o deficiencia de iluminación, vibración, temperaturas extremas, radiaciones ionizantes.</td>
+                    <td>Todos los cargos que manipulan maquinas o herramientas que generan ruido y/o vibración.<br/>Todos los que manipulan greca o bebidas calientes.<br/>Todos los trabajadores expuestos al sol.<br/>Personal Administrativo</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Riesgo Químico:</strong><br/>Exposición a gases y vapores, líquidos (nieblas y rocíos), humos metálicos y cualquier agente químico. </td>
+                    <td>Todos los cargos que manipulan sustancias químicas (para aseo, para mantenimiento).<br/>
+                      Todas las personas que manipulan sustancias para fumigación.<br/>
+                      Personal que realiza soldadura.</td>
+                  <tr>
+                    <td><strong>Riesgo Biomecánico:</strong><br/>Por movimientos repetitivos, manipulación de cargas, sobreesfuerzo o posturas forzadas o prolongadas.</td>
+                    <td>Todos los cargos vinculados a la empresa sin importar su lugar de trabajo.</td>
+                  <tr>
+                    <td><strong>Condiciones de Seguridad:</strong><br/>Mecánico (elementos de máquinas, herramientas, piezas a trabajar, materiales proyectados sólidos o fluidos), eléctrico (alta y baja tensión, estática), accidentes de tránsito, Trabajo en alturas, trabajos en espacios confinados, tecnológico (explosión, fuga, derrame, incendio), Locativo (almacenamiento, superficies de trabajo (irregularidades, deslizantes, con diferencia del nivel) condiciones de orden y aseo, caídas de objeto).</td>
+                    <td>Todos los operarios que realicen trabajo de alturas, trabajos en espacios confinados, personal eléctrico.<br/>A las condiciones de seguridad a nivel locativo: Están expuestos todo el personal que se contrato para la empresa sin diferenciar cargo.</td>
+                  <tr>
+                    <td><strong>Riesgo Mecánico:</strong><br/>Manejo de maquinas y herramientas, proyección de partículas, superficies o herramientas cortantes o punzantes, objetos salientes que ruedan o caen, superficies calientes.</td>
+                    <td>Todos los cargos de la empresa <%= portafolio.razon_social rescue nil %> se pueden ver expuestos a este tipo de riesgo.</td>
+                  <tr>
+                    <td><strong>Riesgo Psicosocial:</strong><br/>Condiciones de la tarea (carga mental, contenido de la tarea, demandas emocionales, sistemas de control, definición de roles, monotonía, etc)</td>
+                    <td>Todos los cargos de la empresa <%= portafolio.razon_social rescue nil %> se pueden ver expuestos a este tipo de riesgo.</td>
+                  </tr>
+                </table>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>DEFINICIONES IMPORTANTES</strong></div><br/>
+                <strong>ACTO O COMPORTAMIENTO INSEGURO</strong><br/><br/>
+                Se refieren a todas la acciones y decisiones humanas, que pueden causar una situación insegura o incidente, con consecuencias para el trabajador, la producción, el medio ambiente y otras personas. También el comportamiento inseguro incluye la falta de acciones para informar o corregir condiciones inseguras.<br/><br/>
+                <strong>CONDICIÓN INSEGURA</strong><br/><br/>
+                Es todo elemento de los equipos, la materia prima, las herramientas, las máquinas, las instalaciones o el medio ambiente que se convierte en un peligro para las personas, los bienes, la operación y el medio ambiente y que bajo determinadas condiciones puede generar un incidente.<br/><br/>
+                <strong>ACCIDENTE DE TRABAJO: (Decreto 1562 de 2012 - Art. 3).</strong><br/><br/>
+                Es todo suceso repentino que sobrevenga por causa o con ocasión del trabajo, y que produzca en el trabajador una lesión orgánica, una perturbación funcional o psiquiátrica, una invalidez o la muerte.<br/><br/>
+                Es también accidente de trabajo aquel que se produce durante la ejecución de órdenes del empleador, o contratante durante la ejecución de una labor bajo su autoridad, aún fuera del lugar y horas de trabajo.<br/><br/>
+                Igualmente se considera accidente de trabajo el que se produzca durante el traslado de los trabajadores o contratistas desde su residencia a los lugares de trabajo o viceversa, cuando el transporte lo suministre el empleador.<br/><br/>
+                También se considerará como accidente de trabajo el ocurrido durante el ejercicio de la función sindical, aunque el trabajador se encuentre en permiso sindical siempre que el accidente se produzca en cumplimiento de dicha función.<br/><br/>
+                De igual forma se considera accidente de trabajo el que se produzca por la ejecución de actividades recreativas, deportivas o culturales, cuando se actúe por cuenta o en representación del empleador o de la empresa usuaria cuando se trate de trabajadores de empresas de servidos temporales que se encuentren en misión.<br/><br/>
+                <strong>INCIDENTE DE TRABAJO.</strong><br/><br/>
+                Suceso acaecido en el curso del trabajo o en relación con éste, que tuvo el potencial de ser un accidente, en el que hubo personas involucradas sin que sufrieran lesiones corporales o se presentaran daños a la propiedad y/o pérdida en los procesos.<br/><br/>
+                <strong>EN CASO DE ACCIDENTE DE TRABAJO</strong><br/><br/>
+                La ARL en la que se encuentra afiliada la empresa es <strong>ARL SURA</strong><br/><br/>
+                Cualquier accidente, incidente o novedad debe ser informado inmediatamente a su jefe inmediato o a la empresa.<br/><br/><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>PROCEDIMIENTO REPORTE DE ACCIDENTE O INCIDENTE DE TRABAJO</strong></div><br/>
+                <strong>Trabajadores:</strong><br/><br/>
+                <ol id="1">
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de todo el personal perteneciente a la organización reportar al jefe y de forma inmediata todos los accidentes o incidentes con y sin lesión ocurridos dentro y fuera de la organización que tengan relación directa o indirecta con la labor para la que fue contratado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sufrir algún evento, deberá participar en la investigación del mismo bien sea como persona afectada o como testigo de algún evento. Esta participación se hará siempre y cuando no se encuentre incapacitado o limitado para participar de manera telefónica o presencial.</li>
+                </ol><br/>
+                <strong>Supervisores:</strong><br/><br/>
+                Realizar la llamada a la línea de ARL SURA para realizar el reporte telefónicamente y direccionar al empleado al centro médico más cercano.<br/><br/>
+                <div align="center">
+                  <table width="70%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 15px; font-family: Tahoma;">
+                    <tr>
+                      <td width="25%" style="background: #E8E3E3;"><div align="center"><strong>Medellín</strong></div></td>
+                      <td width="25%" style="background: #E8E3E3;"><div align="center"><strong>Bogotá</strong></div></td>
+                      <td width="25%" style="background: #E8E3E3;"><div align="center"><strong>Cali</strong></div></td>
+                      <td width="25%" style="background: #E8E3E3;"><div align="center"><strong>Pereira</strong></div></td>
+                    </tr>
+                    <tr>
+                      <td><div align="center"><strong>604 4444578</strong></div></td>
+                      <td><div align="center"><strong>601 4055911</strong></div></td>
+                      <td><div align="center"><strong>602 3808938</strong></div></td>
+                      <td><div align="center"><strong>606 3138400</strong></div></td>
+                    </tr>
+                    <tr>
+                      <td style="background: #E8E3E3;"><div align="center"><strong>Manizales</strong></div></td>
+                      <td style="background: #E8E3E3;"><div align="center"><strong>Bucaramanga</strong></div></td>
+                      <td style="background: #E8E3E3;"><div align="center"><strong>Cartagena</strong></div></td>
+                      <td style="background: #E8E3E3;"><div align="center"><strong>Barranquilla</strong></div></td>
+                    </tr>
+                    <tr>
+                      <td><div align="center"><strong>606 8811280</strong></div></td>
+                      <td><div align="center"><strong>607 6917938</strong></div></td>
+                      <td><div align="center"><strong>605 6424938</strong></div></td>
+                      <td><div align="center"><strong>605 3197938</strong></div></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="background: #E8E3E3;"><div align="center"><strong>Linea Gratuita</strong></div></td>
+                      <td colspan="2" ><div align="center"><strong>1800 1414 ó 01800 094 1414</strong></div></td>
+                    </tr>
+                  </table>
+                </div><br/><br/>
+                <strong>ENFERMEDAD LABORAL. (Decreto 1562 de 2012 - Art. 4).</strong><br/><br/>
+                Es enfermedad laboral la contraída como resultado de la exposición a factores de riesgo inherentes a la actividad laboral o del medio en el que el trabajador se ha visto obligado a trabajar. El Gobierno Nacional, determinará, en forma periódica, las enfermedades que se consideran como laborales y en los casos en que una enfermedad no figure en la tabla de enfermedades laborales, pero se demuestre· la relación de causalidad con los factores de riesgo ocupacionales será reconocida como enfermedad laboral, conforme lo establecido en las normas legales vigentes.<br/><br/>
+                <strong>PROCEDIMIENTO REPORTE DE ENFERMEDAD LABORAL</strong><br/><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 15px; font-family: Tahoma;">
+                  <tr>
+                    <td width="80%" style="background: #E8E3E3;"><div align="center"><strong>DESCRIPCIÓN</strong></div></td>
+                    <td width="20%" style="background: #E8E3E3;"><div align="center"><strong>RESPONSABLE</strong></div></td>
+                  </tr>
+                  <tr>
+                    <td>Si el trabajador considera que presenta una enfermedad laboral, debe dirigirse al centro médico adscripto en su EPS, e iniciar un proceso, cuando el médico general lo considere necesario remitirá el caso al médico laboral de la EPS para que emita un concepto con la presunta enfermedad laboral. </td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Informar a Seguridad y Salud en el Trabajo, si el concepto médico de la EPS denota la sospecha o aparición de una enfermedad laboral.</td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Gestionar los trámites de calificación del origen de la enfermedad en primera oportunidad ante la EPS. </td>
+                    <td><div align="center">Trabajador</div></td>
+                  </tr>
+                  <tr>
+                    <td>El FUREL se debe diligenciar cuando la EPS, ARL o AFP lo soliciten para calificar en primero oportunidad el origen de la enfermedad. </td>
+                    <td><div align="center">Empleador</div></td>
+                  </tr>
+                  <tr>
+                    <td>Realizar el proceso de calificación del origen de la enfermedad en primera instancia.</td>
+                    <td><div align="center">EPS</div></td>
+                  </tr>
+                  <tr>
+                    <td>Revisar y emitir concepto de aceptación o no aceptación del origen de la enfermedad en estudio:<br/>
+                      No hay controversia sobre la calificación, la ARL procede al reconocimiento y pago de prestaciones asistenciales y económicas a que tenga derecho el trabajador y le envía las recomendaciones al empleador sobre el manejo en su puesto de trabajo (reubicación, readaptación de tareas, o rediseños al puesto de trabajo).<br/>
+                      Si surge controversia o el funcionario no está de acuerdo, las discrepancias serán resueltas por una junta integrada por representantes de las entidades administradoras de salud y de riesgos profesionales.<br/>
+                      De persistir el desacuerdo se inicia el proceso de calificación por parte de las Juntas de Calificación de Invalidez</td>
+                    <td><div align="center">EPS – ARL – Juntas de Calificaciones.</div></td>
+                  </tr>
+                  <tr>
+                    <td>Investigación de enfermedad laboral </td>
+                    <td><div align="center">Equipo investigador</div></td>
+                  </tr>
+                  <tr>
+                    <td>La empresa de acuerdo al origen de la enfermedad realiza su registro.<br/>
+                      Si la enfermedad es de origen común se archiva en la hoja de vida del trabajador y se vincula al programa de vigilancia epidemiológico que corresponda.<br/>
+                      Si es de origen laboral, se realiza el ingreso del caso a la carpeta de seguimiento recomendaciones médicas y al programa de vigilancia epidemiológico que corresponda</td>
+                    <td><div align="center">Seguridad y Salud en el Trabajo.</div></td>
+                  </tr>
+                </table><br/>
+                <strong>El Coronavirus COVID- 19 como ENFERMEDAD LABORAL DIRECTA,</strong> respecto de los trabajadores del sector salud, incluyendo al personal administrativo, de aseo, vigilancia y de apoyo que preste servicios en las diferentes actividades de prevención, diagnóstico y atención de esta enfermedad. Las entidades Administradoras de Riesgos Laborales -ARL, desde el momento en que se confirme el diagnóstico del Coronavirus COVID-19, deben reconocer todas las prestaciones asistenciales y económicas derivadas de la incapacidad de origen laboral por esa enfermedad, sin que se requiera la determinación de origen laboral en primera oportunidad o el dictamen de las juntas de calificación de invalidez<br/><br/>
+                Sí un trabajador de la salud presenta síntomas respiratorios y el resultado de la prueba de COVID 19 es positiva, se debe reportar como una enfermedad laboral, a través del diligenciamiento del Formato Único de Reporte de Enfermedad Laboral, por parte del empleador o contratante.<br/><br/>
+                <strong>Si tiene sospecha o ya tiene un diagnostico de Covid-19 debe informarlo inmediatamente al área de seguridad y salud en el trabajo por cualquiera de los siguientes medios: Teléfonos 3222278, 3207528100 o al correo coordinacionsst@asearesp.com.</strong><br/><br/>
+                <strong>ESTANDAR DE SEGURIDAD GENERAL EN EL LUGAR DE TRABAJO</strong><br/><br/>
+                <strong><%= portafolio.razon_social rescue nil %></strong> hace la invitación a sus empleados, como parte de la estrategia de prevención y minimización de lesiones o accidentes laborales a tener en cuenta las siguientes normas de seguridad.<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Trabaje de forma segura, si observa algún riesgo repórtelo a su supervisor o jefe directo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilice el equipo de protección personal asignado según la actividad que realiza (guantes, gafas de seguridad, protección respiratoria, protección auditiva, entre otros).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se prohíben las bromas y juegos, que puedan provocar accidentes dentro de las instituciones de trabajo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Comunique de inmediato cualquier dolencia o problemas a su salud a su supervisor o jefe directo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reporte todo incidente y accidente para de esta forma tomar las medidas correctivas necesarias que eviten situaciones inseguras en el futuro</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manténgase a la defensiva cuando se encuentre expuesto a una atmosfera peligrosa.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cuando use herramientas manuales corto punzantes o con filo realice la actividad de manera pausada y no pierda la concentración.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Proteja su salud en todo momento adopte posturas seguras para realizar sus tareas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No salte de lugares altos.</li>
+                </ul><br/>
+                <strong>ELEMENTOS DE PROTECCIÓN PERSONAL</strong><br/><br/>
+                Los Elementos de Protección Personal tienen como función principal proteger diferentes partes del cuerpo, para evitar que un trabajador tenga contacto directo con factores de riesgo que le pueden ocasionar una lesión o enfermedad, no evitan el accidente o el contacto con elementos agresivos, pero ayudan a que la lesión sea menos grave.<br/><br/>
+                <strong>Es responsabilidad del empleador:</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Suministrar los equipos y elementos de protección personal certificados, adecuados según la naturaleza del riesgo, la exigencia de sus trabajadores, su uso y la matriz de EPP (Elementos de Protección Personal), de modo tal que reúnan las condiciones de seguridad y eficiencia para el usuario.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Capacitar en el uso y cuidado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Inspeccionar periódicamente el uso y estado de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reponer inmediatamente los elementos y equipos de protección personal cuando estos se deterioren por su uso, o pérdida de los mismos.</li>
+                </ul><br/>
+                <strong>Es responsabilidad de los trabajadores:</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Es responsabilidad de cada trabajador, cuidar sus Elementos de Protección Personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar adecuadamente, con carácter obligatorio, los equipos y elementos de protección personal asignados, por compromiso con su propia seguridad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al jefe Inmediato y/o personal de SST la falta o deterioro de los elementos y equipos de protección personal.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No iniciar labores si no dispone de los elementos o equipos de protección personal requeridos según la naturaleza del riesgo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar el no uso o uso inadecuado de los elementos y equipos de protección personal por parte de sus compañeros o personal a cargo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Todos los trabajadores que laboren con la empresa ASEAR S.A ESP, está comprometido a preservar su salud física y mental y la de sus compañeros, promoviendo las conductas de autocuidado y el uso adecuado de los Elementos de Protección Personal (EPP).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Bajo ninguna circunstancia, los trabajadores podrán desempeñar sus actividades sin el uso de EPP.</li>
+                </ul><br/>
+                <strong>TRABAJO DE ALTURAS.</strong><br/><br/>
+                Es toda actividad que realiza un trabajador que ocasione la suspensión y/o desplazamiento, en el que se vea expuesto a un riesgo de caída, mayor a 2.0 metros, con relación del plano de los pies del trabajador al plano horizontal inferior más cercano a él.<br/><br/>
+                Se prohíbe a los empleados de <strong><%= portafolio.razon_social rescue nil %></strong>, realizar cualquier tipo de trabajo que implique actividades de alturas o por encima de 2.0 metros sobre un nivel inferior, a menos de que haya sido contratado para este cargo y que cumpla con todos los requerimientos de ley establecidos en la resolución 4272 de 2021 para trabajo seguro en alturas y con el programa de protección contra caídas de la empresa.<br/><br/>
+                <strong>PLAN DE EMERGENCIAS DEL CONTRATO:</strong><br/><br/>
+                La gestión del riesgo incorpora la preparación atención y recuperación de las emergencias, que tiene como uno de los propósitos primordiales la implementación de las medidas preventivas, de atención oportuna y respuesta ante incidentes y accidentes que comprometen la seguridad del personal.<br/><br/>
+                Se debe preguntar en cada una de las instituciones o centros de trabajo cual es el plan de emergencia e identificar rutas de evacuación, punto de encuentro y coordinador o responsable del plan de emergencias.<br/><br/>
+                Sin embargo, ante una emergencia usted debe:<br/><br/>
+                <strong>Antes</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conozca y apoye el trabajo del Plan de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique la señalización para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Realice un recorrido por la empresa y reconozca personalmente las rutas y sitios para evacuación, además recuérdeselo a otros compañeros y visitantes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Elimine obstáculos en puertas y rutas de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asegúrese de conocer el sistema de alarma.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siga las instrucciones del Plan de Evacuación en caso de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Participe en los simulacros de evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Identifique las personas de su área que tengan dificultades de movilidad, o que en caso de emergencias hayan tenido comportamientos fuera de lo normal, aprenda cómo deben ser ayudadas.</li>
+                </ul><br/>
+                <strong>Durante</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">No pierda tiempo, interrumpa sus labores inmediatamente y siga las instrucciones de los Líderes de Evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconecte enchufes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga libre la línea telefónica y similares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No corra, camine con paso rápido y por la derecha.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga la calma y no fomente situaciones alarmistas.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Emprenda la evacuación hacia el sitio especificado, con rapidez, sin gritos ni aglomeraciones, no se regrese por ningún motivo.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente llevar consigo los objetos personales.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intente recuperar ningún objeto que se caiga.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Promueva la ayuda mutua (controlar reacciones nerviosas).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No vuelva a entrar en el área después de evacuada.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga el orden y la tranquilidad en las áreas de seguridad, si el evento es por terrorismo no use lo teléfonos móviles – celulares.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conserve la calma y siga las rutas establecidas para evacuar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a salir a las personas que tienen limitaciones físicas o dificultades para desplazarse.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de humo salga gateando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de sismo ubíquese en un área segura, utilice la posición de seguridad y cuando pase el movimiento si se da la orden de evacuación salga al sitio determinado como de encuentro final</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Diríjase al punto de reunión indicado con base en las instrucciones impartidas y espere allí.</li>
+                </ul><br/>
+                <strong>Después</strong><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el sitio den encuentro repórtese con el coordinador o líder de evacuación asignado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Ayude a informar sobre otras personas que no estén presentes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No se retire del lugar seguro hasta no recibir la orden por parte de los coordinadores o líder de la evacuación.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Una vez el Comité de Emergencias, haya dado la orden para volver nuevamente a la edificación o área evacuada, apoye el ingreso organizado.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si por algún caso no se puede regresar a la edificación o área evacuada, conserve la calma y espere que le den indicaciones.</li>
+                </ul><br/>
+                <strong>MANEJO Y USOS EFICIENTE DE LOS RECUSROS NATURALES</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Manejo adecuado de los residuos sólidos, prácticas de separar, reutilizar y aprovechar los residuos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Desconectar todos los equipos eléctricos y electrónicos que no se estén utilizando.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Apagar las luces que se encuentren encendidas en oficinas, aulas y demás lugares donde no haya personas y que esta no sea requerida.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar los equipos que tengan la opción en modo de ahorro de energía.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar en la medida de lo posible balde con agua en vez de la manguera.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En caso de utilizar la manguera que esta tenga pistola de presión para controlar la salida del agua.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No dejar las llaves o canillas abiertas mientras realizamos otras actividades como enjabonar o estregar, cerrar la llave cuando no necesitemos el agua para enjuagar o lavar.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar productos de fácil biodegradabilidad o que contengan concentraciones que no afecten el medio ambiente</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar iluminación natural en los espacios que sea posible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar luminarias ahorradoras.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Examinar las llaves de agua, cañerías y tuberías de los exteriores por si tienen fugas. Gota a gota el agua se agota.</li>
+                </ul><br/>
+                <strong>MANEJO ADECUADO DE LAS SUSTANCIAS QUIMICAS</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer el punto donde se almacenan las hojas de seguridad de los productos químicos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes de usar un producto químico verificar bien cuáles son los riesgos que tiene partiendo de la lectura del pictograma de peligrosidad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Usar los Elementos de Protección Personal según lo definido en la hoja de seguridad</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Garantizar que los recipientes de los productos siempre estén rotulados CORRECTAMENTE Y DE MANERA LEGIBLE.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Separar los productos químicos de manera adecuada según la matriz de almacenamiento de sustancias químicas.</li>
+                </ul><br/>
+                <strong>PRESENTACIÓN PERSONAL</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">El uso del uniforme es de obligatorio cumplimiento</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siempre se debe portar el uniforme limpio, completo y planchado, Usar maquillaje discreto, zapatos lustrados, los accesorios y medias deben ser acordes con el uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los hombres deberán conservar un afeitado y motilado adecuado, además llevarán la camisa por dentro de la pretina del pantalón, los zapatos lustrados, usar correa negra.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Portar siempre el carné y usarlo en un lugar visible.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En el lugar de trabajo durante la realización de la labor está prohibido el uso de anillos, reloj, pulseras, cadenas y piercing. Debe de usar aretes sobrios y pequeños acordes con su uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga el cabello recogido y aseado con chulos, moños y/o hebillas de color acorde al uniforme.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Mantenga sus uñas limpias y cortas, si usa esmalte que sea en colores claros.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No consuma chicle durante la jornada laboral, resulta de muy mala educación, sobre todo en el ámbito laboral.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Estar en buenas condiciones de higiene para lo cual es importante el cambio diario del uniforme, uso de desodorante y una buena higiene bucal. No uso de lociones fuertes.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Está prohibido el uso de calzado diferente al asignado por la empresa, en caso de necesitar otro tipo de calzado comunicarse con su jefe inmediato quién le dará la asesoría.</li>
+                </ul><br/>
+                <strong>RELACIONES DE TRABAJO, PERMISOS, FALTAS Y SANCIONES.</strong><br/><br/>
+                Recuerde que siempre debe reportar a su supervisor o jefe inmediato todas las novedades concernientes a usted, tales como permisos, situaciones de salud, diligencias personales que interfieran o que se crucen con el desarrollo de sus actividades en el puesto de trabajo, esto lo debe realizar con anticipación, si son citas médicas, diligencias o permisos personales, mínimo con tres días de anticipación, con la salvedad de que sea en caso de fuerza mayor podrán ser el mismo día.<br/><br/>
+                <strong>REGLAMENTO INTERNO DE TRABAJO.</strong><br/><br/>
+                El reglamento interno de trabajo tiene por objeto dar a conocer a sus empleados y directivos sus derechos y deberes tanto a nivel interno de la empresa como fuera de ella, los cuales están contemplados en normas de carácter legal, y son de obligatorio cumplimiento.<br/><br/>
+                El presente reglamento esta publicado en la página web de la empresa http://www.sitio.asearesp.com y se encuentra exhibido en cartelera en las oficinas de <strong><%= portafolio.razon_social rescue nil %></strong><br/><br/>
+              </div><br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>PREVENCIÓN DE EXPOSICIÓN A RIESGO BIOLOGICO (Resolución 2468 de 2022)<br/>PROTOCOLOS DE BIOSEGURIDAD</strong></div><br/>
+                Todos los trabajadores de la empresa deberán cumplir con las medidas de prevención adoptadas en los centros de trabajo o por la empresa propia.<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Asistir a las capacitaciones realizadas por el empleador, contratante o la ARL</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Poner en practica las técnicas de higiene, hábitos saludables y lavado de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizar los elementos de protección personal y responder por el uso adecuado de dichos elementos.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cuidar su salud (autocuidado) y suministrar información clara, veraz y completa de su estado de salud.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Conocer el Plan de Gestión Integral de Residuos de la empresa en la cual desempeña su labor.</li>
+                </ul><br/>
+                Recomendaciones estándar:<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Higiene de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Adecuada manipulación de elementos cortopunzantes</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Limpieza, desinfección e higiene</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Uso de elementos de protección personal</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Adecuado Manejo de residuos y disposición final de elementos cortopunzantes.</li>
+                </ul><br/>
+                Lavado de Manos:<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes y después de consumir los alimentos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Antes y después de utilizar el baño</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de sonarse la nariz, toser o estornudar</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de haber tocado animales o alimento para animales o excrementos de animales</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Después de haber manipulado o tocado bolsa con residuos</li>
+                </ul><br/>
+                Tener en cuenta:<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">El uso de guantes no sustituye el lavado de manos</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Se recomienda tener un adecuado cuidado de la piel para aumentar la eficacia de la fricción y el lavado de manos.</li>
+                </ul><br/>
+                <div align="center">
+                  <%= image_tag 'https://appasearesp.com/assets/lavadomanos-f22cf9f649e6f3180cd5ab0c75a19a16a8f32afda57d9bc1fa21e269d04e9bc5.png', size: "600x600" %>
+                </div><br/><br/>
+                <strong>Recomendaciones Generales para Riesgo Biologico:</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al supervisor de ASEAR o al área de seguridad y salud en el trabajo cualquier caso de contagio que se llegase a presentar en el lugar de trabajo o su familia, para que se adopten las medidas correspondientes</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Reportar al supervisor de ASEAR o al área de SST cualquier situación de riesgo en el lugar de trabajo que ponga en riesgo el cumplimiento de los protocolos de Bioseguridad.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Depositar adecuadamente en el guardían las agujas o elementos cortopunzantes utilizados para su disposición final</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Los trabajadores que utilicen objetos cortantes o punzantes no desechables deben depositarlos personalmente en el lugar asignado (recipiente adecuado).</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar dejar objetos cortantes o punzantes abandonados sobre una superficie o en el suelo, ya que existe riesgo de que otras persoas se puedan accidentar.</li>
+                </ul><br/>
+                <strong>Si usted sufre un pinchazo con aguja, realice inmediatamente las siguientes acciones:</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Enjuage la herida con agua y jabón</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informe inmediatamente al supervisor de ASEAR o al Área de SST</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Siga las instrucciones dadas para atención de accidente de trabajo por riesgo biologico.</li>
+                </ul><br/>
+                <strong>Para un correcto uso y durabilidad del elemento de protección usted debe:</strong><br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Utilizarlos exclusivamente en las actividades para las que se han establecido</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar su contaminación en otras áreas y superficies o que contaminen otros lugares</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No intercambiarse o compartir los elementos de protección personal con los compañeros de trabajo o cualquier otra persona</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Deben mantenerse limpios y adecuadamente almacenados en un área especifica donde se garantice ventilación e iluminación, libres de polvo o contaminantes que puedan afectar su vida util o la garantía de protección.</li>
+                </ul><br/>
+                <div align="center" style="font-size: 15px; font-family: Tahoma;"><strong>COVID-19</strong></div><br/>
+                <strong>Contacto Estrecho:</strong> Contracto entre personas en un espacio de 2 mestros o menos de distancia, en una habitación o en el área de atención de un caso de COVID-19 confirmado o probable, durante un tiempo mayor a 15 minutos, o contacto directo con secreciones de un caso probable o confirmado mientras el paciente es condiserado infeccioso.<br/><br/>
+                Generalidades que se deben de cumplir:<br/><br/>
+                <ul>
+                  <li style="font-size: 15px; font-family: Tahoma;">Informar al supervisor o área de SST cualquier novedad relacionada con caso de Covid-19.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con las medidas de seguridad de uso de los elementos de protección personal</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Cumplir con las tecnicas de lavado de manos tal como se indica anteriormente</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Importante que para una mayor protección tenga su esquema de vacunación completo contra Covid-19.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si es un lugar donde ya no requiere la exigencia del uso de tapabocas, este debe usarse en caso de tener sintomas de gripa o sintomas asociados.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Si va a toser o estornudar, hágalo en el pliegue anterior del codo o utilice pañuelos y éstos debe desecharlos inmediatamente. Evitar taparse la boca con las manos en ese instante.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">Evitar recibir y compartir los alimentos y utensilios.</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">No llegar al lugar de trabajo con el uniforme, deberá llevarlo para cambiarse en dicho lugar</li>
+                  <li style="font-size: 15px; font-family: Tahoma;">En las instalaciones donde sea de uso obligatorio el tapabocas deberá usarlo de forma correcta</li>
+                </ul><br/>
+                <strong>USO DEL TAPABOCAS</strong><br/><br/>
+                El uso de tapabocas es una medida complementaria y debe ser acompañada del lavado de manos, el aislamiento y el distanciamiento social para evitar el contagio<br/>
+                <div align="center">
+                  <%= image_tag 'https://appasearesp.com/assets/usotapabocas-482755fe7184cd00774355736110506c63aabc9f1bdd236a81056a77ec9b3eae.png', size: "400x400" %>
+                </div>
+              </div>
+              <br/>
+              <div align="justify" style="font-size: 15px; font-family: Tahoma; margin-top: 10px;">
+                Yo, <strong><%= contratospersona.nombre_completo rescue nil %></strong> con C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong> Manifiesto haber recibido toda la información consignada en este plan y me comprometo a poner en práctica todo lo aprendido con el fin de garantizar mi integridad física siguiendo los estándares de seguridad y garantizando la calidad del servicio que presto.<br/><br/><br/>
+                <table width="50%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+                  <tr>
+                    <td height="50" style="background: #E8E3E3;">
+                      <% if @contratosperfecha.codigo_firma.present? %>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                        * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                      <% else %>
+                        <br/><br/><br/><br/>
+                        <%= contratospersona.nombre_completo rescue nil %><br/>
+                        <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+                        <b>CARGO:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    <% end %>
+    <H1 class=SaltoDePagina>&nbsp;</H1>
+<% end %>

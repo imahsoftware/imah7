@@ -1,0 +1,22 @@
+<tr>
+  <td></td>
+  <td class="text-left" style="font-size:11px;">
+    <div id="abrir_salud<%= c.contrato_id %><%= "SAL_#{p}" %>" class="pull-left">
+      <%= link_to show_detalle_salud_menus_path(contrato_id: c.contrato_id, estado: "SAL_#{p}", ruta: 'ABRIR', val_salud: p), remote: true do %>
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%= Contrato.find(c.contrato_id).empresa.identnombre rescue nil %>
+      <% end %>
+    </div>
+    <div id="cerrar_salud<%= c.contrato_id %><%= "SAL_#{p}" %>" class="pull-left hide">
+      <%= link_to show_detalle_salud_menus_path(contrato_id: c.contrato_id, estado: "SAL_#{p}", ruta: 'CERRAR', val_salud: p), remote: true do %>
+        <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%= Contrato.find(c.contrato_id).empresa.identnombre rescue nil %>
+      <% end %>
+    </div>
+  </td>
+</tr>
+<tr id="tr_show_salud<%= c.contrato_id %><%= "SAL_#{p}" %>" class="hidden">
+  <td colspan="2">
+    <div id="abrir_detalle_salud<%= c.contrato_id %><%= "SAL_#{p}" %>"></div>
+  </td>
+</tr>

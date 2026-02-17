@@ -1,0 +1,19 @@
+<div class="alert alert-info" align="justify"><h4><i class="icon fa fa-info"></i> Felicitaciones </h4>
+  MUCHAS GRACIAS <strong><%=@antecedente.nombre.upcase rescue nil%></strong>, tu registro ha sido exitoso.<br/><br/>
+  <strong>Recuerda que el usuario y la contraseña para ingresar a la Autoevaluación diaria es tu número de Identificación.</strong>
+</div>
+
+<div class="alert alert-warning" align="justify">
+  <div class="row">
+    <div class="col-md-6 hidden-xs hidden-sm" align="left"><h4>Para iniciar sesión, ingresa al siguinte link</h4></div>
+    <div class="col-md-6 hidden-lg hidden-md" align="center"><h4>Para iniciar sesión, ingresa al siguinte link</h4></div>
+    <div class="col-md-6 hidden-lg hidden-md" align="center">
+      <%= link_to "Para ingresar al sistema y realizar la Autoevaluación pulsa<br/> AQUI".html_safe, root_path, class: "btn btn-sm btn-warning" %>
+    </div>
+    <div class="col-md-6 hidden-xs hidden-sm" align="right">
+      <%= link_to "Para ingresar al sistema y realizar la Autoevaluación pulsa<br/> AQUI".html_safe, root_path, class: "btn btn-sm btn-warning" %>
+    </div>
+  </div>
+</div>
+
+

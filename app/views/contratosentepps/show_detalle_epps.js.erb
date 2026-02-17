@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_epps<%= @fechaparams %>").html('<%= j render "contratosentepps/abrir_detalle_epps" %>');
+$("#abrir_epps<%= @fechaparams %>").addClass("hide");
+$("#cerrar_epps<%= @fechaparams %>").removeClass("hide");
+$("#tr_show_epps<%= @fechaparams %>").removeClass("hidden");
+<% else %>
+$("#abrir_epps<%= @fechaparams %>").removeClass("hide");
+$("#cerrar_epps<%= @fechaparams %>").addClass("hide");
+$("#abrir_detalle_epps<%= @fechaparams %>").html(null);
+$("#tr_show_epps<%= @fechaparams %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

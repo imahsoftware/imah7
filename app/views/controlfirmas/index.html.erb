@@ -1,0 +1,7 @@
+<% if @existeContratoFirmaPendiente.to_s == 'SI'%>
+    <%= render '/menus/firma_otp_otros' %> <!-- DOCUMENTOS -->
+<% elsif @existeContratoPendiente.to_s == 'SI' %>
+    <%= render '/menus/firma_otp', ruta: 'EMPLEADO' %><!-- CONTRATOS -->
+<% elsif @existeControlProceso.to_s == 'SI' %>
+    <%= render '/menus/procesos_juridicos' %>
+<% end %>

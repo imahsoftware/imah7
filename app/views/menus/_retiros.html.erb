@@ -1,0 +1,190 @@
+<legend style="margin-top: -19px;">DashBoard Seguimiento Retiros</legend>
+<%
+  periodos = Solicitudesretiro.select("date_format(fecha,'%Y-%m') periodo, count(9) cantidad")
+                              .where("solicitudesretiros.user_aprobacion is not null and solicitudesretiros.user_liquidacion is null
+                                      and solicitudesretiros.consecutivo is null
+                                      and fecha >= date_add(NOW(), INTERVAL -25 DAY)")
+                              .distinct
+                              .order("date_format(fecha,'%Y-%m') desc")
+                              .group("date_format(fecha,'%Y-%m')")
+  usr = User.find(is_admin)
+  estados = ["PENDIENTES", "PROCESO"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == "RET_#{p}"
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: "RET_#{p}") do %>
+              <i class="fa fa-adn"></i> <%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          if usr.etapa.to_s == "RET_PENDIENTES"
+            @pendientes = Solicitudesretiro.joins(:contratospersona, :contrato, :contratosgrupo)
+                                           .select("contratos.nro_contrato, contratospersonas.identificacion, contratospersonas.nombre_completo,
+                                              contratosgrupos.descripcion, contratosgrupos.termino,
+                                             (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                             (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                              solicitudesretiros.*")
+                                           .where(user_aprobacion: nil)
+                                           .order("solicitudesretiros.fecha asc")
+        %>
+          <div class="box-body">
+            <div class="row">
+              <% if @pendientes.present? %>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="5%" class="text-center"></th>
+                      <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                      <th width="40%" class="text-left">Solicitud</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @pendientes.each do |p| %>
+                      <tr id="evaluar<%= p.id %>">
+                        <td class="text-center" style="font-size:12px;">
+                          <% if p.documento_retiro_file_name.present? %>
+                            <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                              <i class="fa fa-cloud-download text-danger"></i>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td class="text-left" style="font-size:12px;">
+                          <strong><%= link_to edit_contratospersona_path(id: p.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+                              <i class="fa fa-child text-blue"></i>
+                            <% end %> <%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                          <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                          <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                          <small>(<%= p.termino rescue nil %>)</small>
+                        </td>
+                        <td class="text-jutify" style="font-size:10px;">
+                          <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                          <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                          <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                        </td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% else %>
+                <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        <%
+          elsif usr.etapa.to_s == "RET_PROCESO"
+            @enprocesos = Solicitudesretiro.joins(:contratospersona, :contrato, :contratosgrupo)
+                                           .select("contratos.nro_contrato, contratospersonas.identificacion, contratospersonas.nombre_completo,
+                                              contratosgrupos.descripcion, contratosgrupos.termino,
+                                             (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                             (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                             (select nombre from users where id = solicitudesretiros.user_aprobacion) useraprobanombre,
+                                             (select trasladado from contratosperfechas where id = solicitudesretiros.contratosperfecha_id) trasladado,
+                                             (select distinct 'X' from periodosliquidaciones where solicitudesretiros.fecha between inicio and fin and estado = 'C') existeperiodo,
+                                              solicitudesretiros.*")
+                                           .where(["solicitudesretiros.user_aprobacion is not null and solicitudesretiros.user_liquidacion is null and solicitudesretiros.consecutivo is null"])
+                                           .order("solicitudesretiros.fecha_aprobacion desc")
+        %>
+          <div class="box-body">
+            <div class="row">
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="5%" class="text-left"></th>
+                    <th class="text-left">Periodos en proceso</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    periodos.each do |pe|
+                  %>
+                    <%
+                      if @enprocesos.where("date_format(solicitudesretiros.fecha,'%Y-%m') = '#{pe.periodo.to_s}'").present?
+                        datosenproceso = @enprocesos.where("date_format(solicitudesretiros.fecha,'%Y-%m') = '#{pe.periodo.to_s}'")
+                    %>
+                      <tr>
+                        <td>
+                          <div align="center">
+                            <%= link_to informe_datas_path(infgrupo_id: 42, portafolio_id: pe.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                            <% end %>
+                          </div>
+                        </td>
+                        <td class="text-left" style="font-size:11px;">
+                          <a href="javascript:void(0);" onclick="SINO('demo_<%=pe.periodo%>')">
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver los archivos planos"></i>
+                            Periodo <%= pe.periodo %> (<%= pe.cantidad rescue 0 %>)
+                          </a>
+                          <div id="demo_<%= pe.periodo %>" style="display:none;"><br/>
+                            <table class="table table-bordered table-condensed table-striped">
+                              <thead>
+                              <tr class="thcolor">
+                                <th width="5%" class="text-center"></th>
+                                <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                                <th width="40%" class="text-left">Solicitud</th>
+                              </tr>
+                              </thead>
+                              <tbody id="tbody">
+                              <% datosenproceso.each do |p|
+                                cpl = p.contratosperliquidacion_id rescue nil
+                              %>
+                                <tr id="evaluar<%= p.id %>">
+                                  <td class="text-center" style="font-size:12px;"><% if p.documento_retiro_file_name.present? %>
+                                      <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                        <i class="fa fa-cloud-download text-danger"></i>
+                                      <% end %>
+                                    <% end %></td>
+                                  <td class="text-left" style="font-size:10px;">
+                                    <strong><%= link_to edit_contratospersona_path(id: p.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+                                        <i class="fa fa-child text-blue"></i>
+                                        <% end %> <%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                                    <small id="recalculo<%= cpl %>"></small>
+                                    <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                                    <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+                                    <br/><strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                                    <small>(<%= p.termino rescue nil %>)</small>
+                                    <% if p.trasladado.to_s == 'SI' %>
+                                      <div class="text-red" style='font-size: 10px;'><strong>->> Trasladado!!</strong></div>
+                                    <% end %>
+                                  </td>
+                                  <td class="text-left" style="font-size:10px;">
+                                    <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                                    <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                                    <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                                    <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                                    (<%= p.fecha_aprobacion rescue nil %>)
+                                  </td>
+                                </tr>
+                              <% end %>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
+      </div>
+    </div>
+  </div>
+</div>

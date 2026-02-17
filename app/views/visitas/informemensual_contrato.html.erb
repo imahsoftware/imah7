@@ -1,0 +1,265 @@
+<%
+  unless @contrato.present?
+    @contrato = contrato
+    @grupoid = grupoid
+    @mes = mes
+    is_admin = isadmin
+    @empresa = @contrato.empresa
+    @portafolio = Portafolio.find(@empresa.portafolio_id)
+    @logo_firma = @portafolio.logo_firma
+    @logo = @portafolio.logo_empresa_assets
+    @nombre_firma = @portafolio.nombre_rep.to_s
+    if @grupoid.present?
+       @supervisores = Contratosperuser.select("distinct user_id, (select nombre from users where id = contratosperusers.user_id) nombreuser")
+                                       .where("contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid})")
+                                       .order("2 asc")
+
+       @contratosperusers = Contratosperuser.where("contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid})") rescue nil
+
+       @capacitacionesfotos = Capacitacion.where("id in (select capacitacion_id from contratoscapapersonas where DATE_FORMAT(fecha_finalizacion, '%m-%Y') = '#{@mes}' and contrato_id = #{@contrato.id}
+                                                         and contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid}))")
+    else
+       @supervisores = Contratosperuser.select("distinct user_id, (select nombre from users where id = contratosperusers.user_id) nombreuser")
+                                       .where("contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id})")
+                                       .order("2 asc")
+ 
+       @contratosperusers = Contratosperuser.where("contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id})") rescue nil
+
+       @capacitacionesfotos = Capacitacion.where("id in (select capacitacion_id from contratoscapapersonas where DATE_FORMAT(fecha_finalizacion, '%m-%Y') = '#{@mes}' and contrato_id = #{@contrato.id})")
+    end 
+
+    @capacitacionesfotos.each do |capacitacion|
+      if @grupoid.present?
+        contratoscapapersonasprocesos = Contratoscapapersona.where("estado_evaluacion = 'INICIAR CAPACITACION' and capacitacion_id = #{capacitacion.id}
+                                                                  and contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid})")
+        contratoscapapersonasfinalizados = Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  capacitacion_id = #{capacitacion.id}
+                                                                  and contratospersona_id in (select contratospersona_id from contratosperfechas where contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid})")
+        contratosperfechas = Contratosperfecha.where("estado ='ACTIVO' and contrato_id = #{@contrato.id} and contratosgrupo_id = #{@grupoid} and id not in (select contratosperfecha_id from contratoscapapersonas where capacitacion_id = #{capacitacion.id})")
+      else
+        contratoscapapersonasprocesos = Contratoscapapersona.where("estado_evaluacion = 'INICIAR CAPACITACION' and capacitacion_id = #{capacitacion.id}")
+        contratoscapapersonasfinalizados = Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  capacitacion_id = #{capacitacion.id}")
+        contratosperfechas = Contratosperfecha.where("estado ='ACTIVO' and contrato_id = #{@contrato.id} and id not in (select contratosperfecha_id from contratoscapapersonas where capacitacion_id = #{capacitacion.id})")
+      end
+      @valorpend = contratosperfechas.count rescue 0
+      @valorpro = contratoscapapersonasprocesos.count rescue 0
+      @valorf = contratoscapapersonasfinalizados.count rescue 0
+
+      g = Gruff::Pie.new
+      g.title = "Resultado"
+      g.theme = {
+        :colors => %w(red orange green),
+        :marker_color => 'blue',
+        :background_colors => %w(white white)
+      }
+
+      # Añadir datos con leyendas personalizadas
+      g.data "PENDIENTES: #{@valorpend.to_i}", @valorpend.to_i
+      g.data "EN PROCESO: #{@valorpro.to_i}", @valorpro.to_i
+      g.data "FINALIZADO: #{@valorf.to_i}", @valorf.to_i
+
+      # Guardar el gráfico en un archivo temporal
+      temp_file = Tempfile.new(["capacitacion_#{capacitacion.id}", '.png'])
+
+      g.write(temp_file.path)
+
+      # Buscar y eliminar el registro de la tabla Graph
+      Graph.where(tabla: 'INFORME_GENERAL', id_registro: capacitacion.id).destroy_all
+
+      # Crear un nuevo objeto Graph y adjuntar la imagen
+      @graph = Graph.new
+      @graph.tabla = 'INFORME_GENERAL'
+      @graph.id_registro = capacitacion.id
+      @graph.graphimage = temp_file
+      @graph.save
+
+      # Eliminar el archivo temporal
+      temp_file.close
+      temp_file.unlink
+    end
+
+  end
+
+%>
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <div class="encabezado_center"><b>INFORMACIÓN DEL CONTRATO</b></div>
+        <hr><br/>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th width="35%" class="encabezado_contrato relleno_encabezado_contrato">Mes de Gestión</th>
+            <td width="65%" class="encabezado_contrato"><%= @mes rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Número de Contrato:</th>
+            <td class="encabezado_contrato"><%= @contrato.nro_contrato rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Contratista:</th>
+            <td class="encabezado_contrato"><%=@portafolio.razon_social rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Cliente:</th>
+            <td class="encabezado_contrato"><%= @empresa.nombre rescue nil %></td>
+          </tr>
+
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Datos de Contacto cliente:</th>
+            <td class="encabezado_contrato">Nombre Contacto Empresa: <%=@contrato.contacto_nombre.to_s rescue nil%> <%=@contrato.contacto_apellido rescue nil%><br>
+                                            Email Contacto Empresa: <%=@contrato.contacto_email rescue nil%></td>
+          </tr>
+        </table>
+        <br/><br/>
+        <div class="encabezado_center" ><b>OBJETIVO GENERAL</b></div>
+        <hr><br/>
+        <div class="parrafo">
+          Entregar a <b><%= @empresa.nombre rescue nil %></b> informe completo y detallado que da cuentas del servicio prestado
+          y la gestión realizada en pro del cumplimiento del Contrato N° <b><%= @contrato.nro_contrato rescue nil %></b>
+          <br/><br/><br/>
+          <b>Temas a tratar:</b><br/>
+          <ol>
+            <li>Proceso de contratación</li>
+            <li>Renuncias o terminaciones de contrato</li>
+            <li>Visitas</li>
+            <li>Llamados de atención o procesos disciplinarios</li>
+            <li>Novedades o hallazgos</li>
+            <li>Capacitaciones y/o formaciones</li>
+            <li>Entrega de elementos de protección personal</li>
+            <li>Relación de la Accidentalidad</li>
+            <li>Rutinas</li>
+          </ol>
+        </div>
+        <H1 class=SaltoDePagina>&nbsp;</H1>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>1. PROCESO DE CONTRATACION</b></div>
+        <hr><br/>
+        <div class="parrafo">
+          Desde el área de contratación y de gestión humana se lleva a cabo el proceso de contratación para la orden de
+          compra en diferentes etapas, así:<br/>
+          <ul>
+            <li>Captura y revisión de hojas de vida: por diferentes medios se da a conocer la vacante existe con el fin de captar la hoja de vida de la persona que aspira a la vacante y se procede a revisar si documentalmente cumple con los requisitos.</li>
+            <li>Se realiza llamada para una entrevista telefónica y ofrecer el puesto o vacante con el fin de saber si la persona esta realmente interesada en acceder a esta.</li>
+            <li>Se programa realización de exámenes médicos de ingreso ocupacional en cumplimiento con la normatividad vigente en materia de seguridad y salud en el trabajo y de acuerdo con los perfiles y requisitos del Acuerdo Marco III</li>
+            <li>Se solicita toda la documentación de familiares y certificados de estudio a los que haya a lugar, así como los carnet de vacunas.</li>
+            <li>Se procede a la expedición del contrato para su firma y se envía por correo electrónico a las personas</li>
+            <li>El aspirante deberá leer todos los documentos que acompañan en contrato con el fin de que se enteré de las condiciones y reglamentos de la empresa y deberá devolver formados dichos documentos.</li>
+            <li>Una vez se verifica que todos los documentos quedaron diligenciados y están todos los soportes anexos, se registra en el programa de nomina de inmediato la persona para que quede activa</li>
+            <li>Se informa al supervisor sobre las personas que ingresan con el fin de que este las reciba y de inducción parte dos de su puesto de trabajo, deberes y responsabilidades.</li>
+            <li>Se hace el envió de la dotación con un kit de elementos de protección mínimo como: Monogafas, tapabocas y guantes. En este paquete también encontrará el carnet que lo identifica como funcionario de <strong><%=@portafolio.razon_social rescue nil %></strong></li>
+          </ul>
+        </div><br/>
+        <%#= render 'visitas/render_informe/visitas/contratosinicio.pdf.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>2. RENUNCIAS O TERMINACIONES DE CONTRATOS</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/retiros/retiro.pdf.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>3. VISITAS</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/visitas/visita_reunion.pdf.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>4. LLAMADOS DE ATENCION O PROCESOS DISCIPLINARIOS</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/procesos/procesos.pdf.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>5. NOVEDADES O HALLAZGOS</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/visitas/hallazgos.html.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>6. CAPACITACIONES Y/ FORMACIONES</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/capacitaciones/capacitacion.pdf.erb' %>
+        <br/>
+        <%# ================================== ================================== ================================== %>
+        <div class="encabezado_izq"><b>7. ENTREGA DE ELEMENTOS DE PROTECCIÓN PERSONAL</b></div>
+        <hr><br/>
+        <%= render 'visitas/render_informe/epp/entrega.pdf.erb' %>
+        <br/>
+        <div class="parrafo">
+          Se realizaron visitas a las diferentes sedes donde se presta el servicio con el fin de verificar el
+          cumplimiento y calidad del servicio, y hacer seguimiento a la satisfacción del cliente, se realiza un total de
+          <%= @visitasCountseguimiento.count.to_i rescue 0 %> visitas durante todo el mes de <%= @mes %>
+        </div>
+        <br/><br/>
+        <div class="parrafo">
+        Cordialmente,<br/><br/><br/><br/>
+
+        <%= User.find(is_admin).nombre rescue nil %><br/>
+        <b><%=@portafolio.razon_social rescue nil %></b>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<style>
+    .encabezado {
+        font-size: 18px;
+        font-family: Tahoma;
+        text-align: center;
+    }
+
+    .encabezado_izq {
+        font-size: 16px;
+        font-family: Tahoma;
+        text-align: left;
+    }
+    .encabezado_center {
+        font-size: 16px;
+        font-family: Tahoma;
+        text-align: center;
+    }
+
+    .encabezado_izq2 {
+        font-size: 14px;
+        font-family: Tahoma;
+        text-align: left;
+    }
+
+    .encabezado_contrato {
+        padding: 5px;
+        text-align: left;
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .relleno_encabezado_contrato {
+        background: #E8E3E3;
+    }
+
+    .parrafo {
+        font-size: 14px;
+        font-family: Tahoma;
+        text-align: justify;
+    }
+
+    .encabezado_tabla {
+        background: #d73925;
+        color: white;
+        padding: 5px;
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .alineacion_izq {
+        text-align: left;
+    }
+
+    .alineacion_center {
+        text-align: center;
+    }
+
+
+</style>
+
+
+

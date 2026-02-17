@@ -1,0 +1,64 @@
+<%= simple_form_for([@contratospersona, @contratosperqueja], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :queja_explica, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Explique de manera concisa la conducta que considera constitutiva de acoso laboral" %></div>
+    </div>
+    <table class="table table-striped table-responsive">
+      <thead>
+      <tr class="thcolor">
+        <td>MODALIDAD</td>
+        <td width="5%">MARQUE</td>
+      </tr>
+      </thead>
+      <tr>
+        <td><strong>Maltrato laboral</strong><br/>
+          <div align="justify">Todo acto de violencia contra la integridad física o moral, la libertad física o sexual y los bienes de quien se desempeñe como empleado o trabajador; toda expresión verbal injuriosa o ultrajante que lesione la integridad moral o los derechos a la intimidad y al buen nombre de quienes participen en una relación de trabajo de tipo laboral o todo comportamiento tendiente a menoscabar la autoestima y la dignidad de quien participe en una relación de trabajo de tipo laboral.</div></td>
+        <td><div align="center"><%= f.input :queja_maltrato, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+      <tr>
+        <td><strong>Persecución laboral</strong><br />
+          <div align="justify">Toda conducta cuyas características de reiteración o evidente arbitrariedad permitan inferir el propósito de inducir la renuncia del empleado o trabajador, mediante la descalificación, la carga excesiva de trabajo y cambios permanentes de horario que puedan producir desmotivación laboral.</div></td>
+        <td><div align="center"><%= f.input :queja_persecucion, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+      <tr>
+        <td><strong>Discriminación laboral</strong><br />
+          <div align="justify">Todo trato diferenciado por razones de raza, género, origen familiar o nacional, credo religioso, preferencia política o situación social o que carezca de toda razonabilidad desde el punto de vista laboral.</div></td>
+        <td><div align="center"><%= f.input :queja_discriminacion, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+      <tr>
+        <td><strong>Entorpecimiento laboral</strong><br />
+          <div align="justify">Toda acción tendiente a obstaculizar el cumplimiento de la labor o hacerla más gravosa o retardarla con perjuicio para el trabajador o empleado. Constituyen acciones de entorpecimiento laboral, entre otras, la privación, ocultación o inutilización de los insumos, documentos o instrumentos para la labor, la destrucción o pérdida de información, el ocultamiento de correspondencia o mensajes electrónicos.</div></td>
+        <td><div align="center"><%= f.input :queja_entorpecimiento, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+      <tr>
+        <td><strong>Inequidad laboral</strong><br />
+          <div align="justify">Asignación de funciones a menosprecio del trabajador</div></td>
+        <td><div align="center"><%= f.input :queja_inequidad, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+      <tr>
+        <td><strong>Desprotección laboral</strong><br />
+          <div align="justify">Toda conducta tendiente a poner en riesgo la integridad y la seguridad del trabajador mediante órdenes o asignación de funciones sin el cumplimiento de los requisitos mínimos de protección y seguridad para el trabajador.</div></td>
+        <td><div align="center"><%= f.input :queja_desproteccion, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: false %></div></td>
+      </tr>
+    </table>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :queja_pruebas, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "¿Qué pruebas adjunta y/o testigos?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :conciliar, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "¿Hay interés de conciliar?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :conciliar_explique, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Explique" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperqueja.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperqueja_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperqueja_path(@contratospersona, @contratosperqueja), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

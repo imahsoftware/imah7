@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="20%" class="text-left text-table">Fecha</th>
+        <th width="25%" class="text-left text-table">Tipo</th>
+				<th class="text-left text-table">Documentos</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_visitasdocs">
+	    <% @visita.visitasdocs.order(id: :desc).each do |visitasdoc| %>
+	      <%= render 'visitasdocs/tr', visitasdoc: visitasdoc %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

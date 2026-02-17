@@ -1,0 +1,55 @@
+<tr id="veriserviciosagenda_<%= veriserviciosagenda.id %>">
+  <td class="text-center" rowspan="2">
+    <%#= link_to prueba_pdf_hichart_veriserviciosagendas_path(id: veriserviciosagenda.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Entrega de Dotación' do %>
+<!--        <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button> -->
+    <%# end %>
+    <% if veriserviciosagenda.conclusion.blank? %>
+      <%= link_to conclusion_veriserviciosagendas_path(id: veriserviciosagenda.id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Conclusión" do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-comment-o"></i></button>
+      <% end %>
+    <% end %>
+
+    <% if ['PENDIENTE', 'EN PROCESO'].include? @veriservicio.estado_proceso %>
+      <%= link_to edit_veriservicio_veriserviciosagenda_path(@veriservicio, veriserviciosagenda), remote: true, class: 'edit_veriserviciosagenda_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+
+    <% if Time.now.to_date == veriserviciosagenda.fecha_reprogramacion.to_date and veriserviciosagenda.estado == 'PENDIENTE' %>
+      <%= link_to usuarios_veriserviciosagendas_path(id: veriserviciosagenda.id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Usuarios" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-users"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= veriserviciosagenda.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/>
+    <%= veriserviciosagenda.user.nombre rescue nil %></td>
+  <td align="left" class="text-table"><%= veriserviciosagenda.fecha_reprogramacion rescue nil %></td>
+  <td align="left" class="text-table"><%= veriserviciosagenda.nota rescue nil %>
+    <% if veriserviciosagenda.conclusion.present? %>
+      <br/><small class="text-red"><b>Conclusión: </b><%= veriserviciosagenda.conclusion  %></small>
+    <% end %>
+  </td>
+</tr>
+<tr>
+  <td colspan="12">
+    <% if veriserviciosagenda.estado == 'PENDIENTE' %>
+      <div class="mensaje_firma_agenda">
+        <i class="fa fa-info-circle"></i> El proceso de firma digital se habilita únicamente después de que todos los
+        ítems hayan sido diligenciados y se haya ingresado la <b>conclusión</b> del agendamiento.
+      </div>
+    <% end %>
+    <%= render 'veriserviciosagendas/abrir_detalle_item', veriserviciosagenda: veriserviciosagenda %>
+  </td>
+</tr>
+
+<div class="modal fade" id="usuarios<%= veriserviciosagenda.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="conclusion<%= veriserviciosagenda.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

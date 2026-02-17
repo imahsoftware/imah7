@@ -1,0 +1,19 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead>
+	    <tr class="thcolor">
+        <td width="8%"><div align="center"></div></td>
+        <td>Novedad</td>
+        <td width="10%" class="text-center">Dias</td>
+        <td width="10%" class="text-center">Valor</td>
+        <td width="30%" class="text-left">Observacion</td>
+	    </tr>
+	  </thead>
+	  <tbody id="tbody_contratosperliqnovedades">
+      <% @vcAutoCon = is_auth_c('empleadosconsulta')%>
+      <% @contratosperliquidacion.contratosperliqnovedades.order("id desc").each do |contratosperliqnovedad| %>
+	      <%= render 'contratosperliqnovedades/tr', contratosperliqnovedad: contratosperliqnovedad %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

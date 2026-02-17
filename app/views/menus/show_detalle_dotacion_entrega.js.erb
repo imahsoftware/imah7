@@ -1,0 +1,15 @@
+
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_dotacion_entrega<%= @fecha %>").html('<%= j render "menus/abrir_detalle_dotacion_entrega" %>');
+$("#abrir_dotacion_entrega<%= @fecha %>").addClass("hide");
+$("#cerrar_dotacion_entrega<%= @fecha %>").removeClass("hide");
+$("#tr_show_dotacion_entrega<%= @fecha %>").removeClass("hidden");
+<% else %>
+$("#abrir_dotacion_entrega<%= @fecha %>").removeClass("hide");
+$("#cerrar_dotacion_entrega<%= @fecha %>").addClass("hide");
+$("#abrir_detalle_dotacion_entrega<%= @fecha %>").html(null);
+$("#tr_show_dotacion_entrega<%= @fecha %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

@@ -1,0 +1,320 @@
+<legend style="margin-top: -19px;">DashBoard Autoevaluaciones</legend>
+<div class="row">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-blue">
+      <strong><%= link_to informe_datas_path(infgrupo_id: 8, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+          <i class="fa fa-file-excel-o"></i><%end %> Total Estratificación <br/><%= camponumerico2 @totalant rescue 0 %></strong>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-green">
+      <strong><%= link_to informe_datas_path(infgrupo_id: 9, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+          <i class="fa fa-file-excel-o"></i><%end %> Total Autoevaluaciones <br/><%= camponumerico2 @totaleva rescue 0 %></strong>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-red">
+      <strong><%= link_to informe_datas_path(infgrupo_id: 2, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+          <i class="fa fa-file-excel-o"></i><%end %> Autoevaluaciones en riesgo <br/><%= camponumerico2 @totalriesgo rescue 0 %></strong>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#estadistica" data-toggle="tab" aria-expanded="true"><i class="fa fa-signal"></i> Estadisticas </a></li>
+        <li><a href="#riesgo" data-toggle="tab" aria-expanded="true"><i class="fa fa-heartbeat"></i> En Riesgo <small>(<%= @personasevaluacionesr.count rescue 0 %>) </small></a></li>
+        <li><a href="#atencion" data-toggle="tab" aria-expanded="true"><i class="fa fa-ambulance"></i> En Riesgo con Atención <small>(<%= @personasevaluacionesra.count rescue 0 %>) </small></a></li>
+        <li><a href="#admin" data-toggle="tab" aria-expanded="true"><i class="fa fa-heartbeat"></i> Administrativa</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="estadistica">
+
+          <%
+            colores =  ['green','yellow','blue','aqua','red']
+          %>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="box box-info">
+                <div class="box-header">
+                  <legend>
+                    <div align="left">
+                      Asear
+                    </div>
+                  </legend>
+                </div>
+                <div class="box-body">
+                  <%
+                    pos = 0
+                    @dbLaterales1.each do |lat|
+                  %>
+                    <div class="progress-group">
+                <span class="progress-text"><% if lat.cant.to_i > 0 %><%= link_to informe_datas_path(infgrupo_id: lat.infgrupo, portafolio_id: lat.portafolio_id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+                <i class="fa fa-file-excel-o"></i><%end %>
+                    <% end -%> <%=lat.nombre rescue nil%></span>
+                      <span class="progress-number"><b><%= camponumerico2 lat.cant.to_f rescue 0 %></b></span>
+                      <div class="progress sm"><div class="progress-bar progress-bar-<%=colores[pos]%>" style="width: 100%"></div></div>
+                    </div>
+                  <%
+                    pos = pos + 1
+                    if pos == 5
+                      pos = 0
+                    end
+                    end
+                  %>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="box box-success">
+                <div class="box-header">
+                  <legend>
+                    <div align="left">
+                      Microcinco
+                    </div>
+                  </legend>
+                </div>
+                <div class="box-body">
+                  <%
+                    pos = 0
+                    @dbLaterales2.each do |lat|
+                  %>
+                    <div class="progress-group">
+                <span class="progress-text"><% if lat.cant.to_i > 0 %><%= link_to informe_datas_path(infgrupo_id: lat.infgrupo, portafolio_id: lat.portafolio_id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+                <i class="fa fa-file-excel-o"></i><%end %>
+                    <% end -%> <%=lat.nombre rescue nil%></span>
+                      <span class="progress-number"><b><%= camponumerico2 lat.cant.to_f rescue 0 %></b></span>
+                      <div class="progress sm"><div class="progress-bar progress-bar-<%=colores[pos]%>" style="width: 100%"></div></div>
+                    </div>
+                  <%
+                    pos = pos + 1
+                    if pos == 5
+                      pos = 0
+                    end
+                    end
+                  %>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="box box-danger">
+                <div class="box-header">
+                  <legend>
+                    <div align="left">
+                      Construmater
+                    </div>
+                  </legend>
+                </div>
+                <div class="box-body">
+                  <%
+                    pos = 0
+                    @dbLaterales3.each do |lat|
+                  %>
+                    <div class="progress-group">
+                <span class="progress-text"><% if lat.cant.to_i > 0 %><%= link_to informe_datas_path(infgrupo_id: lat.infgrupo, portafolio_id: lat.portafolio_id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+                <i class="fa fa-file-excel-o"></i><%end %>
+                    <% end -%> <%=lat.nombre rescue nil%></span>
+                      <span class="progress-number"><b><%= camponumerico2 lat.cant.to_f rescue 0 %></b></span>
+                      <div class="progress sm"><div class="progress-bar progress-bar-<%=colores[pos]%>" style="width: 100%"></div></div>
+                    </div>
+                  <%
+                    pos = pos + 1
+                    if pos == 5
+                      pos = 0
+                    end
+                    end
+                  %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane" id="riesgo">
+          <div class="box box-danger">
+            <div class="box-header">
+              <legend>
+                <div align="left">
+                  Autoevaluaciones en Riesgo <small>(<%= @personasevaluacionesr.count rescue 0 %>) </small>
+                  <%= link_to informe_datas_path(infgrupo_id: 2, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                  <% end -%>
+
+                </div>
+              </legend>
+            </div>
+            <div class="box-body">
+              <% if @personasevaluacionesr.count.to_i > 0 %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <th width="18%"><div align="left">Fecha</div></th>
+                  <th width="35%"><div align="left">Identificación - Nombre</div></th>
+                  <th width="28%"><div align="left">Empresa</div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="1. ¿Tienes sensación de falta de aire de inicio brusco (en ausencia de cualquier otra patología que justifique este síntoma)?">P1</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="2. ¿Tienes fiebre de difícil control por más de 3 días? (+ 37,8°C)">P2</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="3. ¿Tienes tos seca y persistente?">P3</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="4. ¿Tienes sensación de fatiga o cansancio muscular?">P4</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="5. ¿Tienes secreciones nasales?">P5</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="6. ¿Tienes dolor de garganta o dolor de cabeza?">P6</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="7. ¿Tienes pérdida del olfato y/o el gusto?">P7</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="8. ¿Tienes sensación de malestar general?">P8</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="9. ¿Tienes trastornos gástricos o intestinales (náuseas, vómito, diarrea)">P9</span></div></th>
+
+                  </thead>
+                  <tbody>
+                  <% @personasevaluacionesr.each do |personasevaluacion| %>
+                    <tr>
+                      <td><small><%= personasevaluacion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                        <%= link_to personasevaluacion_path(id: personasevaluacion.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Evaluación' do %>
+                          <i class="fa fa-clone"></i>
+                        <% end %>
+                        <%= link_to calificar_personasevaluaciones_path(id: personasevaluacion.id), data: {toggle: 'tooltip', confirm: "Seguro que desea marcarlo - Sin Riesgo"}, title: 'Descartar riesgo' do %>
+                          <i class="fa fa-expeditedssl"></i>
+                        <% end %>
+                      </small></td>
+                      <td><small>
+                        <%= link_to edit_persona_path(id: personasevaluacion.persona_id), data: {toggle: 'tooltip'}, title: 'Ir a la persona' do %>
+                          <i class="fa fa-user"></i>
+                          <% end %><%= personasevaluacion.identificacion rescue nil %> - <%= personasevaluacion.nombre rescue nil %></small></td>
+                      <td><div align="left"><small><span data-toggle="tooltip" data-original-title="<%= personasevaluacion.nombreportafolio rescue nil %>"><%=personasevaluacion.centrodetrabajo rescue nil %></span></small></div></td>
+                      <td <% if personasevaluacion.eva_1.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_1 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_2.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_2 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_3.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_3 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_4.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_4 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_5.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_5 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_6.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_6 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_7.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_7 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_8.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_8 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_9.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_9 rescue nil %></small></div></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @personasevaluacionesr, renderer: BootstrapPagination::Rails %>
+                </div>
+              <% else %>
+                <div class="alert alert-success" align="justify"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>
+                  No hay información
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane" id="admin">
+          <div class="box box-success">
+            <div class="box-body">
+              <legend>
+                <div align="left">
+                  Autoevaluaciones Administrativa <small>(<%= @personasevaladmin_m.count rescue 0 %>) </small>
+                </div>
+              </legend>
+              <% if @personasevaladmin_m.count.to_i > 0 %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <th width="35%"><div align="left">Identificación - Nombre</div></th>
+                  <th width="25%"><div align="left">Empresa</div></th>
+                  <th width="20%"><div align="center">Mañana</div></th>
+                  <th width="20%"><div align="center">Tarde</div></th>
+                  </thead>
+                  <tbody>
+                  <% @personasevaladmin_m.each do |personasevaluacion| %>
+                    <tr>
+                      <td><%= personasevaluacion.identificacion rescue nil %> - <%= personasevaluacion.nombre rescue nil %></td>
+                      <td><div align="left"><%=personasevaluacion.nombrepor rescue nil %></div></td>
+                      <td><div align="center"><%=personasevaluacion.manana.strftime("%Y-%m-%d %X") rescue nil %></div></td>
+                      <td><div align="center"><%=personasevaluacion.tarde.strftime("%Y-%m-%d %X") rescue nil %></div></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-success" align="justify"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>
+                  No hay información
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="tab-pane" id="atencion">
+
+          <div class="box box-success">
+            <div class="box-header">
+              <legend>
+                <div align="left">
+                  Autoevaluaciones en Riesgo con Atención <small>(<%= @personasevaluacionesra.count rescue 0 %>) </small>
+                  <%= link_to informe_datas_path(infgrupo_id: 10, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe' do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                  <% end -%>
+                </div>
+              </legend>
+            </div>
+            <div class="box-body">
+              <% if @personasevaluacionesra.count.to_i > 0 %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <th width="15%"><div align="left">Fecha</div></th>
+                  <th width="35%"><div align="left">Identificación - Nombre</div></th>
+                  <th width="30%"><div align="left">Empresa</div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="1. ¿Tienes sensación de falta de aire de inicio brusco (en ausencia de cualquier otra patología que justifique este síntoma)?">P1</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="2. ¿Tienes fiebre de difícil control por más de 3 días? (+ 37,8°C)">P2</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="3. ¿Tienes tos seca y persistente?">P3</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="4. ¿Tienes sensación de fatiga o cansancio muscular?">P4</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="5. ¿Tienes secreciones nasales?">P5</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="6. ¿Tienes dolor de garganta o dolor de cabeza?">P6</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="7. ¿Tienes pérdida del olfato y/o el gusto?">P7</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="8. ¿Tienes sensación de malestar general?">P8</span></div></th>
+                  <th width="2%"><div align="center"><span data-toggle="tooltip" data-original-title="9. ¿Tienes trastornos gástricos o intestinales (náuseas, vómito, diarrea)">P9</span></div></th>
+
+                  </thead>
+                  <tbody>
+                  <% @personasevaluacionesra.each do |personasevaluacion| %>
+                    <tr>
+                      <td><small><%= personasevaluacion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                        <%= link_to personasevaluacion_path(id: personasevaluacion.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Evaluación' do %>
+                          <i class="fa fa-clone"></i>
+                        <% end %></small></td>
+                      <td><small>
+                        <%= link_to edit_persona_path(id: personasevaluacion.persona_id), data: {toggle: 'tooltip'}, title: 'Ir a la persona' do %>
+                          <i class="fa fa-user"></i>
+                          <% end %><%= personasevaluacion.identificacion rescue nil %> - <%= personasevaluacion.nombre rescue nil %></small></td>
+                      <td><div align="left"><small><span data-toggle="tooltip" data-original-title="<%= personasevaluacion.nombreportafolio rescue nil %>"><%=personasevaluacion.centrodetrabajo rescue nil %></span></small></div></td>
+                      <td <% if personasevaluacion.eva_1.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_1 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_2.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_2 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_3.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_3 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_4.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_4 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_5.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_5 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_6.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_6 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_7.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_7 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_8.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_8 rescue nil %></small></div></td>
+                      <td <% if personasevaluacion.eva_9.to_s == 'SI' %>class="thcolorred"<% end%>><div align="center"><small><%= personasevaluacion.eva_9 rescue nil %></small></div></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @personasevaluacionesra, :param_name => 'riesgo' , renderer: BootstrapPagination::Rails %>
+                </div>
+              <% else %>
+                <div class="alert alert-success" align="justify"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>
+                  No hay información
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+

@@ -1,0 +1,26 @@
+<%= simple_form_for([@tarea, @tareasdoc], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :descripcion, label: "Descripción" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :tareadoc, as: :file, label: 'Archivo a cargar' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @tareasdoc.new_record? %>
+          <%= link_to "Cancelar", cancelar_tareasdocs_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", tarea_tareasdoc_path(@tarea, @tareasdoc), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right"%>
+      </div>
+    </div>
+  </div>
+<% end %>
+

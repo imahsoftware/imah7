@@ -1,0 +1,2 @@
+class Seguimientonodo < ApplicationRecord
+end

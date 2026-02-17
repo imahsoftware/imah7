@@ -1,0 +1,144 @@
+<div align="center">
+  <table width="700" border="0">
+    <tr valign="top">
+      <td height="700">
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center">
+                <%= image_tag 'logo_inicio_asear.png', class: 'user-image', size: '230x100' %>
+              </div>
+            </td>
+            <td width="80%">
+              <div align="left">
+                <h5><strong>SOLICITUD NRO. <%= @contratossolepp.id rescue nil %></strong>
+                  <br/><small><%= @contrato.empresa.identificacion rescue nil %>
+                  - <%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %><br/>Nro
+                  Contrato: <%= @contrato.nro_contrato rescue nil %></small></h5>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="20%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Fecha
+              Solicitud
+            </th>
+            <th width="40%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Solicitante</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Estado</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolepp.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolepp.user.nombre rescue nil %></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolepp.estado rescue nil %>
+              <% if @contratossolepp.estado.to_s == 'DESPACHADO' and @contratossolepp.fecha_despacho.to_s != "" %>
+                <br/><small><strong>Fecha: <%= @contratossolepp.fecha_despacho.strftime("%Y-%m-%d") rescue nil %></strong></small>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+
+        <br/><br/>
+        <% @clasificaciones = Objeto.find_by_sql("SELECT DISTINCT i.clasificacion, COUNT(9) AS cantidad
+																						FROM iparametros i, contratossoleppsdetalles cd
+																						WHERE cd.contratossolepp_id = #{@contratossolepp.id}
+																						AND   i.descripcion = cd.item
+																						GROUP BY i.clasificacion
+																						ORDER BY i.descripcion ASC")
+           @clasificaciones.each do |c| %>
+
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;">
+            <tr>
+              <td><%= c.clasificacion rescue nil %> (<%= c.cantidad rescue 0 %>)</td>
+            </tr>
+          </table>
+          <hr style=" margin-top: 5px;margin-bottom: 5px;">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;">
+            <tr style="background: #adadad">
+              <th style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px">Item</th>
+              <th width="10%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px; text-align: right">Cantidad</th>
+              <th width="15%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px; text-align: right">Cnt
+                Aprobada
+              </th>
+              <th width="40%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px">Observación</th>
+            </tr>
+            <tbody>
+            <% @contratossolepp.contratossoleppsdetalles.where("item in (select descripcion from iparametros where clasificacion = '#{c.clasificacion}')").order(id: :desc).each do |contratossoleppsdetalle| %>
+              <tr id="contratossoleppsdetalle_<%= contratossoleppsdetalle.id %>">
+                <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= contratossoleppsdetalle.item rescue nil %></td>
+                <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= camponumerico contratossoleppsdetalle.cantidad rescue nil %></td>
+                <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= camponumerico contratossoleppsdetalle.cant_aprobada rescue nil %></td>
+                <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= contratossoleppsdetalle.observacion.upcase rescue nil %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <br/>
+        <% end %>
+        <table width="70%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Tahoma;">
+          <tr>
+            <td height="50" style="background: #E8E3E3; padding: 10px">
+              <% if @contratossolepp.codigo_firma.present? %>
+                <%= @contratossolepp.user.nombre rescue nil %><br/>
+                <b>FIRMA DIGITAL:</b> <%= @contratossolepp.codigo_firma %><br/>
+                <b>FECHA FIRMA:</b> <%= @contratossolepp.updated_at.strftime("%Y-%m-%d %X") rescue nil%><br/>
+                * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo
+                dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</div>
+<style>
+    tr {
+        page-break-inside: avoid;
+
+    }
+
+    table {
+        page-break-inside: auto
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-footer-group
+    }
+
+    .form-control {
+        width: 100% !important;
+        height: 26px !important;
+        padding: 10px 12px !important;
+        font-size: 11px !important;
+    }
+
+    .form-control2 {
+        text-align: left;
+        display: block;
+        width: 100%;
+        height: 64px;
+        padding: 6px 12px;
+        font-size: 11px !important;
+        line-height: 1.428571429;
+        color: #555555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    }
+</style>
+
+

@@ -1,0 +1,21 @@
+<%= simple_form_for(@contratosnodo) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :contrato %>
+    <%= f.association :user %>
+    <%= f.association :contratossede %>
+    <%= f.input :user_act %>
+    <%= f.input :estado %>
+    <%= f.input :nombre %>
+    <%= f.input :clase_aseo %>
+    <%= f.input :clase_aseo2 %>
+    <%= f.input :clase_aseo3 %>
+    <%= f.input :clase_aseo4 %>
+    <%= f.input :clase_aseo5 %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

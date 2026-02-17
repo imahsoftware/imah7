@@ -1,0 +1,49 @@
+<% unless @mes.present?
+     @logo = logo
+     @mes = mes
+     @empresa = empresa
+     @contrato = contrato
+   end
+%>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+      .center {
+          text-align: center;
+      }
+  </style>
+</head>
+<body class="center">
+<div align="center">
+  <table width="80%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td align="center" style="padding: 5px; font-size: 10px; font-family: Tahoma;" width="25%">
+        <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "240x80" %>
+      </td>
+      <th align="center" style="padding: 5px; font-size: 18px; font-family: Tahoma;">
+        INFORME DE GESTIÓN DE SERVICIOS<br/>
+        <div style="padding: 5px">
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="25%" style="background: #E8E3E3; color: black; font-size: 9px; padding: 3px; font-family: Tahoma;"><div align="left">Periodo</div></td>
+            <td style="border:1px solid #CCCCCC;font-size: 9px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: left"><%= @mes %></td>
+          </tr>
+          <tr>
+            <td style="background: #E8E3E3; color: black; font-size: 9px; padding: 3px; font-family: Tahoma;"><div align="left">Cliente</div></td>
+            <td style="border:1px solid #CCCCCC;font-size: 9px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= @empresa.nombre rescue nil %></td>
+          </tr>
+          <tr>
+            <td style="background: #E8E3E3; color: black; font-size: 9px; padding: 3px; font-family: Tahoma;"><div align="left">Nro Contrato</div></td>
+            <td style="border:1px solid #CCCCCC;font-size: 9px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= @contrato.nro_contrato rescue nil %></td>
+          </tr>
+        </table>
+        </div>
+      </th>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

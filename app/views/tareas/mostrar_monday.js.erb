@@ -1,0 +1,9 @@
+<% if @ruta == 'ABRIR' %>
+$('#show_monday<%= @showmonday %>').html('<%= j render 'tareas/show_monday' %>');
+$("#abrir_monday<%= @showmonday %>").addClass("hide");
+$("#cerrar_monday<%= @showmonday %>").removeClass("hide");
+<% else %>
+$('#show_monday<%= @showmonday %>').html('');
+$("#abrir_monday<%= @showmonday %>").removeClass("hide");
+$("#cerrar_monday<%= @showmonday %>").addClass("hide");
+<% end %>

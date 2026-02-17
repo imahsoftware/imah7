@@ -1,0 +1,13 @@
+<% if @active_record.present? %>
+	$("#contratosperprocitacion_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratosperprocitacion: @active_record %>");
+<% end %>
+$("#contratosperprocitacion_form").html("<%= j render 'form' %>");
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#contratosperprocitacion_form").collapse("show");
+$(".select2").select2();
+$(".datetimepicker").datetimepicker();
+
+$('.uppercaseInput').keyup(function () {
+    $(this).val($(this).val().toUpperCase());
+});

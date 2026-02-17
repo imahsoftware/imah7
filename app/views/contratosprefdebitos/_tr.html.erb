@@ -1,0 +1,20 @@
+<tr id="contratosprefdebito_<%= contratosprefdebito.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosprefdebito")%>
+    <%= link_to edit_contrato_contratosprefdebito_path(@contrato, contratosprefdebito), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contrato_contratosprefdebito_path(@contrato, contratosprefdebito), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%#= link_to visualizar_contratosprefdebitos_path(id: contratosprefdebito.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Recibo ' do %>
+      <!--<button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>-->
+    <%# end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosprefdebito.user_nombre.html_safe rescue nil %><%= contratosprefdebito.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosprefdebito.contratosprefactura_id rescue nil %></td>
+  <td align="left"><%= contratosprefdebito.fecha.strftime("%Y-%m-%d")  rescue nil %></td>
+  <td align="right"><%= camponumerico contratosprefdebito.valor rescue nil %></td>
+  <td align="left"><%= contratosprefdebito.observacion rescue nil %></td>
+</tr>

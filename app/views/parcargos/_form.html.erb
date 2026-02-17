@@ -1,0 +1,47 @@
+<%= simple_form_for @parcargo do |f| %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <legend>
+        <%= link_to parcargos_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Información del Cargo
+      </legend>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :descripcion, input_html: { class: "uppercaseInput" }, label: "Cargo" %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :encuesta_id, collection: Encuesta.where("estado = 'ACTIVO'").order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Encuesta" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= f.input :observacion, as: :text, :input_html => { class: "uppercaseInput", :rows => 5 } %>
+        </div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>
+<% unless @parcargo.new_record? %>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#fa-icons" data-toggle="tab">Documentos del Cargo</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="fa-icons">
+            <%= render "parcargosdocs/parcargosdocs" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

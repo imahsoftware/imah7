@@ -1,0 +1,105 @@
+<head>
+  <%
+     # trae los dias del mes
+     @meses = "'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'"
+     fechasshow = Seguimientonodo.select("periodo").where("nodo = '#{params[:nodo]}'").distinct
+  %>
+
+  <script type="text/javascript">
+      $(function () {
+          var chart;
+          $(document).ready(function () {
+              chart = new Highcharts.Chart({
+                  chart: {
+                      renderTo: 'container',
+                      type: 'spline'
+                  },
+                  title: {
+                      text: 'Estado del Seguimiento por nodo - <%= params[:nodo].capitalize %>'
+                  },
+                  xAxis: {
+                      categories: [<%= @meses.html_safe %>]
+                  },
+                  yAxis: {
+                      min: 0,
+                      title: {
+                          text: ' Cantidad'
+                      },
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#ffffff'
+                      }]
+                  },
+                  tooltip: {
+                      shared: true,
+                      crosshairs: true
+                  },
+
+                  plotOptions: {
+                      spline: {
+                          lineWidth: 4,
+                          states: {
+                              hover: {
+                                  lineWidth: 5
+                              }
+                          },
+                          marker: {
+                              enabled: false
+                          }
+                      }
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle'
+                  },
+                  credits: {
+                      enabled: false
+                  },
+                  series: [
+                      <%
+                        ing = 0
+                        estado = true
+                        fechasshow.each do |f|
+                          fch1 = f.periodo.to_s
+                          vlr = []
+                          vlrHoy = 0
+                          diaFinish = 0
+                          dt = 0
+
+                          Seguimientonodo.where("nodo = '#{params[:nodo]}' and periodo = '#{fch1}'").each do |d|
+                            vlr << d.valor.to_i
+                            vlrHoy = d.valor.to_i
+                            diaFinish = d.dia.to_i
+                          end
+
+                          dt = 31 - diaFinish
+                          i = 0
+                          if dt > 0
+                            while i < dt
+                              vlr << vlrHoy.to_i
+                              i = i + 1
+                            end
+                          end
+                          ing = ing + 1
+                          if ing >= 10
+                            estado = false
+                          end
+
+                      %>
+                      {
+                          name: '<%=fch1.to_s %>',
+                          data: <%=vlr%>,
+                          visible: <%=estado%>
+                      }, <% end %>]
+              });
+          });
+
+      });
+  </script>
+</head>
+<body>
+<div id="container" style="min-width: 280px; height: 370px; margin: 0 auto"></div>
+</body>
+</html>

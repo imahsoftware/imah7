@@ -1,0 +1,9 @@
+<% if @contratosprefechascarnet_todo.present? %>
+$("#resultado_carnet_todo<%= @p.downcase %>").html("<%= j render 'menus/resultado_carnet_todo'%>");
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_carnet_todo<%= @p.downcase %>").html("");
+<% end %>

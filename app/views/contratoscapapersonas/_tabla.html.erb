@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th class="text-center text-table" width="5%"></th>
+      <th class="text-left text-table">Datos del usuario</th>
+      <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+      <th class="text-center text-table" width="15%">Estado</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_contratoscapapersonas">
+    <% @contratoscapacitacion.contratoscapapersonas.select("contratoscapapersonas.*, (select autobuscar from contratospersonas where id = contratoscapapersonas.contratospersona_id) autobuscar")
+                                                   .where("ruta = 'B' and estado_evaluacion = 'PENDIENTE'").order(id: :desc).each do |contratoscapapersona| %>
+      <%= render 'contratoscapapersonas/tr', contratoscapapersona: contratoscapapersona %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

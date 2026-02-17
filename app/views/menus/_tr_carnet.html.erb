@@ -1,0 +1,36 @@
+<tr id="tr_carnet_check<%= contratosperfecha.id %><%= p %>">
+  <td class="text-center">
+    <% if contratosperfecha.val_carne == 'PENDIENTE' %>
+      <%= link_to entregar_carne_contratosperfechas_path(id: contratosperfecha.id, ruta: p), remote: true, data: { toggle: 'tooltip' }, title: 'Marcar como Entregado' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-check"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%= contratosperfecha.contratospersona.autobuscar rescue nil %>
+    <% if contratosperfecha.personasformulario_id.to_s != "" %>
+      <% if Personasformulariosdoc.where("estado = 'APROBADO' and personasformulario_id = #{contratosperfecha.personasformulario_id.to_s}").present? %>
+        <br/>
+        <%= link_to abrir_documentos_menus_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos de Inscripción" do %>
+          <i class="fa fa-cloud-download"></i> Ver documentos Inscripción
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left">
+    <small><%= contratosperfecha.contrato.empresa.identnombre rescue nil %> -
+      <strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %>
+      <br/><strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+      <br/><strong>Grupo Nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %>
+      <% if contratosperfecha.contratosseccion_id.present? %>
+        <br/><strong>Sección : </strong><%= contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+      <% end %>
+      <br/><strong>Dirección : </strong><%= contratosperfecha.contratospersona.direcciontelefono rescue nil %>
+    </small>
+  </td>
+</tr>
+
+<div class="modal fade" id="abrir_documentos<%= contratosperfecha.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

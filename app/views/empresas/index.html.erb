@@ -1,0 +1,50 @@
+<div class="box box-danger">
+  <div class="box-header">
+    <legend>Clientes</legend>
+    <div class="box-tools pull-right">
+      <% if is_auth_c('empresa') %>
+        <%= link_to new_empresa_path, class: 'btn btn-sm btn-info' do %>
+          <i class="fa fa-plus-square"> </i> <span>Nuevo</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <%= simple_form_for(Empresa.new, url: empresas_path, remote: true, method: :get) do |f| %>
+    <div class="box-body">
+      <div class="col-md-2">
+        <%= label_tag :identificacion, 'Identificación' %><br/>
+        <%= text_field_tag :identificacion, params[:identificacion],class: 'form-control',style: 'width: 100%;',autocomplete: 'off' %>
+      </div>
+      <div class="col-md-3">
+        <%= label_tag :nombre, 'Nombre' %><br/>
+        <%= text_field_tag :nombre, params[:nombre],class: 'form-control',style: 'width: 100%;',autocomplete: 'off' %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag :prefactura, 'Nro Prefactura' %><br/>
+        <%= text_field_tag :prefactura, params[:prefactura],class: 'form-control',style: 'width: 100%;',autocomplete: 'off' %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag :recibo, 'Nro Recibo' %><br/>
+        <%= text_field_tag :recibo, params[:recibo],class: 'form-control',style: 'width: 100%;',autocomplete: 'off' %>
+      </div>
+      <div class="col-md-2">
+        <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="box-body">
+    <div class="row" >
+      <div class="col-md-12">
+        <div class="box-body" id="idSearch"></div>
+        <div class="alert alert-danger" id="notContent">
+          <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>No hay resultado de la busqueda
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box-header">
+    <div class="flash_messages"></div>
+  </div>
+</div>

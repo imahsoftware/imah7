@@ -1,0 +1,17 @@
+$("#cuenta_form").collapse("hide");
+
+$("#cuenta_form").empty();
+
+<% if @active_record.present? %>
+	$("#cuenta_<%= @active_record.id %>").replaceWith("<%= j render 'tr', cuenta: @active_record %>");
+<% end %>
+
+$("#cuenta_<%= @cuenta.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#cuenta_<%= @cuenta.id %>").addClass("active_cuenta");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

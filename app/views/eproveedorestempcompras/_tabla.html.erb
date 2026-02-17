@@ -1,0 +1,35 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th class="alert-danger text-center" colspan="4">Valor total egreso....</th>
+      <th class="alert-danger text-right"> <%= camponumerico @eproveedor.eproveedorestempcompras.sum("total") rescue 0 %></th>
+    </tr>
+    </thead>
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="10%" class="text-center">Fecha</th>
+        <th width="20%" class="text-center">Causacion</th>
+        <th class="text-center">Forma de Pago</th>
+        <th class="text-right">Valor</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_eproveedorestempcompras">
+     <% @eproveedor.eproveedorestempcompras.includes([:eproveedorescompra,:user])
+                   .order(id: :desc).each do |eproveedorestempcompra| %>
+       <%= render 'eproveedorestempcompras/tr', eproveedorestempcompra: eproveedorestempcompra %>
+     <% end %>
+	  </tbody>
+    <thead class="thcolor">
+    <tr>
+      <th class="alert-danger text-center" colspan="4">Valor total egreso....</th>
+      <th class="alert-danger text-right"> <%= camponumerico @eproveedor.eproveedorestempcompras.sum("total") rescue 0 %></th>
+    </tr>
+    </thead>
+	</table>
+
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%#= will_paginate @eproveedorestempcompras, :param_name => 'eproveedorestempcompras' , renderer: BootstrapPagination::Rails %>
+</div>

@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_usuario<%= @usuario.id %>").html('<%= j render "contratosentepps/abrir_detalle_usuario" %>');
+$("#abrir_usuario<%= @usuario.id %>").addClass("hide");
+$("#cerrar_usuario<%= @usuario.id %>").removeClass("hide");
+$("#tr_show_usuario<%= @usuario.id %>").removeClass("hidden");
+<% else %>
+$("#abrir_usuario<%= @usuario.id %>").removeClass("hide");
+$("#cerrar_usuario<%= @usuario.id %>").addClass("hide");
+$("#abrir_detalle_usuario<%= @usuario.id %>").html(null);
+$("#tr_show_usuario<%= @usuario.id %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

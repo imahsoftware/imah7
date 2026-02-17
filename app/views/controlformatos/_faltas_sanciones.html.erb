@@ -1,0 +1,143 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  @expedicion_rep = portafolio.expedicion_rep
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+    </tr>
+  </table>
+  <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+    <br/>
+    Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>
+    <br/><br/><br/><br/>
+    SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+    C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+    <br/><br/>
+    <strong>ASUNTO:</strong> ESCALA DE FALTAS Y SANCIONES DISCIPLINARIAS PARA OPERARIOS DE ATRACCIONES
+    <br/><br/>
+    Cordial saludo,<br/><br/>
+    Yo <%= @nombre_firma %>, identificado con cedula de ciudadanía N° <%= @identificacion %> de <%=@expedicion_rep %> Antioquia y como representante legal de la empresa <%=@nombre_empresa %> presentó a continuación la escala de faltas y sanciones disciplinarias para operarios de atracciones.
+    <br/><br/>
+    <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+      <strong>ARTÍCULO PRIMERO: </strong> La empresa temporal no podrá imponer a sus trabajadores sanciones no previstas en el código sustantivo del trabajo, en el reglamento interno al cual deberá adherirse esta propuesta, en pactos, en convenciones colectivas, en fallos arbitrales o en el contrato individual.
+      <br/><br/>
+      <strong>ARTÍCULO SEGUNDO: </strong> Cuando un trabajador en misión cometa falta contra éste o su reglamento interno de trabajo, o de cualquier manera incumpla con sus obligaciones contractuales, el jefe inmediato dentro de cinco días hábiles siguientes pasará a a la empresa temporal el informe narrando los hechos que son causal del informe.
+      <br/><br/>
+      Una vez la empresa temporal conozca de los hechos, enviará copia de citación al trabajador en los siguientes dos días hábiles, en la cual se señalará la fecha y hora para la respectiva audiencia de descargos, que tendrá lugar dentro de los dos siguientes días hábiles a la citación a la cual asistirá el trabajador en misión. Cuando las circunstancias lo ameriten se oirán también ampliación de los cargos por parte del coordinador del personal en misión por parte de Metroparques, se llamarán a los testigos necesarios para el total y completo esclarecimiento de los hechos.
+      <br/><br/>
+      La sanción que se imponga después de diez días hábiles de haberse oído los descargos del trabajador afectado no surtirá efecto ya que este se establece como plazo máximo para su aplicación.
+      <br/><br/>
+      La siguiente escala de sanciones disciplinarias se aplicará después de llenados los requisitos anteriores, y según el carácter de la falta así:
+      <br/><br/>
+      <div align="center"><strong>FALTA DE CARÁCTER LEVE</strong></div>
+      <br/><br/>
+      Aquellas que no implican riesgos de seguridad, imagen u operación, son faltas directas contra las normas básicas de comportamiento, presentación y disposiciones del parque.
+      <br/><br/>
+      <strong>Por primera vez:</strong> Llamada de atención por escrito con copia a la hoja de vida, por parte la empresa temporal para el caso de trabajadores en misión.<br/>
+      <strong>Por segunda vez:</strong> Sanción disciplinaria de un día de suspensión (1) de trabajo<br/>
+      <strong>Por tercera vez:</strong> Sanción disciplinaria entre uno (1) y cinco (5) días de trabajo.<br/>
+      <strong>Por cuarta vez</strong> La terminación del contrato de trabajo por parte de la Empresa Temporal.<br/>
+      <br/>
+      <strong>PARÁGRAFO PRIMERO.<br/><br/>
+      Se consideran como faltas leves el incumplimiento u omisión de las siguientes funciones.</strong>
+      <br/><br/>
+      <ol id="1">
+        <li>Los operarios deberán en todo momento conservar la compostura y presentar el mejor trato para los usuarios, compañeros, jefes y demás personas con las cuales se interrelaciona en su trabajo, no está permitido el trato ofensivo, maltrato o cualquier forma que denigre al ser humano.
+        <li>Este siempre atento a las “AUDACIAS”, estas son aquellas acciones que ejecutan los pasajeros durante el ciclo, diferentes a permanecer sentados en una posición derecha, por ejemplo tratar de levantarse, agarrar a otra persona, levantar sus pies en alto, comer o tener objetos en la boca, si se observan acciones audaces en un usuario durante la operación, detenga la atracción y solicítele que evacue esta, si se requiere informa al Supervisor de Atracciones de la situación para que apoye.</li>
+        <li>El operador de atracciones es responsable de mantener una presentación impecable y siempre aseados, botones puestos, camisa por dentro del pantalón, ropa limpia y sin desgastes externos, dotación completa que incluye safari, pito, carnet, camisa operador, pantalón caki operador, zapatillas operador; los operadores de cabello largo se les recomienda mantener este recogido para evitar accidentes.</li>
+        <li>Por seguridad no está permitido durante la operación de la atracción usar aretes, anillos, relojes cadenas expuestas, manillas, pircings visibles, u otro elemento que comprometa la seguridad en la operación y la presentación del operario.</li>
+        <li>Cada operador de atracción está encargado de recoger las llaves de la atracción, la urna y el dispositivo de comunicación, esta acción no deberá ser delegable y se firmara el formato adjunto, cada operario será responsable por los elementos entregados y deberá devolverlos al finalizar el día en las mismas condiciones que le fue entregado.</li>
+        <li>Evite hacer uso de las atracciones durante la jornada laboral.</li>
+        <li>Respete los horarios y ubicaciones asignadas, esta programación se  conocerá con anticipación.</li>
+        <li>Los paros de las atracciones deben estar autorizados y¬/o justificados por una razón lógica.</li>
+        <li>Verificar al finalizar la jornada laboral que las atracciones queden totalmente apagadas.</li>
+        <li>Realizar las labores de limpieza en  la atracción asignada y los sitios que se le asignen.</li>
+        <li>Sea puntual en la hora de entrada y salida del puesto de trabajo.</li>
+        <li>Realizar los pedidos oportunos de equipos e implementos para el desempeño de las labores y tareas asignadas.</li>
+        <li>Velar por el  empleo adecuado y buen uso  de los implementos a su cargo.</li>
+        <li>No permitir la entrada a particulares a los gabinetes de controles, subestaciones de energía o cuartos de maquinas.</li>
+        <li>Tener una excelente disposición en el momento de atender al usuario.</li>
+        <li>De una  clara, oportuna, precisa y amable  información a los usuarios cuando nos aborden  con alguna pregunta  o   inquietud.</li>
+        <li>Respete a los compañeros y superiores.</li>
+        <li>No utilice vocabularios soeces ni ofensivos tanto con compañeros como con los usuarios.</li>
+        <li>Acate con buena disposición las tareas asignadas.</li>
+        <li>El tiempo para almorzar es de  45 minutos para personal vinculado, y de 30 minutos para el personal ocasional. En caso de tener algún inconveniente, avisar oportunamente.</li>
+        <li>Esté pendiente de los usuarios mientras se encuentre en la atracción.</li>
+        <li>Este atento a cualquier anomalía que se presente en el parque y reporte si así se requiere.</li>
+        <li>Avise oportunamente cuando haya algún niño extraviado o algún objeto.</li>
+        <li>Está prohibido guardar cualquier tipo de  objetos o dinero a los usuarios.</li>
+        <li>Haga cumplir las estaturas aprobadas para cada  atracción.</li>
+        <li>No guarde objetos o pertenencias dentro de los gabinetes.</li>
+        <li>Verificar  las medidas de seguridad  para el sano disfrute de los usuarios de cada atracción.</li>
+        <li>Revisar diariamente y atender cuidadosamente a todos los puntos del  check List.</li>
+        <li>Revisar y registrar diariamente en la planilla el horómetro inicial y final, control de usuarios y tiempos muertos en cada jornada.</li>
+        <li>Tener  plena visualización de toda la atracción.</li>
+        <li>Permitir el ingreso y registrar solo a los visitantes que posean el brazalete   correspondiente a la atracción.</li>
+        <li>Dar  aviso inmediato a la unidad de mantenimiento y al coordinador de Atracciones si observa anormalidad en la atracción (olor a caucho, chispas, humo, y algún ruido extraño).</li>
+        <li>Observar al usuario en su comportamiento mientras se encuentre en la atracción.</li>
+        <li>Dar las indicaciones a los visitantes que terminan el ciclo acerca del momento y el lugar por donde deben salir de la atracción.</li>
+        <li>El uso del cinturón para limpieza del polar es obligatorio.</li>
+        <li>Cumplir con las demás actividades que el jefe inmediato le asigne.</li>
+      </ol>
+      <br/><br/>
+      <div align="center"><strong>FALTAS REVESTIDAS DE CARÁCTER GRAVE</strong></div>
+      <br/><br/>
+      Las constituyen las faltas que generan riesgos de forma consciente para la seguridad e integridad de los usuarios, operarios, auxiliares o demás personas que están en torno a la atracción o al parque, comportamientos que atenten contra los bienes de la Empresa,  contra la seguridad, las buenas costumbres y la moral.
+      <br/><br/>
+      <strong>PARÁGRAFO SEGUNDO.<br/><br/>
+        Se consideran como faltas graves el incumplimiento de las siguientes funciones:</strong>
+      <br/><br/>
+      <ol id="1">
+        <li>Nunca se debe abandonar el sitio, mientras la atracción se encuentre en funcionamiento.</li>
+        <li>No deben haber operarios, auxiliares, personal de mantenimiento, personal de sostenimiento ni nadie en la zona de operación mientras la atracción este en funcionamiento, si se requiere que mantenimiento realice alguna inspección, evacue a los usuarios, pare la maquina y entréguela a mantenimiento, salga de la zona y no entre hasta que le entreguen nuevamente la atracción.</li>
+        <li>El uso del cinturón para limpieza del polar es obligatorio.</li>
+        <li>Por seguridad no está permitido el uso de teléfonos celulares o sistemas de audio o video o cualquier medio que pueda distraer al operario durante la operación de la atracción, bajo ninguna circunstancia.</li>
+        <li>Evite atender visitas en el puesto de trabajo.</li>
+        <li>Se prohíbe que  personal ajeno a los operarios manipule los controles de las atracciones.</li>
+        <li>No deje la atracción sola por ningún motivo a menos que posea la autorización y el reemplazo y nunca en operación.</li>
+        <li>Está prohibido desplazarse dentro de las atracciones cuando se encuentren en funcionamiento.</li>
+        <li>Se prohíbe presentarse a laborar en estado de embriaguez o bajo el efecto de drogas psicoactivas.</li>
+        <li>Verificar que la bitácora esté firmada por el personal de mantenimiento, dando así instrucción de lista para operar, al igual que la firma del operario, anotar hora de apertura de la atracción, firmar bitácora y control de usuarios.</li>
+        <li>Revisar diariamente y atender cuidadosamente a todos los puntos del  check List.</li>
+      </ol>
+      <br/><br/>
+      Estas tendrán un tratamiento especial y aún siendo por primera vez podrán ser causales de la terminación del contrato de trabajo.
+    </div>
+    <br/><br/><br/><br/>
+    <table width="100%">
+      <tr>
+        <td width="30%"><b>EL CONTRATANTE</b></td>
+        <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %><%end %>
+          <br/>
+          <%= @nombre_firma %><br/>
+          Representante Legal
+        </td>
+      </tr>
+    </table>
+    <br/><br/>
+    <% if @controlfirma.codigo_firma.present? %>
+      <%= contratospersona.nombre_completo rescue nil %><br/>
+      <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+      <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+      <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+      * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+    <% else %>
+      FIRMA DEL TRABAJADOR:<br/>
+      CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+    <% end %>
+    <br/>
+    <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+  </div>
+</div>

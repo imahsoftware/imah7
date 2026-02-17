@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <th width="5%"></th>
+        <th width="5%" class="text-center">ID</th>
+        <th class="text-center">Fecha Inicio</th>
+        <th class="text-center">Fecha Fin</th>
+        <th class="text-center">Estado</th>
+        <th class="text-center">Fecha Limite</th>
+        <th class="text-center">Visiblex</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_periodosliquidaciones">
+      <% @periodosliquidaciones.each do |periodosliquidacion| %>
+        <%= render 'periodosliquidaciones/tr', periodosliquidacion: periodosliquidacion %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,22 @@
+<tr>
+  <td></td>
+  <td class="text-left" style="font-size:11px;">
+    <div id="abrir_carnet<%= c.contrato_id %><%= p.estado2 %>" class="pull-left">
+      <%= link_to show_detalle_carnet_menus_path(contrato_id: c.contrato_id, estado: p.estado2, ruta: 'ABRIR', val_carne: p.val_carne), remote: true do %>
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%= Contrato.find(c.contrato_id).empresa.identnombre rescue nil %>
+      <% end %>
+    </div>
+    <div id="cerrar_carnet<%= c.contrato_id %><%= p.estado2 %>" class="pull-left hide">
+      <%= link_to show_detalle_carnet_menus_path(contrato_id: c.contrato_id, estado: p.estado2, ruta: 'CERRAR', val_carne: p.val_carne), remote: true do %>
+        <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%= Contrato.find(c.contrato_id).empresa.identnombre rescue nil %>
+      <% end %>
+    </div>
+  </td>
+</tr>
+<tr id="tr_show_carnet<%= c.contrato_id %><%= p.estado2 %>" class="hidden">
+  <td colspan="2">
+    <div id="abrir_detalle_carnet<%= c.contrato_id %><%= p.estado2 %>"></div>
+  </td>
+</tr>

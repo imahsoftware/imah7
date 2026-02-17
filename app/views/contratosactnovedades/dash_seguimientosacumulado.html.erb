@@ -1,0 +1,106 @@
+<head>
+  <% estado_novedad = params[:estado].gsub('_',' ')
+     #fechasshow = Contratosactnovedad.select(["DATE_FORMAT(fecha, '%m') as mes, DATE_FORMAT(fecha, '%Y') as anno"]).where(["estado = 'PENDIENTE'"]).distinct(["DATE_FORMAT(fecha, '%m') as mes, DATE_FORMAT(fecha, '%Y') as anno"]).order("DATE_FORMAT(fecha, '%Y') desc,  DATE_FORMAT(fecha, '%Y') desc")
+     fechasshow = Segumientoconsolidado.select("periodo").where("tipo = 'CONSOLIDADO' and estado = '#{estado_novedad}'").distinct
+     @meses = "'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'"
+     #fechasdias = Segumientoconsolidado.where("estado = '#{estado_novedad}' and user_id = #{is_admin}")
+  %>
+
+  <script type="text/javascript">
+      $(function () {
+          var chart;
+          $(document).ready(function () {
+              chart = new Highcharts.Chart({
+                  chart: {
+                      renderTo: 'container',
+                      type: 'spline'
+                  },
+                  title: {
+                      text: 'Estado del Seguimiento Acumulado - <%= estado_novedad.capitalize %>'
+                  },
+                  xAxis: {
+                      categories: [<%= @meses.html_safe %>]
+                  },
+                  yAxis: {
+                      min: 0,
+                      title: {
+                          text: ' Cantidades'
+                      },
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#ffffff'
+                      }]
+                  },
+                  tooltip: {
+                      shared: true,
+                      crosshairs: true
+                  },
+
+                  plotOptions: {
+                      spline: {
+                          lineWidth: 4,
+                          states: {
+                              hover: {
+                                  lineWidth: 5
+                              }
+                          },
+                          marker: {
+                              enabled: false
+                          }
+                      }
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle'
+                  },
+                  credits: {
+                      enabled: false
+                  },
+                  series: [
+                      <%
+                        ing = 0
+                        estado = true
+                        fechasshow.each do |f|
+                          fch1 = f.periodo.to_s
+                          vlr = []
+                          vlrHoy = 0
+                          diaFinish = 0
+                          dt = 0
+
+                          Segumientoconsolidado.where("tipo = 'CONSOLIDADO' and estado = '#{estado_novedad}' and periodo = '#{fch1}'").each do |d|
+                            vlr << d.valor.to_i
+                            vlrHoy = d.valor.to_i
+                            diaFinish = d.dia.to_i
+                          end
+
+                          dt = 31 - diaFinish
+                          i = 0
+                          if dt > 0
+                            while i < dt
+                              vlr << vlrHoy.to_i
+                              i = i + 1
+                            end
+                          end
+                          ing = ing + 1
+                          if ing >= 10
+                            estado = false
+                          end
+
+                      %>
+                      {
+                          name: '<%=fch1.to_s %>',
+                          data: <%=vlr%>,
+                          visible: <%=estado%>
+                      }, <% end %>]
+              });
+          });
+
+      });
+  </script>
+</head>
+<body>
+<div id="container" style="min-width: 280px; height: 370px; margin: 0 auto"></div>
+</body>
+</html>

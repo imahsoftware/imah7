@@ -1,0 +1,67 @@
+<tr id="eproveedorescompra_<%= eproveedorescompra.id %>">
+  <td rowspan="2" class="text-center">
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= eproveedorescompra.user_nombre.html_safe rescue nil %><%= eproveedorescompra.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td rowspan="2" align="center" style="font-size:11px;"><%= eproveedorescompra.fecha %></td>
+  <td rowspan="2" align="center" style="font-size:11px;"><%= eproveedorescompra.nro_factura %></td>
+  <td align="left" style="font-size:11px;"><strong><%= eproveedorescompra.portafolio.nombre rescue nil %></strong></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_descuento %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_iva %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_retencion %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.total %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.saldo %></td>
+  <td align="center" style="font-size:10px;"><strong><%if eproveedorescompra.estado.to_s == 'CAUSADA' %><small class="text-red"><%= eproveedorescompra.estado rescue nil%></small><%else %><small class="text-blue"><%= eproveedorescompra.estado rescue nil%></small><%end %></strong></td>
+</tr>
+  <tr>
+    <td colspan="8" align="left">
+      <% if eproveedorescompra.valorretencion.to_i > 0 %>
+        <a href="javascript:void(0);" onclick="SINO('demo_<%=eproveedorescompra.id%>')">
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:#ff0000;" data-original-title="Pulsa aqui para ver retenciones"></i>Ver detalle de retenciones ($<%= camponumerico eproveedorescompra.valorretencion rescue nil%>)</a>
+        <div id="demo_<%=eproveedorescompra.id rescue nil %>" style="display:none;"><br/>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <tr>
+            <th width="23%" class="text-left" style="font-size:10px;">Concepto</th>
+            <th class="text-left" style="font-size:10px;">Retencion</th>
+            <th width="15%" class="text-right" style="font-size:10px;">Valor</th>
+          </tr>
+          </thead>
+          <% eproveedorescompra.eproveedorescompretenciones.includes([:tipospretencion,:concepto]).each do |a| %>
+            <tr>
+              <td align="left" style="font-size:10px;"><%= a.concepto.descripcion rescue nil %></td>
+              <td align="left" style="font-size:10px;"><%= a.tipospretencion.descripcion rescue nil %> - (<%= a.tipospretencion.porcentaje rescue nil %>%)</td>
+              <td align="right" style="font-size:10px;"><%= camponumerico a.valor %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+      <small>Observaciones: <%= eproveedorescompra.observacion rescue nil %></small>
+      </div>
+      <% if eproveedorescompra.existeimagen.to_s == 'X' %><br/>
+        <a href="javascript:void(0);" onclick="SINO('demoimg_<%=eproveedorescompra.id%>')">
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:#ff0000;" data-original-title="Pulsa aqui para ver recaudos"></i>Ver soportes digitales </a>
+        <div id="demoimg_<%=eproveedorescompra.id rescue nil %>" style="display:none;">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead class="thcolor">
+            <tr>
+              <th class="text-left" style="font-size:10px;">Documento</th>
+            </tr>
+            </thead>
+          <% eproveedorescompra.eproveedorescimagenes.each do |a| %>
+              <tr>
+                <td align="left" style="font-size:10px;"><%= link_to a.compraimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <i class="fa fa-cloud-download text-danger"></i> <%=a.compraimagen_file_name %>
+                    <% end %></td>
+              </tr>
+          <%end %>
+          </table>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+<div class="modal fade" id="adddocumento">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

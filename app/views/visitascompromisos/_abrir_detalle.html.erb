@@ -1,0 +1,95 @@
+<div class="table-responsive">
+  <% visitas = Visitascompromiso.joins(:visita)
+                                .select("(select nombre from users where id = visitas.user_id) nombreuser,
+                                          (select autobuscar from empresas where id = (select empresa_id from contratos where id = visitas.contrato_id)) identnombre,
+                                          (select nro_contrato from contratos where id = visitas.contrato_id) nro_contrato, visitascompromisos.*")
+                                .where("visitascompromisos.estado = 'PENDIENTE' and visitascompromisos.fecha = '#{@fecha}'")
+                                .order("visitascompromisos.id asc")
+
+    if visitas.present? %>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <td width="5%"></td>
+        <th width="12%" class="text-center text-table">Fecha Visita</th>
+        <th class="text-left text-table" width="35%">Empresa - Contrato</th>
+        <th class="text-left text-table">Compromiso</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_visitascompromisos">
+      <% visitas.each do |visitascompromiso| %>
+        <tr id="visitascompromiso_<%= visitascompromiso.id %>">
+          <td class="text-center">
+            <%= link_to compromisos_visitascompromisos_path(id: visitascompromiso.id, identnombre: visitascompromiso.identnombre, nro_contrato: visitascompromiso.nro_contrato, userVisita: visitascompromiso.user_id), remote: true, data: { toggle: 'tooltip' }, title: "Cerrar Proceso de Compromiso" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+            <% end %>
+            <%= link_to documento_visitascompromisos_path(id: visitascompromiso.id), remote: true,  data: { toggle: 'tooltip' }, title: "Cargar Documentos Digitales" do %>
+              <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+            <% end %>
+          </td>
+          <td align="center" class="text-table"><%= visitascompromiso.visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+          <td align="left" class="text-table"><%= visitascompromiso.identnombre rescue nil %>
+            <br/><strong>Contrato Nro: </strong><%= visitascompromiso.nro_contrato rescue nil %>
+            <br/><strong>Responsable compromiso: </strong><%= visitascompromiso.nombreuser rescue nil %></td>
+          <td align="left" class="text-table"><%= visitascompromiso.compromiso rescue nil %>
+            <% if visitascompromiso.visitasdocs.present? %>
+              <div style="padding: 10px">
+                <em><b><i class="fa fa-file-pdf-o"></i> Documentos Digitales</b></em>
+                <hr style="margin: 4px;">
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <td width="5%"></td>
+                    <th width="25%" class="text-left text-table">Tipo</th>
+                    <th class="text-left text-table">Documentos</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_visitasdocs">
+                  <% visitascompromiso.visitasdocs.order(id: :desc).each do |visitasdoc| %>
+                    <tr id="visitasdoc_<%= visitasdoc.id %>">
+                      <td class="text-center">
+                        <% if visitasdoc.visita.finalizacion.blank? %>
+                          <% if ['ANTES', 'DESPUES'].exclude?(visitasdoc.tipo) %>
+                            <%= link_to visita_visitasdoc_path(visitasdoc.visita, visitasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                              <i class="fa fa-trash text-red"></i>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      </td>
+
+                      <td align="left" class="text-table">
+                        <%= visitasdoc.tipo_descripcion rescue nil %>
+                      </td>
+                      <td align="left" class="text-table">
+                        <%= link_to visitasdoc.docvisita.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                          <i class="fa fa-cloud-download"></i> <%= visitasdoc.docvisita_file_name rescue nil %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
+          </td>
+        </tr>
+        <div class="modal fade" id="compromisos<%= visitascompromiso.id %>">
+          <div class="modal-dialog" style="width: 70%;">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="documentos<%= visitascompromiso.id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-warning">
+      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+    </div>
+  <% end %>
+</div>

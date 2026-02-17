@@ -1,0 +1,38 @@
+<%= simple_form_for([@evaluacion, @evaluacionesdetalle], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <% if @evaluacion.tipo == 'EVALUACION DESEMPENO' %>
+          <%= f.input :clase, collection: Iparametro.where(campo: 'evaluacion_clase').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Clase" %>
+        <% else %>
+          <%= f.input :clase, collection: Iparametro.where(campo: 'evaluacion_clase_prueba').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Clase" %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :actividad, label: "Actividad" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :requieredoc, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Requiere Documento" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= f.input :observacion, as: :text, input_html: { class: "uppercaseInput" }, label: "Observación" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @evaluacionesdetalle.new_record? %>
+          <%= link_to "Cancelar", cancelar_evaluacionesdetalles_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", evaluacion_evaluacionesdetalle_path(@evaluacion, @evaluacionesdetalle), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+

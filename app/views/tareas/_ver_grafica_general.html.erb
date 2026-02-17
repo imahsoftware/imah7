@@ -1,0 +1,38 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title" id="exampleModalLabel"><%= @tarea.tema rescue nil %></h4>
+    </div>
+    <div class="modal-body">
+      <canvas id="miGraficoTorta<%= @tarea.id %>" width="10" height="10"></canvas>
+      <script>
+
+          function inicializarGrafico() {
+              var ctx = document.getElementById("miGraficoTorta<%= @tarea.id %>").getContext("2d");
+
+              var data = {
+                  labels: ["Pendiente (<%=@pendientes%>)", "En Proceso (<%=@procesos%>)", "Finalizado (<%=@finalizados%>)"],
+                  datasets: [{
+                      data: [<%= @pendientes %>, <%= @procesos %>, <%= @finalizados %>],
+                      backgroundColor: ["#EE2727", "#FFCE56", "#28AF10"]
+                  }]
+              };
+
+              var options = {
+                  title: {
+                      display: true,
+                      text: 'Estado de las actividades programadas'
+                  }
+              };
+
+              var myPieChart = new Chart(ctx, {
+                  type: 'pie',
+                  data: data,
+                  options: options
+              });
+          }
+      </script>
+    </div>
+  </div>
+</div>

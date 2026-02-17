@@ -1,0 +1,95 @@
+<%
+  if @consultarallconv
+    personasformularios = @personasformularios.where(["contrato_id = #{@contrato.id}"])
+  else
+    if Personasformulario.where("user_asignado = #{is_admin}").present?
+      personasformularios = @personasformularios.where(["contrato_id = #{@contrato.id} and user_asignado = #{is_admin}"])
+    else
+      personasformularios = @personasformularios.where(["contrato_id = #{@contrato.id}"])
+    end
+  end
+%>
+
+<% if personasformularios.present? %>
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th width="5%"></th>
+        <th width="10%" class="text-center text-table">Identificación</th>
+        <th class="text-left text-table">Nombre</th>
+        <th width="20%" class="text-left text-table">Cargo</th>
+        <th width="25%" class="text-left text-table">Correo</th>
+        <th width="10%" class="text-center text-table">Celular</th>
+        <th width="10%" class="text-center text-table">Estado Examenes</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% personasformularios.each do |personasformulario|
+        exmedico = personasformulario.estado_examen_medico
+      %>
+        <tr id="parcargo_<%= personasformulario.id %>">
+          <td class="text-center">
+            <%= link_to edit_personasformulario_path(personasformulario), class: 'edit_parcargo_button', data: { toggle: 'tooltip' }, title: "Ver" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-eye"></i></button>
+            <% end %>
+            <button class="btn btn-xs btn-info">
+              <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Creación: <%= personasformulario.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/>Por: <%= personasformulario.username rescue nil %><br/>Ult. Act: <%= personasformulario.updated_at.strftime('%Y-%m-%d %X') rescue nil %></div>"><i class="fa fa-info" aria-hidden="true"></i></span>
+            </button>
+          </td>
+          <td class="text-center text-table"><%= personasformulario.identificacion rescue nil %>
+            <% if personasformulario.minicontratacion.to_s == 'SI' %><i class="fa fa-adn text-red"></i>
+            <% end %>
+          </td>
+          <td class="text-left text-table"><%= personasformulario.nombre_completo rescue nil %>
+            <% if personasformulario.estado.to_s == 'CONTRATACION'
+                 if personasformulario.idvalidacioncontratocreado.present? %>
+                <br/> <small style="color: red"><i class="fa fa-check"></i> Contrato Firmado</small>
+              <% end %>
+            <% end %>
+          </td>
+          <td class="text-left text-table"><%= personasformulario.cargo_descripcion rescue nil %></td>
+          <td class="text-left text-table">
+            <% if personasformulario.estado == "APROBADO" and exmedico.to_s != "RECHAZADO" %>
+              <%= link_to notificacion_correo_personasformularios_path(id: personasformulario.id), remote: true, data: { toggle: 'tooltip', style: "top: 11px;" }, title: "Enviar Notificación de Estado" do %>
+                <i class="fa fa-envelope-square" style="color: red"></i>
+              <% end %>
+            <% end %>
+            <%= personasformulario.correo rescue nil %></td>
+          <td class="text-center text-table">
+            <% if personasformulario.estado == "APROBADO" and exmedico.to_s != "RECHAZADO" %>
+              <%= link_to notificacion_sms_personasformularios_path(id: personasformulario.id), remote: true, data: { toggle: 'tooltip', style: "top: 11px;" }, title: "Enviar Notificación de Estado" do %>
+                <i class="fa fa-phone" style="color: red"></i>
+              <% end %>
+            <% end %>
+            <%= personasformulario.celular rescue nil %></td>
+          <td class="text-center text-table"><%= exmedico.to_s rescue nil %>
+            <% if personasformulario.estado.to_s == 'CONTRATACION'
+                 idContratosPersona = personasformulario.idpersona rescue nil #Contratospersona.where("identificacion = '#{personasformulario.identificacion}'").first.id rescue nil
+            %>
+              <% if @is_auth_c_contratacionaprobar and idContratosPersona.present? %>
+                <%= link_to edit_contratospersona_path(id: idContratosPersona, etapa: 'F'), title: "Ir al Contrato" do %>
+                  <i class="fa fa-child text-blue"></i>
+                <% end %>
+              <% end %>
+            <% else %>
+              <% if personasformulario.estado.to_s == 'APROBADO' and personasformulario.estado_examen_medico_ori.to_s == 'APROBADO' %>
+                <% if @is_auth_c_contratacionaprobar %>
+                  <%= link_to envio_formulario_personasformularios_path(id: personasformulario, estado: 'CONTRATACION'), data: { confirm: "Seguro que desea iniciar el proceso de contratación?", toggle: 'tooltip' }, title: "Aprobar Contratacion" do %>
+                    <i class="fa fa-diamond text-red"></i>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-tools pull-right">
+      <%= will_paginate personasformularios, renderer: BootstrapPagination::Rails %>
+    </div>
+  </div>
+<% else %>
+  <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> - <%= t :atencion_msj %></div>
+<% end %>

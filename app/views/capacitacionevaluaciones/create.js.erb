@@ -1,0 +1,11 @@
+<% if @capacitacion.capacitacionevaluaciones.present? %>
+	$("#capacitacionevaluaciones").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_capacitacionevaluaciones").prepend("<%= j render 'tr', capacitacionevaluacion: @capacitacionevaluacion %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#capacitacionevaluacion_form").collapse("hide");

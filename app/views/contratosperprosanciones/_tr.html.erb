@@ -1,0 +1,78 @@
+<tr id="contratosperprosancion_<%= contratosperprosancion.id %>">
+  <td class="text-center">
+    <% if contratosperprosancion.codigo_firma.blank? %>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;" id="remove_boton<%= contratosperprosancion.id %>">
+        <div>
+          <%= link_to edit_contratosperproceso_contratosperprosancion_path(@contratosperproceso, contratosperprosancion), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+          <% end %>
+          <%= link_to contratosperproceso_contratosperprosancion_path(@contratosperproceso, contratosperprosancion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+          <% end %>
+        </div>
+        <% if contratosperprosancion.codigo_firma_empleado.blank? %>
+          <div style="margin-left: 10px;" id="remove_boton_citacion_<%= contratosperprosancion.id %>">
+            <%= link_to otp2_contratosperprosanciones_path(id: contratosperprosancion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Documento Usuario' do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+            <% end %>
+          </div>
+        <% end %>
+        <div>
+          <%= link_to otp_contratosperprosanciones_path(id: contratosperprosancion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Documento' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-paint-brush"></i></button>
+          <% end %>
+          <%= link_to procesos_pdf_contratosperprocesos_path(id: contratosperprosancion.id, contratosperproceso_id: contratosperprosancion.contratosperproceso_id, format: :pdf, proceso: 'SANCION'), data: { toggle: 'tooltip' }, class: 'popup', title: 'Sancion' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+          <% if contratosperprosancion.desvinculacion.to_s == 'SI'  %>
+            <%= link_to procesos_pdf_contratosperprocesos_path(id: contratosperprosancion.id, contratosperproceso_id: contratosperprosancion.contratosperproceso_id, format: :pdf, proceso: 'TERMINACION'), data: { toggle: 'tooltip' }, class: 'popup', title: 'Terminacion' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <% if Contratosperprodoc.where("id_proceso = #{contratosperprosancion.id} and proceso = 'SANCIONES'").present? %>
+      <%= link_to Contratosperprodoc.where("id_proceso = #{contratosperprosancion.id} and proceso = 'SANCIONES'").first.docproceso.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+    <% if Contratosperprodoc.where("id_proceso = #{contratosperprosancion.id} and proceso = 'TERMINACION'").present? %>
+      <%= link_to Contratosperprodoc.where("id_proceso = #{contratosperprosancion.id} and proceso = 'TERMINACION'").first.docproceso.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Terminacion', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperprosancion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><%= contratosperprosancion.user.nombre rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperprosancion.sancion rescue nil %></td>
+  <td align="justify" class="text-table"><%= contratosperprosancion.reglamento rescue nil %>
+    <div id="firmado_check<%= contratosperprosancion.id %>"></div>
+    <% if contratosperprosancion.codigo_firma.present? %>
+      <div>
+        <b>Firmado:</b> <i class="fa fa-check text-success"></i> - <b>Fecha: </b><%= contratosperprosancion.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %><br/> <b>Usuario:</b> <%= User.find(contratosperprosancion.user_firma).nombre rescue nil %>
+      </div>
+    <% end %>
+    <% if contratosperprosancion.codigo_firma_empleado.present? %>
+      <div><b>Firmado Empleado:</b> <i class="fa fa-check text-success"></i> - <b>Fecha: </b><%= contratosperprosancion.codigo_fecha_empleado.strftime("%Y-%m-%d %X") rescue nil %></div>
+    <% end %>
+  </td>
+  <td align="center" class="text-table"><%= contratosperprosancion.desvinculacion rescue nil %><br/>
+  <% if contratosperprosancion.desvinculacion.to_s == 'SI' %><strong>Fecha: </strong><%= contratosperprosancion.fecha_desvinculacion rescue nil %><% end %></td>
+</tr>
+
+<div class="modal fade" id="otp<%= contratosperprosancion.id rescue nil %>">
+  <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="otp2<%= contratosperprosancion.id rescue nil %>">
+  <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+

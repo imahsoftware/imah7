@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  persona: one
+  user: one
+  documentos: 
+
+two:
+  persona: two
+  user: two
+  documentos: 

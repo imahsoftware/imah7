@@ -1,0 +1,2 @@
+class Controlfirma < ApplicationRecord
+end

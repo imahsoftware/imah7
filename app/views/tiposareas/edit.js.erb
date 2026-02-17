@@ -1,0 +1,17 @@
+$("#tiposarea_form").collapse("hide");
+
+$("#tiposarea_form").empty();
+
+<% if @active_record.present? %>
+	$("#tiposarea_<%= @active_record.id %>").replaceWith("<%= j render 'tr', tiposarea: @active_record %>");
+<% end %>
+
+$("#tiposarea_<%= @tiposarea.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#tiposarea_<%= @tiposarea.id %>").addClass("active_tiposarea");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

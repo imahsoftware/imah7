@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  infgrupo_id: 1
+  hoja: MyString
+  plano: MyString
+  consulta: MyString
+  orden: 1
+  estado: MyString
+
+two:
+  infgrupo_id: 1
+  hoja: MyString
+  plano: MyString
+  consulta: MyString
+  orden: 1
+  estado: MyString

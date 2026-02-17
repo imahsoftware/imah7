@@ -1,0 +1,23 @@
+<tr id="contratosperalerta_<%= contratosperalerta.id %>">
+  <td class="text-center">
+    <% if is_auth_a("contratosperalerta") %>
+      <%= link_to edit_contratospersona_contratosperalerta_path(@contratospersona, contratosperalerta), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("contratosperalerta") %>
+      <%= link_to contratospersona_contratosperalerta_path(@contratospersona, contratosperalerta), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratosperalerta.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= contratosperalerta.user.username rescue nil %>
+      <br/><%= contratosperalerta.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(contratosperalerta.user_anula).username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosperalerta.fecha rescue nil %></td>
+  <td align="left"><%= contratosperalerta.observacion rescue nil %></td>
+  <td align="left"><%= contratosperalerta.estado rescue nil %></td>
+
+</tr>
+

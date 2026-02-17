@@ -1,0 +1,18 @@
+$("#conceptosretencion_form").collapse("hide");
+
+$("#conceptosretencion_form").empty();
+
+<% if @active_record.present? %>
+	$("#conceptosretencion_<%= @active_record.id %>").replaceWith("<%= j render 'tr', conceptosretencion: @active_record %>");
+<% end %>
+
+$("#conceptosretencion_<%= @conceptosretencion.id %>").html("<td colspan='7'><%= j render 'form' %></td>");
+
+$("#conceptosretencion_<%= @conceptosretencion.id %>").addClass("active_conceptosretencion");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();

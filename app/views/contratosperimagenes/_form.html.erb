@@ -1,0 +1,51 @@
+<%= simple_form_for([@contratospersona, @contratosperimagen], remote: true) do |f| %>
+  <% sql = ""
+     if is_tipoconsulta == 'PERSONA'
+       sql = " and visible = 'SI'"
+     end %>
+  <%= hidden_field_tag :ruta, params[:ruta], value: @ruta %>
+  <div class="bs-callout">
+    <div class="row">
+      <% if @ruta.blank? %>
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+          <%= f.input :contratosperfecha_id, collection: @contratospersona.contratosperfechas.includes([:contrato, :contratoscargo, :contratosgrupo]).order(id: :desc).collect { |p| [p.detallecontrato, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Empresa - contrato - perfil" %>
+        </div>
+      <% end %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @ruta.present? ? '12' : '5' %> col-lg-<%= @ruta.present? ? '12' : '5' %>">
+        <%= f.input :descripcion, collection: Iparametro.where("campo in ('documentos_personales','documentos_contratacion','documentos_post-contratacion') #{sql}").order("campo, descripcion").collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Tipo de Documento" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :personasimagen, as: :file, label: 'Archivo a cargar' %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= f.input :observacion_documento, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: "Observación" %>
+      </div>
+    </div>
+    <% if @ruta.blank? %>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= f.input :observacion_aprobacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 } %>
+        </div>
+      </div>
+    <% end %>
+
+    <br/>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperimagen.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperimagen_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperimagen_path(@contratospersona, @contratosperimagen), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

@@ -1,0 +1,106 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <%
+    @user = current_user
+    portafolio = Portafolio.find(@user.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  %>
+  <br/>
+  <style type="text/css">H1.SaltoDePagina {
+      PAGE-BREAK-AFTER: always
+  }</style>
+
+
+  <table width="100%">
+    <tr>
+      <td>
+        <table width="100%" border="0">
+          <tr>
+            <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+              <div align="center">
+                <strong>
+                  <div style="font-size: 18px; font-family: Tahoma;">INFORME SOLICITUDES EPPS
+                  </div>
+                </strong>
+              </div>
+            </td>
+            <td width="30%">
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="40%" height="25" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">
+              <strong>NOMBRE DEL EMPLEADOR : </strong></td>
+            <td style=" font-size: 12px; font-family: Tahoma;">&nbsp;<%= portafolio.razon_social rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">
+              <strong>DOMICILIO DEL EMPLEADOR: </strong></td>
+            <td style=" font-size: 12px; font-family: Tahoma;">&nbsp;<%= portafolio.direccion rescue nil %>, MEDELLIN
+              - ANTIOQUIA
+            </td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">
+              <strong>IDENTIFICACION DEL EMPLEADOR: </strong></td>
+            <td style=" font-size: 12px; font-family: Tahoma;">&nbsp;<%= portafolio.identificacion rescue nil %>
+              -<%= portafolio.digito rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">
+              <strong>EMPRESA: </strong></td>
+            <td style=" font-size: 12px; font-family: Tahoma;">&nbsp;<%= @contrato.empresa.identnombre rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma;">
+              <strong>NRO CONTRATO: </strong></td>
+            <td style=" font-size: 12px; font-family: Tahoma;">&nbsp;<%= @contrato.nro_contrato rescue nil %></td>
+          </tr>
+        </table>
+        <br/>
+
+      </td>
+    </tr>
+  </table>
+
+
+  <% Contratossolepp.where("contrato_id = #{@contrato.id}").order("id desc").each do |contratossolepp| %>
+
+    <div style=" width: 100%; text-align: left; padding: 5px; font-size: 14px;font-family: Tahoma;">
+      <b><%= contratossolepp.user.nombre rescue nil %></b></div>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="35%" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left">Item</th>
+        <th width="15%" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: right">Cnt
+          Aprobada
+        </th>
+        <th width="40%" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left">Observación</th>
+      </tr>
+
+      <% contratossolepp.contratossoleppsdetalles.order(id: :desc).each do |contratossoleppsdetalle| %>
+        <tr>
+          <td align="left" style="font-size: 12px; font-family: Tahoma; padding: 5px;"><%= contratossoleppsdetalle.item rescue nil %></td>
+          <td align="right" style="font-size: 12px; font-family: Tahoma; padding: 5px; text-align: right"><%= camponumerico contratossoleppsdetalle.cant_aprobada rescue nil %></td>
+          <td align="left" style="font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left"><%= contratossoleppsdetalle.observacion.upcase rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+    <br/>
+  <% end %>
+</div>
+
+

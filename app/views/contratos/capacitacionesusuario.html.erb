@@ -1,0 +1,160 @@
+<div class="box-body">
+  <div class="callout callout-danger">
+    <h4>Hola, <%= @contratospersona.nombres rescue nil %></h4>
+    <p>Para continuar en nuestra plataforma, es necesario que completes la siguiente(s) capacitacion(es). Por favor,
+      diligencia el contenido correspondiente.</p>
+  </div>
+  <div class="box box-default">
+    <div class="box-body">
+      <table class="table table-bordered table-condensed table-striped  table-hover miestilo">
+        <thead class="thcolor">
+        <tr>
+          <th width="100%" colspan="6" data-titulo="CAPACITACIONES PENDIENTES POR REALIZAR: ">
+            <div align="center"><b>CAPACITACIONES PENDIENTES POR REALIZAR</b></div>
+          </th>
+        </tr>
+        <tr>
+          <th width="10%" class="text-center"></th>
+          <th width="25%" class="text-left text-table">Capacitación</th>
+          <th class="text-left text-table">Informacion</th>
+        </tr>
+        </thead>
+        <% cnt = 0
+           for contratoscapapersona in @contratoscapapersonas.includes([:capacitacion, :contratoscapacitacion]) %>
+          <tr>
+            <td class="text-center text-table" id="rowspan<%= contratoscapapersona.id %>">
+              <%= link_to show_detalle_capacitaciones_path(contratoscapapersona_id: contratoscapapersona.id, contrato_id: contratoscapapersona.contrato_id), remote: true do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-sticky-note"></i> Ver Evaluación</button>
+              <% end %>
+            </td>
+            <td class="text-table"><%= contratoscapapersona.capacitacion.descripcion rescue nil %></td>
+            <td class="text-table">
+              <strong>Objetivo: </strong><%= contratoscapapersona.capacitacion.objetivo rescue nil %><br/>
+              <strong>Tema: </strong><%= contratoscapapersona.capacitacion.temas rescue nil %><br/>
+              <% if contratoscapapersona.capacitacion.capacitaciondocs.present? %>
+                <table class="table table-bordered table-condensed table-striped  table-hover miestilo">
+                  <tr class="thcolor">
+                    <th class="font-size-text-tabla text-table" data-titulo="Material de Apoyo: ">Material de Apoyo
+                    </th>
+                  </tr>
+                  <tr>
+                    <td class="text-left">
+                      <% contratoscapapersona.capacitacion.capacitaciondocs.order(id: :desc).each do |capacitaciondoc| %>
+                        <% if capacitaciondoc.capacitaciondoc_file_name.present? %>
+                          <%= link_to capacitaciondoc.capacitaciondoc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                            <i class="fa fa-cloud-download text-danger"></i> <%= capacitaciondoc.descripcion rescue nil %>
+                            - <%= capacitaciondoc.capacitaciondoc_file_name rescue nil %>
+                          <% end %>
+                        <% else %>
+                          <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'VIDEO' %>
+                            <%= link_to video_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Video" do %>
+                              <i class="fa fa-youtube-play text-danger"></i> <%= capacitaciondoc.descripcion rescue nil %>
+                            <% end %>
+                          <% end %>
+                          <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'LINK' %>
+                            <%= link_to link_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Link" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-external-link-square"></i></button>
+                            <% end %>
+                          <% end %>
+                        <% end %><br/>
+                        <div class="modal fade" id="video<%= capacitaciondoc.id %>">
+                          <div class="modal-dialog" style="height: 600px;">
+                            <div class="modal-content" style="height: 600px;"></div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="link<%= capacitaciondoc.id %>">
+                          <div class="modal-dialog modal-dialog-responsive" role="document">
+                            <div class="modal-content"></div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              <% end %>
+            </td>
+          </tr>
+          <div class="modal fade" id="abrir_detalle<%= contratoscapapersona.id %>">
+            <div class="modal-dialog modal-dialog-responsive" role="document">
+              <div class="modal-content">
+              </div>
+            </div>
+          </div>
+
+          <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                  // Escuchar el evento 'change' de los radios
+                  $(document).on('change', '.respuesta-radio', function () {
+                      var resultadoId = $(this).data('resultado-id');
+                      var selectedOptionValue = $(this).val();
+
+                      // Enviar la solicitud AJAX al servidor
+                      fetch(`/contratoscaparesultados/${resultadoId}/update_respuesta`, {
+                          method: 'PATCH',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'X-CSRF-Token': '<%= form_authenticity_token %>'
+                          },
+                          body: JSON.stringify({opcion_id: selectedOptionValue})
+                      })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log('Respuesta del servidor:', data);
+                              if (data.mostrarboton) {
+                                  $("#boton_enviar<%= contratoscapapersona.id %>").html(
+                                      '<%= link_to envia_capacitacion_capacitaciones_path(contrato_id: contratoscapapersona.contrato_id,  contratoscapapersona_id: contratoscapapersona.id, capacitacion_id: contratoscapapersona.capacitacion_id), remote: true do %>' +
+                                      '<button class="btn btn-xs btn-warning">' +
+                                      '<i class="fa fa-check" data-toggle="tooltip" data-original-title="Enviar respuestas"></i> Firmar Capacitación' +
+                                      '</button>' +
+                                      '<% end %>'
+                                  );
+                                  $(".envia-capacitacion-boton<%= contratoscapapersona.id %>").hide();
+                                  $("#boton_enviar2<%= contratoscapapersona.id %>").html(
+                                      '<%= link_to envia_capacitacion_capacitaciones_path(contrato_id: contratoscapapersona.contrato_id,  contratoscapapersona_id: contratoscapapersona.id, capacitacion_id: contratoscapapersona.capacitacion_id), remote: true do %>' +
+                                      '<button class="btn btn-xs btn-warning">' +
+                                      '<i class="fa fa-check" data-toggle="tooltip" data-original-title="Enviar respuestas"></i> Firmar Capacitación' +
+                                      '</button>' +
+                                      '<% end %>'
+                                  );
+                                  $(".envia-capacitacion-boton2<%= contratoscapapersona.id %>").hide();
+                              } else {
+                                  $("#boton_enviar<%= contratoscapapersona.id %>").html('');
+                                  $("#boton_enviar2<%= contratoscapapersona.id %>").html('');
+                              }
+                          })
+                          .catch(error => {
+                              console.error('Error en la solicitud AJAX:', error);
+                          });
+                  });
+
+                  // Actualizar el estado de los radios al cargar la página
+                  $('.respuesta-radio:checked').each(function () {
+                      var resultadoId = $(this).data('resultado-id');
+                      var selectedOptionValue = $(this).val();
+
+                      // Enviar la solicitud AJAX al servidor para actualizar el estado al cargar la página
+                      fetch(`/contratoscaparesultados/${resultadoId}/update_respuesta`, {
+                          method: 'PATCH',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'X-CSRF-Token': '<%= form_authenticity_token %>'
+                          },
+                          body: JSON.stringify({opcion_id: selectedOptionValue})
+                      })
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log('Respuesta del servidor al cargar la página:', data);
+                              // Puedes agregar lógica adicional si es necesario
+                          })
+                          .catch(error => {
+                              console.error('Error en la solicitud AJAX al cargar la página:', error);
+                          });
+                  });
+              });
+          </script>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+

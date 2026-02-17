@@ -1,0 +1,77 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF7DB4F4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FFE87F07", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosiz = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+  datoscent = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosder = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  fecha = wd.styles.add_style(sz: 11, font_name: "Calibri", :format_code => 'dd-mm-yyyy', :alignment => {:horizontal => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,##0.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  datosnumerosf = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE',:format_code => '#,###,###.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  observacion = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left, :wrap_text => true})
+  header41 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+
+  wd.add_worksheet(:name => "Prefactura") do |sheet|
+
+    sheet.add_row []
+    sheet.add_row ["Señores",@contrato.empresa.nombre], :style => [header41,datosiz]
+    sheet.add_row ["Nit",@contrato.empresa.identdigito], :style => [header41,datosiz]
+    sheet.add_row ["Teléfono",@contrato.telefono_empresa], :style => [header41,datosiz]
+    sheet.add_row ["Dirección",@contrato.direccion], :style => [header41,datosiz]
+    sheet.add_row ["Ciudad",@contrato.municipio.descripcion], :style => [header41,datosiz]
+    sheet.add_row ["Fecha de Factura", @contratosprefactura.created_at.strftime("%Y-%m-%d")], :style => [header41,datosiz]
+    sheet.add_row ["Nro prefactura", @contratosprefactura.id], :style => [header41,datosiz]
+    sheet.add_row []
+
+    stylos = []
+    stylos << datoscent
+    stylos << datosiz
+    stylos << datosnumeros
+    stylos << datosnumeros
+    stylos << datosnumeros
+    stylos << datosnumeros
+
+    i = 0
+    cant = @contratosprefactura.contratosprefdetalles.count.to_i
+    sheet.add_row ["ITEM","DETALLE","CANT","VR UNIT","IVA %","VR BRUTO"], :style => title
+    @contratosprefactura.contratosprefdetalles.order("tipo_producto ASC, detalle DESC").each do |cc|
+      i = i + 1
+      detalle = ""
+      if i == cant
+        detalle = cc.detalle.to_s + " *** ORDEN DE COMPRA NRO. #{@contratosprefactura.contrato.nro_contrato.to_s rescue nil} - OBJETO: #{@contratosprefactura.contrato.objeto.to_s rescue nil} - PERIODO FACTURADO: #{@contratosprefactura.periodo.to_s rescue nil}"
+      else
+        detalle = cc.detalle.to_s rescue nil
+      end
+      sheet.add_row [i,detalle,cc.cantidad,cc.valor_unitario,cc.iva,cc.subtotal], :style => stylos
+    end
+
+    sheet.add_row []
+    obss = ""
+    if @contratosprefactura.observacion.to_s == ""
+      obss = "SIN OBSERVACION"
+    else
+      obss = @contratosprefactura.observacion.to_s rescue nil
+    end
+    sheet.add_row ["Observacion",obss], :style => [header41,datosiz]
+
+    sheet.add_row []
+
+    stylos2 = []
+    stylos2 << datoscent
+    stylos2 << datosiz
+    stylos2 << datosnumeros
+    stylos2 << datosnumeros
+    stylos2 << title
+    stylos2 << datosnumerosf
+
+    sheet.add_row ["","","","","Sub total",@contratosprefactura.contratosprefdetalles.sum("subtotal")], :style => stylos2
+    sheet.add_row ["","","","","Base Gravable",@contratosprefactura.contratosprefdetalles.where("contratosprefdetalles.iva > 0").sum("valor_unitario")], :style => stylos2
+    sheet.add_row ["","","","","IVA",@contratosprefactura.contratosprefdetalles.sum("valor_iva")], :style => stylos2
+    sheet.add_row ["","","","","TOTAL",@contratosprefactura.contratosprefdetalles.sum("total")], :style => stylos2
+
+  end
+end

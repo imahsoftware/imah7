@@ -1,0 +1,83 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          <div align="center">
+            <b style="font-size: 16px">OTRO SI AL CONTRATO DE TRABAJO POR OBRA Y LABOR</b>
+          </div>
+          <br/><br/><br/><br/>
+          Entre los suscritos a saber: <b><%=@nombre_empresa%></b> representada por <b><%=@nombre_firma %></b>, mayor de
+          edad, identificado con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal,
+          quien de ahora en adelante se denominará EL CONTRATANTE, con sede en la ciudad de Medellín, por una parte; y por la
+          otra <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificado con cédula de
+          ciudadanía <b>N° <%= camponumerico2(contratospersona.identificacion) rescue nil %></b>, obrando en su
+          calidad de Representante Legal, que para efectos del presente contrato se denominará TRABAJADOR, hemos
+          convenido en celebrar el siguiente <b>OTRO SI AL CONTRATO POR OBRA Y LABOR</b>, previas las siguientes
+          <b>CONSIDERACIONES:</b><br/><br/>
+
+          1 - Que el <b><%=namedate(@contratosperfecha.fecha_inicio) rescue nil %></b> las partes suscribieron el <b>CONTRATO DE OBRA Y LABOR</b>, para realizar la
+          supervisión de aseo y cafetería de <b><%=@contratosperfecha.contratosgrupo.descripcion rescue nil %></b><br/><br/>
+
+          2 – Dada las necesidades del servicio de la empresa <b><%=@nombre_empresa%></b>, se requiere asignar unos nuevos
+          contratos a la supervisora en mención; los cuales serán informados por su jefe inmediato.<br/><br/>
+
+          3 - En virtud de que el personal inicio labores en una fecha anterior a la firma del contrato, hemos convenido
+          modificar la siguiente clausula:<br/><br/>
+
+          <div align="center">
+            <b style="font-size: 16px;">ACUERDAN</b>
+          </div>
+          <br/><br/>
+
+          <b>PRIMERO – Modificar el lugar donde prestará sus labores:</b> Para todos los efectos del presente contrato,
+          se tendrá como fecha de inicio de labores el día 24 de junio de 2020 en el <b>ÁREA METROPOLITANA.</b>
+          <br/>
+          <br/><br/><br/><br/><br/>
+          <table width="100%">
+            <tr>
+              <td width="30%"><b>EL CONTRATANTE</b></td>
+              <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                  <% end %>
+                <br/>
+                <%= @nombre_firma %><br/>
+                Representante Legal
+              </td>
+            </tr>
+          </table>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

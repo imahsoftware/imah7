@@ -1,0 +1,39 @@
+<tr id="contratoscargo_<%= contratoscargo.id %>">
+  <td class="text-center">
+    <% if @is_auth_a_contratoscargo %>
+      <%= link_to edit_contrato_contratoscargo_path(@contrato, contratoscargo), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if @is_auth_e_contratoscargo and contratoscargo.existecontrato.to_s == "" %>
+      <%= link_to contrato_contratoscargo_path(@contrato, contratoscargo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to cargosnota_contratoscargos_path(id: contratoscargo.id, contrato_id: contratoscargo.contrato_id), data: {toggle: 'tooltip'}, title: 'EPPS', remote: true do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-cc-mastercard"></i></button>
+    <% end %>
+    <%= link_to actividades_contratoscargos_path(id: contratoscargo.id, contrato_id: contratoscargo.contrato_id), data: {toggle: 'tooltip'}, title: 'Actividades', remote: true do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-object-ungroup"></i></button>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratoscargo.user_nombre.html_safe rescue nil %><%= contratoscargo.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratoscargo.perfil rescue nil %>
+  <% if contratoscargo.sesion.to_s != "" %>
+    <br/><small><strong>Sesión: </strong><%=contratoscargo.sesion.to_s rescue nil %></small>
+  <% end %>
+  <% if contratoscargo.aplica_especial.to_s != "" %>
+    <br/><small><strong>Aplica clausula Especial</strong></small>
+  <% end %>
+  <br/><small><strong>Riesgo: </strong> <%=contratoscargo.riesgo rescue nil %> - <strong>Act-Economica: </strong> <%=contratoscargo.act_economica rescue nil %></small>
+  <br/><small>Requiere Dotación : <strong><%=contratoscargo.requiere_dotacion.to_s %></strong></small>
+  <br/><small><strong>Tiene EPP - <%=contratoscargo.tiene_epp rescue nil%></strong></small>
+  </td>
+  <td align="center"><%= camponumerico contratoscargo.salario rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.cantidad rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.cant_add rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.asignados rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.cantrechazados rescue nil %></td>
+  <td align="center"><strong><%= camponumerico2 contratoscargo.disponibles rescue nil %></strong></td>
+</tr>
+

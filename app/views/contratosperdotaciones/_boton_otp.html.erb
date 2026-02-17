@@ -1,0 +1,5 @@
+<% if contratosperdotacion.estado == 'ENTREGADO' %>
+  <%= link_to otp_contratosperdotaciones_path(id: contratosperdotacion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Digitalmente' do %>
+    <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+  <% end %>
+<% end %>

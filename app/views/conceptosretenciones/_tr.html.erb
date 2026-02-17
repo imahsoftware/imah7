@@ -1,0 +1,9 @@
+
+<tr id="conceptosretencion_<%= conceptosretencion.id %>">
+  <td class="text-center">
+      <%= link_to concepto_conceptosretencion_path(@concepto, conceptosretencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+  </td>
+  <td><%= conceptosretencion.tipospretencion.descripcion rescue nil %></td>
+</tr>

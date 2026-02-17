@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_traslado<%= @periodo %>").html('<%= j render "contratospernominas/showinfo" %>');
+$("#abrir_traslado<%= @periodo %>").addClass("hide");
+$("#cerrar_traslado<%= @periodo %>").removeClass("hide");
+$("#tr_show_traslado<%= @periodo %>").removeClass("hidden");
+<% else %>
+$("#abrir_traslado<%= @periodo %>").removeClass("hide");
+$("#cerrar_traslado<%= @periodo %>").addClass("hide");
+$("#abrir_detalle_traslado<%= @periodo %>").html(null);
+$("#tr_show_traslado<%= @periodo %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

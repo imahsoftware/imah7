@@ -1,0 +1,32 @@
+<%= simple_form_for @contratosactejecucion, :url => create2_contratosactejecuciones_path, :method => :post, remote: true do |f| %>
+  <%= hidden_field_tag :contratosactividad_id, params[:contratosactividad_id], value: params[:contratosactividad_id] %>
+  <%= hidden_field_tag :contratosnodo_id, params[:contratosnodo_id], value: params[:contratosnodo_id] %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratosactejecucion.new_record? ? 'Agregar' : 'Editar' %> Observación</strong></h3>
+  </div>
+  <div class="modal-body">
+
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th width="20%" class="thcolor" style='font-size: 11px;'>Actividad</th>
+        <td class="text-left" style='font-size: 11px;'><%=@contratosactejecucion.contratosactividad.nombrelista rescue nil %></td>
+      </tr>
+      <tr>
+        <th class="thcolor" style='font-size: 11px;'>Sede</th>
+        <td class="text-left" style='font-size: 11px;'><%=@contratosactejecucion.contratosnodo.nombre rescue nil %></td>
+      </tr>
+    </table>
+    <div class="row">
+      <div class="col-md-12">
+        <%= f.input :nota, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: 'Detalle la razón por la que la actividad no es realizada' %>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div>
+<% end %>

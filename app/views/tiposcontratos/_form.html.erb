@@ -1,0 +1,22 @@
+<%= simple_form_for @tiposcontrato, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-5">
+        <%= f.input :descripcion, input_html: { class: 'clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @tiposcontrato.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#tiposcontrato_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", tiposcontrato_path(@tiposcontrato), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

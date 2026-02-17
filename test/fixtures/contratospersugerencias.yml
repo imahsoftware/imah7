@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  fecha: 2021-11-14
+  prevencion: MyText
+  correccion: MyText
+
+two:
+  contratospersona: two
+  fecha: 2021-11-14
+  prevencion: MyText
+  correccion: MyText

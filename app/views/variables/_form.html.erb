@@ -1,0 +1,28 @@
+<%= simple_form_for @variable, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.input :nombre, input_html: { class: 'clean', :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+      </div>
+      <div class="col-md-4">
+        <%= f.input :campo, input_html: { class: 'clean' } %>
+      </div>
+      <div class="col-md-4">
+        <%= f.input :segmento, collection: Iparametro.where("campo = 'segmento_formato'").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @variable.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#variable_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", variable_path(@variable), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

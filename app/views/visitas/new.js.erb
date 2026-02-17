@@ -1,0 +1,39 @@
+<% if @active_record.present? %>
+	$("#visita_<%= @active_record.id %>").replaceWith("<%= j render 'tr', visita: @active_record %>");
+<% end %>
+$("#visita_form").html("<%= j render 'form' %>");
+$(".datetimepicker").datetimepicker({
+	showClear: true
+});
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#visita_form").collapse("show");
+$(".select2").select2();
+
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(function (position) {
+		var latitude = position.coords.latitude;
+		var longitude = position.coords.longitude;
+
+		// Actualizar los campos de latitud y longitud
+		document.getElementById('visita_latitude').value = latitude;
+		document.getElementById('visita_longitude').value = longitude;
+
+		// Hacer una solicitud a Nominatim para obtener la dirección
+		fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+			.then(response => response.json())
+			.then(data => {
+				var address = data.display_name;
+				document.getElementById('visita_direccion').value = address;
+
+				if (address) {
+					console.log(`La dirección es: ${address}`);
+				} else {
+					console.log('No se pudo determinar la dirección.');
+				}
+			})
+			.catch(error => {
+				console.error('Error al obtener la dirección:', error);
+			});
+	});
+}

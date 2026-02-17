@@ -1,0 +1,6 @@
+<% if @tareasactividades.present? %>
+	$("#tareasactividades").html("<div class='alert alert-warning'><h4><i class='icon fa fa-info'></i> <%=t :atencion%></h4><%=t :atencion_msj%><span></div>");
+<% else %>
+	$("#tareasactividad_<%= @tareasactividad.id %>").remove();
+<% end %>
+$('.tooltip').tooltip('hide');

@@ -1,0 +1,2 @@
+class Infgrupostabla < ApplicationRecord
+end

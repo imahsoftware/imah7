@@ -1,0 +1,54 @@
+<tr id="capacitacionevaluacion_<%= capacitacionevaluacion.id %>">
+  <td class="text-center" width="10%">
+    <% if is_auth_c('capacitacion') %>
+      <%# if @contrato.contratosusers.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false and @contrato.contratoscargos.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false  %>
+      <%= link_to edit_capacitacion_capacitacionevaluacion_path(@capacitacion, capacitacionevaluacion), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <% if capacitacionevaluacion.estado == 'INACTIVO' %>
+        <%= link_to estado_capacitacionevaluaciones_path(id: capacitacionevaluacion.id, estado: 'ACTIVO'),  data: { toggle: 'tooltip' }, title: "Activar" do %>
+          <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+        <% end %>
+      <% end %>
+      <% if capacitacionevaluacion.estado == 'ACTIVO' %>
+        <%= link_to estado_capacitacionevaluaciones_path(id: capacitacionevaluacion.id, estado: 'INACTIVO'),  data: { toggle: 'tooltip' }, title: "Inactivar" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-close"></i></button>
+        <% end %>
+      <% end %>
+      <% if !Contratoscapapersona.where(capacitacion_id: @capacitacion.id).present? %>
+        <%= link_to capacitacion_capacitacionevaluacion_path(@capacitacion, capacitacionevaluacion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+      <%= link_to new_capacitacionevaluacion_capacitacionevaopcion_path(capacitacionevaluacion_id: capacitacionevaluacion.id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Respuesta" do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-file-text"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center" width="5%"><%= capacitacionevaluacion.id rescue nil %></td>
+  <td class="font-size-text-tabla"><%= capacitacionevaluacion.pregunta.html_safe rescue nil %>
+    <% if capacitacionevaluacion.capacitacionevaopciones.present? %><br/>
+      <div id="abrir_capacitacion<%= capacitacionevaluacion.id %>" class="pull-left">
+        <%= link_to show_detalle_capacitacionevaluaciones_path(id: capacitacionevaluacion.id, capacitacion_id: @capacitacion.id, ruta: 'ABRIR'), remote: true do %>
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+          Ver Opciones de Respuesta
+        <% end %>
+      </div>
+      <div id="cerrar_capacitacion<%= capacitacionevaluacion.id %>" class="pull-left hide">
+        <%= link_to show_detalle_capacitacionevaluaciones_path(id: capacitacionevaluacion.id, capacitacion_id: @capacitacion.id, ruta: 'CERRAR'), remote: true do %>
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+          Cerrar Opciones de Respuesta
+        <% end %>
+      </div>
+      <div id="abrir_detalle<%= capacitacionevaluacion.id %>" style="width: 100%"></div>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center" width="5%"><%= capacitacionevaluacion.estado rescue nil %></td>
+</tr>
+
+<div class="modal fade" id="nuevoSoporte<%= capacitacionevaluacion.id %>">
+  <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

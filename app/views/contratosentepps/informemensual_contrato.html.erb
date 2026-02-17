@@ -1,0 +1,252 @@
+<%
+
+  if @contrato.present?
+    contrato = @contrato
+    mes = @mes
+    @empresa = @contrato.empresa
+  else
+    @empresa = contrato.empresa
+  end
+
+  @portafolio = Portafolio.find(@empresa.portafolio_id)
+  @logo_firma = @portafolio.logo_firma
+  @logo = @portafolio.logo_empresa_assets
+  @nombre_firma = @portafolio.nombre_rep.to_s
+
+
+  firmados = Contratosenteppsfirma.joins(:contratosentepp)
+                                  .where(contratosentepps: { contrato_id: contrato.id })
+                                  .where("DATE_FORMAT(fecha_firma, '%m-%Y') = ?", mes)
+
+  @dascantidades = Objeto.find_by_sql("SELECT
+        COALESCE(solicitadas.item, entregadas.item) AS item,
+        COALESCE(solicitadas.nombre, entregadas.nombre) AS nombre,
+        COALESCE(solicitadas.solicitada, 0) AS solicitada,
+        COALESCE(entregadas.entregado, 0) AS entregado,
+        COALESCE(solicitadas.solicitada, 0) - COALESCE(entregadas.entregado, 0) AS diferencia
+    FROM (SELECT u.nombre, cd.item, SUM(cd.cant_aprobada) AS solicitada
+          FROM contratossoleppsdetalles cd
+          INNER JOIN contratossolepps cp ON cd.contratossolepp_id = cp.id
+          INNER JOIN users u ON u.id = cp.user_id
+          WHERE cp.contrato_id = #{contrato.id}
+          AND cp.estado = 'ENTREGADO'
+          GROUP BY cd.item, u.nombre
+          ORDER BY u.nombre ASC, cd.item ASC
+      ) AS solicitadas
+      LEFT JOIN (
+          SELECT u.nombre, cd.item, SUM(cd.cantidad) AS entregado
+          FROM contratosenteppsdetalles cd
+          INNER JOIN contratosentepps ce ON ce.id = cd.contratosentepp_id AND ce.contrato_id = #{contrato.id}
+          INNER JOIN contratosenteppsfirmas cf ON cf.contratosentepp_id = cd.contratosentepp_id
+          INNER JOIN users u ON u.id = cd.user_id
+          WHERE cf.codigo_firma IS NOT NULL
+          GROUP BY u.nombre, cd.item, cd.user_id
+          ORDER BY u.nombre ASC, cd.item ASC
+      ) AS entregadas ON solicitadas.item = entregadas.item AND solicitadas.nombre = entregadas.nombre
+      WHERE COALESCE(solicitadas.solicitada, 0) - COALESCE(entregadas.entregado, 0) > 0")
+%>
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <div class="encabezado">
+          <b>Información del Contrato</b>
+        </div>
+        <br/>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th width="35%" class="encabezado_contrato relleno_encabezado_contrato">Mes de Gestión</th>
+            <td width="65%" class="encabezado_contrato"><%= mes rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Empresa</th>
+            <td class="encabezado_contrato"><%= contrato.empresa.identnombre rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Nro. Contrato</th>
+            <td class="encabezado_contrato"><%= contrato.nro_contrato rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Fecha Inicio</th>
+            <td class="encabezado_contrato"><%= contrato.fecha_inicio rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Fecha Fin</th>
+            <td class="encabezado_contrato"><%= contrato.fechafinal rescue nil %></td>
+          </tr>
+          <tr>
+            <th class="encabezado_contrato relleno_encabezado_contrato">Objeto</th>
+            <td class="encabezado_contrato">
+              <div align="justify"><%= contrato.objeto rescue nil %></div>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <div class="encabezado">
+          <b>Saldos en solicitudes de EPP's</b>
+        </div>
+        <br/>
+        <% if @dascantidades.count.to_i > 0 %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th class="encabezado_tabla">Usuario</th>
+              <th class="encabezado_tabla">Item</th>
+              <th width="15%" class="encabezado_tabla alineacion_center">Saldo</th>
+            </tr>
+            <% @dascantidades.each do |p| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_izq"><%= p.nombre %></td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_izq"><%= p.item %></td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center"><%= p.diferencia.to_i rescue 0 %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div class="parrafo">
+            NO hay datos de solicitudes de EPP's pendientes para entregar al corte de
+            hoy <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+          </div>
+        <% end %>
+        <br/>
+        <div class="encabezado">
+          <b>Empleados - Total
+            (<%= Contratosperfecha.where("contrato_id = #{contrato.id} and estado = 'ACTIVO'").count rescue 0 %>)</b>
+        </div>
+        <br/>
+        <div class="parrafo">
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th width="18%" class="encabezado_tabla">
+                <div align="left"><strong>Identificacion</strong></div>
+              </th>
+              <th class="encabezado_tabla">
+                <div align="left"><strong>Nombre</strong></div>
+              </th>
+              <th width="20%" class="encabezado_tabla alineacion_center">
+                <strong>Fecha</strong>
+              </th>
+              <th width="15%" class="encabezado_tabla alineacion_center">
+                <strong>Estado</strong>
+              </th>
+            </tr>
+
+            <% firmados.each do |contratosenteppsfirma| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+                  <%= contratosenteppsfirma.contratosperfecha.contratospersona.identificacion rescue nil %>
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+                  <%= contratosenteppsfirma.contratosperfecha.contratospersona.nombre_completo rescue nil %>
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center">
+                  <%= contratosenteppsfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %>
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center">
+                  ENTREGADO
+                </td>
+              </tr>
+            <% end %>
+            <%
+              # Obtiene los registros de contratosenteppsfirmas que coinciden con el contrato y el mes/año de fecha_firma
+
+              no_firmados = Objeto.find_by_sql("SELECT (select identificacion from contratospersonas where id = cpf.contratospersona_id) as identificacion,
+              (select nombre_completo from contratospersonas where id = cpf.contratospersona_id) as nombre_completo
+                                              FROM contratosperfechas cpf
+                                              WHERE contrato_id = #{contrato.id}
+                                              and   estado = 'ACTIVO'
+                                              AND NOT EXISTS (
+                                                  SELECT 1
+                                                  FROM contratosenteppsfirmas cf
+                                                  WHERE cf.contratosperfecha_id = cpf.id
+                                                  AND DATE_FORMAT(cf.fecha_firma, '%m-%Y') = '#{mes}'
+                                              )")
+
+              no_firmados.each do |contratosenteppsfirma| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+                  <%= contratosenteppsfirma.identificacion rescue nil %>
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+                  <%= contratosenteppsfirma.nombre_completo rescue nil %>
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center">
+
+                </td>
+                <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;" class="alineacion_center">
+
+                </td>
+              </tr>
+            <% end %>
+
+
+          </table>
+        </div>
+        <br/><br/>
+        <div class="parrafo">
+          Cordialmente,<br/><br/><br/><br/>
+
+
+
+
+          <%= User.find(is_admin).nombre rescue nil %><br/>
+          <b>Supervisor ASEAR S.A.S. E.S.P</b>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<style>
+    .encabezado {
+        font-size: 18px;
+        font-family: Tahoma;
+        text-align: center;
+    }
+
+    .encabezado_izq {
+        font-size: 18px;
+        font-family: Tahoma;
+        text-align: left;
+    }
+
+    .encabezado_contrato {
+        padding: 5px;
+        text-align: left;
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .relleno_encabezado_contrato {
+        background: #E8E3E3;
+    }
+
+    .parrafo {
+        font-size: 14px;
+        font-family: Tahoma;
+        text-align: justify;
+    }
+
+    .encabezado_tabla {
+        background: #d73925;
+        color: white;
+        padding: 5px;
+        font-size: 10px;
+        font-family: Tahoma;
+    }
+
+    .alineacion_izq {
+        text-align: left;
+    }
+
+    .alineacion_center {
+        text-align: center;
+    }
+
+
+</style>
+
+
+

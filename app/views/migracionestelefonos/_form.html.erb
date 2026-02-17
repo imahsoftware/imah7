@@ -1,0 +1,42 @@
+<%= form_for(migracionestelefono) do |f| %>
+  <% if migracionestelefono.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(migracionestelefono.errors.count, "error") %> prohibited this migracionestelefono from being saved:</h2>
+
+      <ul>
+      <% migracionestelefono.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :archivo_id %>
+    <%= f.text_field :archivo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado %>
+    <%= f.text_field :estado %>
+  </div>
+
+  <div class="field">
+    <%= f.label :identificacion %>
+    <%= f.text_field :identificacion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :telefono %>
+    <%= f.text_field :telefono %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

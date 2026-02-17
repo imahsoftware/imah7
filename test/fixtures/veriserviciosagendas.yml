@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  veriservicio: one
+  user: one
+  fecha_reprogramacion: 2024-08-05
+  nota: MyString
+
+two:
+  veriservicio: two
+  user: two
+  fecha_reprogramacion: 2024-08-05
+  nota: MyString

@@ -1,0 +1,136 @@
+<div class="box-body">
+  <div class="row">
+    <div class="col-md-11">
+      <legend>Información Contratos</legend>
+    </div>
+    <div class="col-md-1">
+      <% if is_auth_c('contrato') %>
+        <%= link_to new_contrato_path(empresa_id: @empresa.id), data: {toggle: 'tooltip'}, title: 'Crear' do %>
+          <button class="btn btn-info"><strong>Nuevo</strong></button>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% if @contratos.exists? %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th width="5%" class="text-center"></th>
+              <th width="10%" class="text-center">Nro Contrato</th>
+              <th class="text-justify" style="font-size:12px;">Objeto</th>
+              <th width="8%" class="text-center">Fecha Inicio</th>
+              <th width="8%" class="text-center">Fecha Fin</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <% @contratos.includes([:tiposcontrato,:municipio]).each do |p| %>
+              <tr>
+                <td class="text-center" style="font-size:12px;">
+                  <%= link_to edit_contrato_path(p.id, etapa: 'A'), class: 'edit_contrato_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                  <% end %>
+                  <% if is_auth_e('contrato1') %>
+                    <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td class="text-center" style="font-size:10px;"><%= p.nro_contrato rescue nil%></td>
+                <td class="text-justify" style="font-size:12px;"><%= p.objeto.upcase rescue nil%><br/>
+                  <small><br/><strong>Tipo de Contrato: <%= p.tiposcontrato.descripcion rescue nil%></strong> - <strong>Municipio: </strong><%= p.municipio.autobuscar rescue nil%>
+                  <br/><strong>Dirección: </strong><%= p.direccion rescue nil%> - <strong>Estado: </strong><%= p.estado rescue nil%></small>
+                  <% if p.contratosprefacturas.exists? %><br/><br/>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                        <tr class="thcolor">
+                          <th colspan="8" class="text-left">Facturas</th>
+                        </tr>
+                        <tr class="thcolor">
+                          <th width="5%" class="text-center" style="font-size:10px;"></th>
+                          <th width="15%" class="text-center" style="font-size:10px;">Nro Prefactura</th>
+                          <th width="15%" class="text-center" style="font-size:10px;">Fecha</th>
+                          <th class="text-center" style="font-size:10px;">Estado</th>
+                          <th class="text-center" style="font-size:10px;">Total</th>
+                          <th class="text-center" style="font-size:10px;">Abonos</th>
+                          <th class="text-center" style="font-size:10px;">Saldo</th>
+                          <th class="text-center" style="font-size:10px;">SiigoNro</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% p.contratosprefacturas.order("id desc").each do |p|%>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to contratosprefactura_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver prefactura ' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:10px;"><%= p.id rescue nil%></td>
+                          <td class="text-center" style="font-size:10px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                          <td class="text-center" style="font-size:10px;"><%= p.estado rescue nil%></td>
+                          <td class="text-right" style="font-size:10px;"><%= camponumerico p.total rescue nil%></td>
+                          <td class="text-right" style="font-size:10px;"><%= camponumerico p.recaudo rescue nil%></td>
+                          <td class="text-right" style="font-size:10px;"><%= camponumerico p.saldo rescue nil%></td>
+                          <td class="text-center" style="font-size:10px;"><%= p.siigo_nro rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  <% end %>
+                  <% if p.contratospagos.exists? %>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                        <tr class="thcolor">
+                          <th colspan="10" class="text-left">Recibos</th>
+                        </tr>
+                        <tr class="thcolor">
+                          <td width="5%"></td>
+                          <th width="8%" class="text-center" style="font-size:10px;">PreFactura</th>
+                          <th width="8%" class="text-center" style="font-size:10px;">Factura</th>
+                          <th width="10%" class="text-center" style="font-size:10px;">Fecha Factura</th>
+                          <th width="8%" class="text-center" style="font-size:10px;">Nro Recibo</th>
+                          <th width="10%" class="text-center" style="font-size:10px;">Fecha pago</th>
+                          <th class="text-left" style="font-size:10px;">Tipo de cuenta</th>
+                          <th class="text-right" style="font-size:10px;">Dinero</th>
+                          <th class="text-right" style="font-size:10px;">Retenciones</th>
+                          <th class="text-right" style="font-size:10px;">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% p.contratospagos.order("id desc").each do |p|%>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to visualizar_contratospagos_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Recibo ' do %>
+                              <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                            <% end %>
+                          </td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura_id rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura.siigo_nro rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.contratosprefactura.created_at.strftime("%Y-%m-%d")  rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.consecutivo rescue nil %></td>
+                          <td align="center" style="font-size:10px;"><%= p.fecha_pago.strftime("%Y-%m-%d") rescue nil %></td>
+                          <td align="left" style="font-size:10px;"><%= p.tiposcuenta.entidad rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.valor rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.valor_retencion rescue nil %></td>
+                          <td align="right" style="font-size:10px;"><%= camponumerico p.totalgeneral rescue nil %></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  <% end %>
+                </td>
+                <td class="text-center" style="font-size:10px;"><%= p.fecha_inicio.strftime("%Y-%m-%d") rescue nil%></td>
+                <td class="text-center" style="font-size:10px;"><%= p.fecha_fin.strftime("%Y-%m-%d") rescue nil%></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+  <% end %>
+</div>

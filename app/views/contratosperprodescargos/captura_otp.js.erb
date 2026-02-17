@@ -1,0 +1,12 @@
+<% if @valida %>
+$("#otp<%= @contratosperproceso.id %>").modal("hide");
+$("#firmado_check<%= @contratosperproceso.id %>").html(" <div style='margin-top: 10px'> <b>Firmado:</b> <i class='fa fa-check text-success'></i> - <b>Fecha: </b><%= @contratosperproceso.codigo_fecha_descargo.strftime('%Y-%m-%d %X') rescue nil %> - <b>Usuario: </b> <%= User.find(@contratosperproceso.user_descargo).nombre rescue nil %></div>");
+$("#remove_boton_descargo_1<%= @contratosperproceso.id %>").remove();
+$("#remove_boton_descargo_2<%= @contratosperproceso.id %>").remove();
+  <% @contratosperproceso.contratosperprodescargos.each do |p| %>
+  $("#remove_boton_descargo_3<%= p.id %>").remove();
+  <% end %>
+<% else %>
+$("#mensaje<%= @contratosperproceso.id %>").replaceWith("<div class='row' id='mensaje'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2' style='text-align: center;width: 100%;margin-bottom: 30px;color: red;font-weight: 600;font-size: 20px;'>CODIGO NO VALIDO</div></div>");
+<% end %>
+

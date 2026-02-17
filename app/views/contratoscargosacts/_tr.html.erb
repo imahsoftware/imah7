@@ -1,0 +1,16 @@
+<tr id="contratoscargosact_<%= contratoscargosact.id %>">
+  <td class="text-center">
+    <% if !Contratosperactob.where("contratoscargosact_id = #{contratoscargosact.id}").present? %>
+      <%= link_to contratoscargo_contratoscargosact_path(@contratoscargo, contratoscargosact), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratoscargosact.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= contratoscargosact.user.username rescue nil %>
+      <br/><%= contratoscargosact.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(contratoscargosact.user_anula).username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td class="text-center" style="font-size: 11px;"><%= contratoscargosact.created_at.strftime("%Y-%m-%d") rescue nil %></td>
+  <td class="text-justify" style="font-size: 10px;"><%= contratoscargosact.descripcion rescue nil %></td>
+  <td class="text-center" style="font-size: 10px;"><%= contratoscargosact.estado rescue nil %></td>
+</tr>

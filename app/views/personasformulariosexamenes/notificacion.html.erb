@@ -1,0 +1,77 @@
+<%
+  @logo = 'logo_inicio_asear.png'
+  isadmin = is_admin
+%>
+<div align="center">
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+    <tr valign="top">
+      <td rowspan="2" width="20%">
+        <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "200x80" %>
+      </td>
+      <td>
+        <div align="center" style="font-size: 14px; padding: 5px">
+          <b>SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</b>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="center" style="font-size: 14px; padding: 5px">NOTIFICACIÓN RESULTADO EXAMEN DE APTITUD.</div>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+    Medellín, <%= namedate(Time.now) %><br/><br/>
+    SEÑOR (A)<br/>
+    <strong><%= @personasformulario.nombre_completo rescue nil %>
+      CC  <%= @personasformulario.identificacion rescue nil %></strong><br/><br/>
+    <b>ASUNTO:</b> NOTIFICACIÓN RESULTADO EXAMEN DE APTITUD.<br/><br/>
+    El compromiso de la empresa <b>ASEAR S.A ESP</b> es garantizar un ambiente laboral saludable y seguro
+    para su talento humano por lo tanto le recordamos que su responsabilidad como trabajador de acuerdo con el
+    Decreto 1072 de 2015 y Resolución 0312 de 2019 es procurar el cuidado integral de salud y suministrar
+    información clara, completa y veraz de su estado de salud.<br/><br/>
+    Por lo tanto, nos permitimos informar que de acuerdo con el resultado de su examen médico: <strong><%=@personasformulariosexamen.tipo.to_s rescue nil%></strong>
+  </div>
+  <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+    <br/>
+    Realizado el día <%= namedate @personasformulariosexamen.fecha.to_date rescue nil %> y en cumplimiento con nuestras
+    políticas de SST, se generaron las siguientes recomendaciones:<br/><br/>
+    <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;"><em><strong><%= @personasformulariosexamen.observacion_eps.html_safe rescue nil %></strong></em></div>
+    De igual forma si usted tiene recomendaciones de salud que requieren manejo por su EPS, debe solicitar
+    cita médica a su IPS y llevar a la consulta el reporte del concepto médico (anexo) para que se dé el
+    manejo recomendado. De ser necesario se debe direccionar a la IPS donde se realizó el examen médico y
+    reclamar la historia clínica.<br/><br/>
+    Agradecemos, notifique al área de Seguridad y Salud en el Trabajo, los respectivos seguimientos y la
+    actualización de su condición de salud en un periodo no superior a un mes, esta realizará un seguimiento
+    periódico para confirmar el cumplimiento de estas recomendaciones.<br/><br/>
+    <b>Recomendaciones Generales frente al COVID 19 </b><br/>
+    <ul>
+      <li>Usar siempre el tapabocas.</li>
+      <li>Realizar protocolo de lavado de manos mínimo cada 3 horas con agua y jabón de 20 a 30 segundos o después de entrar en contacto con un área contaminada.</li>
+      <li>Mantener el distanciamiento social, permanecer al menos dos metros de distancia de otras personas, evitar reuniones grupales.</li>
+    </ul>
+    <b>Recomendaciones Generales </b><br/>
+    <ul>
+      <li>Reportar accidentes e incidentes de trabajo inmediatamente el evento ocurra.</li>
+      <li>Verificar los implementos de protección personal antes de comenzar la jornada laboral y de ser el caso,reportar al supervisor el deterioro o daño para la reposición del mismo.</li>
+      <li>Velar por la seguridad propia y la de sus compañeros</li>
+      <li>Cumplir todos los procedimientos de salud y seguridad en el trabajo establecidos por el empleador</li>
+      <li>Realizar pausas activas</li>
+      <li>Hacer estiramientos musculares antes/después de la jornada laboral</li>
+      <li>En ambientes donde se evidencie presencia de material particulado, humo, pintura, solventes, químicos y/o vapores, se debe fomentar el uso de la protección respiratoria</li>
+      <li>Informar oportunamente al personal encargado de talento humano, algún cambio en el estado de salud y consultar a tiempo en la EPS</li>
+      <li>Trabajar atento y nunca laborar bajo efectos del licor y/o sustancias psicoactivas</li>
+      <li>Llevar estilos de vida y hábitos de trabajo saludables</li>
+      <li>Mantener el esquema de vacunación actualizado</li>
+    </ul>
+    <br/>
+    Atentamente,
+    <br/><strong>SST - ASEAR</strong>
+  </div>
+</div>
+
+
+
+
+

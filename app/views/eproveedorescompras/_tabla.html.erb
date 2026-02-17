@@ -1,0 +1,34 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="8%"></td>
+        <th width="8%" class="text-center" style="font-size:10px;">Fecha</th>
+        <th width="8%" class="text-center" style="font-size:10px;">Nro factura</th>
+        <th width="20%" class="text-left" style="font-size:10px;">Compañia</th>
+        <th class="text-right" style="font-size:10px;">Valor</th>
+        <th class="text-right" style="font-size:10px;">Descuento</th>
+        <th class="text-right" style="font-size:10px;">Iva</th>
+        <th class="text-right" style="font-size:10px;">Retencion</th>
+        <th class="text-right" style="font-size:10px;">Total</th>
+        <th class="text-right" style="font-size:10px;">Saldo</th>
+        <th class="text-center" style="font-size:10px;">Estado</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_eproveedorescompras">
+      <% @eproveedor.eproveedorescompras.select(["eproveedorescompras.*, (select distinct egreso_id from egresosdetalles where eproveedorescompra_id = eproveedorescompras.id limit 1) egresoId,
+                                                  IFNULL((select sum(valor) from eproveedorescompretenciones where eproveedorescompra_id = eproveedorescompras.id),0) valorretencion,
+                                                  (select distinct 'X' from eproveedorescimagenes where eproveedorescompra_id = eproveedorescompras.id) existeimagen,
+                                                  (select distinct 'X' from eproveedorestempcompras where eproveedorescompra_id = eproveedorescompras.id) existetemcompra,
+                                                  (select distinct 'X' from eproveedorestempcompras where eproveedor_id = eproveedorescompras.eproveedor_id) existetem"])
+                                        .includes([:user,:portafolio])
+                                        .order(fecha: :desc).each do |eproveedorescompra| %>
+	      <%= render 'eproveedorescompras/tr', eproveedorescompra: eproveedorescompra %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%#= will_paginate @eproveedorescompras, :param_name => 'eproveedorescompras' , renderer: BootstrapPagination::Rails %>
+</div>
+

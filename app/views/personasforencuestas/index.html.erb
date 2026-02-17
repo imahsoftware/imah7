@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Personasforencuestas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Personasformulario</th>
+      <th>Encuesta</th>
+      <th>Encuestaspregunta</th>
+      <th>Encuestapreopcion</th>
+      <th>Calificacion</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @personasforencuestas.each do |personasforencuesta| %>
+      <tr>
+        <td><%= personasforencuesta.personasformulario_id %></td>
+        <td><%= personasforencuesta.encuesta_id %></td>
+        <td><%= personasforencuesta.encuestaspregunta_id %></td>
+        <td><%= personasforencuesta.encuestapreopcion_id %></td>
+        <td><%= personasforencuesta.calificacion %></td>
+        <td><%= link_to 'Show', personasforencuesta %></td>
+        <td><%= link_to 'Edit', edit_personasforencuesta_path(personasforencuesta) %></td>
+        <td><%= link_to 'Destroy', personasforencuesta, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Personasforencuesta', new_personasforencuesta_path %>

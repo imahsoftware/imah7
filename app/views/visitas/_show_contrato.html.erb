@@ -1,0 +1,115 @@
+<div style="padding: 10px;">
+  <table class="table table-bordered table-condensed table-striped">
+    <tr>
+      <th style="background-color: #CDCDCD; color: black" width="20%" class="text-center">Periodo</th>
+      <th style="background-color: #CDCDCD; color: black" width="20%" class="text-center">Descargar Informe completo
+      </th>
+      <th style="background-color: #CDCDCD; color: black" width="20%" class="text-center">Descargar Capacitación</th>
+      <th style="background-color: #CDCDCD; color: black" width="20%" class="text-center">Descargar Epps</th>
+      <th style="background-color: #CDCDCD; color: black" width="20%" class="text-center">Descargar Epps Firmados</th>
+    </tr>
+
+    <% @meses.each do |mes|
+
+      @entregasdetalles = Objeto.find_by_sql("SELECT DISTINCT p.identificacion, p.nombre_completo, c.perfil
+                                          FROM   contratosentepps a, contratosenteppsdetalles s, contratospersonas p, contratosperfechas f, contratoscargos c
+                                          WHERE  a.contrato_id = #{@contrato.id}
+                                          AND    a.id = s.contratosentepp_id
+                                          AND    DATE_FORMAT(a.created_at, '%m-%Y') = '#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}'
+                                          AND    s.contratospersona_id = p.id
+                                          AND    s.contratosperfecha_id = f.id
+                                          AND    f.contratoscargo_id = c.id
+                                          GROUP BY p.identificacion, p.nombre_completo") rescue nil
+      @capacitacionesfotos = Capacitacion.where("id in (select capacitacion_id from contratoscapapersonas where DATE_FORMAT(fecha_finalizacion, '%m-%Y') = '#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}' and contrato_id = #{@contrato.id})")
+      @contratosenteppsfirmas = Contratosenteppsfirma.where("DATE_FORMAT(fecha_firma, '%m-%Y') = '#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}' and contratosentepp_id in (select id from contratosentepps where contrato_id = #{@contrato.id})")
+    %>
+      <tr>
+        <td class="text-table text-center">
+          <% if mes[:mes] == @mesactual %>
+            <%= link_to informegeneral_contrato_visitas_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+              <strong><i class="fa fa-file-pdf-o text-red"></i> <%= "#{Date::MONTHNAMES_ES[mes[:mes]]} #{mes[:anno]}" %>
+              </strong>
+            <% end %>
+
+          <% else %>
+            <%= link_to informegeneral_contrato_visitas_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+              <%= "#{Date::MONTHNAMES_ES[mes[:mes]]} #{mes[:anno]}" %>
+            <% end %>
+          <% end %>
+          <br/>
+          <% @contrato.contratosgrupos.each do |g| %>
+            <%= link_to informegeneral_contrato_visitas_path(contrato_id: @contrato.id, contratosgrupo_id: g.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+              <%=g.descripcion rescue nil %>
+            <% end %><br/>
+          <% end %>
+        </td>
+        <td class="text-table text-center">
+          <% if @capacitacionesfotos.present? or @entregasdetalles.present? %>
+            <% if mes[:mes] == @mesactual %>
+              <%= link_to descargar_informe_combinado_path(format: :pdf, contrato_id: @contrato.id, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <strong><i class="fa fa-file-pdf-o text-red"></i> Descargar ZIP</strong>
+              <% end %>
+
+            <% else %>
+              <%= link_to descargar_informe_combinado_path(format: :pdf, contrato_id: @contrato.id, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                Descargar ZIP
+              <% end %>
+            <% end %>
+          <% else %>
+            No hay informacion
+          <% end %>
+        </td>
+        <td class="text-table text-center">
+          <% if @capacitacionesfotos.present? %>
+            <% if mes[:mes] == @mesactual %>
+              <%= link_to capacitacion_pdf_contrato_contratoscapapersonas_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <strong><i class="fa fa-file-pdf-o text-red"></i> Generar PDF</strong>
+              <% end %>
+            <% else %>
+              <%= link_to capacitacion_pdf_contrato_contratoscapapersonas_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                Generar PDF
+              <% end %>
+            <% end %>
+          <% else %>
+            No hay informacion
+          <% end %>
+        </td>
+        <td class="text-table text-center">
+          <% if @entregasdetalles.present? %>
+            <% if mes[:mes] == @mesactual %>
+              <%= link_to informegeneral_contrato_contratosentepps_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <strong><i class="fa fa-file-pdf-o text-red"></i> Generar PDF</strong>
+              <% end %>
+            <% else %>
+              <%= link_to informegeneral_contrato_contratosentepps_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                Generar PDF
+              <% end %>
+            <% end %>
+          <% else %>
+            No hay informacion
+          <% end %>
+        </td>
+        <td class="text-table text-center">
+          <% if @contratosenteppsfirmas.present? %>
+            <% if mes[:mes] == @mesactual %>
+              <%= link_to firmados_contratosentepps_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <strong><i class="fa fa-file-pdf-o text-red"></i> Generar PDF</strong>
+              <% end %>
+            <% else %>
+              <%= link_to firmados_contratosentepps_path(contrato_id: @contrato.id, format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+                Generar PDF
+              <% end %>
+            <% end %>
+          <% else %>
+            No hay informacion
+          <% end %>
+        </td>
+      </tr>
+      <tr id="tr_show<%= mes[:mes] %><%= mes[:anno] %>" class="hidden">
+        <td colspan="5">
+          <div id="abrir_detalle<%= mes[:mes] %><%= mes[:anno] %>"></div>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

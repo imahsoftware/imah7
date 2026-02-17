@@ -1,0 +1,172 @@
+<% isadmin = is_admin
+   user = User.find(isadmin)
+   idTarea =  user.subetapa.to_i rescue nil
+   vcEstadoEva = ""
+   if idTarea.present?
+     fchLimite = Evaluacion.find(idTarea).fecha_limite.strftime("%Y-%m-%d") rescue nil
+     if fchLimite.present?
+       if Time.now.strftime("%Y-%m-%d") > fchLimite
+         vcEstadoEva = 'VENCIDO'
+       end
+     end
+   end
+%>
+  <section class="content-header" style="padding: 0px 15px 0 15px !important; margin-top: -10px;">
+    <h1>Evaluaciones en curso
+      <div class="pull-right">
+        <b class="text-info">PENDIENTE</b> <i class="fa fa-certificate text-info"></i> &nbsp;
+        <b class="text-green">CUMPLE</b> <i class="fa fa-certificate text-green"></i> &nbsp;
+        <b class="text-red">NO CUMPLE</b> <i class="fa fa-certificate text-red"></i>
+        <b style="color: #e08e0b">NO APLICA</b> <i class="fa fa-certificate" style="color: #e08e0b"></i>
+        <b style="color: #BC09D5">PARCIALMENTE</b> <i class="fa fa-certificate" style="color: #BC09D5"></i>
+      </div>
+    </h1>
+  </section>
+  <% if vcEstadoEva == 'VENCIDO' %>
+    <br/><div class="alert alert-danger">
+      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya finalizo el tiempo para la evaluación...</div>
+  <% else %>
+    <div class="box-header">
+      <% if @evaluaciones.present? %>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box box-default ">
+              <%= simple_form_for(Evaluacionesdetalle.new, url: search_evaluaciones_path(evaluacion_id: user.subetapa.to_s, tipo: 'evaluacion_clase_prueba'), remote: true, method: :get) do |f| %>
+                <div class="box-body">
+                  <div class="col-md-4">
+                    <%= label_tag :actividad, 'Buscar Supervisor' %><br/>
+                    <%= select_tag 'ubicacion[user_responsable]',
+                                   options_for_select(
+                                     Evaluacionescontrato.select('evaluacionescontratos.user_responsable, (select ltrim(rtrim(nombre)) from users where id = evaluacionescontratos.user_responsable) nombresuser')
+                                                         .where(id: Evaluacionesejecucion.select(:evaluacionescontrato_id).where(evaluacion_id: user.subetapa.to_s))
+                                                         .distinct.order('2').collect { |p| [p.nombresuser.to_s, p.user_responsable.to_s] }
+                                   ),
+                                   prompt: 'Seleccionar Usuario',
+                                   data: { width: '100%' },
+                                   class: 'form-control select2'
+                    %>
+
+                  </div>
+                  <div class="col-md-2">
+                    <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div id="search_actividad<%= user.subetapa.to_s %>"></div>
+      <% end %>
+      <div class="row">
+        <div class="col-md-12">
+          <% if @evaluaciones.present? %>
+            <% @evaluaciones.each do |evaluacion| %>
+              <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                  <h3 class="box-title"><%= evaluacion.tema rescue nil %>
+                    <%= link_to informedat_datas_path(format: :xlsx, infgrupo_id: 90, evaluacion_id: evaluacion.id), data: { toggle: 'tooltip' }, title: "Generar Reporte" do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                    <% end %>
+                  </h3>
+                  <div class="pull-right">
+                    <%= link_to ver_grafica_general_evaluaciones_path(id: evaluacion.id), remote: true do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-pie-chart"></i> Ver Grafica</button>
+                    <% end %>
+                    <%= link_to ver_grafica_clases_evaluaciones_path(id: evaluacion.id), remote: true do %>
+                      <button class="btn btn-xs btn-warning"><i class="fa fa-bar-chart"></i> Ver Grafica Clase</button>
+                    <% end %>
+                    <%= link_to ver_grafica_usuarios_evaluaciones_path(id: evaluacion.id), remote: true do %>
+                      <button class="btn btn-xs btn-primary"><i class="fa fa-bar-chart"></i> Ver Grafica Usuarios</button>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="box-header">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <% if evaluacion.present?
+                           descripciones = Iparametro.distinct.where(id: Iparametrosuser.where(user_id: is_admin).pluck(:iparametro_id),
+                                                                     campo: 'evaluacion_clase_prueba',
+                                                                     descripcion: Evaluacionesdetalle.where(evaluacion_id: evaluacion.id).distinct.pluck(:clase))
+                                                     .pluck(:descripcion)
+                      %>
+                        <table class="table table-bordered table-condensed table-striped">
+                          <% descripciones.each do |descripcion| %>
+                            <tr>
+                              <td width="100%" class="text-left text-table" style="padding: 7px;">
+                                <div id="abrir_evaluacion<%= descripcion.gsub(" ",'_').to_s %>_<%= evaluacion.id.to_s %>">
+                                  <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacion.id, ruta: 'ABRIR', clase: descripcion.to_s), remote: true, style: 'color: black; ' do %>
+                                    <i class="fa fa-plus text-success"></i> <%= descripcion rescue nil %>
+                                  <% end %>
+                                  <div class="pull-right">
+                                    <b class="text-info"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado is null and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-info"></i>
+                                    <b class="text-success"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '1' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-success"></i>
+                                    <b class="text-danger"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '0' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-red"></i>
+                                    <b style="color: #e08e0b"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '1.0' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate" style="color: #e08e0b"></i>
+                                    <b style="color: #BC09D5"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '0.5' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate" style="color: #BC09D5"></i>.... Total Actividades
+                                    (<%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %>
+                                    )
+                                  </div>
+                                </div>
+                                <div class="hide" id="cerrar_evaluacion<%= descripcion.gsub(" ",'_').to_s %>_<%= evaluacion.id.to_s %>">
+                                  <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacion.id, ruta: 'CERRAR', clase: descripcion.to_s), remote: true, style: 'color: black;' do %>
+                                    <i class="fa fa-minus text-red"></i> <%= descripcion rescue nil %>
+                                  <% end %>
+                                  <div class="pull-right">
+                                    <b class="text-info"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado is null and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-info"></i>
+                                    <b class="text-success"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '1' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-success"></i>
+                                    <b class="text-danger"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '0' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate text-red"></i>
+                                    <b style="color: #e08e0b"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '1.0' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate" style="color: #e08e0b"></i>
+                                    <b style="color: #BC09D5"><%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesejecuciones.estado = '0.5' and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %></b>
+                                    <i class="fa fa-certificate" style="color: #BC09D5"></i>.... Total Actividades
+                                    (<%= Evaluacionesejecucion.joins(:evaluacionesdetalle).where("evaluacionesejecuciones.evaluacion_id = #{evaluacion.id} and evaluacionesdetalles.clase = '#{descripcion}'").count rescue 0 %>)
+                                  </div>
+                                </div>
+                                <div id="show_evaluacion_prueba<%= descripcion.gsub(" ",'_').to_s %>_<%= evaluacion.id.to_s %>"></div>
+                              </td>
+                            </tr>
+                          <% end %>
+                        </table>
+                      <% else %>
+                        <div class="alert alert-danger">
+                          <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal fade" id="grafica<%= evaluacion.id %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content"></div>
+                </div>
+              </div>
+
+              <div class="modal fade" id="grafica_gestion<%= evaluacion.id %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content"></div>
+                </div>
+              </div>
+
+              <div class="modal fade" id="grafica_usuarios<%= evaluacion.id %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content"></div>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            No hay evaluacion seleccionada
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>

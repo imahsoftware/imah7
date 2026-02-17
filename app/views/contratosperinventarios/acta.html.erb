@@ -1,0 +1,103 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <%
+    @user = current_user
+    portafolio = Portafolio.find(@user.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+    contratosperinvacta = Contratosperinvacta.where("contratosperinventario_id = #{@contratosperinventario.id} and estado = 'FINALIZADO' and consecutivo_acta = #{@consecutivo}").first
+  %>
+  <br/>
+  <style type="text/css">H1.SaltoDePagina {
+      PAGE-BREAK-AFTER: always
+  }</style>
+
+
+  <table width="100%">
+    <tr>
+      <td>
+        <table width="100%" border="0">
+          <tr>
+            <td width="30%">
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+              </div>
+            </td>
+            <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+              <div align="center">
+                <strong>
+                  <div style="font-size: 18px; font-family: Tahoma;">CERTIFICADO DE PAZ Y SALVO <br/>PARA RETIRO DE LA
+                    EMPRESA
+
+                  </div>
+                </strong>
+              </div>
+            </td>
+
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div style="font-size: 12px; font-family: Tahoma; padding: 5px;">
+          <br/><br/>
+          <b>Fecha y hora:</b> <%= namedate(@contratosperinventario.created_at) rescue nil %><br/><br/><br/><br/>
+
+          <b>Nombre del Trabajador:</b> <%= @contratosperinventario.contratospersona.nombre_completo rescue nil %>
+          <br/><br/>
+          <b>Cédula:</b> <%= @contratosperinventario.contratospersona.identificacion rescue nil %><br/><br/>
+          <b>Cargo:</b> <%= @contratosperinventario.contratosperfecha.contratoscargo.perfil rescue nil %><br/><br/>
+          <b>Supervisor a Cargo:</b> <%= User.find(contratosperinvacta.user_id).nombre rescue nil %><br/><br/>
+          <b>Motivo de entrega:</b> Terminación de contrato
+
+        </div>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <th width="25%" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left">ELEMENTO QUE DEVUELVE</th>
+      <th width="25%" style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left">RESPONSABLE QUE RECIBE</th>
+      <th style="background: #E8E3E3; font-size: 12px; font-family: Tahoma; padding: 5px; text-align: left">OBSERVACIÓN</th>
+    </tr>
+
+    <% @contratosperinventario.contratosperinvdetalles.where("consecutivo_acta = #{@contratosperinvacta.consecutivo_acta}").order(id: :desc).each do |contratosperinvdetalle| %>
+      <tr>
+        <td align="left" style="font-size: 12px; font-family: Tahoma; padding: 3px;"><%= contratosperinvdetalle.item rescue nil %>
+          <br/><b>Placa:</b> <%= contratosperinvdetalle.nro_placa rescue nil %>
+        </td>
+        <td align="left" style="font-size: 12px; font-family: Tahoma; padding: 3px; text-align: left"><%= User.find(contratosperinvdetalle.user_id).nombre rescue nil %></td>
+        <td align="left" style="font-size: 12px; font-family: Tahoma; padding: 3px; text-align: left"><%= contratosperinvdetalle.observaciones rescue nil %></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <div style="font-size: 12px; font-family: Tahoma; padding: 5px;" align="justify">
+    Valor a descontar de la liquidación: $
+
+    <br/><br/>
+    <br/><br/><br/>
+    FIRMA DEL EMPLEADO (A) - DIGITAL<br/><br/>
+    <% if @contratosperinventario.codigo_firma.present? %>
+      <b>Codigo:</b> <%= @contratosperinventario.codigo_firma rescue nil %><br/>
+      <b>Fecha Firma:</b> <%= @contratosperinventario.fecha_firma.strftime('%Y-%m-%d %X') rescue nil %><br/>
+    <% end %>
+    <b>C.C:</b> <%= @contratosperinventario.contratospersona.identificacion rescue nil %><br/><br/>
+
+    El presente certificado se emite como constancia de que los elementos o implementos que le fueron entregados para el
+    desarrollo de su función o su identificación como trabajador de la empresa <%= portafolio.nombre rescue nil %>, fueron devueltos a cada
+    área correspondiente y que una vez revisados, se emite el PAZ Y SALVO con descuento o sin ninguna afectación a su
+    liquidación según sea el caso.
+
+  </div>
+
+</div>
+
+

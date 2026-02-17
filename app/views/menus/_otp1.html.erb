@@ -1,0 +1,21 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="row" style="background-color: #394959 !important; padding: 70px !important; border-radius: 18px !important;">
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+      <%= form_tag ws_otp_contratosperfechas_path(id: @contratosperfecha.id, contratospersona_id: @contratospersona.id), remote: true, method: :post, class: 'form-inline' do %>
+        <%= render 'menus/input_otp' %>
+        <div class="row" id="mensaje">
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+            <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+              Cargar Codigo
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+  </div>
+</div>

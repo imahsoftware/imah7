@@ -1,0 +1,57 @@
+<tr id="encuestapregunta_<%= encuestapregunta.id %>">
+  <td class="text-center" width="10%">
+    <%# if @contrato.contratosusers.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false and @contrato.contratoscargos.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false  %>
+    <%= link_to edit_encuesta_encuestapregunta_path(@encuesta, encuestapregunta), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%# if is_auth_e("contratosactividad")%>
+    <%= link_to encuesta_encuestapregunta_path(@encuesta, encuestapregunta), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+    <%= link_to new_encuestapregunta_encuestapreopcion_path(encuestapregunta_id: encuestapregunta.id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Respuesta" do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-file-text"></i></button>
+    <% end %>
+
+  </td>
+  <td class="font-size-text-tabla text-center" width="5%"><%= encuestapregunta.id rescue nil %></td>
+  <td class="font-size-text-tabla"><%= encuestapregunta.pregunta.html_safe rescue nil %>
+    <% if encuestapregunta.encuestapreopciones.present? %>
+      <br/>
+      <a href="javascript:void(0);" onclick="SINO('doc_<%=encuestapregunta.id %>')">
+                <span data-toggle="tooltip" data-original-title="Ver los submotivos asociados">
+                  <code><i class="fa fa-info-circle"></i> Ver Opciones de Respuesta </code>
+                </span>
+      </a>
+
+      <div id="doc_<%= encuestapregunta.id %>" style="display:none;">
+        <br/>
+        <table class="table table-bordered">
+          <thead>
+          <tr class="thcolor">
+            <th width="5%"></th>
+            <th>Descripcíon</th>
+            <th width="15%">Clase</th>
+          </tr>
+          </thead>
+          <% encuestapregunta.encuestapreopciones.each do |encuestapreopcion| %>
+            <tr>
+              <td class="text-center">
+                <%= link_to encuestapregunta_encuestapreopcion_path(encuestapregunta_id: encuestapregunta.id), method: :delete, data: { toggle: 'tooltip' }, title: "Eliminar Respuesta" do %>
+                  <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                <% end %>
+              </td>
+              <td ><%= encuestapreopcion.respuesta rescue nil %></td>
+              <td><%= encuestapreopcion.clase rescue nil %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    <% end %>
+  </td>
+</tr>
+
+<div class="modal fade" id="nuevoSoporte<%= encuestapregunta.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

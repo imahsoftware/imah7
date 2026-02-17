@@ -1,0 +1,11 @@
+<tr id="contratoscargo_<%= contratoscargo.id %>">
+  <td align="left"><%= contratoscargo.perfil rescue nil %>
+  <% if contratoscargo.sesion.to_s != "" %>
+    <br/><small><strong>Sesión: </strong><%=contratoscargo.sesion.to_s rescue nil %></small>
+  <% end %>
+  </td>
+  <td align="center"><%= camponumerico contratoscargo.salario rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.cantidad rescue nil %></td>
+  <td align="center"><%= camponumerico2 contratoscargo.cant_add rescue nil %></td>
+</tr>
+

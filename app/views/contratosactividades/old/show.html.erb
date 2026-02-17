@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Contrato:</strong>
+  <%= @contratosactividad.contrato %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @contratosactividad.user %>
+</p>
+
+<p>
+  <strong>Detalle:</strong>
+  <%= @contratosactividad.detalle %>
+</p>
+
+<p>
+  <strong>Clase:</strong>
+  <%= @contratosactividad.clase %>
+</p>
+
+<p>
+  <strong>Cantidad:</strong>
+  <%= @contratosactividad.cantidad %>
+</p>
+
+<p>
+  <strong>Tipo:</strong>
+  <%= @contratosactividad.tipo %>
+</p>
+
+<p>
+  <strong>Contratossede:</strong>
+  <%= @contratosactividad.contratossede_id %>
+</p>
+
+<p>
+  <strong>Dia semana:</strong>
+  <%= @contratosactividad.dia_semana %>
+</p>
+
+<%= link_to 'Edit', edit_contratosactividad_path(@contratosactividad) %> |
+<%= link_to 'Back', contratosactividades_path %>

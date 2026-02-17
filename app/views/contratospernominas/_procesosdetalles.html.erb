@@ -1,0 +1,53 @@
+<%
+  proceso = consecutivo2
+  procesosin = proceso.gsub(' ','').to_s
+%>
+<br/><br/>
+<div class="box-body">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#<%=procesosin %>_tab1" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Pendientes</a></li>
+          <li class=""><a href="#<%=procesosin %>_tab2" data-toggle="tab" aria-expanded="false"><i class="fa fa-adn"></i> Incluidas</a></li>
+          <li class=""><a href="#<%=procesosin %>_tab3" data-toggle="tab" aria-expanded="false"><i class="fa fa-adn"></i> Archivo plano</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="<%=procesosin %>_tab1">
+            <% @contratospermasivas1 = datos.where(["contratospermasivas.estado = 'PENDIENTE'"]) rescue nil %>
+            <% if @contratospermasivas1.present? %>
+              <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: proceso + '-PENDIENTE', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+              <%end %>
+              <%= render 'procesosdet', contratospermasivas: @contratospermasivas1 %>
+            <% else %>
+              <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="<%=procesosin.to_s %>_tab2">
+            <% @contratospermasivas2 = datos.where(["contratospermasivas.estado = 'INCLUIDAS'"]) rescue nil %>
+            <% if @contratospermasivas2.present? %>
+              <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: proceso + '-INCLUIDAS', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+              <%end %>
+              <%= render 'procesosdet', contratospermasivas: @contratospermasivas2  %>
+            <% else %>
+              <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="<%=procesosin %>_tab3">
+            <% @contratospermasivas3 = datos.where(["contratospermasivas.estado = 'ARCHIVOPLANO'"]) rescue nil %>
+            <% if @contratospermasivas3.present? %>
+              <%= link_to informe_datas_path(infgrupo_id: 49, portafolio_id: proceso + '-ARCHIVOPLANO', format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Completo' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe</button>
+              <%end %>
+              <%= render 'procesosdet', contratospermasivas: @contratospermasivas3  %>
+            <% else %>
+              <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

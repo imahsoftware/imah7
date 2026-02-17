@@ -1,0 +1,42 @@
+<div class="box-header with-border">
+  <h3 class="box-title">Entregas Periodicas de Dotación</h3>
+</div>
+<% if @contratospersona.contratosperdotaciones.present? %>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th class="text-left" width="30%">Fecha Entrega</th>
+      <th class="text-left">Contrato</th>
+      <th class="text-center" width="12%">Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @contratospersona.contratosperdotaciones.each do |contratosperdotacion| %>
+      <tr>
+        <td class="text-table">
+          <%= contratosperdotacion.fecha_prox_entrega rescue nil %>
+          <% if contratosperdotacion.estado == 'ENTREGADO' %><br/>
+            <%= link_to carta_dotacion_contratosperfechas_path(id: contratosperdotacion.contratosperfecha_id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Entrega de Dotación' do %>
+              <i class="fa fa-file-pdf-o"></i> Carta Entrega de Dotación
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-table">
+          <b><%= contratosperdotacion.contrato.empresa.identnombre rescue nil %></b><br/>
+          <b>Nro contrato:</b> <%= contratosperdotacion.contrato.nro_contrato rescue nil %>
+          - <%= contratosperdotacion.contrato.objeto rescue nil %></td>
+        <td class="text-table text-center">
+          <div id="cambio_estado<%= contratosperdotacion.id %>">
+            <%= contratosperdotacion.estado rescue nil %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+<% end %>
+
+
+

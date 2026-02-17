@@ -1,0 +1,13 @@
+<% if @ruta == 'ABRIR' %>
+$("#trdetalle<%= @consecutivo %>").html('<%= j render "trdetalle", eproveedorescompra: @datos  %>');
+$("#abrir<%= @consecutivo %>").addClass("hide");
+$("#cerrar<%= @consecutivo %>").removeClass("hide");
+<% else %>
+$("#abrir<%= @consecutivo %>").removeClass("hide");
+$("#cerrar<%= @consecutivo %>").addClass("hide");
+$("#trdetalle<%= @consecutivo %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

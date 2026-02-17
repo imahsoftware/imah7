@@ -1,0 +1,29 @@
+<div class="box-body paddin-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"> Documentos Digitales
+            <div class="pull-right">
+              <%= link_to new_tarea_tareasdoc_path(@tarea), id: 'new_tareasdoc_button', class: 'btn btn-sm btn-warning', remote: true do %>
+                <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+              <% end %>
+            </div>
+          </h3>
+        </div>
+
+        <div class="card-body">
+          <div id="tareasdoc_form" class="collapse"></div>
+          <div id="tareasdocs" style="margin-top: 10px;">
+            <% if @tarea.tareasdocs.any? %>
+              <%= render 'tareasdocs/tabla' %>
+            <% else %>
+              <%= render 'layouts/procesos/alert_message' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

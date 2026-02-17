@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesprorrogas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Contratosperfecha</th>
+      <th>Contratospersona</th>
+      <th>Fecha fin</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesprorrogas.each do |migracionesprorroga| %>
+      <tr>
+        <td><%= migracionesprorroga.user %></td>
+        <td><%= migracionesprorroga.archivo %></td>
+        <td><%= migracionesprorroga.estado %></td>
+        <td><%= migracionesprorroga.identificacion %></td>
+        <td><%= migracionesprorroga.contratosperfecha_id %></td>
+        <td><%= migracionesprorroga.contratospersona_id %></td>
+        <td><%= migracionesprorroga.fecha_fin %></td>
+        <td><%= link_to 'Show', migracionesprorroga %></td>
+        <td><%= link_to 'Edit', edit_migracionesprorroga_path(migracionesprorroga) %></td>
+        <td><%= link_to 'Destroy', migracionesprorroga, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesprorroga', new_migracionesprorroga_path %>

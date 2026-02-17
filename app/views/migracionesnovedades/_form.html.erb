@@ -1,0 +1,49 @@
+<%= simple_form_for(@migracionesnovedad) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :user %>
+    <%= f.association :archivo %>
+    <%= f.input :estado %>
+    <%= f.input :contrato_id %>
+    <%= f.input :periodosliquidacion_id %>
+    <%= f.input :contratospersona_id %>
+    <%= f.input :contratosgrupo_id %>
+    <%= f.input :identificacion %>
+    <%= f.input :nov_1 %>
+    <%= f.input :nov_2 %>
+    <%= f.input :nov_3 %>
+    <%= f.input :nov_4 %>
+    <%= f.input :nov_5 %>
+    <%= f.input :nov_6 %>
+    <%= f.input :nov_7 %>
+    <%= f.input :nov_8 %>
+    <%= f.input :nov_9 %>
+    <%= f.input :nov_10 %>
+    <%= f.input :nov_11 %>
+    <%= f.input :nov_12 %>
+    <%= f.input :nov_14 %>
+    <%= f.input :nov_16 %>
+    <%= f.input :nov_18 %>
+    <%= f.input :nov_19 %>
+    <%= f.input :nov_22 %>
+    <%= f.input :nov_40 %>
+    <%= f.input :nov_41 %>
+    <%= f.input :nov_42 %>
+    <%= f.input :nov_43 %>
+    <%= f.input :nov_44 %>
+    <%= f.input :nov_46 %>
+    <%= f.input :nov_47 %>
+    <%= f.input :nov_49 %>
+    <%= f.input :nov_50 %>
+    <%= f.input :nov_53 %>
+    <%= f.input :nov_55 %>
+    <%= f.input :nov_56 %>
+    <%= f.input :nov_57 %>
+    <%= f.input :observacion %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

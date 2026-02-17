@@ -1,0 +1,35 @@
+<br/>
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="5%" class="text-center" style="font-size:10px;">
+      <th width="15%" class="text-left" style="font-size:10px;">Fecha</th>
+      <th width="15%" class="text-left" style="font-size:10px;">Tipo</th>
+      <th class="text-left" style="font-size:10px;">Observación</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% contratospernotas.each do |contratospernota| %>
+      <tr id="elimina_observacion<%= contratospernota.id %>">
+        <td class="text-center" style="font-size:10px;">
+          <% if is_auth_e('eliminardocdash') %>
+            <%= link_to contratospersona_contratospernota_path(contratospersona_id: contratosperfecha.contratospersona_id, id: contratospernota.id), remote: true, method: :delete, id: "elimina_fila#{contratospernota.id}", data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+              <i class="fa fa-trash" class="text-red"></i>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-left" style="font-size:10px;"><%= contratospernota.fecha rescue nil %></td>
+        <td class="text-left" style="font-size:10px;"><%= contratospernota.tipo_afiliacion rescue nil %></td>
+        <td class="text-left" style="font-size:10px;"><%= contratospernota.observacion rescue nil %></td>
+      </tr>
+    <script>
+        $('#elimina_fila<%= contratospernota.id %>').click(function () {
+            $('#elimina_observacion<%= contratospernota.id %>').remove();
+        });
+
+    </script>
+    <% end %>
+    </tbody>
+  </table>
+</div>

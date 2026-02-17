@@ -1,0 +1,2 @@
+module TiposcontratosHelper
+end

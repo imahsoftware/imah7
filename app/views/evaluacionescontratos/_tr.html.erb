@@ -1,0 +1,43 @@
+<tr id="evaluacionescontrato_<%= evaluacionescontrato.id %>">
+  <td class="text-center" width="5%">
+    <% if evaluacionescontrato.evaluacion.estado == 'PENDIENTE' %>
+      <%= link_to evaluacion_evaluacionescontrato_path(@evaluacion, evaluacionescontrato), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center text-table" width="5%"><%= evaluacionescontrato.id rescue nil %></td>
+  <td class="font-size-text-tabla text-table">
+    <div id="abrir_resultado<%= evaluacionescontrato.id %>" class="pull-left">
+      <%= link_to show_detalle_resultado_evaluacionescontratos_path(id: evaluacionescontrato.id, ruta: 'ABRIR'), remote: true do %>
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para abrir Seguimiento"></i>
+      <% end %>
+    </div>
+    <div id="cerrar_resultado<%= evaluacionescontrato.id %>" class="pull-left hide">
+      <%= link_to show_detalle_resultado_evaluacionescontratos_path(id: evaluacionescontrato.id, ruta: 'CERRAR'), remote: true do %>
+        <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para cerrar Seguimiento"></i>
+      <% end %>
+    </div>&nbsp;<%= evaluacionescontrato.nombrecompleto rescue nil %>
+      <%= link_to agregar_a_contrato_evaluacionesejecuciones_path(evaluacionescontrato_id: evaluacionescontrato.id, user_id: evaluacionescontrato.user_responsable, evaluacion_id: @evaluacion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Agregar al Contrato' do %>
+        <i class="fa fa-edit text-success"></i>
+      <% end %>
+    <%= link_to actividades_pdf_evaluacionesejecuciones_path(evaluacionescontrato_id: evaluacionescontrato.id, user_id: evaluacionescontrato.user_responsable, evaluacion_id: @evaluacion.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Evaluaciones', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <i class="fa fa-file-pdf-o"></i>
+    <% end %>
+    <%= link_to actividades_pdf_completo_evaluacionesejecuciones_path(evaluacionescontrato_id: evaluacionescontrato.id, user_id: evaluacionescontrato.user_responsable, evaluacion_id: @evaluacion.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Evaluaciones Completa por contrato', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <i class="fa fa-file-pdf-o text-red"></i>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-table text-center">
+    <% if @evaluacion.tipo == 'EVALUACION DESEMPENO' %>
+      <%= evaluacionescontrato.estado_descripcion rescue nil %>
+    <% else %>
+      <%= evaluacionescontrato.estado_descripcion_prueba rescue nil %>
+    <% end %>
+  </td>
+</tr>
+<tr id="tr_show_resultado<%= evaluacionescontrato.id %>" class="hidden">
+  <td colspan="4">
+    <div id="abrir_detalle_resultado<%= evaluacionescontrato.id %>"></div>
+  </td>
+</tr>

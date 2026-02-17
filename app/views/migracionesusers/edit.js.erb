@@ -1,0 +1,17 @@
+$("#migracionesuser_form").collapse("hide");
+
+$("#migracionesuser_form").empty();
+
+<% if @active_record.present? %>
+	$("#migracionesuser_<%= @active_record.id %>").replaceWith("<%= j render 'tr', migracionesuser: @active_record %>");
+<% end %>
+
+$("#migracionesuser_<%= @migracionesuser.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#migracionesuser_<%= @migracionesuser.id %>").addClass("active_migracionesuser");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

@@ -1,0 +1,9 @@
+<% if @controlfirmas.present? %>
+$("#resultado_documento_todo<%= @p.downcase %>").html("<%= j render 'menus/resultado_doc_todo'%>");
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_documento_todo<%= @p.downcase %>").html("");
+<% end %>

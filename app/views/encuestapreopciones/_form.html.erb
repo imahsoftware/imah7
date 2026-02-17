@@ -1,0 +1,26 @@
+<%= simple_form_for([@encuestapregunta, @encuestapreopcion], remote: true) do |f| %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @encuestapreopcion.new_record? ? 'Agregar' : 'Editar' %> Opciones</strong>
+    </h3>
+    <div class="pull-left">
+      <small><%= @encuestapregunta.pregunta rescue nil %></small>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <%= f.input :respuesta, input_html: { class: "form-control uppercaseInput" }, label: "Encuesta" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <label for="">Clase</label><br/>
+        <%= f.input :clase, as: :select, collection: select_encuesta_clase, input_html: { class: 'select2', style: "width: 100%" }, label: false %></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+<% end %>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tema: MyString
+  objetivo: MyString
+  fecha: 2023-11-15
+  estado: MyString
+
+two:
+  tema: MyString
+  objetivo: MyString
+  fecha: 2023-11-15
+  estado: MyString

@@ -1,0 +1,27 @@
+<%= form_for(contratosperinvacta) do |f| %>
+  <% if contratosperinvacta.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contratosperinvacta.errors.count, "error") %> prohibited this contratosperinvacta from being saved:</h2>
+
+      <ul>
+      <% contratosperinvacta.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :contratosperinventario_id %>
+    <%= f.number_field :contratosperinventario_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :consecutivo_acta %>
+    <%= f.number_field :consecutivo_acta %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

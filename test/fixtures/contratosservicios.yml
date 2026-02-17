@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato_id: 1
+  user_id: 1
+  servicio: MyString
+
+two:
+  contrato_id: 1
+  user_id: 1
+  servicio: MyString

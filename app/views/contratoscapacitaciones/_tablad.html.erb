@@ -1,0 +1,43 @@
+  <br/><br/>
+  <% @capacitacion.contratoscapacitaciones.joins(:contrato).select(" (select nombre from users where id = contratoscapacitaciones.user_supervisor) nombresuper, contratoscapacitaciones.user_supervisor, count(9) cantidad")
+                                          .group("contratoscapacitaciones.user_supervisor").order("1 asc").each do |dd| %>
+    <legend><%=dd.nombresuper rescue nil %> (<%=dd.cantidad rescue 0 %>)</legend>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <td width="7%"></td>
+        <th class="text-left text-table" width="40%">Capacitador</th>
+        <th class="text-center text-table" width="10%">Fecha Limite</th>
+        <th width="8%" class="text-center text-table text-table-10">Pendientes</th>
+        <th width="8%" class="text-center text-table text-table-10">No Aplica</th>
+        <th width="8%" class="text-center text-table text-table-10">Otros Pendientes</th>
+        <th width="12%" class="text-center text-table text-table-10">Pend Iniciar Capacitación</th>
+        <th width="11%" class="text-center text-table text-table-10">En Proceso</th>
+        <th width="8%" class="text-center text-table text-table-10">Finalizados</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_contratospagos">
+      <% @capacitacion.contratoscapacitaciones.joins(:contrato).select(" (select nombre from users where id = contratoscapacitaciones.user_supervisor) nombresuper,
+                                                      contratoscapacitaciones.*,
+                                                      ifnull((select distinct 'X' from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id),'NO') existeneval,
+                                                       concat((select autobuscar from empresas where id = contratos.empresa_id), ' - (', contratos.nro_contrato,')') identnombre,
+                                                       (case when contratoscapacitaciones.interno = 'NO' then
+                                                              (select count(8) from contratosperfechas where contrato_id = contratoscapacitaciones.contrato_id and estado ='ACTIVO'
+                                                                and fecha_inicio <= (select fecha_limite from capacitaciones where id = contratoscapacitaciones.capacitacion_id)
+                                                                and (fecha_fin is null or fecha_fin > now())
+                                                               and id not in (select contratosperfecha_id from contratoscapapersonas where capacitacion_id = contratoscapacitaciones.capacitacion_id and contrato_id = contratoscapacitaciones.contrato_id))
+                                                            ELSE 0 END) pendientes,
+                                                      (select count(8) from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id and estado_evaluacion = 'INICIAR CAPACITACION') enproceso,
+                                                      (select count(8) from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id and estado_evaluacion = 'NO APLICA') noaplica,
+                                                      (select count(8) from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id and estado_evaluacion = 'FINALIZADO') finalizados,
+                                                       (select count(8) from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id and estado_evaluacion = 'PENDIENTE') pendiente_iniciar,
+                                                      (select count(8) from contratoscapapersonas where contratoscapacitacion_id = contratoscapacitaciones.id and estado_evaluacion = 'PENDIENTE' and ruta = 'B') otros_pendientes")
+                                              .order("1 asc").where("contratoscapacitaciones.user_supervisor = #{dd.user_supervisor}").each do |contratoscapacitacion| %>
+        <%= render 'contratoscapacitaciones/trd', contratoscapacitacion: contratoscapacitacion %>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+
+

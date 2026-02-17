@@ -1,0 +1,53 @@
+<% usr = User.find(is_admin) %>
+<aside class="main-sidebar">
+
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+        <div align="center"><%= image_tag usr.avatar.url(:medium), alt: 'User Image', class: 'img-circle', width: '128px' %></div>
+        <div class="user-panel">
+        <h4 class="text-center"><%= usr.nombre rescue nil %></h4>
+        </div>
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <li>
+        <%= link_to programas_personas_path do %>
+          <i class="fa fa-arrow-left"></i> <span>Regresar a programas</span>
+        <% end %>
+      </li>
+      <li class="header"><%=t :menu%></li>
+      <li class="<%= active_class(edit_persona_path(etapa: "A", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "A", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Información</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "EB", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "EB", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Viabilidad Matricula F</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "EC", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "EC", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Academicos</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "ED", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "ED", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Datos Adicionales</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "EE", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "EE", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Representante legal</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_persona_path(etapa: "EF", id: @persona.id)) %>">
+        <%= link_to edit_persona_path(etapa: "EF", id: @persona.id) do %>
+          <i class="fa fa-address-card-o"></i> <span>Información de pago</span>
+        <% end %>
+      </li>
+    </ul>
+    <!-- /.sidebar-menu -->
+  </section>
+  <!-- /.sidebar -->
+</aside>

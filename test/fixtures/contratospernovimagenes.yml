@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospernovedad: one
+  user: one
+  novedadimagen: 
+
+two:
+  contratospernovedad: two
+  user: two
+  novedadimagen: 

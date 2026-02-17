@@ -1,0 +1,29 @@
+<% if @contratosprefechassalud_todo.present? %>
+  <div class="box-body">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th class="text-left text-table" width="2%"></th>
+        <th class="text-left text-table" width="20%">Empleado</th>
+        <th class="text-left text-table">Contrato</th>
+        <th class="text-center text-table">Fecha Ingreso</th>
+        <th class="text-center text-table" width="4%">EPS</th>
+        <th class="text-center text-table" width="4%">AFP</th>
+        <th class="text-center text-table" width="4%">ARL</th>
+        <th class="text-center text-table" width="4%">CCAF</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @contratosprefechassalud_todo.each do |contratosperfecha| %>
+        <%= render 'menus/tr_salud', contratosperfecha: contratosperfecha, p: @p %>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-tools pull-right">
+      <%= will_paginate @contratosprefechassalud_todo, :param_name => "sal_#{@p.downcase.to_s}", renderer: BootstrapPagination::Rails %>
+    </div><!-- /.box-tools -->
+  </div>
+<% else %>
+  <div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %> </div>
+<% end %>

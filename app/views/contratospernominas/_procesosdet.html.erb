@@ -1,0 +1,86 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="12%" class="text-center"></th>
+      <th width="5%" class="text-center">Nro.</th>
+      <th class="text-left" style="font-size:12px;">Empresa - Contrato</th>
+      <th width="10%" class="text-center">Inicio</th>
+      <th width="10%" class="text-center">Fin</th>
+      <th width="10%" class="text-center">Pago</th>
+      <th width="8%" class="text-center">Estado</th>
+      <th width="5%" class="text-center">Cant</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% contratospermasivas.each do |p| %>
+      <tr>
+        <td class="text-center" style="font-size:12px;">
+          <%= link_to informe_datas_path(infgrupo_id: 46, portafolio_id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+          <%end %>
+          <% if p.estado.to_s == 'PENDIENTE' %>
+            <%= link_to p, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+            <% end %>
+            <%= link_to incluirnomina_contratospermasivas_path(id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea incluir en la nomina....?"}, title: 'Incluir en la Nomina' do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-chrome"></i></button>
+            <% end %>
+            <%= link_to generarplanos_contratospermasivas_path(id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea generar los planos....?"}, title: 'Generar Planos' do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-chrome"></i></button>
+            <% end %>
+            <%= link_to edit_contratospermasiva_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+            <% end %>
+          <% elsif p.estado.to_s == 'INCLUIDAS' %>
+            <%= link_to reversarnomina_contratospermasivas_path(id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea reversar las novedades....?"}, title: 'Reversar novedades' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+            <% end %>
+          <% end %>
+
+          <%= link_to proceso_contratospermasdetalles_path(contratospermasiva_id: p.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'PDF - ' +p.proceso do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+        </td>
+        <td class="text-center" style="font-size:10px;"><%= p.id rescue nil%></td>
+        <td class="text-left" style="font-size:10px;"><strong>Empresa : </strong><%= p.identnombre rescue nil%>
+          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil%> - <strong>Grupo : </strong><%= p.descripcion rescue nil%> <small>(<%= p.termino rescue nil%>)
+          <% if p.observacion.to_s != "" %>
+            <br/><strong>Observacion : </strong><%= p.observacion rescue nil%> </small>
+          <% end %>
+          <% if p.estado.to_s == 'ARCHIVOPLANO' %>
+            <small>
+              <% Objeto.find_by_sql("SELECT DISTINCT p.banco, p.tipo_cuenta, COUNT(n.id) cantidad
+                                    FROM   contratospermasivas c, contratospermasdetalles n, contratosperfechas f, contratospersonas p
+                                    WHERE  c.id = #{p.id}
+                                    AND    c.id = n.contratospermasiva_id
+                                    AND    n.contratosperfecha_id = f.id
+                                    AND    f.contratospersona_id = p.id
+                                    GROUP BY p.banco, p.tipo_cuenta").each do |b| %>
+                <% if b.cantidad.to_i > 0 %>
+                  <% if ['DAVIVIENDA','DAVIVIENDA2'].include?(b.banco) %>
+                    <br/><%=b.banco %> - <%=b.tipo_cuenta %> : (<%=b.cantidad %> registros)
+                    <%= link_to archivoplanoproceso_contratospermasivas_path(contratospermasiva_id: p.id, entidad: b.banco,tipocuenta: b.tipo_cuenta, contratosgrupo_id: p.contratosgrupo_id), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                      <i class="fa fa-download"></i>
+                    <%end %>
+                  <% else %>
+                    <br/><%=b.banco %> : (<%=b.cantidad %> registros)
+                    <%= link_to archivoplanoproceso_contratospermasivas_path(contratospermasiva_id: p.id, entidad: b.banco, contratosgrupo_id: p.contratosgrupo_id), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                      <i class="fa fa-download"></i>
+                    <%end %>
+                  <%end %>
+                <%end %>
+              <% end %>
+            </small>
+          <% end %>
+          </td>
+        <td class="text-center" style="font-size:10px;"><%= p.fecha_inicio rescue nil%></td>
+        <td class="text-center" style="font-size:10px;"><%= p.fecha_fin rescue nil%></td>
+        <td class="text-center" style="font-size:10px;"><%= p.fecha rescue nil%></td>
+        <td class="text-center" style="font-size:10px;"><strong><%if p.estado.to_s != 'PENDIENTE' %><small class="text-red"><%= p.estado rescue nil%></small><%else %><small class="text-blue"><%= p.estado rescue nil%></small><%end %></strong></td>
+        <td class="text-center" style="font-size:10px;"><%= p.cantdetalle rescue nil%></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

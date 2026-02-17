@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  evaluacion: one
+  contrato: one
+  user: one
+  user_responsable: 1
+  fecha_limite: 2023-12-28
+  estado: MyString
+
+two:
+  evaluacion: two
+  contrato: two
+  user: two
+  user_responsable: 1
+  fecha_limite: 2023-12-28
+  estado: MyString

@@ -1,0 +1,9 @@
+<tr id="contratoscargosdetalle_<%=contratoscargosdetalle.id %>">
+  <td class="text-center">
+    <%= link_to contratoscargo_contratoscargosdetalle_path(@contratoscargo, contratoscargosdetalle), remote: true, method: :delete, data: {confirm: "#{t :elimina_confirma}", toggle: 'tooltip'}, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="text-center" style="font-size: 11px;"><%= contratoscargosdetalle.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/><%= contratoscargosdetalle.user.username rescue nil %></td>
+  <td class="text-justify" style="font-size: 10px;"><%= contratoscargosdetalle.nota rescue nil %></td>
+</tr>

@@ -1,0 +1,28 @@
+<%= simple_form_for([@eproveedor, @eproveedorestemegreso], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :portafolio_id, collection: Portafolio.order(:nombre).collect { |p| [p.nombre, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Compañia" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :total, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :concepto, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :forma_pago, as: :select, collection: select_formapago, input_html: { data: { width: '100%' }, class: 'select2'}%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :nro_cheque, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :cuenta_id, collection: Cuenta.order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Nro de Cuenta" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @eproveedorestemegreso.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#eproveedorestemegreso_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", eproveedor_eproveedorestemegreso_path(@eproveedor, @eproveedorestemegreso), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

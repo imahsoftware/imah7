@@ -1,0 +1,22 @@
+<tr>
+  <td></td>
+  <td class="text-left" style="font-size:11px;">
+    <div id="abrir_docfirma<%= c.contrato_id %><%= "DOC_#{p}" %>" class="pull-left">
+      <%= link_to show_detalle_docfirma_menus_path(contrato_id: c.contrato_id, estado: "DOC_#{p}", ruta: 'ABRIR', val_docfirma: p), remote: true do %>
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%=c.identnombre rescue nil %> (<%=c.cantidad rescue 0 %>)
+      <% end %>
+    </div>
+    <div id="cerrar_docfirma<%= c.contrato_id %><%= "DOC_#{p}" %>" class="pull-left hide">
+      <%= link_to show_detalle_docfirma_menus_path(contrato_id: c.contrato_id, estado: "DOC_#{p}", ruta: 'CERRAR', val_docfirma: p), remote: true do %>
+        <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Documentos"></i>
+        <%= c.identnombre rescue nil %> (<%=c.cantidad rescue 0 %>)
+      <% end %>
+    </div>
+  </td>
+</tr>
+<tr id="tr_show_docfirma<%= c.contrato_id %><%= "DOC_#{p}" %>" class="hidden">
+  <td colspan="2">
+    <div id="abrir_detalle_docfirma<%= c.contrato_id %><%= "DOC_#{p}" %>"></div>
+  </td>
+</tr>

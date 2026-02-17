@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr7, params[:nr7], { class: "form-control2 input7 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", onkeyup: "moveToNext(this, 'nr8')" } %>
+    <div align="center">
+      <label class='keys7'></label>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr8, params[:nr8], { class: "form-control2 input8 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", onkeyup: "moveToNext(this, 'nr9')" } %>
+    <div align="center">
+      <label class='keys8'></label>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr9, params[:nr9], { class: "form-control2 input9 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", onkeyup: "moveToNext(this, 'nr10')" } %>
+    <div align="center">
+      <label class='keys9'></label>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr10, params[:nr10], { class: "form-control2 input10 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", onkeyup: "moveToNext(this, 'nr11')" } %>
+    <div align="center">
+      <label class='keys10'></label>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr11, params[:nr11], { class: "form-control2 input11 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);", onkeyup: "moveToNext(this, 'nr12')" } %>
+    <div align="center">
+      <label class='keys11'></label>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center">
+    <%= text_field_tag :nr12, params[:nr12], { class: "form-control2 input12 campo_otp", maxlength: "1", oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" } %>
+    <div align="center">
+      <label class='keys12'></label>
+    </div>
+  </div>
+</div>
+<script>
+    function moveToNext(currentInput, nextInputId) {
+        if (currentInput.value.length === currentInput.maxLength) {
+            document.getElementById(nextInputId).focus();
+            document.getElementById(nextInputId).value = ''; // Borra el contenido del siguiente campo
+        }
+    }
+</script>
+<br/><br/>

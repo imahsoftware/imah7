@@ -1,0 +1,182 @@
+
+<div align="center">
+<%
+    objetoRecibido = object0.present? rescue nil
+    if objetoRecibido
+      @contratospernominas = object0
+      @isadmin = 1
+      @logo = object1
+      @periodosliquidacion = object2
+    end
+    isadmin = @isadmin
+    cant = @contratospernominas.count.to_i rescue 0
+    @contratospernominas.each do |contratospernomina|
+      if contratospernomina.periodosliquidacion_id.to_i <= 109
+        dhora = 8
+      elsif contratospernomina.periodosliquidacion_id.to_i <= 122
+        dhora = 7.83333333
+      elsif contratospernomina.periodosliquidacion_id.to_i <= 159
+        dhora = 7.66666666
+      else
+        dhora = 7.33333333
+      end
+      novedades = Contratospernovedad.joins(:tiposnovedad)
+                                     .select("contratospernovedades.contratospernomina_id, contratospernovedades.tiposnovedad_id,
+                                              SUM(contratospernovedades.nro_horas) nro_horas, SUM(contratospernovedades.valor_novedad) valor_novedad,
+                                              contratospernovedades.contratosperembargo_id,
+                                              (CASE WHEN tiposnovedades.tipo IN ('DEVENGO','OTROS DEVENGO') THEN SUM(contratospernovedades.valor_novedad) ELSE 0 END) valor_dev,
+                                              (CASE WHEN tiposnovedades.tipo IN ('DEDUCCION','OTROS DEDUCCION') THEN SUM(contratospernovedades.valor_novedad) ELSE 0 END) valor_ded")
+                                      .where(["contratospernovedades.contratospernomina_id = #{contratospernomina.id}"])
+                                      .group("contratospernovedades.contratospernomina_id, contratospernovedades.tiposnovedad_id, contratospernovedades.contratosperembargo_id")
+      novedadesd = Contratospernovedad.where(contratospernomina_id: contratospernomina.id).all
+  %>
+    <br/>
+    <table width="760" border="0" cellspacing="0" cellpadding="1">
+      <tr>
+        <td valign="center">
+          <table width="100%">
+            <tr>
+              <th colspan="2" style="font-size: 18px; font-family: Tahoma;"><div align="center">COMPROBANTE DE NOMINA</div></th>
+            </tr>
+            <tr>
+              <td>
+                <div align="center">
+                  <% if objetoRecibido == true %>
+                    <%= image_tag 'https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png', size: "200x100" %>
+                  <% else %>
+                      <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+                  <% end %>
+                </div>
+              </td>
+              <td width="80%">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                  <tr>
+                    <td width="30%" style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>EMPLEADO : </strong></td>
+                    <td width="70%" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=contratospernomina.contratospersona.autobuscar rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>CARGO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=contratospernomina.contratoscargo.perfil rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>GRUPO DE NOMINA : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=contratospernomina.contratosgrupo.descripcion rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>FECHA CONTRATO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=contratospernomina.contratosperfecha.fechascontrato rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>PERIODO DE PAGO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@periodosliquidacion.descripcion rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>NRO CUENTA : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=contratospernomina.contratospersona.banco rescue nil%> - <%=contratospernomina.contratospersona.cuenta_bancolombia rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>SALARIO MES : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=camponumerico contratospernomina.salario_mes rescue nil%></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+            <tr style="background: #adadad">
+              <td width="48%" height="20" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>CONCEPTO</strong></td>
+              <td width="8%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>HORAS</strong></div></td>
+              <td width="22%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>DEVENGADO</strong></div></td>
+              <td width="22%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>DEDUCCIONES</strong></div></td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">SALARIO BASICO </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico contratospernomina.dias * dhora %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico contratospernomina.salario rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">AUXILIO DE TRANSPORTE </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico contratospernomina.dias * dhora %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico(contratospernomina.auxilio) rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">SALUD (<%=contratospernomina.contratospersona.eps rescue nil%>) </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico 0%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico(contratospernomina.salud) rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">PENSION (<%=contratospernomina.contratospersona.fondo_pension rescue nil%>) </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico 0 %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico(contratospernomina.pension) rescue nil%></div></td>
+            </tr>
+            <% novedades.each do |pn| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><%=pn.tiposnovedad.descripcion rescue nil%>
+                  <small>
+                    <% if pn.contratosperembargo_id != "" and pn.tiposnovedad_id == 39 #libranza %>
+                      (<%=Contratosperembargo.find(pn.contratosperembargo_id).tiposentidad.nombre rescue nil %>)
+                    <% end %>
+                  </small></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico pn.nro_horas%></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico pn.valor_dev rescue nil%></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico pn.valor_ded rescue nil%></div></td>
+              </tr>
+            <% end %>
+            <tr style="background: #adadad">
+              <td colspan="2" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="right"><strong>SUBTOTALES PERIODO :&nbsp;&nbsp;</strong></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico contratospernomina.totaldev rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico contratospernomina.totalded rescue nil%></div></td>
+            </tr>
+            <tr style="background: #adadad">
+              <td height="20" colspan="2" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><strong>TOTAL DEVENGADO PERIODO :&nbsp;&nbsp;</strong></div></td>
+              <td colspan="2" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><strong><%=camponumerico contratospernomina.total rescue nil%>&nbsp;</strong></div></td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%">
+            <tr valign="top">
+              <th><div align="justify" style="font-size: 10px; font-family: Tahoma;">OBSERVACIONES:</div></th>
+            </tr>
+            <tr valign="top">
+              <td width="85%"><div align="justify" style="font-size: 8px; font-family: Tahoma;">
+                <% novedadesd.each do |pn|%>
+                  - <strong><%=pn.tiposnovedad.descripcion rescue nil%> : </strong> <%=pn.fecha.strftime("%Y-%m-%d") rescue nil %>
+                  <% if pn.detallediasnovedad.to_s != "" %> - <small><strong>Dias Novedad: </strong><%=pn.detallediasnovedad rescue nil %></small><%end %>
+                  <% if contratospernomina.contrato_id.to_i == 160 and pn.tiposnovedad.tipo.to_s == 'DEDUCCION' %> - <small><%=pn.observacion rescue nil %></small><%end %><br/>
+                <% end %></div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="40%"><br/><br/><br/>__________________________________</td>
+              <td>&nbsp;</td>
+              <td width="40%"><br/><br/><br/>__________________________________</td>
+            </tr>
+            <tr>
+              <td style="font-size: 11px; font-family: Tahoma;">Firma Aprobado</td>
+              <td>&nbsp;</td>
+              <td style="font-size: 11px; font-family: Tahoma;">Firma Aceptado</td>
+            </tr>
+          </table>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+        </td>
+      </tr>
+    </table>
+    <% if cant > 1 %>
+      <div style="page-break-after:always; border:0px solid blue;">........................................................................</div>
+    <%end%>
+  <%end%>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse; border:1px solid #CCCCCC; font-size: 8px; font-family: Tahoma; line-height: 150%; padding: 5px;
+    }
+</style>
+
+
+

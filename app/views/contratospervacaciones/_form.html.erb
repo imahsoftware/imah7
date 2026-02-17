@@ -1,0 +1,43 @@
+<%= simple_form_for([@contratospervacacion], remote: true) do |f| %>
+  <%= f.hidden_field :contrato_id %>
+  <%= f.hidden_field :contratosperfecha_id %>
+  <%= f.hidden_field :contratospersona_id %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratospervacacion.new_record? ? 'Agregar' : 'Editar' %> solicitud de Vacaciones</strong></h3>
+  </div>
+  <% if Contratospervacacion.where(contratosperfecha_id: @contratospervacacion.contratosperfecha_id).exists? %>
+    <div class="alert alert-danger">
+      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya hay una solicitud de Vacaciones para este contrato</div>
+    </div>
+    <% if is_auth_c("autorizacionnomina") %>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true }, label: 'Fecha inicio' %></div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :jornada, as: :select, collection: select_jornada, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Jornada"%></div>
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :dias_disfrute, as: :select, collection: select_diasdisfrute, input_html: { class: 'select2' }, label: "Dias Disfrute"%></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+        <div class="box-tools pull-right">
+          <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+        </div><!-- /.box-tools -->
+      </div><!-- box-footer -->
+    <% end %>
+  <% else %>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true }, label: 'Fecha inicio' %></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :jornada, as: :select, collection: select_jornada, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Jornada"%></div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :dias_disfrute, as: :select, collection: select_diasdisfrute, input_html: { class: 'select2' }, label: "Dias Disfrute"%></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+      <div class="box-tools pull-right">
+        <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+      </div><!-- /.box-tools -->
+    </div><!-- box-footer -->
+  <% end %>
+<% end %>

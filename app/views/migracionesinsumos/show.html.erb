@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionesinsumo.user %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionesinsumo.archivo %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionesinsumo.estado %>
+</p>
+
+<p>
+  <strong>Contrato:</strong>
+  <%= @migracionesinsumo.contrato_id %>
+</p>
+
+<p>
+  <strong>Insumo:</strong>
+  <%= @migracionesinsumo.insumo_id %>
+</p>
+
+<p>
+  <strong>Cantidad mensual:</strong>
+  <%= @migracionesinsumo.cantidad_mensual %>
+</p>
+
+<p>
+  <strong>Precio unitario:</strong>
+  <%= @migracionesinsumo.precio_unitario %>
+</p>
+
+<p>
+  <strong>Descuento:</strong>
+  <%= @migracionesinsumo.descuento %>
+</p>
+
+<p>
+  <strong>Precio condescuento:</strong>
+  <%= @migracionesinsumo.precio_condescuento %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @migracionesinsumo.total %>
+</p>
+
+<%= link_to 'Edit', edit_migracionesinsumo_path(@migracionesinsumo) %> |
+<%= link_to 'Back', migracionesinsumos_path %>

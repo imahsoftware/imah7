@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  portafolio: one
+  user: one
+  identificacion: MyString
+  nombre: MyString
+  celular: MyString
+  temperatura: MyString
+  direccion: MyString
+  clase: MyString
+  barrio_id: 1
+
+two:
+  portafolio: two
+  user: two
+  identificacion: MyString
+  nombre: MyString
+  celular: MyString
+  temperatura: MyString
+  direccion: MyString
+  clase: MyString
+  barrio_id: 1

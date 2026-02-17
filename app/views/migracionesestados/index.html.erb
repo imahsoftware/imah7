@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesestados</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Personasformulario</th>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Observacion eps</th>
+      <th>Estado cargue</th>
+      <th>Error</th>
+      <th>Tipo</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesestados.each do |migracionesestado| %>
+      <tr>
+        <td><%= migracionesestado.personasformulario_id %></td>
+        <td><%= migracionesestado.user_id %></td>
+        <td><%= migracionesestado.archivo_id %></td>
+        <td><%= migracionesestado.estado %></td>
+        <td><%= migracionesestado.observacion_eps %></td>
+        <td><%= migracionesestado.estado_cargue %></td>
+        <td><%= migracionesestado.error %></td>
+        <td><%= migracionesestado.tipo %></td>
+        <td><%= link_to 'Show', migracionesestado %></td>
+        <td><%= link_to 'Edit', edit_migracionesestado_path(migracionesestado) %></td>
+        <td><%= link_to 'Destroy', migracionesestado, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesestado', new_migracionesestado_path %>

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  estado: MyString
+  user: one
+
+two:
+  contratospersona: two
+  estado: MyString
+  user: two

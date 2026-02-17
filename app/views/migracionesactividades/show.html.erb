@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionesactividad.user_id %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionesactividad.archivo_id %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionesactividad.estado %>
+</p>
+
+<p>
+  <strong>Tareasactividad:</strong>
+  <%= @migracionesactividad.tareasactividad_id %>
+</p>
+
+<p>
+  <strong>Dias:</strong>
+  <%= @migracionesactividad.dias %>
+</p>
+
+<p>
+  <strong>Estado actividad:</strong>
+  <%= @migracionesactividad.estado_actividad %>
+</p>
+
+<p>
+  <strong>User persona:</strong>
+  <%= @migracionesactividad.user_persona %>
+</p>
+
+<%= link_to 'Edit', edit_migracionesactividad_path(@migracionesactividad) %> |
+<%= link_to 'Back', migracionesactividades_path %>

@@ -1,0 +1,39 @@
+<div style="padding: 10px;">
+  <legend style="font-size: 18px;">Información de Contratos</legend>
+<table class="table table-bordered table-condensed table-striped">
+  <tr >
+    <th style="background-color: #CDCDCD; color: black" class="text-left text-table" width="20%">Nro de Contrato</th>
+    <th style="background-color: #CDCDCD; color: black" class="text-center text-table" width="10%">Fecha Inicio</th>
+    <th style="background-color: #CDCDCD; color: black" class="text-center text-table" width="10%">Fecha Fin</th>
+    <th style="background-color: #CDCDCD; color: black" class="text-left text-table">Objeto</th>
+    <th style="background-color: #CDCDCD; color: black" class="text-center text-table" width="10%">Estado</th>
+  </tr>
+  <% @contratos.each do |contrato| %>
+    <tr>
+      <td class="text-table text-left">
+        <div id="abrir_contrato<%= contrato.id %>" class="pull-left">
+          <%= link_to show_contrato_visitas_path(ruta: 'ABRIR', contrato_id: contrato.id), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver la informacion"></i>
+            <i class="fa fa-arrow-circle-down text-success"></i> <%= contrato.nro_contrato rescue nil %>
+          <% end %>
+        </div>
+        <div id="cerrar_contrato<%= contrato.id %>" class="pull-left hide">
+          <%= link_to show_contrato_visitas_path(ruta: 'CERRAR', contrato_id: contrato.id.to_s), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para cerrar la informacion"></i>
+            <i class="fa fa-star text-red"></i> <%= contrato.nro_contrato rescue nil %>
+          <% end %>
+        </div>
+      </td>
+      <td class="text-table text-center"><%= contrato.fecha_inicio rescue nil %></td>
+      <td class="text-table text-center"><%= contrato.fechafinal rescue nil %></td>
+      <td class="text-table"><div align="justify"><%= contrato.objeto.upcase rescue nil %></div></td>
+      <td class="text-table text-center"><%= contrato.estado rescue nil %></td>
+    </tr>
+    <tr id="tr_show_contrato<%= contrato.id %>" class="hidden">
+      <td colspan="5">
+        <div id="abrir_detalle_contrato<%= contrato.id %>"></div>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</div>

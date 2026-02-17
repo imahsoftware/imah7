@@ -1,0 +1,139 @@
+<% base_url = Rails.env.production? ? 'https://appasearesp.com' : 'http://localhost:3000' %>
+<div align="center">
+  <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="35%" rowspan="3"><%= image_tag "#{@logo}", size: "280x120" %></td>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b><%= @porta.razon_social rescue nil %></b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b>PROCESO DE RECURSO HUMANO</b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b>PROCESO DISCIPLINARIO</b></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                <br/>
+                Medellin, <%= namedate(Time.now) rescue nil %>
+                <br/><br/><br/>
+                <strong>ASISTENTES:</strong><br/>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="40%" style="font-size: 14px; font-family: Tahoma;"><%= @contratosperproceso.contratosperprodescargos.first.user.nombre rescue nil %></td>
+                    <td width="40%" style="font-size: 14px; font-family: Tahoma;">Abogado</td>
+                  </tr>
+                  <tr valign="top">
+                    <td style="font-size: 14px; font-family: Tahoma;"><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %></td>
+                    <td style="font-size: 14px; font-family: Tahoma;">Empleado(a)</td>
+                  </tr>
+                </table>
+                <br/>
+                <strong>ASUNTO:</strong> Audiencia de Descargos
+                <br/><br/>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                  Según información suministrada por el Supervisor (a) o Coordinador (a), el señor(a) <strong><%= @contratosperproceso.user.nombre rescue nil %></strong>, usted falto al Reglamento Interno de Trabajo por <strong>"<%= @contratosperproceso.contratosperprocitaciones.last.reglamento_interno rescue nil %>"</strong>, por lo anterior usted es llamado a los descargos, los cuales se registran a continuación.
+                </div>
+                <br/><br/>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                  <tr>
+                    <td width="50%" height="20" style="background: #E8E3E3;"><strong>EMPRESA</strong></td>
+                    <td width="50%" height="20" style="background: #E8E3E3;"><strong>EMPLEADO</strong></td>
+                  </tr>
+                  <% @contratosperproceso.contratosperprodescargos.order("id asc").each do |contratosperprodescargo| %>
+                    <tr>
+                      <td align="justify" style="padding: 7px;"><%= contratosperprodescargo.asear rescue nil %></td>
+                      <td height="20" align="justify" style="padding: 7px;"><%= contratosperprodescargo.empleado rescue nil %></td>
+
+                    </tr>
+                  <% end %>
+                </table>
+                <br/>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">En constancia, firma</div>
+                <br/><br/>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px 0px 0px 0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                  <tr>
+                    <td width="49%" height="30" ALIGN="center"><strong>ABOGADO</strong></td>
+                    <td>&nbsp;</td>
+                    <td width="49%" height="30" ALIGN="center"><strong>EMPLEADO</strong></td>
+                  </tr>
+                  <tr>
+                    <td height="50" style="background: #E8E3E3; padding: 10px;">
+                      <% if @contratosperproceso.codigo_firma_descargo.present? %>
+                        <strong><%= @contratosperproceso.contratosperprodescargos.first.user.nombre rescue nil %><br/>
+                          <%= @porta.razon_social rescue nil %><br/></strong>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperproceso.codigo_firma_descargo %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperproceso.codigo_fecha_descargo.strftime("%d-%m-%Y %X") rescue nil %>
+                        <br/>
+                        <small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                          conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                      <% end %>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td height="50" style="background: #E8E3E3; padding: 10px;">
+                        <b>EMPLEADO</b><br/>
+                        <strong><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %><br/></strong>
+                          <b>C.C</b> <%= camponumerico2 @contratosperproceso.contratospersona.identificacion rescue nil %><br/>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperproceso.codigo_firma_user_descargo rescue nil %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperproceso.codigo_fecha_user_descargo.strftime("%d-%m-%Y %X") rescue nil %>
+                        <br/><small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                          conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                    </td>
+
+                  </tr>
+                </table>
+                <% if (@contratosperproceso.user_testigo1.present? || @contratosperproceso.user_testigo2.present?) and (@contratosperproceso.firma_testigo1.present? || @contratosperproceso.firma_testigo2.present?) %>
+                  <br/><br/>
+                  <p style="font-size: 14px; font-family: Tahoma;">EN CASO DE SER NECESARIO</p>
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                      <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.present? %>
+                        <td style="font-size: 14px; font-family: Tahoma;" width="45%">
+                          <% if @contratosperproceso.user_testigo1.present? %>
+                            <% if @contratosperproceso.firma_testigo1_doc_file_name.present? %>
+                              <img src="<%= base_url + @contratosperproceso.firma_testigo1_doc.url(:thumb) %>" width="170" height="70"/><br/>
+                              __________________________________<br/>
+                            <% end %>
+                            <%= User.find(@contratosperproceso.user_testigo1).nombre rescue nil %><br/>
+                            <b>Cedula:</b> <%= User.find(@contratosperproceso.user_testigo1).identificacion rescue nil %>
+                            <br/>
+                            <b>Testigo</b>
+                          <% end %>
+                        </td>
+                        <td>&nbsp;</td>
+                      <% end %>
+                      <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.present? %>
+                        <td style="font-size: 14px; font-family: Tahoma;" width="45%">
+                          <% if @contratosperproceso.user_testigo2.present? %>
+                            <% if @contratosperproceso.firma_testigo2_doc_file_name.present? %>
+                              <img src="<%= base_url + @contratosperproceso.firma_testigo2_doc.url(:thumb) %>" width="170" height="70"/><br/>
+                              __________________________________<br/>
+                            <% end %>
+                            <%= User.find(@contratosperproceso.user_testigo2).nombre rescue nil %><br/>
+                            <b>Cedula:</b> <%= User.find(@contratosperproceso.user_testigo2).identificacion rescue nil %>
+                            <br/>
+                            <b>Testigo</b>
+                          <% end %>
+                        </td>
+                      <% end %>
+                    </tr>
+                  </table>
+                <% end %>
+
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

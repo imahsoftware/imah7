@@ -1,0 +1,39 @@
+<%= simple_form_for([@eproveedor, @eproveedorescompra], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :portafolio_id, collection: Portafolio.order(:nombre).collect { |p| [p.nombre, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Compañia" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3"><%= f.input :nro_factura, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_descuento, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :porc_iva, as: :select, collection: select_iva, input_html: { data: { width: '100%' }, class: 'select2'}, label: "% IVA"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_iva, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :concepto_id, collection: Concepto.where("id in (select distinct concepto_id from conceptosretenciones)").order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Concepto 1 Retencion" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :base_concepto1, as: :moneda, label: "Base Concepto 1" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :concepto2_id, collection: Concepto.where("id in (select distinct concepto_id from conceptosretenciones)").order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Concepto 2 Retencion" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :base_concepto2, as: :moneda, label: "Base Concepto 2" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :concepto3_id, collection: Concepto.where("id in (select distinct concepto_id from conceptosretenciones)").order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Concepto 3 Retencion" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :base_concepto3, as: :moneda, label: "Base Concepto 3" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :concepto4_id, collection: Concepto.where("id in (select distinct concepto_id from conceptosretenciones)").order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Concepto 4 Retencion" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :base_concepto4, as: :moneda, label: "Base Concepto 4" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @eproveedorescompra.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#eproveedorescompra_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", eproveedor_eproveedorescompra_path(@eproveedor, @eproveedorescompra), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

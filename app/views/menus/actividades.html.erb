@@ -1,0 +1,206 @@
+<% title 'Actividades' %>
+<%
+  valida = true
+  if Parametro.find(3).valor.to_s == 'NO'
+    valida = false
+  end
+%>
+<legend style="margin-top: -19px;">Hola, <%= @usr.nombre rescue nil %>
+  <% if @usr.tipoconsulta.to_s != 'METRO' %>
+    <%= link_to ver_contratosactividades_path(user_id: @usr.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Ver actividades" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-cog"></i> Ver <%= @usr.clase_aseo rescue nil %> hoy</button>
+    <% end %>
+  <% end %>
+  <%= link_to logout_path, data: { confirm: '¿Esta seguro ' + "#{@usr.nombre}" + ' que quiere desconectarse?' } do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-sign-in"> <b>Salir</b></i></button>
+  <% end %>
+  <% if valida %>
+    <%= link_to contratosactnovedades_path, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Ver Novedades" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-cog"></i> Ver Novedades</button>
+    <% end %>
+  <% end %>
+</legend>
+<%= render 'nomina' %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <div class="tab-content">
+          <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+              <div class="box-body">
+                <div class="form-group">
+                  <%= label_tag :estado_nodo, 'Nodo' %><br/>
+                  <%= select_tag 'u[c]', options_from_collection_for_select(select_contratossedes, :id, :nombre_consulta), prompt: '--Seleccionar--', data: { width: '420px' }, class: 'form-control select2' %>
+                  <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 0px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  <% end %>
+                </div>
+              </div>
+          <% end %>
+          <% if @contratosedes %>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="box-body">
+                  <% #@contratosedes.each do |p|
+                     p = @contratosedes
+                    if @usr.tipoconsulta.to_s != 'METRO'
+                      #contratosacts = Contratosactividad.where(contrato_id: p.contrato_id, clase: 'ASEO FUERTE', contratossede_id: p.id, dia_semana: @dayofweek)
+                      #contratosactividades = Contratosactividad.where(["contrato_id = #{@usr.contrato_id} and clase = 'ASEO NORMAL' and tipo = '#{@usr.clase_aseo}' and contratossede_id = #{p.id}
+                      #                                                  and  (dia_semana is null or dia_semana = '#{@dayofweek}')"]).order("turno, detalle asc")
+                      contratosacts = @contratosacts
+                      contratosactividades = @contratosactividades
+                    end
+                  %>
+                    <% if @usr.tipoconsulta.to_s != 'METRO' %>
+                      <legend><%= p.nombre_consulta rescue nil%></legend>
+                      <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                          <li class="active"><a href="#normal" data-toggle="tab" aria-expanded="true"><i class="fa fa-heartbeat"></i> Actividades Aseo RUTINARIO (<%= contratosactividades.count.to_i rescue 0 %>)</a></li>
+                          <li><a href="#fuerte" data-toggle="tab" aria-expanded="true"><i class="fa fa-ambulance"></i> Actividades Aseo INTENSIVO (<%= contratosacts.count.to_i rescue 0 %>)</a></li>
+                        </ul>
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="normal">
+                            <br/>
+                            <% if contratosactividades.count.to_i > 0 %>
+                              <table class="table table-bordered table-striped">
+                                <tr>
+                                  <th width="8%" class="thcolor text-center">Opcion</th>
+                                  <th class="thcolor text-left">Actividad</th>
+                                  <th width="5%" class="thcolor text-center">Turno</th>
+                                  <th width="15%" class="thcolor text-center">Horario</th>
+                                </tr>
+                                <tbody id="tbody">
+                                <% contratosactividades.each do |a| %>
+                                  <%= render '/contratosactividades/tr1', p: p, a: a, isadmin: @usr.id %>
+                                <% end %>
+                                </tbody>
+                              </table>
+                            <% else %>
+                              <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+                            <% end %>
+                          </div>
+                          <div class="tab-pane" id="fuerte">
+                            <br/>
+                            <% if contratosacts.count.to_i > 0 %>
+                                <table class="table table-bordered table-striped">
+                                  <tr>
+                                    <th width="8%" class="thcolor text-center">Opcion</th>
+                                    <th class="thcolor text-left">Actividad</th>
+                                    <th width="5%" class="thcolor text-center">Turno</th>
+                                    <th width="15%" class="thcolor text-center">Horario</th>
+                                  </tr>
+                                  <% contratosacts.each do |a| %>
+                                    <%= render '/contratosactividades/tr1', p: p, a: a, isadmin: @usr.id %>
+                                  <% end %>
+                                </table>
+                            <% else %>
+                              <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% elsif @usr.tipoconsulta.to_s == 'METRO' %>
+                            <legend><%= p.nombre_consulta rescue nil%> - Verificación Diaria</legend>
+                            <%
+                              Contratosactejecucion.where(["contratossede_id = #{p.id} and date(created_at) >= curdate()-10"]).select("contratossede_id").distinct.each do |cae|
+                            %>
+                              <table class="table table-bordered table-striped">
+                                <% arr = p.nodos
+                                   arr.each do |a|
+                                     if a.to_s != "" and Tiposevaluacion.where(tipo: a.to_s).exists?
+                                      %>
+                                    <tr>
+                                      <td width="20%" >Nodo: <strong><%=a %></strong></td>
+                                      <td>
+                                        <% if Contratosactcodigo.where(["contratossede_id = #{p.id} and nodo = '#{a}' and date(created_at) = curdate()"]).exists? == false %>
+                                          <strong class="text-red">
+                                            Si quieres realizar verificacion del servicio para el Nodo (<%=a %>) pulsa <%= link_to 'Aqui', evaluar_contratosactcodigos_path(contratossede_id: p.id, user_id: @usr.id, nodo: a), class: 'edit_contratossolicitud_button'%>
+                                          </strong>
+                                        <% else %>
+                                          <% Contratosactcodigo.where(["contratossede_id = #{p.id} and nodo = '#{a}' and date(created_at) = curdate()"]).select("contratossede_id,nodo,user_id").distinct.each do |n|%>
+                                            <strong class="text-blue">
+                                              Verificado por <%=n.user.nombre.to_s %>.
+                                              <% if n.user_id == @usr.id %>
+                                                Si quieres ver los datos registrados pulsa <%= link_to 'Aqui', edit_individual_contratosactcodigos_path(contratossede_id: p.id, user_id: @usr.id, nodo: a), class: 'edit_contratossolicitud_button'%>
+                                              <% end %>
+                                            </strong>
+                                            <% if n.user_id != @usr.id %>
+                                              <br/><br/>
+                                              <strong class="text-red">
+                                                Si quieres realizar verificacion del servicio para el Nodo (<%=a %>) pulsa <%= link_to 'Aqui', evaluar_contratosactcodigos_path(contratossede_id: p.id, user_id: @usr.id, nodo: a), class: 'edit_contratossolicitud_button'%>
+                                              </strong>
+                                            <% end %>
+                                          <% end %>
+                                        <% end %>
+                                      </td>
+                                    </tr>
+                                  <% end
+                                 end %>
+                              </table>
+                              <br/>
+                            <% end %>
+                            <%  if Time.now.strftime("%d").to_i <= 5 %>
+                            <br/>
+                            <legend><%= p.nombre_consulta rescue nil%> - Verificación Mensual</legend>
+                            <div class="alert alert-danger"><strong><%= t :atencion %>!</strong> Recuerda que
+                                <% if Time.now.strftime("%d").to_i < 5 %>
+                                  tienes solo <%=(6-Time.now.strftime("%d").to_i) %> dia(s) para realizar la autoevaluación
+                                <% elsif Time.now.strftime("%d").to_i == 5 %>
+                                  HOY vence el plazo para realizar la autoevaluación
+                                <% end %>
+                            </div>
+                            <table class="table table-bordered table-striped">
+                              <% arr = p.nodos
+                                 arr.each do |a|
+                                   if a.to_s != "" and Tiposevaluacion.where(tipo: a.to_s).exists? %>
+                                  <tr>
+                                    <td width="20%" >Nodo: <strong><%=a %></strong></td>
+                                    <td>
+                                      <% if Contratosactmcodigo.where(["contratossede_id = #{p.id} and nodo = '#{a}' and date(created_at) = curdate()"]).exists? == false %>
+                                        <strong class="text-red">
+                                          Si quieres realizar verificacion del servicio mensual para el Nodo (<%=a %>) pulsa <%= link_to 'Aqui', evaluar_contratosactmcodigos_path(contratossede_id: p.id, user_id: @usr.id, nodo: a), class: 'edit_contratossolicitud_button'%>
+                                        </strong>
+                                      <% else %>
+                                        <% Contratosactmcodigo.where(["contratossede_id = #{p.id} and nodo = '#{a}' and date_format(created_at,'%%Y-%%m') = date_format(curdate(),'%%Y-%%m')"]).select("contratossede_id,nodo,user_id").distinct.each do |n|%>
+                                          <strong class="text-blue">
+                                            Verificado por <%=n.user.nombre.to_s %>.
+                                            <% if n.user_id == @usr.id %>
+                                              Si quieres ver los datos registrados pulsa <%= link_to 'Aqui', edit_individual_contratosactmcodigos_path(contratossede_id: p.id, user_id: @usr.id, nodo: a), class: 'edit_contratossolicitud_button'%>
+                                            <% end %>
+                                          </strong>
+                                        <% end %>
+                                      <% end %>
+                                    </td>
+                                  </tr>
+                                <% end
+                                   end %>
+                            </table>
+                      <% end %>
+
+                    <% end %>
+                  <%# end %>
+                </div>
+              </div>
+            </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ver">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="observacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="creacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

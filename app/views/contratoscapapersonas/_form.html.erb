@@ -1,0 +1,23 @@
+<%= simple_form_for([@contratoscapacitacion, @contratoscapapersona], remote: true) do |f| %>
+  <%= hidden_field_tag :contratoscapacitacion_id, params[:contratoscapacitacion_id], value: @contratoscapacitacion.id %>
+  <%= hidden_field_tag :contrato_id, params[:contrato_id], value: @contratoscapacitacion.contrato_id %>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label for="">Seleccionar Empleado</label>
+        <select class="form-control select2EmpleadoId select2" name="contratoscapapersona[contratosperfecha_id]">
+          <option selected="selected" value="<%= f.object.contratosperfecha_id -%>">
+            <%= "#{f.object.descripcion_empleado}" -%>
+          </option>
+        </select>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+<% end %>
+<br/>

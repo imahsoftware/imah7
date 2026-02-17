@@ -1,0 +1,50 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @mensaje %> - <small>Lote (<%= @archivo %>) - Tipo: <%= @tipo %></small></h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="10%" class="text-left text-table">Identificación</th>
+            <th width="25%" class="text-left text-table">Nombre</th>
+            <th class="text-left text-table">Descripción</th>
+            <th width="10%" class="text-center text-table">Fecha</th>
+            <th width="10%" class="text-center text-table">Hora</th>
+            <th width="10%" class="text-center text-table">Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @migracionesexamenes.each do |migracionesexamen| %>
+            <tr id="parcargo_<%= migracionesexamen.id %>">
+              <td class="text-left text-table"><%= migracionesexamen.identificacion rescue nil %></td>
+              <td class="text-left text-table"><%= migracionesexamen.nombre_completo.upcase rescue nil %></td>
+              <td class="text-left text-table"><%= migracionesexamen.descripcion rescue nil %>
+              <br/><b>Dirección: </b><%= migracionesexamen.direccion rescue nil %>
+              </td>
+              <td class="text-center text-table"><%= migracionesexamen.fecha rescue nil %></td>
+              <td class="text-center text-table"><%= migracionesexamen.hora rescue nil %></td>
+              <td class="text-center text-table"><%= migracionesexamen.estado rescue nil %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <div class="box-tools pull-right">
+          <%= will_paginate @migracionesexamenes, renderer: BootstrapPagination::Rails %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $(function () {
+        $('.pagination a').attr('data-remote', 'true')
+    });
+</script>
+
+
+
+

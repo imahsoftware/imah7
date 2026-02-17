@@ -1,0 +1,18 @@
+<div class="box ">
+  <div class="box-header with-border">
+    <legend>Registros</legend>
+  </div>
+  <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+    <div class="box-body">
+      <div class="form-group">
+        <%= label_tag :identificacion, 'Identificación' %><br/>
+        <%= text_field_tag :identificacion, params[:identificacion], class: 'form-control', style:'width:150px;', autocomplete: 'off' %>
+      </div>
+      <div class="form-group">
+        <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

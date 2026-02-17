@@ -1,0 +1,34 @@
+<%= simple_form_for([@contratossolepp, @contratossoleppsdetalle], remote: true) do |f| %>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+      <% if @contratossolepp.contrato_id.to_i == 892 %>
+        <%= f.input :item, collection: Iparametro.where(campo: 'epp_item_especial', estado: 'ACTIVO').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Item Especial' %>
+      <% else %>
+        <%= f.input :item, collection: Iparametro.where(campo: 'epp_item', estado: 'ACTIVO').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Item' %>
+      <% end %>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+      <%= f.input :cantidad, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cantidad" %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <%= f.input :observacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <% if @contratossoleppsdetalle.new_record? %>
+        <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratossoleppsdetalle_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+      <% else %>
+        <%= link_to "#{t :cancelar}", contratossolepp_contratossoleppsdetalle_path(@contratossolepp, @contratossoleppsdetalle), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+      <% end %>
+    </div>
+    <div class="col-md-6">
+      <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+    </div>
+  </div>
+<% end %>
+<br/>

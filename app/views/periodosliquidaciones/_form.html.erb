@@ -1,0 +1,34 @@
+<%= simple_form_for @periodosliquidacion, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :fin, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :fecha_limite, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :estado, as: :select, collection: select_estadoperiodos, input_html: { class: 'select2' } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :visible, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2'}, label: 'Visible ?'  %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @periodosliquidacion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#periodosliquidacion_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", periodosliquidacion_path(@periodosliquidacion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

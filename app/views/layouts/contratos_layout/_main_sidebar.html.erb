@@ -1,0 +1,124 @@
+
+<%
+  isadmin = is_admin
+  user = User.find(isadmin)
+  isportafolio = is_portafolio
+  issygma = is_sygma
+%>
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <%= image_tag 'logo_inicio_asear.png', class: 'user-image', size: '230x100' %>
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <li>
+        <%= link_to edit_empresa_path(id: @contrato.empresa_id, etapa: 'A'), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-arrow-left text-success"></i> Regresar a Empresas
+        <% end %>
+      </li>
+      <li class="header"><%=t :menu%></li>
+      <li class="<%= active_class(edit_contrato_path(etapa: "A", id: @contrato.id)) %>">
+        <%= link_to edit_contrato_path(etapa: "A", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Datos básicos</span>
+        <% end %>
+      </li>
+      <% if @cadper.include?('personas') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "P1", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "P1", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Parametrizacion</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('modificaciones') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "G", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "G", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Adiciones</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('sedes') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "H", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "H", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Sedes</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('interventores') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "D", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "D", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Interventores</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('insumos') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "F", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "F", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Insumos</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('maquinaria') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "M", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "M", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Maquinaria</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('otrosservicios') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "O", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "O", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Otros Servicios</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('soportedigital') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "C", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "C", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Soporte Digital</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('observaciones') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "B", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "B", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Observaciones</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('solicitudes') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "S", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "S", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Solicitudes</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('solicitudesepp22') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "P", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "P", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Solicitudes EPP</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('informesdegestion22') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "GE", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "GE", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Informes de gestion</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('facturacion') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "PR", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "PR", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Facturacion</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('actividadesaseo') %>
+        <li class="<%= active_class(edit_contrato_path(etapa: "AC", id: @contrato.id)) %>">
+          <%= link_to edit_contrato_path(etapa: "AC", id: @contrato.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Actividades Aseo</span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+</aside>

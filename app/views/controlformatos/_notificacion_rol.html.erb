@@ -1,0 +1,129 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  @expedicion_rep = portafolio.expedicion_rep
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+    </tr>
+  </table>
+  <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+    <br/>
+    Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>
+    <br/><br/><br/><br/>
+    SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+    C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+    <br/><br/>
+    <strong>ASUNTO:</strong> NOTIFICACIÓN DE ROLES Y RESPONSABILIDADES PARA CON EL SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO
+    <br/><br/>
+    Cordial saludo,<br/><br/>
+    Yo <%= @nombre_firma %>, identificado con cedula de ciudadanía N° <%= @identificacion %> de <%=@expedicion_rep %> Antioquia y como representante legal de la empresa <%=@nombre_empresa %> presentó a continuación los roles y responsabilidades que tendrán las personas para con el Sistema de gestión de seguridad y Salud en el trabajo de <%=@nombre_empresa %>, las cuales son de total cumplimiento, así mismo deberán informar a la gerencia, subgerencia o a la Responsable del Sistema de Gestión de seguridad y salud en el trabajo, cualquier obstáculo con el cumplimiento de las mismas.
+    <br/><br/>
+    Tienen Responsabilidades para con el SG SST de <%=@nombre_empresa %>, los siguientes:
+    <br/><br/>
+    <ul>
+      <li>Gerencia y Subgerencia</li>
+      <li>Responsable del SG SST</li>
+      <li>Coordinadores de SST</li>
+      <li>Coordinadores y Supervisores</li>
+      <li>Coordinadores de alturas</li>
+      <li>Trabajadores en general</li>
+      <li>Comité Paritario de Seguridad y salud en el trabajo - COPASST</li>
+      <li>Comité de Convivencia Laboral</li>
+      <li>Comité de evacuación y Brigada de emergencia</li>
+    </ul>
+    <br/><br/>
+    Como supervisores y coordinadores de nuestra empresa, les corresponde las siguientes responsabilidades de los siguientes roles
+    <br/><br/>
+    <ul>
+      <li>Coordinadores y supervisores</li>
+      <li>Trabajadores en general</li>
+      <li>Coordinadores de alturas (Solo a quienes aplique en cumplimiento con la Resolución 4272 de 2021).</li>
+    </ul>
+    <br/><br/>
+    <strong>COORDINADORES Y SUPERVISORES</strong>
+    <ol id="1">
+      <li>Velar por el cumplimiento de del Plan de trabajo anual del Sistema de Gestión de Seguridad y Salud en el trabajo.</li>
+      <li>Realizar entrega de rendición de cuentas a la gerencia</li>
+      <li>Dar cumplimiento a normatividad en materia de Seguridad y Salud en el trabajo.</li>
+      <li>Participar con el equipo de investigación en la elaboración de la investigación de los accidentes e incidentes de trabajo que se presenten en los centros de trabajo que tiene asignados.</li>
+      <li>Atender los requerimientos que desde el área de seguridad y salud en el trabajo se soliciten.</li>
+      <li>Cumplir con las capacitaciones propuestas en el programa de capacitación anual del SG SST para la formación de los colaboradores y entregar evidencia de las mismas de manera mensual.</li>
+      <li>Realizar la solicitud de los elementos de protección personal de acuerdo con la Matriz de EPP en los tiempos establecidos.</li>
+      <li>Realizar la entrega de los elementos de protección personal a los colaboradores y entregar la evidencia de ello al área de SST de manera mensual.</li>
+      <li>Cumplir con los protocolos de Bioseguridad para la prevención de Riesgo Biológico.</li>
+      <li>Cumplir con el reporte de accidente e incidentes de trabajo, en el formato establecido para ello.</li>
+      <li>Velar por el bienestar de los colaboradores en su lugar de trabajo y garantizar buenas condiciones laborales.</li>
+      <li>Realizar la evaluación de desempeño del personal a cargo en cumplimiento con las responsabilidades entregadas para con el SG SST.</li>
+      <li>Velar porque el personal que tienen a cargo tenga al día las capacitaciones de idoneidad necesarias para dar cumplimiento al perfil tales como: capacitaciones de trabajo en alturas, capacitación de manipulación de alimentos, capacitación en técnicas de aseo, capacitación en mantenimiento de piscinas y tratamiento de aguas y en general de acuerdo con el perfil de cada persona.</li>
+      <li>Velar porque el personal que tienen a cargo tenga su esquema de vacunación completo de acuerdo al riesgo Biológico al que se encuentran expuestos.</li>
+    </ol>
+    <br/><br/>
+    <strong>COORDINADORES DE ALTURAS</strong>
+    <ol id="1">
+      <li>Cumplir con las directrices impartidas por el responsable del SG SST para el cumplimiento del SG SST y del programa de protección contra caídas.</li>
+      <li>Dar cumplimiento al programa de protección contra caídas de la empresa y a las directrices establecides en el SG SST.</li>
+      <li>Cumplir con la normatividad vigente en materia de seguridad y salud en el trabajo y en materia de todo lo relacionado con trabajo de alturas.</li>
+      <li>Ejecutar los programas, estándares, normas o procedimientos establecidos por el profesional responsable del SG SST.</li>
+      <li>Velar por siempre estar con los cursos de alturas que le corresponden vigentes.</li>
+      <li>Reportar cualquier condición de riesgo que encuentren en los centros de trabajo y suspender si es el caso las actividades de alturas.</li>
+      <li>Asistir a las capacitaciones o reuniones programadas por el área de seguridad y salud en el trabajo o por la empresa en general.</li>
+      <li>Realizar rendición de cuentas del cumplimiento de sus responsabilidades al final del año.</li>
+      <li>Velar por el cuidado de los equipos de trabajo en alturas en los centros de trabajo.</li>
+      <li>Coordinar con el supervisor los trabajos de alturas, garantizando el cumplimiento total de la normatividad vigente y del programa de protección contra caídas.</li>
+    </ol>
+    <br/><br/>
+    <strong>TRABAJADORES EN GENERAL</strong>
+    <ol id="1">
+      <li>Conocer y velar por el cumplimiento de los Programas, Procedimientos, Instructivos, Protocolos y Estándares de seguridad elaborados por el área de seguridad y salud en el trabajo.</li>
+      <li>Conocer y tener clara la Política, Objetivos, roles y responsabilidades de SST; así mismo dar cumplimiento a estos.</li>
+      <li>Participar en la elaboración del diagnóstico del riesgo e informar cualquier condición que genere peligro en los puestos de trabajo.</li>
+      <li>Asistir a las capacitaciones, brigadas de salud y demás actividades programadas por el área de seguridad y salud en el trabajo para la prevención de accidentes y enfermedades laborales.</li>
+      <li>Cumplir con la normatividad vigente en materia de Seguridad y Salud en el trabajo.</li>
+      <li>Usar los elementos de protección personas durante la labor y de forma correcta</li>
+      <li>Cumplir con la Política de alcohol y drogas.</li>
+      <li>Cumplir con el Protocolo de Bioseguridad para prevención de riesgo Biológico.</li>
+      <li>Informar cualquier cambio o condición que afecte su salud.</li>
+      <li>Procurar el cuidado integral de su salud y autocuidado en el lugar de trabajo, realizando las actividades de forma segura con el fin de evitar la materialización de un accidente o enfermedad laboral.</li>
+      <li>Velar por el cuidado de las demás personas, estando atentos a las condiciones de riesgo e informando a tiempo, así mismo no poner en riesgo la integridad misma o la de otras personas.</li>
+      <li>No realizar trabajos de alturas, en caso de no cumplir con todos los requisitos establecidos en la Resolución 4272 de 2021 y con el programa de protección contra caídas establecido por la empresa.</li>
+      <li>Reportar inmediatamente todos los accidentes e incidentes que ocurren en el lugar de trabajo.</li>
+      <li>Cumplir con las normas de seguridad establecidas en el reglamento interno de trabajo.</li>
+    </ol>
+    <br/><br/><br/><br/>
+    <table width="100%">
+      <tr>
+        <td width="30%"><b>EL CONTRATANTE</b></td>
+        <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %><%end %>
+          <br/>
+          <%= @nombre_firma %><br/>
+          Representante Legal
+        </td>
+      </tr>
+    </table>
+    <br/><br/>
+    <% if @controlfirma.codigo_firma.present? %>
+      <%= contratospersona.nombre_completo rescue nil %><br/>
+      <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+      <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+      <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+      * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+    <% else %>
+      FIRMA DEL TRABAJADOR:<br/>
+      CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+    <% end %>
+    <br/>
+    <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+  </div>
+</div>

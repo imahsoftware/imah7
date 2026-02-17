@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperproceso: one
+  contratospersona: one
+  fecha: 2023-11-28 18:19:06
+  lugar: MyString
+  user: one
+  estado: MyString
+
+two:
+  contratosperproceso: two
+  contratospersona: two
+  fecha: 2023-11-28 18:19:06
+  lugar: MyString
+  user: two
+  estado: MyString

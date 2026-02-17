@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Generación de Archivos planos de Liquidaciones</h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <tr>
+            <th width="30%" class="thcolor text-left">Consecutivo</th>
+            <td class="text-left" style="font-size:11px;"><%= @consecutivo rescue nil%></td>
+          </tr>
+          <tr>
+            <th class="thcolor text-left">Archivos</th>
+            <td class="text-left" style="font-size:11px;">
+              <% Objeto.find_by_sql("SELECT DISTINCT p.tipo_cuenta, p.banco, COUNT(p.id) cantidad
+                                                FROM   contratosperliquidaciones l, solicitudesretiros r, contratosperfechas f, contratospersonas p
+                                                WHERE  r.consecutivo = #{@consecutivo}
+                                                AND    r.contratosperfecha_id = l.contratosperfecha_id
+                                                AND    l.contratosperfecha_id = f.id
+                                                AND    f.contratospersona_id = p.id
+                                                group by p.tipo_cuenta, p.banco").each do |b| %>
+                <% if b.cantidad.to_i > 0 %>
+                  <% if ['DAVIVIENDA','DAVIVIENDA2'].include?(b.banco) %>
+                    <%=b.banco %> - <%=b.tipo_cuenta %> : (<%=b.cantidad %> registros)
+                    <%= link_to archivoplano_contratosperliquidaciones_path(consecutivo: @consecutivo, entidad: b.banco, tipocuenta: b.tipo_cuenta), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                      <i class="fa fa-download"></i>
+                    <%end %><br/>
+                  <% else %>
+                    <%=b.banco %> : (<%=b.cantidad %> registros)
+                    <%= link_to archivoplano_contratosperliquidaciones_path(consecutivo: @consecutivo, entidad: b.banco), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                      <i class="fa fa-download"></i>
+                    <%end %><br/>
+                  <%end %>
+                <%end %>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

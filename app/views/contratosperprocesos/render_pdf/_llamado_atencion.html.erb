@@ -1,0 +1,109 @@
+<% base_url = Rails.env.production? ? 'https://appasearesp.com' : 'http://localhost:3000' %>
+<div align="center">
+  <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="35%"><%= image_tag "#{@logo}", size: "280x120" %></td>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b>LLAMADO DE ATENCION </b></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                <br/>
+                Medellin, <%= namedate(Time.now) rescue nil %>
+                <br/><br/><br/><br/>
+                SEÑOR(A):<br/>
+                <b><%= @contratosperproceso.contratospersona.autobuscar rescue nil %></b><br/>
+                <b>Asear S.A.S. E.S.P</b><br/>
+                <br/><br/>
+                <strong>ASUNTO:</strong> LLAMADO DE ATENCIÓN
+                <br/><br/>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                  Cordial saludo,<br/><br/>
+                  Como es de su conocimiento para <b>ASEAR SA ESP</b> es fundamental el compromiso de los colaboradores
+                  al
+                  desarrollar sus obligaciones dando cumplimiento a lo estipulado en el contrato de Trabajo. Teniendo en
+                  cuenta lo anterior nos permitimos manifestarle que
+                  <b><%= @contratosperproceso.detalle rescue nil %></b>
+                  considerando que estas conductas son contrarias a derecho, la empresa decide
+                  hacerle un <b>LLAMADO DE ATENCION</b>, esperando que con su responsabilidad y compromiso no reincida
+                  en su
+                  mal actuar teniendo en cuenta que al tratarse de conductas repetitivas o mas gravosas pueden aplicarse
+                  sanciones mas fuertes.
+                  <br/><br/>
+                  Atentamente;
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="font-size: 14px; font-family: Tahoma;" width="45%">
+                      <% if @contratosperproceso.firma_abogado_doc_file_name.present? %>
+                        <% if @contratosperproceso.firma_abogado_doc_file_name.present? %>
+                          <img src="<%= base_url + @contratosperproceso.firma_abogado_doc.url(:thumb) %>" width="170" height="70"/><br/>
+                        <% end %>
+                      <% end %>
+                      ___________________________<br/>
+                      <% if @contratosperproceso.codigo_firma_supervisor.present? %>
+                        <strong><%= @contratosperproceso.user.nombre rescue nil%><br/>
+                          <b>Cedula: </b><%= @contratosperproceso.user.identificacion rescue nil %><br/></strong>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperproceso.codigo_firma_supervisor rescue nil %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperproceso.fecha_firma_supervisor.strftime("%d-%m-%Y %X") rescue nil %><br/>
+                        <small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                      <% else %>
+                        <%= @contratosperproceso.user.nombre %><br/>
+                        <b>Cedula: </b><%= @contratosperproceso.user.identificacion rescue nil %>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+                <% if @contratosperproceso.user_testigo1.present? || @contratosperproceso.user_testigo2.present? %>
+                  <br/><br/><p style="font-size: 14px; font-family: Tahoma;">EN CASO DE SER NECESARIO</p>
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                      <td style="font-size: 14px; font-family: Tahoma;" width="45%">
+                        <% if @contratosperproceso.user_testigo1.present? %>
+                          <% if @contratosperproceso.firma_testigo1_doc_file_name.present? %>
+                            <img src="<%= base_url + @contratosperproceso.firma_testigo1_doc.url(:thumb) %>" width="170" height="70"/><br/>
+                            ___________________________<br/>
+                          <% else %>
+                            ___________________________<br/>
+                          <% end %>
+                          <%= User.find(@contratosperproceso.user_testigo1).nombre rescue nil %><br/>
+                          <b>Cedula:</b> <%= User.find(@contratosperproceso.user_testigo1).identificacion rescue nil %><br/>
+                          <b>Testigo</b>
+                        <% end %>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td style="font-size: 14px; font-family: Tahoma;" width="45%">
+                        <% if @contratosperproceso.user_testigo2.present? %>
+                          <% if @contratosperproceso.firma_testigo2_doc_file_name.present? %>
+                            <img src="<%= base_url + @contratosperproceso.firma_testigo2_doc.url(:thumb) %>" width="170" height="70"/><br/>
+                            ___________________________<br/>
+                          <% else %>
+                            ___________________________<br/>
+                          <% end %>
+                          <%= User.find(@contratosperproceso.user_testigo2).nombre rescue nil %><br/>
+                          <b>Cedula:</b> <%= User.find(@contratosperproceso.user_testigo2).identificacion rescue nil %><br/>
+                          <b>Testigo</b>
+                        <% end %>
+                      </td>
+                    </tr>
+                  </table>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

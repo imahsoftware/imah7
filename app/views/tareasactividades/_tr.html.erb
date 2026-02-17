@@ -1,0 +1,16 @@
+<tr id="tareasactividad_<%= tareasactividad.id %>">
+  <td class="text-center" width="8%">
+    <%= image_tag (tareasactividad.estado_color), size: '20x20' %>&nbsp;
+    <%# if @contrato.contratosusers.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false and @contrato.contratoscargos.exists?(empresasactividad_id: contratosactividad.empresasactividad_id) == false  %>
+    <%= link_to edit_tarea_tareasactividad_path(@tarea, tareasactividad), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%# if is_auth_e("contratosactividad")%>
+    <%= link_to tarea_tareasactividad_path(@tarea, tareasactividad), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-table"><%= User.find(tareasactividad.user_persona).nombre rescue nil %></td>
+  <td class="font-size-text-tabla text-center text-table">(<%= tareasactividad.dias rescue nil %>) &nbsp;<%= tareasactividad.fecha_limite rescue nil %></td>
+  <td class="font-size-text-tabla text-justify text-table"><%= tareasactividad.item rescue nil %>. <%= tareasactividad.descripcion rescue nil %></td>
+</tr>

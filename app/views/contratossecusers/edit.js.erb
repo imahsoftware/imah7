@@ -1,0 +1,22 @@
+$("#contratossecuser_form").collapse("hide");
+
+$("#contratossecuser_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratossecuser_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratossecuser: @active_record %>");
+<% end %>
+
+$("#contratossecuser_<%= @contratossecuser.id %>").html("<td colspan='7'><%= j render 'form' %></td>");
+
+$("#contratossecuser_<%= @contratossecuser.id %>").addClass("active_contratossecuser");
+$(".select2").select2();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '1950:2027',
+    changeMonth: true,
+    changeYear: true,
+});

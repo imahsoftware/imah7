@@ -1,0 +1,16 @@
+<tr id="tareasdoc_<%= tareasdoc.id %>">
+  <td class="text-center" width="10%">
+    <%= link_to tarea_tareasdoc_path(@tarea, tareasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center text-table" width="5%"><%= tareasdoc.id rescue nil %></td>
+  <td class="font-size-text-tabla text-table"><%= tareasdoc.descripcion rescue nil %></td>
+  <td class="font-size-text-tabla text-table">
+    <% if tareasdoc.tareadoc_file_name.present? %>
+      <%= link_to tareasdoc.tareadoc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <i class="fa fa-cloud-download text-danger"></i> <%= tareasdoc.tareadoc_file_name rescue nil %>
+      <% end %>
+    <% end %>
+  </td>
+</tr>

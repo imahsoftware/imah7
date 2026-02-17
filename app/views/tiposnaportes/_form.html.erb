@@ -1,0 +1,32 @@
+<%= form_for(tiposnaporte) do |f| %>
+  <% if tiposnaporte.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(tiposnaporte.errors.count, "error") %> prohibited this tiposnaporte from being saved:</h2>
+
+      <ul>
+      <% tiposnaporte.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :tipo %>
+    <%= f.text_field :tipo %>
+  </div>
+
+  <div class="field">
+    <%= f.label :subtipo %>
+    <%= f.text_field :subtipo %>
+  </div>
+
+  <div class="field">
+    <%= f.label :descripcion %>
+    <%= f.text_field :descripcion %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

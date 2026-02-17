@@ -1,0 +1,39 @@
+<%
+  @visitasasistentes = Visitasasistente.where("visita_id in (select id from visitas where DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' AND contrato_id = #{@contrato.id})")
+%>
+
+<br/>
+
+<% if @visitasasistentes.present? %>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <th width="35%" class="encabezado_tabla">
+        <div align="left"><strong>Nombre</strong></div>
+      </th>
+      <th width="35%" class="encabezado_tabla">
+        <div align="left"><strong>Cargo</strong></div>
+      </th>
+      <th width="30%" class="encabezado_tabla">
+        <div align="left"><strong>Email</strong></div>
+      </th>
+    </tr>
+    <% @visitasasistentes.each do |visitasasistente| %>
+      <tr>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visitasasistente.nombre rescue ni %>
+        </td>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visitasasistente.cargo rescue ni %>
+        </td>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visitasasistente.email rescue ni %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
+<% else %>
+  <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+    informacion
+  </div>
+<% end %>

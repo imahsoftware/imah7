@@ -1,0 +1,5 @@
+$("#buscador3<%= @contrato.id %><%= @p %>").html("<%= j render 'menus/resultado_carnet', contrato: @contrato, contratosprefechascarnet: eval("@contratosprefechascarnet#{@contrato.id}#{@p.downcase}") , p: @p, variable: eval("@#{@variable}") %>");
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});
+

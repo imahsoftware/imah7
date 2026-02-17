@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosprefactura: one
+  descripcion: MyString
+  user: one
+  facturasimagen: 
+
+two:
+  contratosprefactura: two
+  descripcion: MyString
+  user: two
+  facturasimagen: 

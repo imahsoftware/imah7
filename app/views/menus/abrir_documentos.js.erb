@@ -1,0 +1,5 @@
+$("#abrir_documentos<%= @contratosperfecha.id %> .modal-content").html('<%= j render "menus/abrir_documentos" %>');
+$("#abrir_documentos<%= @contratosperfecha.id %> ").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

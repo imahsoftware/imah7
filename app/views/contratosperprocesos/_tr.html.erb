@@ -1,0 +1,88 @@
+<tr id="contratosperproceso_<%= contratosperproceso.id %>">
+  <td class="text-center">
+    <%= link_to new2_contratosperprocesos_path(contratospersona_id: @contratospersona.id, id: contratosperproceso.id), remote: true, data: { toggle: 'tooltip' }, title: 'Añadir Soporte Digital' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+    <% end %>
+    <%= link_to edit_contratospersona_contratosperproceso_path(@contratospersona, contratosperproceso), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <% if contratosperproceso.automatico.to_s == 'NO' %>
+      <% if contratosperproceso.codigo_firma_supervisor.blank?
+           if contratosperproceso.user_id == is_admin %>
+          <%= link_to codigo_otp_contratosperprocesos_path(contratospersona_id: @contratospersona.id, contratosperproceso_id: contratosperproceso.id), class: "envia-otp-boton#{contratosperproceso.id}", data: { disable_with: "Enviando Codigo de firma..." }, remote: true do %>
+            <button class="btn btn-xs btn-success">
+              <i class="fa fa-paint-brush" data-toggle="tooltip" data-original-title="Enviar Codigo para Firma"></i>
+            </button>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if contratosperproceso.niega != 'SI' %>
+        <% if ['ADMINISTRADOR', 'TODO'].include?(is_tipoconsulta) and contratosperproceso.codigo_firma_supervisor.blank? %>
+          <%= link_to contratospersona_contratosperproceso_path(@contratospersona, contratosperproceso), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+          <% end %>
+          <%= link_to general_contratosperprocesos_path(id: contratosperproceso.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+            <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+        <% end %>
+        <%#= link_to firma_contratosperprocesos_path(id: contratosperproceso.id), remote: true, data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+        <!-- <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button> -->
+        <%# end %>
+
+        <%= link_to se_niega_contratosperprocesos_path(id: contratosperproceso.id), data: { confirm: "Estas Seguro?", disable_with: "Corriendo Proceso...." }, remote: true do %>
+          <button class="btn btn-xs btn-danger">
+            <i class="fa fa-times-circle-o" data-toggle="tooltip" data-original-title="Se niega a firmar"></i>
+          </button>
+        <% end %>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= contratosperproceso.user.username rescue nil %>
+      <br/><%= contratosperproceso.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(contratosperproceso.user_actualiza).username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left" class="text-table"><%= contratosperproceso.clase rescue nil %></td>
+  <td align="center" class="text-table"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+  <td align="justify" class="text-table">
+    <div id="abrir<%= contratosperproceso.id %>" class="pull-left">
+      <%= link_to show_firma_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: @contratospersona.id, ruta: 'ABRIR'), style: "color: black;", remote: true do %>
+        <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+        <i class="fa fa-plus"></i> <%= contratosperproceso.detalle rescue nil %>
+        <% if contratosperproceso.observacion_empleado.present? %>
+          <br/><b>Detalle Empleado: </b> <%= contratosperproceso.observacion_empleado rescue nil %>
+        <% end %>
+      <% end %>
+    </div>
+    <div id="cerrar<%= contratosperproceso.id %>" class="pull-left hide">
+      <%= link_to show_firma_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: @contratospersona.id, ruta: 'CERRAR'), style: "color: #F21B11; font-weight: bold; font-style: italic;", remote: true do %>
+        <i data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle de las "></i>
+        <i class="fa fa-minus-square"></i> <%= contratosperproceso.detalle rescue nil %>
+        <% if contratosperproceso.observacion_empleado.present? %>
+          <br/><b>Detalle Empleado: </b> <%= contratosperproceso.observacion_empleado rescue nil %>
+        <% end %>
+      <% end %>
+    </div>
+    <div id="mostrar_documento<%= contratosperproceso.id %>">
+      <%= render 'contratosperprocesos/documentos_cargados', contratosperproceso: contratosperproceso %>
+    </div>
+  </td>
+  <td align="center" class="text-table"><%= contratosperproceso.estado rescue nil %></td>
+</tr>
+<tr id="tr_show<%= contratosperproceso.id %>" class="hidden">
+  <td colspan="5">
+    <div id="abrir_detalle<%= contratosperproceso.id %>"></div>
+  </td>
+</tr>
+
+<div class="modal fade" id="adddocumento2<%= contratosperproceso.id %>">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="firma<%= contratosperproceso.id %>">
+  <div class="modal-dialog" style="width: 70%;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

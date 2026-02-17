@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Tipo:</strong>
+  <%= @tiposnaporte.tipo %>
+</p>
+
+<p>
+  <strong>Subtipo:</strong>
+  <%= @tiposnaporte.subtipo %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @tiposnaporte.descripcion %>
+</p>
+
+<%= link_to 'Edit', edit_tiposnaporte_path(@tiposnaporte) %> |
+<%= link_to 'Back', tiposnaportes_path %>

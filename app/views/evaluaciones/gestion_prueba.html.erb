@@ -1,0 +1,162 @@
+<% isadmin = is_admin
+   user = User.find(isadmin)
+
+   idTarea = user.subetapa.to_i rescue nil
+   vcEstadoEva = ""
+   if idTarea.present?
+     fchLimite = Evaluacion.find(idTarea).fecha_limite.strftime("%Y-%m-%d") rescue nil
+     if fchLimite.present?
+       if Time.now.strftime("%Y-%m-%d") > fchLimite
+         vcEstadoEva = 'VENCIDO'
+       end
+     end
+   end
+%>
+<section class="content-header" style="padding: 0px 15px 0 15px !important; margin-top: -10px;">
+  <h1>Evaluaciones de Periodos de Prueba
+    <div class="pull-right">
+      <b style="color: #357ca5;">PENDIENTE</b> <i class="fa fa-certificate " style="color: #357ca5;"></i> &nbsp;
+      <b style="color: #d33724;">DEFICIENTE</b> <i class="fa fa-certificate" style="color: #d33724;"></i> &nbsp;
+      <b style="color: #ff7701;">REGULAR</b> <i class="fa fa-certificate" style="color: #ff7701;"></i> &nbsp;
+      <b style="color: #555299">BUENO</b> <i class="fa fa-certificate" style="color: #555299"></i> &nbsp;
+      <b style="color: #008d4c">EXCELENTE</b> <i class="fa fa-certificate" style="color: #008d4c"></i> &nbsp;
+    </div>
+  </h1>
+</section>
+<% if vcEstadoEva == 'VENCIDO' %>
+  <br/>
+  <div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya finalizo el tiempo para la evaluación...
+  </div>
+<% else %>
+  <div class="box-header">
+    <div class="row">
+      <div class="col-md-12">
+        <% if @evaluaciones.present? %>
+          <% @evaluaciones.each do |evaluacion| %>
+            <div class="box box-default collapsed-box">
+              <div class="box-header with-border">
+                <h3 class="box-title"><%= evaluacion.tema rescue nil %> - Fecha Limite: <%= evaluacion.fecha_limite %>
+                </h3>
+                <div class="pull-right">
+                  <% if Evaluacionescontrato.where("evaluacion_id = ? AND NOT EXISTS (SELECT 1 FROM evaluacionescontratos WHERE evaluacion_id = ? AND estado = 0)", evaluacion.id, evaluacion.id).present? || Evaluacionescontrato.where(evaluacion_id: evaluacion.id).blank? %>
+                    <%= link_to agregar_usuario_evaluaciones_path(evaluacion_id: evaluacion.id), remote: true do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-users"></i> Agregar Usuario</button>
+                    <% end %>
+                  <% end %>
+                  <%= link_to ver_grafica_general_evaluaciones_path(id: evaluacion.id), remote: true do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-pie-chart"></i> Ver Grafica</button>
+                  <% end %>
+                </div>
+              </div>
+              <div class="box-header">
+                <div class="row">
+                  <div class="col-md-12">
+                    <% if evaluacion.present?
+                         evaluacionescontratos = Evaluacionescontrato.where(evaluacion_id: evaluacion, user_id: isadmin).order("id desc")
+                    %>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tr class="thcolor">
+                          <th class="text-table" width="5%"></th>
+                          <th class="text-table" width="15%">Fecha Evaluación</th>
+                          <th class="text-table">Empleado</th>
+                          <th class="text-table" width=10%"><div align="center">Calificacion</div></th>
+                          <th class="text-table" width=20%"><div align="center">Estado</div></th>
+                        </tr>
+                        <% evaluacionescontratos.each do |usuario|
+                            contratosperfecha = Contratosperfecha.find(usuario.contratosperfecha_id)
+                            contratosperfecha_id = contratosperfecha.id rescue nil
+                        %>
+                          <tr>
+                            <td class="text-center text-table-10" style="padding: 7px;">
+                              <%= link_to evaluacion_pdf_evaluacionescontratos_path(evaluacion_id: evaluacion.id, usuario: usuario.id.to_s, contratosperfecha_id: contratosperfecha_id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' }, title: 'Evaluación PDF' do %>
+                                <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+                              <% end %>
+                              <%= link_to actividades_pdf_evaluacionesejecuciones_path(evaluacionescontrato_id: usuario.id, user_id: usuario.user_responsable, evaluacion_id: evaluacion.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Evaluaciones', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                              <% end %>
+                            </td>
+                            <td class="text-left text-table-10" style="padding: 7px;">
+                              <%= link_to abrir_evaluacion_evaluaciones_path(evaluacion_id: evaluacion.id, ruta: 'ABRIR', usuario: usuario.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black; ' do %>
+                                <%= usuario.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                                <br/> <%= usuario.user.nombre rescue nil %>
+                              <% end %>
+                            </td>
+                            <td class="text-left text-table-10" style="padding: 7px;">
+                              <div id="abrir_evaluacion<%= usuario.id.to_s %>_<%= evaluacion.id.to_s %>">
+                                <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacion.id, ruta: 'ABRIR', usuario: usuario.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black; ' do %>
+                                  <i class="fa fa-plus text-success"></i>
+                                  <%= contratosperfecha.contratospersona.identificacion rescue nil %>
+                                  - <%= contratosperfecha.contratospersona.nombre_completo rescue nil %>
+                                <% end %>
+                              </div>
+                              <div class="hide" id="cerrar_evaluacion<%= usuario.id.to_s %>_<%= evaluacion.id.to_s %>">
+                                <%= link_to mostrar_evaluacion_prueba_evaluaciones_path(evaluacion_id: evaluacion.id, ruta: 'CERRAR', usuario: usuario.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black;' do %>
+                                  <i class="fa fa-minus text-danger"></i>
+                                  <%= contratosperfecha.contratospersona.identificacion rescue nil %>
+                                  - <%= contratosperfecha.contratospersona.nombre_completo rescue nil %>
+                                <% end %>
+                              </div>
+                            </td>
+                            <td class="text-center text-table"><%= usuario.estado.to_f rescue nil %></td>
+                            <td class="text-center text-table" style="padding: 7px;">
+                              <% if usuario.estado.to_i == 0 %>
+                                <%= link_to proceso_evaluacionesejecuciones_path(user_responsable: usuario.user_responsable, evaluacion_id: evaluacion.id), data: { toggle: 'tooltip' }, title: "Ingresar en la Evaluación" do %>
+                                  <button class="btn btn-xs btn-danger"><i class="fa fa-bookmark"></i> Continuar Evaluando </button>
+                                  <% end %><% else %><%= usuario.estadoepp.to_s rescue nil %><% end %>
+                            </td>
+                          </tr>
+
+                          <tr id="tr_show<%= usuario.id.to_s %>_<%= evaluacion.id.to_s %>" class="hidden">
+                            <td colspan="5">
+                              <div id="abrir_detalle<%= usuario.id.to_s %>_<%= evaluacion.id.to_s %>"></div>
+                            </td>
+                          </tr>
+
+                          <div class="modal fade" id="abrir_modal<%= usuario.id %>">
+                            <div class="modal-dialog modal-dialog-responsive" role="document">
+                              <div class="modal-content"></div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </table>
+                    <% else %>
+                      <div class="alert alert-danger">
+                        <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="grafica<%= evaluacion.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="grafica_gestion<%= evaluacion.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="grafica_usuarios<%= evaluacion.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+
+            <div class="modal fade" id="agregar_usuario<%= evaluacion.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+
+          <% end %>
+        <% else %>
+          No hay evaluacion seleccionada
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

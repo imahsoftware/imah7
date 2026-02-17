@@ -1,0 +1,224 @@
+<%
+  isadmin = is_admin
+  contratosperfact = @contratosperfact
+  portafolio = Portafolio.find(contratosperfact.portafolio_id)
+%>
+<% if contratosperfact.tipo.to_s == 'ESTABILIDAD' %>
+<%
+  # ESTE ES EL FORMATO DE ESTABILIDAD
+  @contratosperfecha = Contratosperfecha.find(contratosperfact.contratosperfecha_id)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  @contratosperfact = Contratosperfact.where(contratosperfecha_id: @contratosperfecha.id, contrato_id: @contratosperfecha.contrato_id, contratosgrupo_id: @contratosperfecha.contratosgrupo_id, contratoscargo_id: @contratosperfecha.contratoscargo_id)[0] rescue nil
+%>
+  <div align="center">
+    <table width="85%">
+      <tr>
+        <td height="50px">
+          <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+            <div align="center">
+              <b style="font-size: 16px">OTRO SI AL CONTRATO DE TRABAJO POR OBRA Y LABOR DETERMINADA</b>
+            </div>
+            <br/><br/><br/><br/>
+            Entre los suscritos a saber: <b><%=@nombre_empresa%></b> representada por <b><%=@nombre_firma %></b>, mayor de
+            edad, identificado con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal,
+            quien de ahora en adelante se denominará EL CONTRATANTE, con sede en la ciudad de Medellín, por una parte; y por la
+            otra <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificado con cédula de
+            ciudadanía <b>N° <%= camponumerico2(contratospersona.identificacion) rescue nil %></b>, obrando en su
+            calidad de Representante Legal, que para efectos del presente contrato se denominará TRABAJADOR, hemos
+            convenido en celebrar el siguiente <b>OTRO SI AL CONTRATO POR OBRA Y LABOR DETERMINADA</b>, previas las siguientes:
+            <br/><br/>
+            <b>CONSIDERACIONES:</b><br/><br/>
+            <ol id="1">
+              <li>Que el <b><%=namedate(@contratosperfecha.fecha_inicio) rescue nil %></b> las partes suscribieron un contrato de trabajo por obra o labor determinada, en el cual se estipuló que el trabajador prestaría sus servicios en el marco de las actividades propias del objeto social de la empresa.</li>
+              <li>Que, en atención a la situación de estabilidad laboral reforzada del trabajador, y ante la terminación del contrato de prestación de servicios con la entidad en la cual venía desempeñando sus funciones, se hace necesario asignarle un nuevo centro de trabajo, dentro del mismo objeto y naturaleza del contrato inicialmente suscrito.</li>
+            </ol>
+            <br/>
+            <b>CLÁUSULAS:</b><br/><br/>
+              <b>PRIMERA – CAMBIO DE CENTRO DE TRABAJO:</b> A partir del día <b><%=namedate(contratosperfact.fecha_inicio) rescue nil %></b>, el(la) trabajador(a) será asignado(a) para prestar sus servicios como <b><%=contratosperfact.perfil rescue nil %></b>, en el centro de trabajo correspondiente a <b><%=contratosperfact.descripcion rescue nil %></b>, en desarrollo del contrato comercial No. <b><%= contratosperfact.nro_contrato rescue nil %></b>, celebrado entre <b><%=@nombre_empresa%></b> y <b><%= contratosperfact.empresanombre rescue nil %></b>.<br/><br/>
+            <b>SEGUNDA – PERMANENCIA DE CLÁUSULAS:</b> Las demás cláusulas del contrato de trabajo inicial permanecen vigentes y sin modificación, salvo lo expresamente pactado en el presente <b>OTRO SÍ</b>.<br/><br/>
+            <br/><br/>
+            En señal de conformidad y de común acuerdo entre las partes contratantes se firma el presente documento el <%=namedate(@controlfirma.fecha_firma) rescue nil %>
+          </div>
+          <br/><br/><br/>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+<% elsif contratosperfact.tipo.to_s == 'CONTINUIDAD' %>
+<%
+  # ESTE ES EL FORMATO DE CONTINUIDAD
+  @contratosperfecha = Contratosperfecha.find(contratosperfact.contratosperfecha_id)
+  contratospersona = @contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  # @contratosperfact = Contratosperfact.where(contratosperfecha_id: @contratosperfecha.id, contrato_id: @contratosperfecha.contrato_id, contratosgrupo_id: @contratosperfecha.contratosgrupo_id, contratoscargo_id: @contratosperfecha.contratoscargo_id)[0] rescue nil
+  @contratoori = Contrato.find(@contratosperfact.oricontrato_id) rescue nil
+%>
+  <div align="center">
+    <table width="85%">
+      <tr>
+        <td height="50px">
+          <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+            <div align="center">
+              <b style="font-size: 16px">OTRO SI AL CONTRATO DE TRABAJO POR OBRA Y LABOR DETERMINADA</b>
+            </div>
+            <br/><br/><br/><br/>
+            Entre los suscritos a saber: <b><%=@nombre_empresa%></b> representada por <b><%=@nombre_firma %></b>, mayor de edad, identificado
+            con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal, quien de ahora en adelante se
+            denominará EL CONTRATANTE, con sede en la ciudad de Medellín, por una parte; y por la otra, <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificada con
+            cédula de ciudadanía <b>N° <%= camponumerico2(contratospersona.identificacion) rescue nil %></b>, que para efectos del presente
+            contrato se denominará TRABAJADOR/A, hemos convenido en celebrar el siguiente <b>OTRO SI AL CONTRATO POR OBRA O LABOR DETERMINADA</b>, previas las siguientes
+
+            <br/><br/>
+            <b>CONSIDERACIONES:</b><br/><br/>
+            <ol id="1">
+              <li>Que las partes suscribieron un contrato de trabajo por obra o labor determinada, vinculado a la ejecución del Contrato No. <b><%= @contratoori.nro_contrato rescue nil %></b>, suscrito entre <b><%=@nombre_empresa%></b> y <b><%= @contratoori.empresa.nombre rescue nil %></b>.</li>
+              <li>Que, por motivos logísticos y administrativos, se requiere asignar a el trabajador(a) a un nuevo centro de trabajo, dentro del mismo objeto y naturaleza del contrato inicial, sin que ello implique una modificación sustancial de la obra o labor contratada.</li>
+            </ol>
+            <br/>
+            <b>CLÁUSULAS:</b><br/><br/>
+            <b>PRIMERA – CAMBIO DE CENTRO DE TRABAJO:</b> A partir de la fecha de firma del presente documento, <b>EL TRABAJADOR(A)</b> será asignada al nuevo centro de trabajo adscrito al Contrato <b>N. <%=@contratosperfecha.contrato.nro_contrato rescue nil %></b>, que ejecuta <b><%=@nombre_empresa%></b>. con <b><%=@contratosperfecha.contratosgrupo.descripcion rescue nil %></b>.<br/><br/>
+            <b>SEGUNDA – PERMANENCIA DE CLÁUSULAS:</b> Las demás cláusulas del contrato de trabajo inicial permanecen vigentes y sin modificación, salvo lo expresamente pactado en el presente <b>OTRO SÍ</b>.<br/><br/>
+            <br/><br/>
+            En señal de conformidad y de común acuerdo entre las partes contratantes se firma el presente documento el <%=namedate(@controlfirma.fecha_firma) rescue nil %>
+            <br/><br/><br/><br/>
+          </div>
+          <br/><br/><br/>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% elsif contratosperfact.tipo.to_s == 'CENTROCARGO' %>
+  <%
+    # ESTE ES EL FORMATO cambio de centro de trabajo y cargo
+    @contratosperfecha = Contratosperfecha.find(contratosperfact.contratosperfecha_id)
+    contratospersona = @contratosperfecha.contratospersona
+    portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @logo = portafolio.logo_empresa_assets
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+    #@contratosperfact = Contratosperfact.where(contratosperfecha_id: @contratosperfecha.id, contrato_id: @contratosperfecha.contrato_id, contratosgrupo_id: @contratosperfecha.contratosgrupo_id, contratoscargo_id: @contratosperfecha.contratoscargo_id)[0] rescue nil
+    @contratoori = Contrato.find(@contratosperfact.oricontrato_id) rescue nil
+  %>
+  <div align="center">
+    <table width="94%">
+      <tr>
+        <td><div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+            <div align="center"><b style="font-size: 16px">OTRO SÍ AL CONTRATO DE TRABAJO POR OBRA O LABOR DETERMINADA</b></div>
+            <br/><br/>
+            Entre los suscritos a saber: <b><%=@nombre_empresa%></b> representada por <b><%=@nombre_firma %></b>, mayor de edad, identificado
+            con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal, quien de ahora en adelante se
+            denominará EL CONTRATANTE, con sede en la ciudad de Medellín, por una parte; y por la otra, <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificada con
+            cédula de ciudadanía <b>N° <%= camponumerico2(contratospersona.identificacion) rescue nil %></b>, que para efectos del presente
+            contrato se denominará TRABAJADOR/A, hemos convenido en celebrar el siguiente <b>OTRO SI AL CONTRATO POR OBRA O LABOR DETERMINADA</b>, previas las siguientes
+            <br/><br/>
+            <b>CONSIDERACIONES:</b><br/><br/>
+            <ol id="1">
+              <li>Que con fecha <%=namedate(@contratosperfecha.fecha_inicio) rescue nil %>, las partes suscribieron un contrato de trabajo por obra o labor determinada, en el cual se estipuló que el trabajador prestaría sus servicios en el marco de las actividades propias del objeto social de la empresa.</li>
+              <li>Que, en atención a la situación de estabilidad laboral reforzada del trabajador, y ante la terminación del contrato de prestación de servicios con la entidad en la cual venía desempeñando sus funciones, se hace necesario asignarle un nuevo centro de trabajo, dentro del mismo objeto y naturaleza del contrato inicialmente suscrito..</li>
+            </ol>
+            <br/>
+            <b>CLÁUSULAS:</b><br/><br/>
+            <b>PRIMERA – CAMBIO DE CENTRO DE TRABAJO:</b> A partir de la fecha de firma del presente documento, <b>EL TRABAJADOR(A)</b> será asignada para prestar sus servicios como <b><%=@contratosperfecha.contratocargo.perfil rescue nil %></b> en el centro de trabajo adscrito al Contrato <b>N. <%=@contratosperfecha.contrato.nro_contrato rescue nil %></b>, que ejecuta <b><%=@nombre_empresa%></b>. con <b><%=@contratosperfecha.contrato.empresa.nombre rescue nil %></b>.<br/><br/>
+            <b>PARÁGRAFO:</b> El cambio de centro de trabajo responde exclusivamente a la necesidad de garantizar la continuidad laboral del trabajador, ubicándolo en un sitio donde la empresa tiene un contrato vigente.<br/><br/>
+            <b>SEGUNDA – MODIFICACIÓN DE CARGO:</b> A partir de la fecha de firma del presente documento, <b>EL TRABAJADOR(A)</b> desempeñará el cargo de <b><%=@contratosperfecha.contratocargo.perfil rescue nil %></b> cargo que sustituye al previamente ejercido de <b><%=contratosperfact.perfil rescue nil %></b>.
+            <b>PARÁGRAFO:</b> Este cambio responde exclusivamente a la necesidad de mantener la continuidad laboral del trabajador, sin alterar la esencia del contrato de trabajo por obra o labor inicialmente suscrito.<br/><br/>
+            <b>TERCERA – PERMANENCIA DE CLÁUSULAS:</b> Las demás cláusulas del contrato de trabajo inicial permanecen vigentes y sin modificación, salvo lo expresamente pactado en el presente <b>OTRO SÍ</b>.<br/><br/>
+            <br/><br/>
+            En señal de conformidad y de común acuerdo entre las partes contratantes se firma el presente documento el <%=namedate(@controlfirma.fecha_firma) rescue nil %>
+            <br/><br/><br/><br/>
+          </div>
+          <br/><br/><br/>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% else %>
+  <style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+  <div align="center">
+    <table width="94%">
+      <tr>
+        <td><div align="left"><%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %></div></td>
+      </tr>
+      <tr>
+        <td>
+          <div align="justify" style="font-size: 18px; font-family: Verdana, Geneva, sans-serif;">
+            <br/>
+            <div align="center"><strong>OTRO SI AL CONTRATO DE TRABAJO POR OBRA Y LABOR</strong></div><br/>
+            Entre los suscritos a saber: <strong><%=portafolio.razon_social rescue nil %></strong> representada por <strong><%=portafolio.nombre_rep rescue nil %></strong>,
+            mayor de edad, identificado con Cédula de Ciudadanía número <strong><%=camponumerico2 portafolio.identificacion_rep rescue nil %></strong>,
+            actuando en calidad de Representante Legal, quien de ahora en adelante se denominará <strong>EL CONTRATANTE</strong>,
+            con sede en la ciudad de Medellín, por una parte; y por
+            la otra <strong><%=contratosperfact.nombre_completo rescue nil%></strong>, mayor de edad, identificado (a) con cedula de ciudadanía número <strong><%=camponumerico2(contratosperfact.identificacion) rescue nil%></strong>,
+            obrando en su calidad de Representante Legal, que para efectos del presente contrato se denominará <strong>TRABAJADOR</strong>, hemos convenido en celebrar el siguiente
+            <strong>OTRO SI AL CONTRATO POR OBRA Y LABOR</strong>, previas las siguientes <strong>CONSIDERACIONES</strong>:
+            <br/><br/>
+            1 - Que el <strong><%=contratosperfact.fecha_inicioc.strftime("%d-%m-%Y") rescue nil%></strong> las partes suscribieron el <strong>CONTRATO DE OBRA Y LABOR</strong>, para desarrollar su labor en el contrato que ejecuta
+            la empresa <strong><%=contratosperfact.ori_identnombre rescue nil%></strong> con el cargo de <strong><%=contratosperfact.ori_perfil rescue nil%></strong>
+            <br/><br/>
+            2 – Dada las necesidades del servicio de la empresa <strong><%=portafolio.razon_social rescue nil %></strong>, se requiere cambiar de contrato y de cargo a el(la) trabajador(a)
+            en mención; los cuales serán informados por su jefe inmediato.
+            <br/><br/>
+            3 - En virtud, hemos convenido modificar la siguiente clausula:
+            <br/><br/>
+            <div align="center"><strong>ACUERDAN</strong></div><br/>
+            <strong>PRIMERO – Modificar el lugar donde prestará sus labores:</strong> Para todos los efectos del contrato, se tendrá como fecha de inicio de
+            labores en el nuevo centro de trabajo el día <strong><%=contratosperfact.fecha_inicio.strftime("%d-%m-%Y") rescue nil%></strong> en el contrato de
+            <strong><%=contratosperfact.identnombre rescue nil%></strong> grupo de nomina <strong><%=contratosperfact.descripcion rescue nil%></strong> con el cargo de <strong><%=contratosperfact.perfil rescue nil%></strong> con el
+            salario de <strong><%=camponumerico2 contratosperfact.salario rescue nil%></strong>.
+            <br/><br/><br/>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="40%"><br/><br/><br/>__________________________________</td>
+                <td>&nbsp;</td>
+                <td width="40%"><br/><br/><br/>__________________________________</td>
+              </tr>
+              <tr>
+                <td style="font-size: 18px; font-family: Tahoma;"><strong>CONTRATANTE</strong>
+                <br/><%=portafolio.nombre_rep rescue nil %>
+                <br/>Representante legal <%=portafolio.razon_social rescue nil %></td>
+                <td>&nbsp;</td>
+                <td style="font-size: 18px; font-family: Tahoma;"><strong>TRABAJADOR</strong>
+                <br/><%=contratosperfact.nombre_completo rescue nil%>
+                <br/><%=camponumerico2(contratosperfact.identificacion) rescue nil%></td>
+              </tr>
+            </table><br/>
+            <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% end %>
+
+
+
+

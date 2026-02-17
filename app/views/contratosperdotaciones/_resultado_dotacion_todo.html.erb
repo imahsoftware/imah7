@@ -1,0 +1,123 @@
+<% if @contratosprefechasdotacion_todo.present? %>
+  <div class="box-body">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th class="text-left text-table-10" width="8%"></th>
+        <th class="text-left text-table-10" width="20%">Empleado</th>
+        <th class="text-left text-table-10">Contrato</th>
+        <th class="text-center text-table-10" width="10%">Pantalon</th>
+        <th class="text-center text-table-10" width="10%">Camisa</th>
+        <th class="text-center text-table-10" width="10%">Zapatos</th>
+        <th class="text-center text-table-10" width="10%">Estado Entrega</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @contratosprefechasdotacion_todo.order("id desc").each do |contratosperdotacion|
+        contratospersona = contratosperdotacion.contratospersona
+      %>
+        <tr>
+          <td class=" text-table-10 text-center">
+            <% if contratosperdotacion.estado == 'PENDIENTE' %>
+              <small id="marcar<%= contratosperdotacion.id %>">
+                <% if contratosperdotacion.fecha_prox_entrega.to_date == Time.now.to_date or contratosperdotacion.fecha_prox_entrega.to_date < Time.now.to_date %>
+                  <%= link_to marcar_contratosperdotaciones_path(id: contratosperdotacion.id, ruta: 'PARCIAL'), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Marcar como Entregado" do %>
+                    <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+                  <% end %>
+                <% end %>
+              </small>
+            <% end %>
+            <small id="entrega_anticipada<%= contratosperdotacion.id %>">
+              <% if contratosperdotacion.fecha_prox_entrega.to_date >= (Time.now + 1.days).to_date  %>
+                <!-- Si no hay ninguno presente se muestra -->
+                <% if contratosperdotacion.pantalon == 'SI' or contratosperdotacion.camisa == 'SI' or contratosperdotacion.zapatos == 'SI' %>
+                  <%= link_to entrega_anticipada_contratosperdotaciones_path(id: contratosperdotacion.id, contrato_id: contratosperdotacion.contrato_id, ruta: "ENTREGA ANTICIPADA", titulo: 'ENTREGA ANTICIPADA DE ELEMENTOS'), remote: true, data: { toggle: 'tooltip' }, title: "Marcar Entrega Anticipada" do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-calendar"></i></button>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </small>
+            <% if ['PENDIENTE', 'ENTREGADO'].include?(contratosperdotacion.estado) and (contratosperdotacion.pantalon == 'SI' or contratosperdotacion.camisa == 'SI' or contratosperdotacion.zapatos == 'SI') %>
+              <%= link_to otros_contratosperdotaciones_path(id: contratosperdotacion.id, contrato_id: contratosperdotacion.contrato_id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Nuevos Elementos" do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-plus"></i></button>
+              <% end %>
+              <%= link_to carta_dotacion_contratosperdotaciones_path(id: contratosperdotacion.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Entrega de Dotación' do %>
+                <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+            <% end %>
+            <small id="otp_entregas<%= contratosperdotacion.id %>">
+              <%= render 'boton_otp', contratosperdotacion: contratosperdotacion %>
+            </small>
+          </td>
+
+          <td class=" text-table-10">
+            <%= contratosperdotacion.nombreemp rescue nil %><br/>
+            <b class="text-red">Periodo: <%= contratosperdotacion.fecha_prox_entrega rescue nil %></b>
+            <% if contratosperdotacion.entrega_anticipada == 'SI' %>
+              <br/><b class="text-success">Entrega Anticipada</b>
+            <% end %><br/>
+          </td>
+          <td align="left" class="text-table-10">
+            <small><%= contratosperdotacion.contrato.empresa.identnombre rescue nil %> <br/>
+              <strong>Nro Contrato: </strong><%= contratosperdotacion.contrato.nro_contrato rescue nil %>
+              <br/><strong>Cargo: </strong><%= contratosperdotacion.contratosperfecha.contratoscargo.perfil rescue nil %>
+              <br/><strong>Grupo Nomina: </strong><%= contratosperdotacion.contratosperfecha.contratosgrupo.descripcion rescue nil %>
+              <br/><strong>Dirección: </strong><%= contratosperdotacion.contratospersona.direcciontelefono rescue nil %>
+            </small>
+          </td>
+          <td align="center" class="text-table-10">
+            <% if contratospersona.cant_pantalon.to_i == 0 or contratospersona.talla_pantalon.to_s == 'NO APLICA' %><div>NO APLICA</div><% else %>
+              <div><%= contratosperdotacion.pantalon rescue nil %></div>
+              <% if contratosperdotacion.pantalon.to_s == 'SI' %>
+                Talla: <%= contratospersona.talla_pantalon rescue nil %>
+              <% end %>
+            <% end %>
+          </td>
+          <td align="center" class="text-table-10">
+            <% if contratospersona.cant_camisa.to_i == 0 or contratospersona.talla_camisa.to_s == 'NO APLICA' %><div>NO APLICA</div><% else %>
+              <div><%= contratosperdotacion.camisa rescue nil %></div>
+              <% if contratosperdotacion.camisa.to_s == 'SI' %>
+                Talla: <%= contratospersona.talla_camisa rescue nil %>
+              <% end %>
+            <% end %>
+          </td>
+          <td align="center" class="text-table-10">
+            <% if contratospersona.cant_zapatos.to_i == 0 or contratospersona.talla_zapatos.to_s == 'NO APLICA' %><div>NO APLICA</div><% else %>
+              <div><%= contratosperdotacion.zapatos rescue nil %></div>
+              <% if contratosperdotacion.zapatos.to_s == 'SI' %>
+                Talla: <%= contratospersona.talla_zapatos rescue nil %>
+              <% end %>
+            <% end %>
+          </td>
+          <td class=" text-table-10 text-center">
+            <div id="cambio_estado<%= contratosperdotacion.id %>" class=" text-table-10">
+              <%= contratosperdotacion.estado rescue nil %>
+            </div>
+          </td>
+        </tr>
+        <div class="modal fade" id="entrega_anticipada<%= contratosperdotacion.id rescue nil %><%= contratosperdotacion.contrato_id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="otp<%= contratosperdotacion.id rescue nil %><%= contratosperdotacion.contrato_id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="otros<%= contratosperdotacion.id rescue nil %><%= contratosperdotacion.contrato_id %>">
+          <div class="modal-dialog modal-dialog-responsive" role="document">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %> </div>
+<% end %>

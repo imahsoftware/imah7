@@ -1,0 +1,17 @@
+$(".alert_flash").fadeOut(1000, function () {
+    $(this).remove();
+});
+
+<% if @valida %>
+$('#mensaje_error<%= @contratosperdotacion.id %>').html("<div id='mensaje_error<%= @contratosperdotacion.id %>'>Al menos uno de los campos (zapatos, camisa, pantalón) debe ser obligatorio.</div>");
+<% end %>
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages2").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function () {
+    $(".alert_flash").fadeOut(1000, function () {
+        $(this).remove();
+    });
+}, 5000);

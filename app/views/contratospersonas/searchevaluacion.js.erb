@@ -1,0 +1,10 @@
+<% if @contratospersonas.present? %>
+$("#table_remove<%= @mes %>").remove();
+$("#resultado_evaluacion<%= @mes %>").html("<%= j render 'contratospersonas/resultado_evaluacion' %>");
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_evaluacion<%= @mes %>").html("");
+<% end %>

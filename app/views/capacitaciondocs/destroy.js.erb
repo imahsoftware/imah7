@@ -1,0 +1,6 @@
+<% if @capacitaciondocs.present? %>
+	$("#capacitaciondocs").html("<div class='alert alert-warning'><h4><i class='icon fa fa-info'></i> <%=t :atencion%></h4><%=t :atencion_msj%><span></div>");
+<% else %>
+	$("#capacitaciondoc_<%= @capacitaciondoc.id %>").remove();
+<% end %>
+$('.tooltip').tooltip('hide');

@@ -1,0 +1,32 @@
+<div id="search_actividad<%= @tarea %>">
+  <div class="row">
+    <div class="col-md-12">
+      <% if @tareasactividades.present? %>
+        <div class="box box-default ">
+          <div class="box-header">
+            <legend>Resultado de la busqueda</legend>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th class="font-size-text-tabla text-table" width="20%">Usuario</th>
+                <th class="font-size-text-tabla text-table">Actividad</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_tareasactividades">
+              <% @tareasactividades.each do |tareasactividad| %>
+                <tr>
+                  <td class="font-size-text-tabla text-table"><%= User.find(tareasactividad.user_persona).nombre rescue nil %></td>
+                  <td class="font-size-text-tabla text-table"><%= tareasactividad.descripcion rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% else %>
+        <%= render 'layouts/procesos/alert_message' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+

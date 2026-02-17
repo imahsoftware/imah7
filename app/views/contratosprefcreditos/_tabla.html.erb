@@ -1,0 +1,23 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="15%"></td>
+        <th width="10%" class="text-left">Pre-Factura</th>
+        <th width="10%" class="text-left">Factura</th>
+        <th width="15%" class="text-left">Fecha</th>
+        <th class="text-right">Valor</th>
+        <th class="text-left">Observación</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosprefcreditos">
+	    <% @contrato.contratosprefcreditos.includes([:user,:contratosprefactura]).order(id: :desc).each do |contratosprefcredito| %>
+	      <%= render 'contratosprefcreditos/tr', contratosprefcredito: contratosprefcredito %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+
+

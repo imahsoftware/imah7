@@ -1,0 +1,2 @@
+module ContratosinsumosHelper
+end

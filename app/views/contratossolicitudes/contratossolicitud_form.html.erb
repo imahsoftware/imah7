@@ -1,0 +1,202 @@
+<%
+  budget = @contratossolicitud.budget.to_s rescue nil
+  isadmin = is_admin
+  visualiza_iva = @contratossolicitud.contrato.visualiza_iva.to_s rescue nil
+%>
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <% if is_auth_c('solicitudseguimiento') %>
+            <%= link_to edit_contrato_path(id: @contrato.id, etapa: 'S' ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% elsif is_auth_c('solicitudescontrato') %>
+            <%= link_to root_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% else %>
+            <%= link_to edit_contrato_path(id: @contrato.id, etapa: 'S' ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% end %>
+          <%= @contrato.empresa.identificacion rescue nil %>-<%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %>
+          <div class="box-tools pull-right">
+            <%= link_to contratossolicitud_path(id: @contratossolicitud.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver solicitud ' do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+            <% end %>
+            <%= link_to visualizar_contratossolicitudes_path(id: @contratossolicitud.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes ' do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+            <% end %>
+            <%= link_to visualizar_contratossolicitudes_path(id: @contratossolicitud.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel' do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+            <% end %>
+          </div>
+
+        </legend>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+              <tr class="thcolor">
+                <th width="15%" class="text-center">Nro Contrato</th>
+                <th width="10%" class="text-center">Nro Solicitud</th>
+                <th width="20%" class="text-center">Fecha creación</th>
+                <th width="10%" class="text-center">Periodo</th>
+                <th width="15%" class="text-center">Estado Solicitud</th>
+                <th width="15%" class="text-center">Valor Total</th>
+                <th width="10%" class="text-center">Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td class="text-center" style="font-size:12px;"><%= @contrato.nro_contrato rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.id rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.periodo rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.estado rescue nil%>
+                  <% if @contratossolicitud.estado.to_s == 'DESPACHADOS' and @contratossolicitud.fecha_despacho.to_s != "" %>
+                    <br/><small><strong>Fecha: <%= @contratossolicitud.fecha_despacho.strftime("%Y-%m-%d") rescue nil %></strong></small>
+                  <% end %></td>
+                <td class="text-center" style="font-size:12px;">
+                  <button class="btn btn-xs btn-info"><strong>$ <%= camponumerico @contratossolicitud.total rescue 0%></strong></button>
+                </td>
+                <td class="text-center" style="font-size:12px;">
+                  <% if @contratossolicitud.estado.to_s == 'PENDIENTE' and @contrato.contratosusers.exists?(user_interventor: isadmin, tipo: 'INTERVENTOR') == true and budget == 'OK' %>
+                    <div class="box-tools pull-center">
+                      <%= link_to cambioestado_contratossolicitudes_path(id: @contratossolicitud.id, estado: "ENVIADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea enviar esta Solicitud?"}, title: 'Enviar solicitud' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-arrow-right fa-fw" aria-hidden="true"></i> <strong>Enviar Solicitud</strong></button>
+                      <% end %>
+                    </div>
+                  <% end %>
+                  <% if @contratossolicitud.estado.to_s == 'PENDIENTE' and @contrato.contratosusers.exists?(user_interventor: isadmin, tipo: 'INTERVENTOR') == false and budget == 'OK' and @contrato.id == 386 %>
+                    <% if @contratossolicitud.solicitud_aprobacion.to_s == "" %>
+                      <div class="box-tools pull-center">
+                        <%= link_to cambioestado_contratossolicitudes_path(id: @contratossolicitud.id, estado: "SOLAPROBACION"), data: {toggle: 'tooltip', confirm: "Seguro que desea solicitar aprobación?"}, title: 'Solicitar Aprobación' do %>
+                          <button class="btn btn-xs btn-danger"><i class="fa fa-arrow-right fa-fw" aria-hidden="true"></i> <strong>Solicitar aprobacion..</strong></button>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      <div class="box-tools pull-center"><small><strong>Solicitud Enviada<br/><%=@contratossolicitud.solicitud_aprobacion.strftime("%Y-%m-%d") rescue nil %></strong></small></div>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <% if is_auth_c('solicitudseguimiento') and @contratossolicitud.estado.to_s == 'DESPACHADOS' %>
+            <%= simple_form_for(@contratossolicitud) do |f| %>
+              <div class="box box-danger">
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                      <%= f.input :fecha_despacho, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><br/>
+                      <div class="box-tools pull-right">
+                        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+                      </div><!-- /.box-tools -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+          <% if budget != 'OK' %>
+            <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4>El valor acumulado del presupuesto junto con esta solicitud supera el Tope, por favor verifique!</div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <% if @contratossolicitud.etapa.to_s == "A" %>
+          <li class="active"><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "A") do %>Insumos<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "A") do %>Insumos<% end %></li>
+        <% end %>
+        <% if @contratossolicitud.etapa.to_s == "C" %>
+          <li class="active"><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "C") do %>Otros Servicios<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "C") do %>Otros Servicios<% end %></li>
+        <% end %>
+        <% if Contratosuser.where(contrato_id: @contratossolicitud.contrato_id, user_interventor: isadmin, solicitud_general: 'SI').exists? %>
+          <% if @contratossolicitud.etapa.to_s == "D" %>
+            <li class="active"><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "D") do %>Inventario General<%end %></li>
+          <% else %>
+            <li><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "D") do %>Inventario General<% end %></li>
+          <% end %>
+        <% end %>
+        <% if is_auth_c('solicitudescontratoauditoria') %>
+          <% if @contratossolicitud.etapa.to_s == "E" %>
+            <li class="active"><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "E") do %>Bitacora<%end %></li>
+          <% else %>
+            <li><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "E") do %>Bitacora<% end %></li>
+          <% end %>
+        <% end %>
+        <% if @contratossolicitud.etapa.to_s == "F" %>
+          <li class="active"><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "F") do %>Observaciones<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id, etapa: "F") do %>Observaciones<% end %></li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if ["A","B","C","L"].include?(@contratossolicitud.etapa.to_s) %>
+          <div class="tab-pane active"><%= render 'contratossoldetalles/contratossoldetalles' %></div>
+          <% if visualiza_iva.to_s == 'SI'
+               detalle = Contratossoldetalle.select("DISTINCT porc_iva, SUM(total) valortotal").where(["contratossolicitud_id = #{@contratossolicitud.id} AND cantidad > 0"]).group("porc_iva")
+               if detalle.present?
+          %>
+              <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="35%" class="text-center">Porc IVA</th>
+                        <th class="text-center">Total en la solicitud</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% detalle.each do |a| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;"><%= a.porc_iva rescue nil%>%</td>
+                          <td class="text-center" style="font-size:12px;"><%= camponumerico a.valortotal rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <%   end
+                 end %>
+        <% elsif @contratossolicitud.etapa.to_s == 'D' %>
+          <div class="tab-pane active"><%= render 'contratossolotros/contratossolotros' %></div>
+        <% elsif @contratossolicitud.etapa.to_s == 'E' %>
+          <div class="tab-pane active"><%= render 'bitacora' %></div>
+        <% elsif @contratossolicitud.etapa.to_s == 'F' %>
+          <div class="tab-pane active"><%= render 'contratossolnotas/contratossolnotas' %></div>
+        <% elsif @contratossolicitud.etapa.to_s == "M" %>
+          <div class="tab-pane active"><%= render 'contratossolimagenes/contratossolimagenes' %></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="abrircargue">
+  <div class="modal-dialog" style="width:1000px;">
+    <div class="modal-content" style="width:1000px;">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="15%"></td>
+        <th width="10%" class="text-left">Factura</th>
+        <th width="15%" class="text-left">Fecha</th>
+        <th class="text-right">Valor</th>
+        <th class="text-left">Observación</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosprefdebitos">
+	    <% @contrato.contratosprefdebitos.order(id: :desc).each do |contratosprefdebito| %>
+	      <%= render 'contratosprefdebitos/tr', contratosprefdebito: contratosprefdebito %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

@@ -1,0 +1,5 @@
+<% if @estado == 'FINALIZADO' %>
+    $('#cambio_estado<%= @contratosperimagen.id %>').html("<div id='cambio_estado<%= @contratosperimagen.id %>'>APROBADO</div>");
+    $('#botones<%= @contratosperimagen.id %>').html("<%= j render 'compromisos/botones', contratosperimagen: @contratosperimagen %>")
+<% else %>
+<% end %>

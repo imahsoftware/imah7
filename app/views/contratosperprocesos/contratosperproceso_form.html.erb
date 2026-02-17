@@ -1,0 +1,223 @@
+<%
+  contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                       .select("contratos.nro_contrato, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                      contratosgrupos.descripcion, contratosgrupos.termino, contratoscargos.perfil, contratoscargos.salario salariocargo,
+                                                      (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                      (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                       contratosperfechas.*")
+                                       .where(["contratosperfechas.id = #{@contratosperproceso.contratosperfecha_id}"]).first
+  is_auth_c_procesosauditorias = is_auth_c('procesosauditorias')
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">
+          <%= link_to root_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %>
+          Proceso - <strong><%= @contratosperproceso.clase rescue nil %></strong></h3>
+        <div class="pull-right">
+          <% if @contratosperproceso.contratosperprodocs.present?  %>
+            <%= link_to descargardocbyproceso_datas_path(id: @contratosperproceso.id), data: { toggle: 'tooltip' } do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-download"></i> Descargar Doc</button>
+            <% end %>
+          <% end %>
+
+          <% if @contratosperproceso.estado.to_s == 'PENDIENTE' %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'EN PROCESO'), data: { toggle: 'tooltip' }, title: "En proceso" do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-check"></i> En Proceso</button>
+            <% end %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'FINALIZADO'), data: { toggle: 'tooltip' }, title: "Finalizado" do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-sign-out"></i> Finalizado</button>
+            <% end %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'NO PROCEDE'), data: { toggle: 'tooltip' }, title: "No procede" do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-check"></i> No procede</button>
+            <% end %>
+          <% elsif @contratosperproceso.estado.to_s == 'EN PROCESO' %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'PENDIENTE'), data: { toggle: 'tooltip' }, title: "Pendiente" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Pendiente</button>
+            <% end %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'FINALIZADO'), data: { toggle: 'tooltip' }, title: "Finalizado" do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-sign-out"></i> Finalizado</button>
+            <% end %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'NO PROCEDE'), data: { toggle: 'tooltip' }, title: "No procede" do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-check"></i> No procede</button>
+            <% end %>
+          <% elsif @contratosperproceso.estado.to_s == 'FINALIZADO' %>
+            <%= link_to cambio_contratosperprocesos_path(id: @contratosperproceso.id, estado: 'PENDIENTE'), data: { toggle: 'tooltip' }, title: "Pendiente" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Pendiente</button>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor">
+              <tr>
+                <td width="8%"></td>
+                <th class="text-center text-table" width="5%">ID</th>
+                <th class="text-left text-table" width="40%">Creación</th>
+                <th class="text-center text-table" width="20%">Fecha de los Hechos</th>
+                <th class="text-center text-table" width="10%">Estado</th>
+              </tr>
+              </thead>
+              <tr id="contratosperproceso_<%= @contratosperproceso.id %>">
+                <td class="text-center" rowspan="2">
+                  <% if @contratosperproceso.clase == 'LLAMADO DE ATENCION' %>
+                    <%= link_to procesos_pdf_contratosperprocesos_path(contratosperproceso_id: @contratosperproceso.id, format: :pdf, proceso: 'ATENCION'), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                  <% else %>
+                    <%= link_to general_contratosperprocesos_path(id: @contratosperproceso.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+                      <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td align="center" class="text-table"><%= @contratosperproceso.id rescue nil %></td>
+                <td align="left" class="text-table"><%= @contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= @contratosperproceso.user.nombre rescue nil %></td>
+                <td align="center" class="text-table"><%= @contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+                <td align="center" class="text-table"><%= @contratosperproceso.estado rescue nil %></td>
+              </tr>
+              <tr>
+                <td align="justify" class="text-table" colspan="4"><b>Detalle: </b><%= @contratosperproceso.detalle rescue nil %></td>
+              </tr>
+            </table>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead class="thcolor">
+              <tr>
+                <th class="text-left text-table" width="10%"></th>
+                <th class="text-left text-table" width="30%">Empleado</th>
+                <th class="text-left text-table">Detalle</th>
+              </tr>
+              </thead>
+              <tbody id="tbody_contratosperprocesos">
+              <tr id="contratospersona_<%= @contratospersona.id %>">
+                <td>
+                  <div align="center">
+                    <div class="btn-group" id="botones<%= @contratospersona.id %>">
+                      <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+                        Opciones <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                        <li>
+                          <%= link_to edit_contratospersona_path(@contratospersona.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <i class="fa fa-user text-red"></i> Ir al Empleado
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to tirilla_masive_contratospernominas_path(contratosperfecha_id: @contratosperproceso.contratosperfecha_id, format: :pdf), data: { toggle: 'tooltip' } do %>
+                            <i class="fa fa-file-pdf-o"></i> Tirillas consolidadas
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to abrir_documentos_contrato_menus_path(id: @contratosperproceso.contratosperfecha_id), remote: true, data: { toggle: 'tooltip' } do %>
+                            <i class="fa fa-cloud-download"></i> Documentos del Contrato
+                          <% end %>
+                        </li>
+                        <li>
+                          <%= link_to descargardocbyperfecha_datas_path(contratosperfecha_id: @contratosperproceso.contratosperfecha_id), data: { toggle: 'tooltip' } do %>
+                            <i class="fa fa-download"></i> Descargar Todos los Documentos
+                          <% end %>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-left" style="font-size:12px;"><%= @contratospersona.identificacion rescue nil %> <%= @contratospersona.nombre_completo rescue nil %></td>
+                <td class="text-left" style="font-size:11px;"><%= contratosperfecha.identnombre rescue nil %> -
+                  <strong>Nro Contrato : </strong><%= contratosperfecha.nro_contrato rescue nil %>
+                  <br/><strong>Cargo : </strong><%= contratosperfecha.perfil rescue nil %>
+                  <% if is_auth_e('versalarioenempleado') %>
+                    ( <%= camponumerico contratosperfecha.salariocargo.to_i rescue nil %>)
+                  <% end %>
+                  - <strong>Grupo Nomina : </strong><%= contratosperfecha.descripcion rescue nil %>
+                  <small>(<%= contratosperfecha.termino rescue nil %>)</small>
+                  <% if contratosperfecha.seccionnombre.present? %>
+                    - <strong>Sección : </strong><%= contratosperfecha.seccionnombre rescue nil %>
+                    -<%= contratosperfecha.autobuscar_municipios rescue nil %>
+                  <% end %>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="abrir_documentos_contrato<%= @contratosperproceso.contratosperfecha_id %>">
+  <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+<%
+  estados = ["Citación", "Descargo", "Sanción", "Doc-Digitales", "Nota", "Otros"]
+  estados2 = ["1", "2", "3", "4", "5", "6"]
+  estadosIcon = ["fa-sticky-note-o", "fa-odnoklassniki", "fa-balance-scale", "fa-file-pdf-o", "fa-commenting", "fa-stack-exchange"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            pos = estados.find_index(p)
+            if @subetapa == estados2[pos]
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: estados2[pos].to_s) do %>
+              <i class="fa <%= estadosIcon[pos].to_s %>"></i> <span></span> <%= p.to_s %>
+            <% end %>
+          </li>
+        <% end %>
+        <% if is_auth_c_procesosauditorias %>
+          <div class="pull-right" style="padding-top: 10px;padding-right: 10px;">
+            <%= link_to ver_bitacora_contratosperprocesos_path(id: @contratosperproceso.id), remote: true do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-sticky-note-o"></i> Historial Bitacora</button>
+            <% end %>
+          </div>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if @subetapa == '1' %>
+          <%= render 'contratosperprocitaciones/contratosperprocitaciones' %>
+        <% elsif @subetapa == '2' %>
+          <%= render 'contratosperprodescargos/contratosperprodescargos' %>
+        <% elsif @subetapa == '3' %>
+          <%= render 'contratosperprosanciones/contratosperprosanciones' %>
+        <% elsif @subetapa == '4' %>
+          <%= render 'contratosperprodocs/contratosperprodocs' %>
+        <% elsif @subetapa == '5' %>
+          <%= render 'contratosperpronotas/contratosperpronotas' %>
+        <% elsif @subetapa == '6' %>
+          <%= render 'contratosperprocesos/resumen' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="firma<%= @contratosperproceso.id %>">
+  <div class="modal-dialog" style="width: 85%;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-default fade" id="ver_bitacora<%= @contratosperproceso.id %>">
+  <div class="modal-dialog modal-lg" style="width: 60%;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+

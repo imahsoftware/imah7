@@ -1,0 +1,94 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center">
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td rowspan="3" width="30%">
+                <div align="center"><%= image_tag "#{@logo}", size: "240x100" %></div>
+              </td>
+              <th>
+                <div align="center">
+                  <%= @nombre_empresa %>
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <div align="center">PROCESO DE RECURSO HUMANO</div>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <div align="center">PROCESO DISCIPLINARIO</div>
+              </th>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="center" style="font-size: 28px; font-family: Tahoma;"><br/><b>CONSTANCIA DE NO
+          COMPARECENCIA</b></div>
+        <br/><br/><br/>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+
+          Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %><br/><br/>
+          <b>Asistentes:</b>_______________________________ Abogada<br/><br/>
+          <b>Asunto:</b> Constancia de No Comparecencia.<br/><br/>
+          En el municipio de Medellín (Antioquia), a los ___ días de _________________, se fijó como fecha y lugar para
+          la celebración de audiencia de descargos con la señora, ____________________________________, se tiene como
+          hechos los siguientes:
+          El señor en mención, abandono el puesto de trabajo desde el ___ de _________ de _______ y hasta la fecha no se
+          ha presentado al centro de trabajo, tampoco se presentó a la audiencia de descargos. De esta manera se
+          presumen ciertos los hechos constatados en el informe de abandono de puesto de trabajo por no haber asistido a
+          la audiencia de descargos a la hora establecida (_________), por lo que se procede a aplicar la sanción
+          ___________________ por los hechos expuestos, según el <b>CAPÍTULO XX, ARTÍCULO _____________________________:
+          “LA VIOLACIÓN, __________, POR PARTE DEL TRABAJADOR DE LAS OBLIGACIONES CONTRACTUALES O REGLAMENTARIAS,
+          ESTABLECIDAS EN EL CONTRATO DE TRABAJO INDIVIDUAL Y/O LAS ENUNCIADAS EN ESTE REGLAMENTO INTERNO DE
+          TRABAJO”</b>
+          <br/><br/>
+          <div align="center">
+            <%= image_tag("faltas_graves.png") %><br/>
+            Imagen tomada del Reglamento Interno de Trabajo
+          </div>
+          <br/><br/>
+          Dado a lo anterior se levanta constancia de no comparecencia a los ____ días de _____________ de 202_.
+          En constancia firma,<br/><br/><br/><br/>
+
+
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            _______________________________<br/>
+            Abogados ASEAR SA ESP
+          <% end %>
+
+          <br/><br/>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

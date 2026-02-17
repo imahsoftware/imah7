@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Personasevaluaciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Persona</th>
+      <th>Eva 1</th>
+      <th>Eva 2</th>
+      <th>Eva 3</th>
+      <th>Eva 4</th>
+      <th>Eva 5</th>
+      <th>Eva 6</th>
+      <th>Eva 7</th>
+      <th>Eva 8</th>
+      <th>Eva 9</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @personasevaluaciones.each do |personasevaluacion| %>
+      <tr>
+        <td><%= personasevaluacion.persona %></td>
+        <td><%= personasevaluacion.eva_1 %></td>
+        <td><%= personasevaluacion.eva_2 %></td>
+        <td><%= personasevaluacion.eva_3 %></td>
+        <td><%= personasevaluacion.eva_4 %></td>
+        <td><%= personasevaluacion.eva_5 %></td>
+        <td><%= personasevaluacion.eva_6 %></td>
+        <td><%= personasevaluacion.eva_7 %></td>
+        <td><%= personasevaluacion.eva_8 %></td>
+        <td><%= personasevaluacion.eva_9 %></td>
+        <td><%= link_to 'Show', personasevaluacion %></td>
+        <td><%= link_to 'Edit', edit_personasevaluacion_path(personasevaluacion) %></td>
+        <td><%= link_to 'Destroy', personasevaluacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Personasevaluacion', new_personasevaluacion_path %>

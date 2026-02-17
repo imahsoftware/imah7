@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposcuenta') %>
+          <th width="10%"></th>
+        <% end %>
+        <th width="10%">ID</th>
+        <th>Entidad</th>
+        <th>Tipo</th>
+        <th>Nro Cuenta</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposcuentas">
+      <% @tiposcuentas.each do |tiposcuenta| %>
+        <%= render 'tiposcuentas/tr', tiposcuenta: tiposcuenta %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

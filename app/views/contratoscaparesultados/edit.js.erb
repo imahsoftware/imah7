@@ -1,0 +1,26 @@
+$("#contratoscaparesultado_form").collapse("hide");
+
+$("#contratoscaparesultado_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratoscaparesultado_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratoscaparesultado: @active_record %>");
+<% end %>
+
+$("#contratoscaparesultado_<%= @contratoscaparesultado.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#contratoscaparesultado_<%= @contratoscaparesultado.id %>").addClass("active_contratoscaparesultado");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});

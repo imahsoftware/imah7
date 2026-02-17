@@ -1,0 +1,40 @@
+<div class="box box-primary">
+  <div class="box-header">
+    <legend>
+      Variables
+    </legend>
+    <div class="box-tools pull-right">
+      <%= link_to new_variable_path, remote: true, class: 'btn btn-sm btn-info' do %>
+        <i class="fa fa-plus-square"> </i> <span>Nuevo</span>
+      <% end %>&nbsp;&nbsp;
+      <div class="box-tools pull-right">
+        <%= search_form_for @q do |f| %>
+          <div class="input-group input-group-sm" style="width: 180px;">
+            <%= f.search_field :nombre_or_campo_or_segmento_cont, onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'form-control pull-right input_uppercase', placeholder: 'Buscar...' %>
+            <div class="input-group-btn">
+              <%= button_tag(type: "submit", class: "btn btn-default") do %>
+                <i class="fa fa-search"></i>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="flash_messages"></div>
+
+  <div class="box-body">
+    <div id="variable_form" class="collapse"></div>
+    <div id="variables">
+      <% if @variables.present? %>
+        <%= render 'variables/tabla' %>
+      <% else %>
+        <div class="alert alert-danger">
+          <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+      <% end %>
+    </div>
+    <div class="box-tools pull-right">
+      <%= will_paginate @variables, renderer: BootstrapPagination::Rails %>
+    </div>
+  </div>
+</div>

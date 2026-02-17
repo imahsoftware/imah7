@@ -1,0 +1,90 @@
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Registro de Evaluación - <strong><%= @contratospersona.autobuscar rescue nil %></strong></h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+        <% if @periodolimite.present? %>
+          <% if @periodolimite.inicio.present? && @periodolimite.fecha_limite.present? %>
+            <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4> La fecha limite
+              para terminar la evaluación es <i class="fa fa-calendar-times-o"></i> <%= @periodolimite.fecha_limite %>
+            </div>
+            <% if @contratosperactobs.present? %>
+              <div class="box-body">
+                <%= form_tag '/contratosperactobs/update_individual', method: 'put' do %>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-striped  table-hover">
+                      <thead>
+                      <tr class="thcolor">
+                        <th class="text-center" colspan="3">Periodo de
+                          Evaluación: <%= Time.now.strftime("%Y-%m") rescue nil %></th>
+                      </tr>
+                      <tr class="thcolor">
+                        <th class="text-left">Actividad</th>
+                        <th width="20%" class="text-center">Resultado</th>
+                        <th width="35%" class="text-center">Observación</th>
+                      </tr>
+                      </thead>
+                      <% @contratosperactobs.each do |contratosperactob| %>
+                        <tbody>
+                        <%= fields_for "contratosperactobs[]", contratosperactob do |f| %>
+                          <%#= hidden_field_tag :personasformulario_id, params[:personasformulario_id], value: @personasformulario.id %>
+                          <tr>
+                            <td><%= Contratoscargosact.find(contratosperactob.contratoscargosact_id).descripcion %></td>
+                            <td>
+                              <div align="center">
+                                SI <%= f.radio_button("resultado", "SI") %>
+                                NO  <%= f.radio_button("resultado", "NO") %>
+                              </div>
+                            </td>
+                            <td>
+                              <%= f.text_area(:observacion, :cols => 80, :rows => 4,
+                                              :onChange => "javascript:this.value=this.value.toUpperCase();", :onFocus => "this.style.border='1px solid #f00'",
+                                              :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%);") %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      <% end %>
+                    </table>
+                  </div>
+                  <div class="box-tools pull-right">
+                    <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="alert alert-info"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>El cargo actual
+                no cuenta con parametrización de las actividades
+              </div>
+            <% end %>
+          <% else %>
+            <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Aun no hay un
+              periodo configurado, comunicate con el administrador de sistema
+            </div>
+          <% end %>
+        <% else %>
+          <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Aun no hay un
+            periodo configurado, comunicate con el administrador de sistema
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        jQuery(".best_in_place").best_in_place();
+    });
+</script>
+
+<style>
+    .css_class {
+        width: 100%;
+    }
+
+</style>

@@ -1,0 +1,153 @@
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <% if @contratospersona.perimagenes_file_name %>
+        <div align="center"><%= image_tag (@contratospersona.perimagenes.url(:thumb, false)) rescue nil %></div>
+      <% else %>
+        <div align="center"><%= image_tag 'thumb.png' %></div>
+      <% end %>
+      <li>
+        <%= link_to contratospersonas_path do %><i class="fa fa-arrow-left text-danger"></i> Regresar
+        <% end %>
+      </li>
+      <li class="header"><%= t :menu %></li>
+      <li class="<%= active_class(edit_contratospersona_path(etapa: "A", id: @contratospersona.id)) %>">
+        <%= link_to edit_contratospersona_path(etapa: "A", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Datos básicos</span>
+        <% end %>
+      </li>
+      <% if @cadper.include?('examenes') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "B", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "B", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Examenes</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('beneficiarios') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "C", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "C", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Beneficiarios</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('estados') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "D", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "D", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Estados</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('quejas') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "N", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "N", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Quejas</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('sugerencias') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "O", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "O", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Sugerencias</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('chequeos') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "P", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "P", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Chequeos</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('contrato') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "F", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "F", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Contrato</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('embargos') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "G", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "G", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Embargos</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('prestamos') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "H", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "H", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Prestamos</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('rodamientos') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "I", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "I", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Rodamientos</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('coopantex') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "J", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "J", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Coopantex</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('novedades') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "K", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "K", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Novedades</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('alertas') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "R", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "R", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Alertas</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('supervisor') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "L", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "L", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Supervisor</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('digital') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "M", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "M", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Digital</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('observaciones') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "Q", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "Q", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Observaciones</span>
+          <% end %>
+        </li>
+      <% end %>
+      <% if @cadper.include?('procesos') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "S", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "S", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Procesos</span>
+          <% end %>
+      <% end %>
+      <% if @cadper.include?('visitas') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "W", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "W", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Visitas</span>
+          <% end %>
+      <% end %>
+      <% if @cadper.include?('dotacionentrega') %>
+        <li class="<%= active_class(edit_contratospersona_path(etapa: "Z", id: @contratospersona.id)) %>">
+          <%= link_to edit_contratospersona_path(etapa: "Z", id: @contratospersona.id), style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-adn"></i> <span>Dotación</span>
+          <% end %>
+      <% end %>
+      </li>
+    </ul>
+  </section>
+</aside>

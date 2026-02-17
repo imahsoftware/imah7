@@ -1,0 +1,46 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="15%" class="text-center"></th>
+      <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+      <th width="40%" class="text-left">Solicitud</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% solicitudesretiros.each do |p|
+      cpl = p.contratosperliquidacion_id rescue nil
+    %>
+      <tr>
+        <td class="text-center" style="font-size:10px;">
+          <%=p.estadoliquidacion %>
+          <% if p.estadoliquidacion.to_s != 'PENDIENTE' %>
+             (<%=p.consecutivo %>)<br/>
+            <% contratosperimagen = Contratosperimagen.where(contratosperfecha_id: p.contratosperfecha_id, descripcion: 'LIQUIDACION').first
+               if contratosperimagen.present?
+            %>
+              <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Liquidacion", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+            <% else %>
+              <%= link_to liquidacion_contratosperliquidaciones_path(id: cpl, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Liquidación PDF' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-left" style="font-size:10px;"><strong><%= p.autobuscar rescue nil%></strong>
+          <br/><strong>Empresa : </strong><%= p.identnombre rescue nil%>
+          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil%> - <strong>Grupo : </strong><%= p.descripcion rescue nil%> <small>(<%= p.termino rescue nil%>)</small>
+        </td>
+        <td class="text-left" style="font-size:10px;">
+          <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil%>
+          <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil%>
+          <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil%>
+          <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil%>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,74 @@
+<!--
+<%= link_to codigo_qr_menus_path, remote: true, data: { toggle: 'tooltip' }, title: "Generar Codigo QR" do %>
+  Escanear Codigo QR
+<% end %><br/>
+
+<div class="modal fade" id="codigo_qr">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div> -->
+<% if @usr.id == 9815 %>
+  <%= render 'nominabyempresa' %>
+<% else %>
+  <% if @tipoconsulta == 'RECTOR' %>
+    <%= render 'rector' %>
+  <% else %>
+    <div class="row">
+      <%= render 'nomina' %>
+      <%= render "documento_personales" %>
+      <%= render "compromisos_empleado" %>
+    </div>
+    <% if @tipoconsulta == 'SUPERVISOR' %>
+      <br/><%= render 'supervisor' %>
+    <% end %>
+  <% end %>
+  <% if @validat == true %>
+    <% if @existeHoy == true %>
+      <%= render 'opcional' %>
+    <% end %>
+  <% else
+       if @cadper.include?('dashboard') %>
+      <%= render 'opcional2' %>
+    <% end
+       if @cadper.include?('solicitudescontrato') %>
+      <%= render 'contratos' %>
+    <% end %>
+    <% if @cadper.include?('solicitudseguimiento') %>
+      <%= render 'contratosesp' %>
+    <% elsif @cadper.include?('solicitudesprefactura') %>
+      <%= render 'prefacturas' %>
+    <% elsif @cadper.include?('solicitudesprefacturaesp') %>
+      <%= render 'prefacturasesp' %>
+    <% elsif @cadper.include?('dashcausaciones') %>
+      <%= render 'causaciones' %>
+    <% elsif @cadper.include?('dashdotacion') %>
+      <%= render 'dotacion' %>
+    <% elsif @cadper.include?('dashdotacionentrega') %>
+      <%= render 'dotacion_entrega' %>
+    <% elsif @cadper.include?('dashcompromisos') %>
+      <%= render 'compromisos' %>
+    <% elsif @cadper.include?('dashdocumentosFirma') %>
+      <%= render 'docfirma' %>
+      <%= render 'retiros' %>
+    <% elsif @cadper.include?('dashcarnet') %>
+      <%= render 'carnet' %>
+    <% elsif @cadper.include?('dashsalud') %>
+      <%= render 'seguridad_social' %>
+    <% elsif @cadper.include?('dashevaluadocumentos') %>
+      <%= render 'evaluacion_documento' %>
+    <% elsif @cadper.include?('dashcontratoscargo') %>
+      <%= render 'cargos' %>
+    <% elsif @cadper.include?('dashcontratosproceso') %>
+      <%= render 'procesos' %>
+    <% elsif @cadper.include?('dashverificacion') %>
+      <%= render 'veriservicios/dash' %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<div class="modal fade" id="abrirfirma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

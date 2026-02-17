@@ -1,0 +1,220 @@
+<% actividades = Tareasactividad.where("tarea_id = #{@tarea.id}")
+   isadmin = is_admin
+%>
+<br/>
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th class="text-table"></th>
+    <th class="text-table">Actividad</th>
+    <th class="text-table">Seguimiento / Observación</th>
+  </tr>
+  <% count = 0
+     Tareasactividad.select("tareasactividades.*, (select distinct 'X' from tareasactdocs where tareasactividad_id = tareasactividades.id) existedoc ")
+                    .where("tarea_id = #{@tarea.id} and user_persona = '#{@usuario}'").order("item asc").each do |p|
+       permiso = isadmin == @usuario ? true : false
+  %>
+    <tr>
+      <td width="5%" class="text-center text-table">
+        <% if permiso.present? %>
+          <div class="btn-group" id="botones<%= p.id %>">
+            <button type="button" class="btn btn-<%= p.boton_estado %> btn-xs" data-toggle="tooltip" title="Fecha Creación: <%= p.created_at %>">
+              <i class="fa fa-info"></i></button>
+            <button type="button" class="btn btn-<%= p.boton_estado %> dropdown-toggle  btn-xs" data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <%= link_to cargar_tareas_path(id: p.id), remote: true do %>
+                  <i class="fa fa-file-pdf-o text-red"></i> Agregar documentos
+                <% end %>
+              </li>
+              <%# '0'  "PENDIENTE" - '0.5' 'EN PROCESO' - '1' 'COMPLETADO' .- '1.0' 'NO APLICA %>
+              <% if p.estado.to_s == '0' %>
+                <% if p.digital.to_s == 'SI'
+                     if p.existedoc.to_s == 'X' %>
+                    <li>
+                      <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1', user_persona: @usuario), remote: true do %>
+                        <i class="fa fa-check"></i> Pasar a Finalización
+                      <% end %>
+                    </li>
+                  <% end %>
+                <% else %>
+                  <li>
+                    <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1', user_persona: @usuario), remote: true do %>
+                      <i class="fa fa-check"></i> Pasar a Finalización
+                    <% end %>
+                  </li>
+                <% end %>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '0.5', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-wrench"></i> Pasar a En proceso
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1.0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-wrench"></i> Pasar a No Aplica
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == '0.5' %>
+                <% if p.digital.to_s == 'SI'
+                     if p.existedoc.to_s == 'X' %>
+                    <li>
+                      <!-- finalizar -->
+                      <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1', user_persona: @usuario), remote: true do %>
+                        <i class="fa fa-check"></i> Pasar a Finalizar
+                      <% end %>
+                    </li>
+                  <% end %>
+                <% else %>
+                  <li>
+                    <!-- finalizar -->
+                    <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1', user_persona: @usuario), remote: true do %>
+                      <i class="fa fa-check"></i> Pasar a Finalizar
+                    <% end %>
+                  </li>
+                <% end %>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-check"></i> Pasar a Pendiente
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1.0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-wrench"></i> Pasar a No Aplica
+                  <% end %>
+                </li>
+              <% elsif p.estado.to_s == '1' %>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-check"></i> Pasar a Pendiente
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1.0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-wrench"></i> Pasar a No Aplica
+                  <% end %>
+                </li>
+              <% else %>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-check"></i> Pasar a Pendiente
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to finalizar_tareasactividades_path(id: p.id, estado: '1.0', user_persona: @usuario), remote: true do %>
+                    <i class="fa fa-wrench"></i> Pasar a No Aplica
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% else %>
+          <% if p.estado.to_s == '0' %>
+            <i class="fa fa-certificate text-red" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Pendiente</div>"></i>
+          <% elsif p.estado.to_s == '1.0' %>
+            <i class="fa fa-certificate text-blue" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>No Aplica</div>"></i>
+          <% elsif p.estado.to_s == '0.5' %>
+            <i class="fa fa-certificate text-orange" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>En proceso</div>"></i>
+          <% elsif p.estado.to_s == '1' %>
+            <i class="fa fa-certificate text-green" data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Finalizada</div>"></i>
+          <% end %>
+        <% end %>
+      </td>
+      <td class="text-justify text-table"><%= p.item %>. <%= p.descripcion %>
+        <% if p.fecha_limite.present? %>
+          <br/><b class="<%= p.fechalimite_color.to_s rescue nil %>" style="font-size:10px;"><strong>Fecha
+        Limite: </strong><%= p.fecha_limite rescue nil %>
+        <% if p.updatedat.present? %>
+          ---> (<%= p.updatedat rescue nil %>)
+        <% end %></b>
+        <% end %>
+        <% if p.nota.present? %>
+          <br/><strong>Nota: </strong><small><%= p.nota rescue nil %></small>
+        <% end %>
+        <% if p.digital.to_s == 'SI' %>
+          <br/><strong>Debe subir soporte digital</strong>
+        <% end %>
+        <div id="documentos<%= p.id %>">
+          <% if p.existedoc.to_s == 'X' %><br/>
+            <table class="table table-bordered table-condensed table-striped">
+              <tr class="thcolor">
+                <td clase="text-center" width="10%"></td>
+                <td class="text-table" width="90%">Documento Digital</td>
+              </tr>
+              <% p.tareasactdocs.each do |doc| %>
+                <tr>
+                  <td>
+                    <div align="center">
+                      <% if doc.user_id == isadmin %>
+                        <%= link_to eliminar_tareasactdocs_path(id: doc.id, tareasactividad_id: p.id), remote: true, data: { toggle: 'tooltip', confirm: 'Estas Seguro?' }, title: 'Eliminar' do %>
+                          <i class="fa fa-trash"></i>
+                        <% end %>
+                      <% end %>
+                      <%= link_to doc.documento_tarea.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                        <i class="fa fa-cloud-download text-danger"></i>
+                      <% end %></div>
+                  </td>
+                  <td clase="text-justify"><%= doc.descripcion rescue nil %></td>
+                </tr>
+              <% end %>
+            </table>
+          <% end %>
+        </div>
+      </td>
+      <td width="50%" cls="text-justify text-table">
+        <% if permiso.present? %>
+          <textarea class="form-control observacion-textarea<%= p.id %>" rows="3" data-tareasactividad-id="<%= p.id %>" oninput="convertirAMayusculas(this)"><%= p.observacion %></textarea>
+        <% else %>
+          <%= p.observacion rescue nil %>
+        <% end %>
+      </td>
+    </tr>
+
+    <div class="modal fade" id="nuevoSoporte<%= p.id %>">
+      <div class="modal-dialog modal-dialog-responsive" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+
+    <script>
+        function convertirAMayusculas(textarea) {
+            textarea.value = textarea.value.toUpperCase();
+        }
+
+        $(document).ready(function () {
+            // Obtener todas las áreas de texto de observación
+            var observacionTextareas = document.querySelectorAll('.observacion-textarea<%= p.id %>');
+
+            // Iterar sobre cada área de texto
+            observacionTextareas.forEach(function (textarea) {
+                // Escuchar el evento de cambio en el campo de observación (textarea)
+                textarea.addEventListener('input', function () {
+                    // Obtener el valor del campo y el ID de la Tareasactividad
+                    var observacion = this.value.toUpperCase();
+                    var tareasactividadId = this.getAttribute('data-tareasactividad-id');
+
+                    // Realizar una solicitud AJAX para actualizar la observación
+                    $.ajax({
+                        url: '/tareasactividades/update_observation',
+                        type: 'POST',
+                        data: {
+                            id: tareasactividadId,
+                            observacion: observacion,
+                            tarea_id: <%= @tarea.id %>
+                        },
+                        success: function (data) {
+                            // Manejar la respuesta del servidor si es necesario
+                            console.log('Observación actualizada:', data);
+                        },
+                        error: function (error) {
+                            console.error('Error al actualizar la observación:', error);
+                        }
+                    });
+                });
+            });
+        });
+
+    </script>
+  <% end %>
+</table>

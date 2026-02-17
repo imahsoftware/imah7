@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-md-12">
+      <%= simple_form_for(Contratosactnovedad.new, url: indexadmin_contratosactnovedades_path(etapa: 'DASHGRAFICO ESP'), method: :get) do |f| %>
+        <%= hidden_field_tag :etapa, params[:etapa], value: '6' %>
+        <div class="box-body">
+          <div class="col-md-8 text-left">
+            <b>Ultima Actualización:</b> <%= Seguimientonodo.select("updated_at").distinct.first.updated_at.strftime('%Y-%m%-d %X') rescue nil %>
+          </div>
+          <div class="col-md-3">
+            <%= select_tag 'ubicacion[nodo]', options_for_select(Contratosactnovedad.select("nodo").distinct.order(:nodo).collect {|p| [p.nodo.to_s, p.nodo.to_s]}),  prompt: '-- Seleccionar Nodo --', data: {width: '100%'}, class: 'form-control select2' %>
+          </div>
+          <!-- <div class="col-md-3">
+            <%#= label_tag :fecha, 'Fecha' %><br/>
+            <%#= select_tag 'ubicacion[fecha]', options_for_select(Contratosactnovedad.select("DATE_FORMAT(fecha,'%m-%Y') as periodo").distinct.collect {|p| [p.periodo, p.periodo.to_s]}), prompt: '--Seleccionar--', data: {width: '100%'}, class: 'form-control select2' %>
+          </div> -->
+          <div class="col-md-1">
+            <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+              <i class="fa fa-search" aria-hidden="true"></i>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <IFRAME SRC=<%= "/contratosactnovedades/dash_seguimientosnodos?nodo=#{@nodo.present? ? @nodo : Seguimientonodo.select("nodo").distinct.first.nodo rescue nil}" %> WIDTH="100%" HEIGHT="550" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

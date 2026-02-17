@@ -1,0 +1,65 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  identificacion: MyString
+  nombre: MyString
+  edad: MyString
+  menores5: MyString
+  mayores60: MyString
+  sexo: MyString
+  peso: 9.99
+  talla: 9.99
+  imc: 9.99
+  ant_1: MyString
+  ant_2: MyString
+  ant_3: MyString
+  ant_3a: MyString
+  ant_3b: MyString
+  ant_3c: MyString
+  ant_3d: MyString
+  ant_3e: MyString
+  ant_4: MyString
+  ant_4a: MyString
+  ant_5: MyString
+  ant_5a: MyString
+  ant_6: MyString
+  ant_7: MyString
+  ant_8: MyString
+  ant_9: MyString
+  ant_10: MyString
+  ant_11: MyString
+  ant_12: MyString
+  ant_13: MyString
+  persona_id: 1
+
+two:
+  identificacion: MyString
+  nombre: MyString
+  edad: MyString
+  menores5: MyString
+  mayores60: MyString
+  sexo: MyString
+  peso: 9.99
+  talla: 9.99
+  imc: 9.99
+  ant_1: MyString
+  ant_2: MyString
+  ant_3: MyString
+  ant_3a: MyString
+  ant_3b: MyString
+  ant_3c: MyString
+  ant_3d: MyString
+  ant_3e: MyString
+  ant_4: MyString
+  ant_4a: MyString
+  ant_5: MyString
+  ant_5a: MyString
+  ant_6: MyString
+  ant_7: MyString
+  ant_8: MyString
+  ant_9: MyString
+  ant_10: MyString
+  ant_11: MyString
+  ant_12: MyString
+  ant_13: MyString
+  persona_id: 1

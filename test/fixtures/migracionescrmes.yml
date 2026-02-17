@@ -1,0 +1,57 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  consecutivo: 1
+  persona: one
+  detalle: MyString
+  checksum: MyString
+  fecha_modificacion: 2020-04-25
+  primer: MyString
+  site: MyString
+  autor: MyString
+  nombre: MyString
+  oportunidad: MyString
+  tipo_oportunidad: MyString
+  estudiante: MyString
+  identificacion: MyString
+  telefono: MyString
+  correo: MyString
+  enrollment: MyString
+  sub_enrollment: MyString
+  carrera: MyString
+  tipo_carrera: MyString
+  modalidad: MyString
+  origen_carga: MyString
+  periodo: MyString
+  sub_periodo: MyString
+  fecha_creacion: 2020-04-25
+  estado: MyString
+
+two:
+  user: two
+  consecutivo: 1
+  persona: two
+  detalle: MyString
+  checksum: MyString
+  fecha_modificacion: 2020-04-25
+  primer: MyString
+  site: MyString
+  autor: MyString
+  nombre: MyString
+  oportunidad: MyString
+  tipo_oportunidad: MyString
+  estudiante: MyString
+  identificacion: MyString
+  telefono: MyString
+  correo: MyString
+  enrollment: MyString
+  sub_enrollment: MyString
+  carrera: MyString
+  tipo_carrera: MyString
+  modalidad: MyString
+  origen_carga: MyString
+  periodo: MyString
+  sub_periodo: MyString
+  fecha_creacion: 2020-04-25
+  estado: MyString

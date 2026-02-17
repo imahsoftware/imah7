@@ -1,0 +1,144 @@
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <% if @procesos.present? %>
+          <div class="box-body">
+            <div class="callout callout-danger">
+              <h4>Hola, <%= @usr.nombre.capitalize rescue nil %></h4>
+              <p>En la actualidad, dispones de un proceso jurídico que requiere firma digital para avanzar en la
+                plataforma.</p>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead class="thcolor">
+                    <tr>
+                      <td width="10%"></td>
+                      <th class="text-left text-table" width="15%">Empleado</th>
+                      <th class="text-center text-table" width="15%">Clase de proceso</th>
+                      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+                      <th class="text-left text-table">Detalle</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_contratosperprocesos">
+                    <% @procesos.each do |contratosperproceso| %>
+                      <tr>
+                        <td align="center" class="text-table">
+                          <%= link_to firma_individual_contratosperprocesos_path(id: contratosperproceso.id, tipo: 'USUARIO'), remote: true, data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                          <% end %>
+                        </td>
+                        <td align="left" class="text-table"><%= contratosperproceso.contratospersona.autobuscar rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.clase rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+                        <td align="justify" class="text-table"><%= contratosperproceso.detalle rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="firma_individual<%= contratosperproceso.id %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% elsif @testigos1.present? %>
+          <div class="box-body">
+            <div class="callout callout-danger">
+              <h4>Hola, <%= @usr.nombre.capitalize rescue nil %></h4>
+              <p>En la actualidad, dispones de un proceso jurídico en el cual
+                eres testigo (a) y requiere firma para avanzar en la plataforma.</p>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead class="thcolor">
+                    <tr>
+                      <td width="10%"></td>
+                      <th class="text-left text-table" width="15%">Empleado</th>
+                      <th class="text-center text-table" width="15%">Clase de proceso</th>
+                      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+                      <th class="text-left text-table">Detalle</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_contratosperprocesos">
+                    <% @testigos1.each do |contratosperproceso| %>
+                      <tr>
+                        <td align="center" class="text-table">
+                          <%= link_to firma_individual_contratosperprocesos_path(id: contratosperproceso.id, tipo: 'TESTIGO1'), remote: true, data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                          <% end %>
+                        </td>
+                        <td align="left" class="text-table"><%= contratosperproceso.contratospersona.autobuscar rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.clase rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+                        <td align="justify" class="text-table"><%= contratosperproceso.detalle rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="firma_individual<%= contratosperproceso.id %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% elsif @testigos2.present? %>
+          <div class="box-body">
+            <div class="callout callout-danger">
+              <h4>Hola, <%= @usr.nombre.capitalize rescue nil %></h4>
+              <p> En la actualidad, dispones de un proceso jurídico en el cual
+                eres testigo (a) y requiere firma para avanzar en la plataforma.</p>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead class="thcolor">
+                    <tr>
+                      <td width="10%"></td>
+                      <th class="text-left text-table" width="15%">Empleado</th>
+                      <th class="text-center text-table" width="15%">Clase de proceso</th>
+                      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+                      <th class="text-left text-table">Detalle</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_contratosperprocesos">
+                    <% @testigos2.each do |contratosperproceso| %>
+                      <tr>
+                        <td align="center" class="text-table">
+                          <%= link_to firma_individual_contratosperprocesos_path(id: contratosperproceso.id, tipo: 'TESTIGO2'), remote: true, data: { toggle: 'tooltip' }, title: "Firmar Servicio" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i></button>
+                          <% end %>
+                        </td>
+                        <td align="left" class="text-table"><%= contratosperproceso.contratospersona.autobuscar rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.clase rescue nil %></td>
+                        <td align="center" class="text-table"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+                        <td align="justify" class="text-table"><%= contratosperproceso.detalle rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="firma_individual<%= contratosperproceso.id %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

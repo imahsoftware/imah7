@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  archivo: one
+  estado: MyString
+  contrato_id: 1
+  periodosliquidacion_id: 1
+  identificacion: MyString
+  nombre: MyString
+  detalle: MyString
+  valor_dia: 1
+  nro_dias: 1
+  valor_total: 1
+
+two:
+  user: two
+  archivo: two
+  estado: MyString
+  contrato_id: 1
+  periodosliquidacion_id: 1
+  identificacion: MyString
+  nombre: MyString
+  detalle: MyString
+  valor_dia: 1
+  nro_dias: 1
+  valor_total: 1

@@ -1,0 +1,79 @@
+<%
+    datos2 = Objeto.find_by_sql("  SELECT DISTINCT orden, clasificacion
+        FROM veriserviciosagendasdatos
+        WHERE veriservicio_id = #{@veriservicio.id}
+            AND veriserviciosagenda_id <= #{veriserviciosagenda.id}
+        ORDER BY orden ASC")
+
+    # veriserviciosagenda_id
+    datos3 = Objeto.find_by_sql(" SELECT distinct veriserviciosagenda_id
+            from veriserviciosagendasdatos
+        WHERE veriservicio_id = #{@veriservicio.id}
+            AND veriserviciosagenda_id <= #{veriserviciosagenda.id}
+        ORDER BY veriserviciosagenda_id ASC")
+
+
+
+    # Convertimos las clasificaciones a un array de strings
+    categorias = datos2.map(&:clasificacion)
+%>
+
+<figure class="highcharts-figure">
+  <div id="container<%= veriserviciosagenda.id %>"></div>
+</figure>
+
+<script type="text/javascript" charset="utf-8">
+    Highcharts.chart('container<%= veriserviciosagenda.id %>', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Histograma de Verificación',
+            align: 'left'
+        },
+        subtitle: {
+            text: '',
+            align: 'left'
+        },
+        xAxis: {
+            categories: <%= categorias.to_json.html_safe %>,  // Usamos to_json para asegurar que sea un array válido
+            crosshair: true,
+            accessibility: {
+                description: 'Clasificaciones'
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Calificacion'
+            }
+        },
+        tooltip: {
+            valueSuffix: '<-->'
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [
+          <% datos3.each do |d|
+
+          datos4 = Objeto.find_by_sql(" SELECT total
+            from veriserviciosagendasdatos
+        WHERE veriservicio_id = #{@veriservicio.id}
+            AND veriserviciosagenda_id = #{d.veriserviciosagenda_id}
+        ORDER BY orden ASC")
+
+            # Formatear los números para usar puntos decimales
+            totales = datos4.map { |item| sprintf('%.1f', item.total.to_f) }
+        %>
+            {
+                name: '<%= Veriserviciosagenda.find(d.veriserviciosagenda_id).fecha_reprogramacion %>',
+                data: [<%= totales.join(', ') %>]
+            },
+            <% end %>
+        ]
+    });
+</script>

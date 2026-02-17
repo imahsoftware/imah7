@@ -1,0 +1,97 @@
+<%= form_for(migracionespersona) do |f| %>
+  <% if migracionespersona.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(migracionespersona.errors.count, "error") %> prohibited this migracionespersona from being saved:</h2>
+
+      <ul>
+      <% migracionespersona.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :archivo_id %>
+    <%= f.text_field :archivo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :lote %>
+    <%= f.number_field :lote %>
+  </div>
+
+  <div class="field">
+    <%= f.label :identificacion %>
+    <%= f.text_field :identificacion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :nombre %>
+    <%= f.text_field :nombre %>
+  </div>
+
+  <div class="field">
+    <%= f.label :celular %>
+    <%= f.text_field :celular %>
+  </div>
+
+  <div class="field">
+    <%= f.label :correo %>
+    <%= f.text_field :correo %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cargo_id %>
+    <%= f.number_field :cargo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :observacion %>
+    <%= f.text_field :observacion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :municipio %>
+    <%= f.text_field :municipio %>
+  </div>
+
+  <div class="field">
+    <%= f.label :departamento %>
+    <%= f.text_field :departamento %>
+  </div>
+
+  <div class="field">
+    <%= f.label :colegio %>
+    <%= f.text_field :colegio %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado_sms %>
+    <%= f.text_field :estado_sms %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado_correo %>
+    <%= f.text_field :estado_correo %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado_cargue %>
+    <%= f.text_field :estado_cargue %>
+  </div>
+
+  <div class="field">
+    <%= f.label :error %>
+    <%= f.text_field :error %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

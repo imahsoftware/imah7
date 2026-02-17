@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosprefactura: one
+  contratosprefdetalle: one
+  contratosretencion: one
+  valor_retencion: 9.99
+
+two:
+  contratosprefactura: two
+  contratosprefdetalle: two
+  contratosretencion: two
+  valor_retencion: 9.99

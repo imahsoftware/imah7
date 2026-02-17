@@ -1,0 +1,16 @@
+<tr id="contratosperinvnota_<%= contratosperinvnota.id %>">
+  <td class="text-center">
+    <% if @contratosperinventario.estado == 'PENDIENTE' %>
+      <%# if is_auth_e("contratosperinvnota")%>
+      <%= link_to edit_contratosperinventario_contratosperinvnota_path(@contratosperinventario, contratosperinvnota), remote: true, class: 'edit_contratosperinvnota_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosperinventario_contratosperinvnota_path(@contratosperinventario, contratosperinvnota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperinvnota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratosperinvnota.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= contratosperinvnota.nota rescue nil %></td>
+</tr>

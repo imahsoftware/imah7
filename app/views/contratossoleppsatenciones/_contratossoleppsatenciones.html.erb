@@ -1,0 +1,20 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Atención</strong></h3>
+  <div class="box-tools pull-right">
+      <%= link_to new_contratossolepp_contratossoleppsatencion_path(@contratossolepp), id: 'new_contratossoleppsatencion_button', class: 'btn btn-sm btn-info', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratossoleppsatencion_form" class="collapse"></div>
+  <div id="contratossoleppsatenciones">
+    <% if @contratossolepp.contratossoleppsatenciones.present? %>
+      <%= render 'contratossoleppsatenciones/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> - <%= t :atencion_msj %></div>
+    <% end %>
+  </div>
+</div>
+

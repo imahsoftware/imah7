@@ -1,0 +1,11 @@
+<% if @personasformulario.personasformulariosdocs.present? %>
+	$("#personasformulariosdocs").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_personasformulariosdocs").prepend("<%= j render 'tr', personasformulariosdoc: @personasformulariosdoc %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#personasformulariosdoc_form").collapse("hide");

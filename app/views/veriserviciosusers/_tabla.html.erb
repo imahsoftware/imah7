@@ -1,0 +1,19 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="15%" class="text-left text-table">Fecha</th>
+        <th class="text-left text-table">Usuario</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_veriserviciosusers">
+	    <% @veriserviciosagenda.veriserviciosusers.order(id: :desc).each do |veriserviciosuser| %>
+	      <%= render 'veriserviciosusers/tr', veriserviciosuser: veriserviciosuser %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

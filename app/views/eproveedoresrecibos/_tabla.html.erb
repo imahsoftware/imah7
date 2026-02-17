@@ -1,0 +1,31 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="10%" class="text-center">Fecha</th>
+        <th width="20%" class="text-center">Causacion</th>
+        <th class="text-center">Forma de Pago</th>
+        <th class="text-right">Valor</th>
+        <th width="20%" class="text-center">Observacion</th>
+
+      </tr>
+    </thead>
+	  <tbody id="tbody_eproveedoresrecibos">
+     <% @eproveedor.eproveedoresrecibos.includes([:eproveedorescompra])
+                   .order(id: :desc).each do |eproveedoresrecibo| %>
+       <%= render 'eproveedoresrecibos/tr', eproveedoresrecibo: eproveedoresrecibo %>
+     <% end %>
+	  </tbody>
+    <thead class="thcolor">
+    <tr>
+      <th class="alert-danger text-center" colspan="4"></th>
+      <th class="alert-danger text-right"> <%= camponumerico @eproveedor.eproveedoresrecibos.sum("total") rescue 0 %></th>
+    </tr>
+    </thead>
+	</table>
+
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%#= will_paginate @eproveedoresrecibos, :param_name => 'eproveedoresrecibos' , renderer: BootstrapPagination::Rails %>
+</div>

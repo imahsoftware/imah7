@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  tiposnovedad: one
+
+two:
+  contrato: two
+  tiposnovedad: two

@@ -1,0 +1,110 @@
+<%
+  periodos = Solicitudesretiro.select("date_format(fecha,'%Y-%m') periodo").distinct.order("date_format(fecha,'%Y-%m') desc")
+  @enprocesos = Solicitudesretiro.where(["user_aprobacion is not null and user_liquidacion is null and consecutivo is null"])
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab1s" data-toggle="tab"><i class="fa fa-tasks"></i> <span></span> Pendientes</a></li>
+        <li><a href="#tab2s" data-toggle="tab"><i class="fa fa-tasks"></i><span></span> En proceso</a></li>
+        <li><a href="#tab3s" data-toggle="tab"><i class="fa fa-tasks"></i><span></span> Aprobadas para pago</a></li>
+        <li><a href="#tab4s" data-toggle="tab"><i class="fa fa-tasks"></i><span></span> Pagadas</a></li>
+        <li><a href="#tab5s" data-toggle="tab"><i class="fa fa-tasks"></i><span></span> Masivas</a></li>
+      </ul>
+      <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
+        <div class="tab-pane active" id="tab1s">
+
+        </div>
+        <div class="tab-pane" id="tab2s">
+
+        </div>
+        <div class="tab-pane" id="tab3s">
+          <br/>
+
+        </div>
+        <div class="tab-pane" id="tab4s">
+          <br/>
+
+        </div>
+        <div class="tab-pane" id="tab5s">
+          <%= simple_form_for(Contratospermasiva.new, url: masiva_contratospermasivas_path, :method => :get) do |f| %>
+            <div class="box-body">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <label>Contrato</label>
+                    <select class="form-control select2ContratoIndexMasive select2" style="width:100%;" name="ubicacion[contrato_id]" id="ubicacion_contrato_id">
+                      <option selected="selected" value="<%= f.object.contrato_id -%>">
+                        <%= "#{f.object.descripcion_contrato}" -%>
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    <label>Grupo</label>
+                    <%= f.input :contratosgrupo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: false, disabled: true %>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+                  <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+                  <div class="col-md-1">
+                    <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <% if Contratospermasiva.where(estado: 'PENDIENTE').exists? %>
+            <div class="table-responsive">
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="10%" class="text-center"></th>
+                  <th class="text-left" style="font-size:12px;">Empresa - Contrato</th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="30%" class="text-left">Observacion</th>
+                  <th width="10%" class="text-center">Estado</th>
+                  <th width="10%" class="text-center">Cant</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <% Contratospermasiva.all.order("fecha desc").each do |p| %>
+                  <tr>
+                    <td class="text-center" style="font-size:12px;">
+                      <%= link_to edit_contratospermasiva_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %>
+                      <%= link_to p, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                      <% end %>
+                    </td>
+                    <td class="text-left" style="font-size:10px;"><strong>Empresa : </strong><%= p.contrato.empresa.identnombre rescue nil%>
+                      <br/><strong>Nro Contrato : </strong><%= p.contrato.nro_contrato rescue nil%> - <strong>Grupo : </strong><%= p.contratosgrupo.descripcion rescue nil%> <small>(<%= p.contratosgrupo.termino rescue nil%>)</small>
+                    </td>
+                    <td class="text-center" style="font-size:10px;"><%= p.fecha rescue nil%></td>
+                    <td class="text-justify" style="font-size:10px;"><%= p.observacion rescue nil%></td>
+                    <td class="text-center" style="font-size:10px;"><%= p.estado rescue nil%></td>
+                    <td class="text-center" style="font-size:10px;"><%= p.contratospermasdetalles.count rescue nil%></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        </div>
+        <div class="tab-pane" id="tab6s">jh5</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="novedad">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div></div>
+<div class="modal fade" id="addsolicitud">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div></div>

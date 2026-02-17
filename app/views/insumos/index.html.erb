@@ -1,0 +1,171 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#buscador" data-toggle="tab" aria-expanded="true">
+            <i class="fa fa-binoculars"></i> Buscador
+          </a>
+        </li>
+        <li>
+          <a href="#evaluaciones" data-toggle="tab" aria-expanded="true">
+            <i class="fa fa-file-excel-o"></i> Pendientes Autorización
+          </a>
+        </li>
+        <div class="pull-right" style="position: relative; top: 10px; right: 25px;">
+          <%= link_to informe_datas_path(infgrupo_id: 103, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Generar Insumos Completo' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Generar Insumos Completo</button>
+          <%end %>
+        </div>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane" id="evaluaciones">
+          <div class="box-header">
+            <div class="row">
+              <div class="col-md-11">
+                <legend>Insumos sin autorizacion</legend>
+              </div>
+            </div>
+          </div><!-- /.box-header -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <% insumos = Insumo.where(estado: "PENDIENTE").order(created_at: :desc) %>
+                <% if insumos.count.to_i > 0 %>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="10%"></th>
+                      <th width="5%" class="text-center">ID</th>
+                      <th width="20%" class="text-left">Bien o servicio</th>
+                      <th width="45%" class="text-justify">Especificacion</th>
+                      <th width="25%" class="text-justify">Presentación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% insumos.each do |insumo| %>
+                      <tr id="insumo_<%= insumo.id %>">
+                        <td class="text-center">
+                          <%= link_to edit_insumo_path(insumo, etapa: 'A'), class: 'edit_insumo_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                          <% if insumo.insumosfichas.where("estado = 'ACTIVO'").present? %>
+                            <%= link_to fichas_insumos_path(id: insumo.id), remote: true, class: 'edit_insumo_button', data: { toggle: 'tooltip' }, title: "Ver Fichas" do %>
+                              <button class="btn btn-xs btn-primary"><i class="fa fa-newspaper-o"></i></button>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td class="text-center"><%= insumo.id rescue nil %></td>
+                        <td class="text-left"><%= insumo.bien_servicio rescue nil %></td>
+                        <td class="text-justify"><%= insumo.especificacion rescue nil %>
+                          <br><strong>Clase: <%= insumo.clase rescue nil %> </strong>
+                        </td>
+                        <td class="text-justify"><%= insumo.presentacion rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="fichas<%= insumo.id %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                <% else %>
+                  <div class="alert alert-danger">
+                    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane active" id="buscador">
+          <div class="box-header">
+            <div class="row">
+              <div class="col-md-11">
+                <legend>Insumos</legend>
+              </div>
+              <div class="col-md-1">
+                <%= link_to new_insumo_path, data: { toggle: 'tooltip' }, title: 'Crear Empresa' do %>
+                  <button class="btn btn-info"><strong>Nuevo</strong></button>
+                <% end %>
+              </div>
+            </div>
+          </div><!-- /.box-header -->
+          <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+            <div class="box-body">
+              <div class="form-group">
+                <%= label_tag :bien_servicio, 'Bien o Servicio' %><br/>
+                <%= text_field_tag :bien_servicio, params[:bien_servicio], class: 'form-control', style: 'width:340px;', autocomplete: 'off' %>
+              </div>
+              <div class="form-group">
+                <%= label_tag :programacion, 'Clase de insumo' %><br/>
+                <%= select_tag 'ubicacion[clase]', options_for_select(select_claseinsumo), prompt: '--Seleccionar--', data: { width: '300px' }, class: 'form-control select2' %>
+              </div>
+              <div class="form-group">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <div class="box-header with-border">
+            <% if @insumos.count.to_i > 0 %>
+              <div class="box-body">
+                <div class="box-header with-border">
+                  <legend>Insumo (<%= @insumos.count rescue 0 %>)</legend>
+                </div><!-- /.box-header -->
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="10%"></th>
+                      <th width="5%" class="text-center">ID</th>
+                      <th width="20%" class="text-left">Bien o servicio</th>
+                      <th width="45%" class="text-justify">Especificacion</th>
+                      <th width="25%" class="text-justify">Presentación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @insumos.order(created_at: :desc).each do |insumo| %>
+                      <tr id="insumo_<%= insumo.id %>">
+                        <td class="text-center">
+                          <%= link_to edit_insumo_path(insumo, etapa: 'A'), class: 'edit_insumo_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                          <% if insumo.insumosfichas.where("estado = 'ACTIVO'").present? %>
+                            <%= link_to fichas_insumos_path(id: insumo.id), remote: true, class: 'edit_insumo_button', data: { toggle: 'tooltip' }, title: "Ver Fichas" do %>
+                              <button class="btn btn-xs btn-primary"><i class="fa fa-newspaper-o"></i></button>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td class="text-center"><%= insumo.id rescue nil %></td>
+                        <td class="text-left"><%= insumo.bien_servicio rescue nil %></td>
+                        <td class="text-justify"><%= insumo.especificacion rescue nil %>
+                          <br><strong>Clase: <%= insumo.clase rescue nil %> </strong>
+                        </td>
+                        <td class="text-justify"><%= insumo.presentacion rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="fichas<%= insumo.id %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @insumos, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+                </div><!-- /.box-tools -->
+              </div>
+            <% else %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              </div>
+            <% end %>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>

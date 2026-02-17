@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratrosperinventario: one
+  item: MyString
+  estado_item: MyString
+  nro_placa: MyString
+  observaciones: MyString
+
+two:
+  contratrosperinventario: two
+  item: MyString
+  estado_item: MyString
+  nro_placa: MyString
+  observaciones: MyString

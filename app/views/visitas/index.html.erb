@@ -1,0 +1,977 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<%
+  @usr = current_user
+  isadmin = @usr.id
+  is_auth_c_visitasuper = is_auth_c('visitasuper')
+  is_auth_c_vistaadmin = is_auth_c('vistaadmin')
+  is_auth_c_vistaedicion = is_auth_c('vistaedicion')
+  is_auth_c_exception_visita = is_auth_c('exception_visita')
+  userVisita = Visita.select("visitas.*,
+                                (select nombre from users where id = visitas.user_id) nombreuser,
+                                (select autobuscar from empresas where id = (select empresa_id from contratos where id = visitas.contrato_id)) identnombre,
+                                (select nro_contrato from contratos where id = visitas.contrato_id) nro_contrato
+                                ")
+                     .where(user_id: isadmin, finalizacion: nil).last rescue nil
+%>
+
+<% if is_auth_c_visitasuper %>
+  <div class="box box-danger">
+    <div class="box-header with-border">
+      <h3 class="box-title">Registro de Visitas - <%= @usr.nombre.upcase rescue nil %>
+        <% if !userVisita.present? %>
+          <%= link_to new_visita_path, remote: true, class: 'btn btn-sm btn-success', id: 'new_visita_button', data: { toggle: 'tooltip' }, title: 'Agregar' do %>
+            <i class="fa fa-plus-square"> </i> Agregar nueva visita<span></span>
+          <% end %>
+        <% end %>
+      </h3>
+      <div class="pull-right">
+        <div class="pull-right"><div id="message" style="display: none;"></div></div>
+        <button id="requestLocationButton" class="btn btn-primary btn-xs">Habilitar <i class="fa fa-map-pin"></i> </button>
+
+        <script type="text/javascript">
+            if ("geolocation" in navigator) {
+                navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+                    if (result.state === 'granted') {
+                        showMessage('El acceso a la ubicación está permitido');
+                        hideButton();
+                    } else {
+                        showMessage('El acceso a la ubicación no está permitido, reinicia tu navegador');
+                    }
+                });
+            } else {
+                showMessage('El navegador no soporta geolocalización');
+            }
+
+            function showMessage(message) {
+                var messageElement = document.getElementById('message');
+                messageElement.textContent = message;
+                messageElement.style.display = 'block';
+            }
+
+            function hideButton() {
+                var button = document.getElementById('requestLocationButton');
+                button.style.display = 'none';
+            }
+        </script>
+      </div>
+    </div><!-- /.box-header -->
+    <div class="flash_messages"></div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="visita_form" class="collapse"></div>
+          <% if userVisita.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <tr class="thcolor">
+                <th width="5%" class="text-center"></th>
+                <th width="15%" class="text-center">Fecha Inicio Visita</th>
+                <th width="20%" class="text-center">Usuario</th>
+                <th>Contrato</th>
+              </tr>
+              <tr>
+                <td class="text-tr-table text-center">
+                  <%= link_to complementar_visitas_path(id: userVisita.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Complementar Visita" do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-plane"></i></button>
+                  <% end %>
+                </td>
+                <td class="text-tr-table text-center"><%= userVisita.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+                <td class="text-tr-table text-center"><%= userVisita.nombreuser rescue nil %></td>
+                <td class="text-tr-table text-left">
+                  <%= link_to consolidado_visitas_path(id: userVisita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{userVisita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                    <i class="fa fa-map-marker text-red"> </i>
+                  <% end %>&nbsp;
+                  <%= userVisita.identnombre rescue nil %><%= userVisita.nro_contrato rescue nil %>
+                  <br/><small><strong>Objetivo de la Visita: </strong><%= userVisita.descripcion rescue nil %></small>
+                  <div class="modal fade" id="consolidado<%= userVisita.id %>">
+                    <div class="modal-dialog" style="width: 80%">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                          </button>
+                          <h4 class="modal-title">Consolidado Georreferenciación -
+                            <small><%= userVisita.nombreuser rescue nil %></small></h4>
+                        </div>
+                        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                        <div class="modal-body">
+                          <div id="map3_<%= userVisita.id %>" style="height: 400px; z-index: 0;"></div>
+                          <script type="text/javascript" charset="utf-8">
+                              document.addEventListener('DOMContentLoaded', function () {
+                                  $('#consolidado<%= userVisita.id %>').on('shown.bs.modal', function () {
+                                      var mapId = "map3_<%= userVisita.id %>";
+                                      var firstLatitude = <%= userVisita.latitude rescue nil %>;
+                                      var firstLongitude = <%= userVisita.longitude rescue nil %>;
+
+                                      var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                      }).addTo(map);
+
+
+                                      var marker = L.marker([<%= userVisita.latitude.to_s %>, <%= userVisita.longitude.to_s %>]).addTo(map);
+                                      marker.bindPopup("<%= userVisita.descripcion_visita rescue nil %>").openPopup();
+
+                                      map.invalidateSize();
+                                  });
+                              });
+                          </script>
+                        </div>
+                        <br/>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <legend style="font-size: 18px;">Compromisos Pendientes</legend>
+            <div id="validacion_compromisos">
+              <%= render 'visitascompromisos/compromisos_index', userVisita: userVisita, nro_contrato: userVisita.nro_contrato, identnombre: userVisita.identnombre %>
+            </div>
+          <% else %>
+            <div class="alert alert-danger"><%= t :atencion %> - <%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if is_auth_c_vistaadmin
+     estados = []
+     i = 0
+     Objeto.find_by_sql(" SELECT fecha FROM fechas WHERE fecha BETWEEN DATE_ADD(NOW(), INTERVAL -3 DAY) AND NOW() ORDER BY fecha DESC").each do |a|
+       if i == 0
+         estados << 'PROCESO'
+         i = 1
+         estados << 'CONSOLIDADO'
+         i = 1
+         estados << 'CONSOLIDADOS'
+         i = 1
+         estados << 'COMPROMISOS'
+         i = 1
+         estados << 'REPORTES'
+         i = 1
+       end
+       estados << a.fecha.to_s
+     end
+%>
+  <div class="box box-danger">
+    <div class="box-header with-border">
+      <h3 class="box-title">Visitas Administrador</h3>
+    </div><!-- /.box-header -->
+    <div class="flash_messages"></div>
+    <div class="tab-content">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <%
+            estados.each do |p|
+              if @usr.subetapa.to_s == p
+                clase = "active"
+              else
+                clase = ""
+              end
+          %>
+            <li class="<%= clase %>">
+              <%= link_to etapars_visitas_path(subetapa: p) do %>
+                <i class="fa fa-rocket"></i>&nbsp<%= p %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="<%= @usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @usr.subetapa.to_s == 'PROCESO' %>
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
+                        <%= form_tag visitas_path, method: :get, class: 'form-inline' do %>
+                          <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                              <label>Usuario</label>
+                              <%
+                                if Visita.any?
+                                  if @usr.usersvisitas.blank?
+                                    users = Visita.select("user_id, (select nombre from users where id = visitas.user_id) nombreuser").order(2).distinct.map do |p|
+                                      [p.nombreuser, p.user_id]
+                                    end
+                                  else
+                                    users = Visita.select("user_id, (select nombre from users where id = visitas.user_id) nombreuser").where("user_id in (select user_asignado from usersvisitas where user_id = #{is_admin})").order(2).distinct.map do |p|
+                                      [p.nombreuser, p.user_id]
+                                    end
+                                  end
+                                else
+                                  users = User.where("tipoconsulta = 'SUPERVISOR' and activo = 'S'")
+                                              .order("nombre asc")
+                                              .pluck(:nombre, :id)
+                                end
+                              %>
+                              <%= select_tag :user_id, options_for_select(users, params[:user_id]), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                              <label>Contrato</label><br/>
+                              <% if @usr.usersvisitas.blank? %>
+                                <%= select_tag 'ubicacion[contratoid]', options_for_select(Visita.joins(contrato: :empresa).select("DISTINCT visitas.contrato_id as id, CONCAT(empresas.nombre, ' - ', contratos.nro_contrato) AS datos").collect { |p| [p.datos, p.id] }), prompt: "#{t :seleccionar}", data: { width: '100%' }, class: 'form-control select2 inline' %>
+                              <% else %>
+                                <%= select_tag 'ubicacion[contratoid]', options_for_select(Visita.joins(contrato: :empresa).select("DISTINCT visitas.contrato_id as id, CONCAT(empresas.nombre, ' - ', contratos.nro_contrato) AS datos").where("visitas.user_id in (select user_asignado from usersvisitas where user_id = #{is_admin})").collect { |p| [p.datos, p.id] }), prompt: "#{t :seleccionar}", data: { width: '100%' }, class: 'form-control select2 inline' %>
+                              <% end %>
+                            </div>
+                          </div>
+                          <div class="row" style="margin-top: 10px;">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                              <label>Fecha Desde</label>
+                              <%= text_field_tag :fchinicial, params[:fchinicial], { class: 'datepicker form-control', style: 'width: 100%;', placeholder: 'Fecha Desde', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                              <label>Fecha Hasta</label>
+                              <%= text_field_tag :fchfinal, params[:fchfinal], { class: 'datepicker form-control', style: 'width: 100%', placeholder: 'Fecha Hasta', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                              <label>Clase de Visita</label>
+                              <%= select_tag 'ubicacion[clase]', options_for_select(select_clase_visita), prompt: '--Seleccionar--', data: { width: '100%', label: "Clase de Visita", id: "clase" }, class: 'form-control select2' %>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                              <label>Tipo</label>
+                              <%= select_tag 'ubicacion[tipo]', options_for_select([["VISTA", "VISTA"], ["EXCEL", "EXCEL"], ["GEORREFERENCIACION", "GEORREFERENCIACION"], ["PDF", "PDF"]]), data: { width: '100%', label: "Tipo de Generación", id: "tipoclase" }, class: 'form-control select2' %>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="padding-top: 20px;">
+                              <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip', turbolinks: false }, title: 'Buscar', disable_with: 'Procesando...' do %>
+                                <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                              <% end %>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                      <div id="loading" style="display: none; text-align: center;">
+                        <%= image_tag 'giphy.gif' %>
+                      </div>
+                      <script type="text/javascript" charset="utf-8">
+                          document.addEventListener('DOMContentLoaded', function () {
+                              var form = document.querySelector('form');
+                              var loading = document.getElementById('loading');
+
+                              var submitHandler = function () {
+                                  loading.style.display = 'block';
+                                  setTimeout(function () {
+                                      loading.style.display = 'none';
+                                  }, 4000);
+                              };
+
+                              form.addEventListener('submit', submitHandler);
+                          });
+
+                      </script>
+                      <style>
+                          #loading {
+                              position: fixed;
+                              top: 50%;
+                              left: 50%;
+                              transform: translate(-50%, -50%);
+                              background-color: #fff;
+                              padding: 10px 20px;
+                              border: 1px solid #ccc;
+                              z-index: 1000;
+                              border-radius: 5px;
+                          }
+                      </style>
+                      <div class="table-responsive">
+                        <% if @visitas.count.to_i > 0 %><br/>
+                          <% if @tipo == 'VISTA' %>
+                            <div class="box-body no-padding">
+                              <table class="table table-bordered table-condensed table-striped">
+                                <tr class="thcolor">
+                                  <th width="15%" class="text-center text-table">Fecha Inicio Visita</th>
+                                  <th width="12%" class="text-center text-table">Usuario</th>
+                                  <th class="text-table">Empresa - Contrato</th>
+                                  <th width="15%" class="text-center text-table">Fecha Fin Visita</th>
+                                  <th width="8%" class="text-center text-table">Tiempo</th>
+                                </tr>
+                                <% @visitas.includes([:user, :contrato]).each do |visita| %>
+                                  <tr>
+                                    <td class="text-tr-table text-center text-table"><%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+                                      &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                                        <i class="fa fa-map-marker text-red"> </i>
+                                      <% end %>
+                                      <div class="modal fade" id="consolidado<%= visita.id %>">
+                                        <div class="modal-dialog" style="width: 80%">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <button type="button" class="close" data-dismiss="modal">
+                                                <span>&times;</span>
+                                              </button>
+                                              <h4 class="modal-title">Visualizacion Inicio Visita -
+                                                <small><%= visita.usernombre rescue nil %></small></h4>
+                                            </div>
+                                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                            <div class="modal-body">
+                                              <% if visita.user_id.present? %>
+                                                <div id="map_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                                <script type="text/javascript" charset="utf-8">
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        $('#consolidado<%= visita.id %>').on('shown.bs.modal', function () {
+                                                            var mapId = "map_<%= visita.id %>";
+                                                            var firstLatitude = <%= visita.latitude rescue nil %>;
+                                                            var firstLongitude = <%= visita.longitude rescue nil %>;
+
+                                                            var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                            }).addTo(map);
+
+
+                                                            var marker = L.marker([<%= visita.latitude.to_s %>, <%= visita.longitude.to_s %>]).addTo(map);
+                                                            marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                            map.invalidateSize();
+                                                        });
+                                                    });
+                                                </script>
+                                              <% end %>
+                                            </div>
+                                            <br/>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td class="text-tr-table text-center text-table"><%= visita.usernombre rescue nil %></td>
+                                    <td class="text-tr-table text-table">
+                                      <%= link_to formato_visitas_path(id: visita.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato Visita' do %>
+                                        <i class="fa fa-file-pdf-o"></i>
+                                      <% end %>
+                                      <% if is_auth_c_vistaedicion %>
+                                        <%= link_to complementar_visitas_path(id: visita.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Complementar Visita" do %>
+                                          <i class="fa fa-plane"></i>
+                                        <% end %>
+                                      <% end %>
+                                      <%= visita.identnombre rescue nil %> <br/><strong>Contrato
+                                      Nro: </strong><%= visita.nro_contrato rescue nil %></td>
+                                    <td class="text-tr-table text-center text-table">
+                                      <%= visita.finalizacion.strftime("%d/%m/%Y %X") rescue nil %>
+                                      <% if visita.finalizacion.present? and visita.fin_latitude.present? %>
+                                        &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidadof#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                                          <i class="fa fa-map-marker text-red"> </i>
+                                        <% end %>
+                                        <div class="modal fade" id="consolidadof<%= visita.id %>">
+                                          <div class="modal-dialog" style="width: 80%">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                  <span>&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">Visualizacion Finalizacion Visita -
+                                                  <small><%= visita.usernombre rescue nil %></small></h4>
+                                              </div>
+                                              <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                              <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                              <div class="modal-body">
+                                                <% if visita.user_id.present? %>
+                                                  <div id="mapf_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                                  <script type="text/javascript" charset="utf-8">
+                                                      document.addEventListener('DOMContentLoaded', function () {
+                                                          $('#consolidadof<%= visita.id %>').on('shown.bs.modal', function () {
+                                                              var mapId = "mapf_<%= visita.id %>";
+                                                              var firstLatitude = <%= visita.fin_latitude rescue nil %>;
+                                                              var firstLongitude = <%= visita.fin_longitude rescue nil %>;
+
+                                                              var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                                  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                              }).addTo(map);
+
+
+                                                              var marker = L.marker([<%= visita.fin_latitude.to_s %>, <%= visita.fin_longitude.to_s %>]).addTo(map);
+                                                              marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                              map.invalidateSize();
+                                                          });
+                                                      });
+                                                  </script>
+                                                <% end %>
+                                              </div>
+                                              <br/>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <% end %>
+                                    </td>
+                                    <td class="text-tr-table text-center text-table"><%= visita.tiempo_visita.to_s rescue nil %>
+                                      <br/><small>(<%=visita.teletrabajo rescue nil %>)</small></td>
+                                  </tr>
+                                <% end %>
+                              </table>
+                            </div>
+                            <div class="box-footer clearfix">
+                              <div class="box-tools pull-right">
+                                <%= will_paginate @visitas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+                              </div><!-- /.box-tools -->
+                            </div><!-- box-footer -->
+                          <% elsif @tipo == 'GEORREFERENCIACION' %>
+
+                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+                            <% if @visitas.present? %>
+                              <div id="map_<%= @visitas.first.id %>" style="height: 400px; z-index: 0;"></div>
+                              <script type="text/javascript" charset="utf-8">
+                                  document.addEventListener('DOMContentLoaded', function () {
+                                      var mapId = "map_<%= @visitas.first.id %>";
+                                      var firstLatitude = <%= @visitas.first.latitude rescue nil %>;
+                                      var firstLongitude = <%= @visitas.first.longitude rescue nil %>;
+
+                                      var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                      }).addTo(map);
+
+                                      <% @visitas.each do |p| %>
+                                      var marker = L.marker([<%= p.latitude.to_s %>, <%= p.longitude.to_s %>]).addTo(map);
+                                      marker.bindPopup("<%= p.descripcion_visita rescue nil %>").openPopup();
+                                      <% end %>
+
+                                      // Forzar la actualización del tamaño del mapa
+                                      map.invalidateSize();
+                                  });
+                              </script>
+                              <br/><br/>
+                              <legend>Detallado</legend>
+                              <table class="table table-bordered table-condensed table-striped">
+                                <tr class="thcolor">
+                                  <th width="15%" class="text-center">Fecha Inicio Visita</th>
+                                  <th width="12%" class="text-center">Usuario</th>
+                                  <th>Empresa - Contrato</th>
+                                  <th width="15%" class="text-center">Fecha Fin Visita</th>
+                                  <th width="8%" class="text-center">Tiempo</th>
+                                </tr>
+                                <% @visitas.includes([:user, :contrato]).each do |visita| %>
+                                  <tr>
+                                    <td class="text-tr-table text-center"><%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+                                      &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                                        <i class="fa fa-map-marker text-red"> </i>
+                                      <% end %>
+                                      <div class="modal fade" id="consolidado<%= visita.id %>">
+                                        <div class="modal-dialog" style="width: 80%">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <button type="button" class="close" data-dismiss="modal">
+                                                <span>&times;</span>
+                                              </button>
+                                              <h4 class="modal-title">Visualizacion Inicio Visita -
+                                                <small><%= visita.user.nombre rescue nil %></small></h4>
+                                            </div>
+                                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                            <div class="modal-body">
+                                              <% if visita.user_id.present? %>
+                                                <div id="mapg1_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                                <script type="text/javascript" charset="utf-8">
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        $('#consolidado<%= visita.id %>').on('shown.bs.modal', function () {
+                                                            var mapId = "mapg1_<%= visita.id %>";
+                                                            var firstLatitude = <%= visita.latitude rescue nil %>;
+                                                            var firstLongitude = <%= visita.longitude rescue nil %>;
+
+                                                            var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                            }).addTo(map);
+
+
+                                                            var marker = L.marker([<%= visita.latitude.to_s %>, <%= visita.longitude.to_s %>]).addTo(map);
+                                                            marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                            map.invalidateSize();
+                                                        });
+                                                    });
+                                                </script>
+                                              <% end %>
+                                            </div>
+                                            <br/>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td class="text-tr-table text-center"><%= visita.user.nombre rescue nil %></td>
+                                    <td class="text-tr-table"><%= visita.contrato.empresa.identnombre rescue nil %><%= visita.contrato.nro_contrato rescue nil %></td>
+                                    <td class="text-tr-table text-center">
+                                      <% if visita.finalizacion.present? and visita.fin_latitude.present? %>
+                                        <%= visita.finalizacion.strftime("%d/%m/%Y %X") rescue nil %>
+                                        &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidadof#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                                          <i class="fa fa-map-marker text-red"> </i>
+                                        <% end %>
+                                        <div class="modal fade" id="consolidadof<%= visita.id %>">
+                                          <div class="modal-dialog" style="width: 80%">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                  <span>&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">Visualizacion Finalizacion Visita -
+                                                  <small><%= visita.user.nombre rescue nil %></small></h4>
+                                              </div>
+                                              <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                              <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                              <div class="modal-body">
+                                                <% if visita.user_id.present? %>
+                                                  <div id="mapg2_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                                  <script type="text/javascript" charset="utf-8">
+                                                      document.addEventListener('DOMContentLoaded', function () {
+                                                          $('#consolidadof<%= visita.id %>').on('shown.bs.modal', function () {
+                                                              var mapId = "mapg2_<%= visita.id %>";
+                                                              var firstLatitude = <%= visita.fin_latitude rescue nil %>;
+                                                              var firstLongitude = <%= visita.fin_longitude rescue nil %>;
+
+                                                              var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                                  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                              }).addTo(map);
+
+
+                                                              var marker = L.marker([<%= visita.fin_latitude.to_s %>, <%= visita.fin_longitude.to_s %>]).addTo(map);
+                                                              marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                              map.invalidateSize();
+                                                          });
+                                                      });
+                                                  </script>
+                                                <% end %>
+                                              </div>
+                                              <br/>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <% end %>
+                                    </td>
+                                    <td class="text-tr-table text-center"><%= visita.tiempo_visita.to_s rescue nil %></td>
+                                  </tr>
+                                <% end %>
+                              </table>
+                            <% end %>
+
+                          <% end %>
+
+                        <% else %>
+                          <div class="alert alert-danger"><%= t :atencion %> <%= t :atencion_msj %></div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% elsif @usr.subetapa.to_s == 'CONSOLIDADO' %>
+                <div class="box-body no-padding">
+                  <% Portafolio.where("estado = 'ACTIVO' and id in (select distinct distinct u.portafolio_id from users u, visitas v
+                                                                    where u.id = v.user_id
+                                                                    and   u.portafolio_id = portafolios.id)").order("id asc").each do |a|%>
+                    <legend><%=a.nombre rescue nil%></legend>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <tr>
+                        <th class="text-center thcolor">DATOS CONSOLIDADOS</th>
+                        <th class="text-center">&nbsp;</th>
+                        <th class="text-center thcolor">VISITAS DEL DIA</th>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table class="table table-bordered table-condensed table-striped">
+                            <tr class="thcolor">
+                              <th width="8%" class="text-center"></th>
+                              <th class="text-center">Usuario</th>
+                              <% ["#{(Time.now - 1.month).strftime('%Y-%m')}", "#{Time.now.strftime('%Y-%m')}"].each do |mes| %>
+                                <td width="15%" class="text-center"><%=mes.to_s rescue nil %>&nbsp;
+                                  <%= link_to informedat_datas_path(infgrupo_id: 94, contrato_id: mes.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe por semana" do %>
+                                    <i class="fa fa-file-excel-o text-red"></i>
+                                  <% end %>
+                                </td>
+                              <% end %>
+                            </tr>
+                            <% @visitas.where("user_id in (select distinct id from users where portafolio_id = #{a.id})").each do |visita| %>
+                              <tr>
+                                <td class="text-table text-center">
+                                  <div class="btn-group" id="botones<%= visita.user_id %>">
+                                    <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+                                      OPC <span class="caret"></span>
+                                      <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                      <li>
+                                        <%= link_to informe_datas_path(infgrupo_id: 88, portafolio_id: visita.user_id.to_s, format: :xlsx), data: { toggle: 'tooltip' } do %>
+                                          <i class="fa fa-file-excel-o"></i> Informe User
+                                        <% end %>
+                                      </li>
+                                      <% if [1, 2].include?(isadmin) %>
+                                        <% ["#{(Time.now - 1.month).strftime('%m-%Y')}", "#{Time.now.strftime('%m-%Y')}"].each do |mes| %>
+                                          <li>
+                                            <%= link_to informegeneral_visitas_path(user_id: visita.user_id.to_s, format: :pdf, mes: mes.to_s), class: 'popup', data: { toggle: 'tooltip' } do %>
+                                              <i class="fa fa-file-pdf-o"></i> Informe Mensual PDF (<%= mes %>)
+                                            <% end %>
+                                          </li>
+                                        <% end %>
+                                      <% end %>
+                                    </ul>
+                                  </div>
+                                </td>
+                                <td class="text-table text-left">
+                                  <div id="exception<%= visita.user_id %>">
+                                    <% if visita.existepermiso.to_s == 'X' or visita.existetele.to_s == 'X' or visita.existerutina.to_s == 'X' %>
+                                      <b><em><%= visita.nombreuser rescue nil %></em></b>
+                                    <% else %>
+                                      <%= visita.nombreuser rescue nil %>
+                                    <% end %>
+                                    <% if is_auth_c_exception_visita %>
+                                      <% if visita.existepermiso.to_s == 'X' %>
+                                          <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'A'), remote: true, data: { toggle: 'tooltip' }, title: "Excluido de Atención" do %>
+                                            <i class="fa fa-check-circle text-green"></i>
+                                          <% end %>
+                                      <% else %>
+                                          <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'A'), remote: true, data: { toggle: 'tooltip' }, title: "No Excluir de Atención" do %>
+                                            <i class="fa fa-check-circle text-red"></i>
+                                          <% end %>
+                                      <% end %>
+
+                                      <% if visita.existetele.to_s == 'X' %>
+                                        <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'T'), remote: true, data: { toggle: 'tooltip' }, title: "Desactivar Teletrabajo" do %>
+                                          <i class="fa fa-home text-green"></i>
+                                        <% end %>
+                                      <% else %>
+                                        <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'T'), remote: true, data: { toggle: 'tooltip' }, title: "Activar Teletrabajo" do %>
+                                          <i class="fa fa-home text-red"></i>
+                                        <% end %>
+                                      <% end %>
+
+                                      <% if visita.existerutina.to_s == 'X' %>
+                                        <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'R'), remote: true, data: { toggle: 'tooltip' }, title: "Desactivar Brigada de Aseo" do %>
+                                          <i class="fa fa-life-bouy text-green"></i>
+                                        <% end %>
+                                      <% else %>
+                                        <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'R'), remote: true, data: { toggle: 'tooltip' }, title: "Activar Brigada de Aseo" do %>
+                                          <i class="fa fa-life-bouy text-red"></i>
+                                        <% end %>
+                                      <% end %>
+                                    <% end %>
+                                  </div>
+                                </td>
+                                <% ["#{(Time.now - 1.month).strftime('%Y-%m')}", "#{Time.now.strftime('%Y-%m')}"].each do |mes|
+                                  dato = 'visita.dato_'+mes.gsub("-","").to_s
+                                %>
+                                  <td class="text-table text-center"><%= eval(dato) rescue nil %>
+                                    <%= link_to informe_rowspan_datas_path(infgrupo_id: 87, portafolio_id: visita.user_id.to_s + '-' + mes.to_s, mes: mes.to_s, userid: visita.user_id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe User-Mes" do %>
+                                      <i class="fa fa-file-excel-o"></i>
+                                    <% end %>
+                                  </td>
+                                <% end %>
+                              </tr>
+                            <% end %>
+                          </table>
+                        </td>
+                        <td width="5%">&nbsp;</td>
+                        <td>
+                          <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+                            <%= hidden_field_tag :infgrupo_id, 91 %>
+                            <div class="form-group inline">
+                              <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                  <label>Selecciona la fecha </label>
+                                  <%= text_field_tag :fchinicial, params[:fchinicial], { class: 'datepicker form-control', style: 'width: 100%;', placeholder: 'Fecha', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="padding-top: 20px;">
+                                  <%= button_tag "Generar", class: "btn btn-xs btn-danger" do %>
+                                    <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                                  <% end %>
+                                </div>
+                              </div>
+                            </div>
+                          <% end %>
+                          <table class="table table-bordered table-condensed table-striped">
+                            <tr class="thcolor">
+                              <th class="text-center text-table">Usuario</th>
+                              <th width="15%" class="text-center text-table">Visita hoy?</th>
+                            </tr>
+                            <% @users.where("portafolio_id = #{a.id}").each do |visita| %>
+                              <tr>
+                                <td class="text-table text-left"><%= visita.nombreuser rescue nil %>
+                                  <small>(<%= visita.celular rescue nil %>)</small></td>
+                                <td class="text-table text-center"><%= visita.visitaeneldia rescue nil %></td>
+                              </tr>
+                            <% end %>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  <% end%>
+                </div>
+              <% elsif @usr.subetapa.to_s == 'CONSOLIDADOS' %>
+                <div class="box-body no-padding">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr>
+                      <th class="text-center thcolor">DATOS CONSOLIDADOS SUPERNUMERARIOS</th>
+                      <th class="text-center">&nbsp;</th>
+                      <th class="text-center thcolor">VISITAS DEL DIA</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <table class="table table-bordered table-condensed table-striped">
+                          <tr class="thcolor">
+                            <th width="8%" class="text-center"></th>
+                            <th class="text-center">Usuario</th>
+                            <% ["#{(Time.now - 1.month).strftime('%Y-%m')}", "#{Time.now.strftime('%Y-%m')}"].each do |mes| %>
+                              <td width="15%" class="text-center"><%=mes.to_s rescue nil %>&nbsp;
+                                <%= link_to informedat_datas_path(infgrupo_id: 94, contrato_id: mes.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe por semana" do %>
+                                  <i class="fa fa-file-excel-o text-red"></i>
+                                <% end %>
+                              </td>
+                            <% end %>
+                          </tr>
+                          <% @visitas.each do |visita| %>
+                            <tr>
+                              <td class="text-table text-center">
+                                <div class="btn-group" id="botones<%= visita.user_id %>">
+                                  <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+                                    OPC <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                  </button>
+                                  <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                      <%= link_to informe_datas_path(infgrupo_id: 88, portafolio_id: visita.user_id.to_s, format: :xlsx), data: { toggle: 'tooltip' } do %>
+                                        <i class="fa fa-file-excel-o"></i> Informe User
+                                      <% end %>
+                                    </li>
+                                    <% if [1, 2].include?(isadmin) %>
+                                      <% ["#{(Time.now - 1.month).strftime('%m-%Y')}", "#{Time.now.strftime('%m-%Y')}"].each do |mes| %>
+                                        <li>
+                                          <%= link_to informegeneral_visitas_path(user_id: visita.user_id.to_s, format: :pdf, mes: mes.to_s), class: 'popup', data: { toggle: 'tooltip' } do %>
+                                            <i class="fa fa-file-pdf-o"></i> Informe Mensual PDF (<%= mes %>)
+                                          <% end %>
+                                        </li>
+                                      <% end %>
+                                    <% end %>
+                                  </ul>
+                                </div>
+                              </td>
+                              <td class="text-table text-left">
+                                <div id="exception<%= visita.user_id %>">
+                                  <% if visita.existepermiso.to_s == 'X' or visita.existetele.to_s == 'X' or visita.existerutina.to_s == 'X' %>
+                                    <b><em><%= visita.nombreuser rescue nil %></em></b>
+                                  <% else %>
+                                    <%= visita.nombreuser rescue nil %>
+                                  <% end %>
+                                  <% if is_auth_c_exception_visita %>
+                                    <% if visita.existepermiso.to_s == 'X' %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'A'), remote: true, data: { toggle: 'tooltip' }, title: "Excluido de Atención" do %>
+                                        <i class="fa fa-check-circle text-green"></i>
+                                      <% end %>
+                                    <% else %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'A'), remote: true, data: { toggle: 'tooltip' }, title: "No Excluir de Atención" do %>
+                                        <i class="fa fa-check-circle text-red"></i>
+                                      <% end %>
+                                    <% end %>
+
+                                    <% if visita.existetele.to_s == 'X' %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'T'), remote: true, data: { toggle: 'tooltip' }, title: "Desactivar Teletrabajo" do %>
+                                        <i class="fa fa-home text-green"></i>
+                                      <% end %>
+                                    <% else %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'T'), remote: true, data: { toggle: 'tooltip' }, title: "Activar Teletrabajo" do %>
+                                        <i class="fa fa-home text-red"></i>
+                                      <% end %>
+                                    <% end %>
+
+                                    <% if visita.existerutina.to_s == 'X' %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'R'), remote: true, data: { toggle: 'tooltip' }, title: "Desactivar Brigada de Aseo" do %>
+                                        <i class="fa fa-life-bouy text-green"></i>
+                                      <% end %>
+                                    <% else %>
+                                      <%= link_to excepcion_visitas_path(user_id: visita.user_id, clase: 'R'), remote: true, data: { toggle: 'tooltip' }, title: "Activar Brigada de Aseo" do %>
+                                        <i class="fa fa-life-bouy text-red"></i>
+                                      <% end %>
+                                    <% end %>
+                                  <% end %>
+                                </div>
+                              </td>
+                              <% ["#{(Time.now - 1.month).strftime('%Y-%m')}", "#{Time.now.strftime('%Y-%m')}"].each do |mes|
+                                dato = 'visita.dato_'+mes.gsub("-","").to_s
+                              %>
+                                <td class="text-table text-center"><%= eval(dato) rescue nil %>
+                                  <%= link_to informe_datas_path(infgrupo_id: 87, portafolio_id: visita.user_id.to_s + '-' + mes.to_s,format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe User-Mes" do %>
+                                    <i class="fa fa-file-excel-o"></i>
+                                  <% end %>
+                                </td>
+                              <% end %>
+                            </tr>
+                          <% end %>
+                        </table>
+                      </td>
+                      <td width="5%">&nbsp;</td>
+                      <td>
+                        <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+                          <%= hidden_field_tag :infgrupo_id, 91 %>
+                          <div class="form-group inline">
+                            <div class="row">
+                              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label>Selecciona la fecha </label>
+                                <%= text_field_tag :fchinicial, params[:fchinicial], { class: 'datepicker form-control', style: 'width: 100%;', placeholder: 'Fecha', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                              </div>
+                              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="padding-top: 20px;">
+                                <%= button_tag "Generar", class: "btn btn-xs btn-danger" do %>
+                                  <i class="fa fa-search" aria-hidden="true"></i> Buscar
+                                <% end %>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                        <table class="table table-bordered table-condensed table-striped">
+                          <tr class="thcolor">
+                            <th class="text-center text-table">Usuario</th>
+                            <th width="15%" class="text-center text-table">Visita hoy?</th>
+                          </tr>
+                          <% @users.each do |visita| %>
+                            <tr>
+                              <td class="text-table text-left"><%= visita.nombreuser rescue nil %>
+                                <small>(<%= visita.celular rescue nil %>)</small></td>
+                              <td class="text-table text-center"><%= visita.visitaeneldia rescue nil %></td>
+                            </tr>
+                          <% end %>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              <% elsif @usr.subetapa.to_s == 'COMPROMISOS' %>
+                <%= render 'visitas/compromisos' %>
+              <% else %>
+                <% if @visitas.present? %>
+                  <div class="box-body no-padding">
+                    <table class="table table-bordered table-condensed table-striped">
+                      <tr class="thcolor">
+                        <th width="15%" class="text-center">Fecha Visita</th>
+                        <th width="22%" class="text-center">Usuario</th>
+                        <th>Empresa - Contrato</th>
+                        <th width="8%" class="text-center">Tiempo</th>
+                      </tr>
+                      <% @visitas.each do |visita| %>
+                        <tr>
+                          <td class="text-tr-table text-left">
+                            Inicio: <%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+                            &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                              <i class="fa fa-map-marker text-red"> </i>
+                            <% end %>
+                            <div class="modal fade" id="consolidado<%= visita.id %>">
+                              <div class="modal-dialog" style="width: 80%">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Visualizacion Inicio Visita -
+                                      <small><%= visita.nombreuser rescue nil %></small></h4>
+                                  </div>
+                                  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                  <div class="modal-body">
+                                    <% if visita.user_id.present? %>
+                                      <div id="map_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                      <script type="text/javascript" charset="utf-8">
+                                          document.addEventListener('DOMContentLoaded', function () {
+                                              $('#consolidado<%= visita.id %>').on('shown.bs.modal', function () {
+                                                  var mapId = "map_<%= visita.id %>";
+                                                  var firstLatitude = <%= visita.latitude rescue nil %>;
+                                                  var firstLongitude = <%= visita.longitude rescue nil %>;
+
+                                                  var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                  }).addTo(map);
+
+
+                                                  var marker = L.marker([<%= visita.latitude.to_s %>, <%= visita.longitude.to_s %>]).addTo(map);
+                                                  marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                  map.invalidateSize();
+                                              });
+                                          });
+                                      </script>
+                                    <% end %>
+                                  </div>
+                                  <br/>
+                                </div>
+                              </div>
+                            </div>
+                            <br/>Fin: <%= visita.finalizacion.strftime("%d/%m/%Y %X") rescue nil %>
+                            <% if visita.finalizacion.present? and visita.fin_latitude.present? %>
+                              &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidadof#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                                <i class="fa fa-map-marker text-red"> </i>
+                              <% end %>
+                              <div class="modal fade" id="consolidadof<%= visita.id %>">
+                                <div class="modal-dialog" style="width: 80%">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                      </button>
+                                      <h4 class="modal-title">Visualizacion Finalizacion Visita -
+                                        <small><%= visita.nombreuser rescue nil %></small></h4>
+                                    </div>
+                                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                                    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                    <div class="modal-body">
+                                      <% if visita.user_id.present? %>
+                                        <div id="mapf_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                                        <script type="text/javascript" charset="utf-8">
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                $('#consolidadof<%= visita.id %>').on('shown.bs.modal', function () {
+                                                    var mapId = "mapf_<%= visita.id %>";
+                                                    var firstLatitude = <%= visita.fin_latitude rescue nil %>;
+                                                    var firstLongitude = <%= visita.fin_longitude rescue nil %>;
+
+                                                    var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                    }).addTo(map);
+
+
+                                                    var marker = L.marker([<%= visita.fin_latitude.to_s %>, <%= visita.fin_longitude.to_s %>]).addTo(map);
+                                                    marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                                    map.invalidateSize();
+                                                });
+                                            });
+                                        </script>
+                                      <% end %>
+                                    </div>
+                                    <br/>
+                                  </div>
+                                </div>
+                              </div>
+                            <% end %>
+                          </td>
+                          <td class="text-tr-table text-center"><small><%= visita.nombreuser rescue nil %><br/>(<%= visita.tipoconsultauser rescue nil %>)</small></td>
+                          <td class="text-tr-table">
+                            <% if visita.finalizacion.present? and visita.fin_latitude.present? %>
+                              <%= link_to formato_visitas_path(id: visita.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato Visita' do %>
+                                <i class="fa fa-file-pdf-o"></i>
+                              <% end %>
+                            <% end %>
+                            <%= visita.identnombre rescue nil %><br/><strong>Contrato
+                            Nro: </strong><%= visita.nro_contrato rescue nil %></td>
+                          <td class="text-tr-table text-center"><%= visita.tiempo_visita.to_s rescue nil %></td>
+                        </tr>
+                      <% end %>
+                    </table>
+                  </div>
+                <% else %>
+                  <div class="alert alert-danger"><%= t :atencion %> <%= t :atencion_msj %></div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

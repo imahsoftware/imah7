@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<tr id="visita_<%= visita.id %>">
+  <td class="text-center">
+    <%# if is_auth_a('visita') %>
+      <%= link_to edit_visita_path(visita), remote: true, class: 'edit_visita_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <%# end %>
+    <%# if is_auth_e('visita') %>
+      <%= link_to visita, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+   </td>
+  <td style='font-size: 11px;'><%= visita.descripcion %></td>
+  <td><div id="map<%= visita.id %>" style="height: 400px;"></div></td>
+</tr>
+<script type="text/javascript" charset="utf-8">
+   document.addEventListener('DOMContentLoaded', function() {
+      var mapId = "map<%= visita.id %>"; // Obtener el ID del contenedor del mapa
+      var latitude = <%= visita.latitude.to_s %>; // Obtener la latitud desde el parámetro
+      var longitude = <%= visita.longitude.to_s %>; // Obtener la longitud desde el parámetro
+
+      var map = L.map(mapId).setView(["<%= visita.latitude.to_s %>", "<%= visita.longitude.to_s %>"], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      var marker = L.marker(["<%= visita.latitude.to_s %>", "<%= visita.longitude.to_s %>"]).addTo(map); // Usar las coordenadas del parámetro
+      marker.bindPopup("<b>Tu dirección es!</b><br><%= visita.direccion rescue nil %>.").openPopup();
+   });
+</script>

@@ -1,0 +1,95 @@
+<%= simple_form_for([@contratosperfact], remote: true) do |f| %>
+  <%= f.hidden_field :oricontrato_id %>
+  <%= f.hidden_field :oricontratosgrupo_id %>
+  <%= f.hidden_field :oricontratoscargo_id %>
+  <%= f.hidden_field :contratospersona_id %>
+  <%= f.hidden_field :contratosperfecha_id %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratosperfact.new_record? ? 'Agregar' : 'Editar' %> solicitud de Traslado</strong></h3>
+  </div>
+  <% if Contratosperfact.where(contratosperfecha_id: @contratosperfact.contratosperfecha_id, estado: 'PENDIENTE').exists?
+       pf = Contratosperfact.where(contratosperfecha_id: @contratosperfact.contratosperfecha_id, estado: 'PENDIENTE')[0]
+  %>
+    <div class="alert alert-danger">
+      <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya hay una solicitud de traslado pendiente
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <td width="20%" class="text-center">Fecha Solicitud</td>
+          <td width="10%" class="text-center">Fecha Inicio</td>
+          <td class="text-center">Contrato</td>
+        </tr>
+        </thead>
+        <tbody id="tbody_contratospernovedades">
+          <tr>
+            <td class="text-center">
+              <%= pf.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= pf.user.username rescue nil %>
+            </td>
+            <td class="text-center">
+              <%= pf.fecha_inicio.strftime("%Y-%m-%d") rescue nil %>
+            </td>
+            <td><%= pf.contrato.empresa.identnombre rescue nil %>
+                <br/><strong>Nro Contrato : </strong><%= pf.contrato.nro_contrato rescue nil %> -
+                <br/><strong>Cargo : </strong><%= pf.contratoscargo.perfil rescue nil %>
+                <br/><strong>Grupo de nomina : </strong><%= pf.contratosgrupo.descripcion rescue nil %>
+                (<%= pf.contratosgrupo.termino rescue nil %>)
+                <% if pf.observaciones.present? %>
+                  <br/><em><%= pf.observaciones rescue nil %></em>
+                <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  <% else %>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+          <label>Contrato</label>
+          <select class="form-control select2Contrato<%= @contratosperfact.id %> select2" style="width:100%;" name="contratosperfact[contrato_id]" id="contratosperfact_contrato_id">
+            <option selected="selected" value="<%= f.object.contrato_id -%>">
+              <%= "#{f.object.descripcion_contrato}" -%>
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+          <% if @contratosperfact.contratoscargo_id %>
+            <%= f.input :contratoscargo_id, collection: Contratoscargo.where(contrato_id: @contratosperfact.contrato_id).order(:perfil).collect { |p| [p.desc_contrato, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Cargo" %>
+          <% else %>
+            <%= f.input :contratoscargo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Cargo', disabled: true %>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <% if @contratosperfact.contratosgrupo_id %>
+            <%= f.input :contratosgrupo_id, collection: Contratosgrupo.where("contrato_id = ?", @contratosperfact.contrato_id).order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Grupo" %>
+          <% else %>
+            <%= f.input :contratosgrupo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Grupo', disabled: true %>
+          <% end %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :observaciones, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <%= f.input :tipo, as: :select, collection: select_tipotraslado, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de Traslado?" %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <%= f.input :tipo_contrato, collection: Iparametro.where(campo: 'tipo_contrato').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { data: { width: '100%' }, class: 'select2' }, as: :select, include_blank: true, label: "Tipo de contrato" %>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+      <div class="box-tools pull-right">
+        <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+      </div><!-- /.box-tools -->
+    </div><!-- box-footer -->
+  <% end %>
+<% end %>

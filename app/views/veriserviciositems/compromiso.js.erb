@@ -1,0 +1,12 @@
+$("#compromiso<%= @veriserviciositem.id %> .modal-content").html('<%= j render "veriserviciositems/compromiso" %>');
+$("#compromiso<%= @veriserviciositem.id %> ").modal();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

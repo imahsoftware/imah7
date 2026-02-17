@@ -1,0 +1,23 @@
+<%
+  ruta = ""
+  ruta = object if object.present? rescue nil
+  if ruta == "FIRMA"
+    isadmin = object1 if object1.present? == true
+    contratosperfecha = object2 if object2.present? == true
+    @contratosperfecha = Contratosperfecha.find(contratosperfecha)
+  else
+    isadmin = is_admin
+  end
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  aplicaesp = @contratosperfecha.contratoscargo.aplica_especial.to_s
+  pgh = Parametro.find(4) # Firma Gestion Humana
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+<%= render 'contratosperfechas/induccion' %>

@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionescuentas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Nro cuenta</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionescuentas.each do |migracionescuenta| %>
+      <tr>
+        <td><%= migracionescuenta.user %></td>
+        <td><%= migracionescuenta.archivo %></td>
+        <td><%= migracionescuenta.estado %></td>
+        <td><%= migracionescuenta.identificacion %></td>
+        <td><%= migracionescuenta.nro_cuenta %></td>
+        <td><%= link_to 'Show', migracionescuenta %></td>
+        <td><%= link_to 'Edit', edit_migracionescuenta_path(migracionescuenta) %></td>
+        <td><%= link_to 'Destroy', migracionescuenta, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionescuenta', new_migracionescuenta_path %>

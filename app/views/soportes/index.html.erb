@@ -1,0 +1,159 @@
+<%
+  estados = ["Buscador", "Pendientes", "Finalizados"]
+  estados2 = ["1", "2", "3"]
+%>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            pos = estados.find_index(p)
+            if @subetapa == estados2[pos]
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to soportes_path(subetapa: estados2[pos].to_s) do %>
+              <i class="fa fa-search"></i> <span></span> <%= p.to_s %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if @subetapa == '1' %>
+          <div class="box-header">
+            <legend>Buscador de Soportes</legend>
+            <div class="box-tools pull-right">
+
+              <%= link_to new_soporte_path, class: 'btn btn-sm btn-info' do %>
+                <i class="fa fa-plus-square"> </i> <span>Nuevo Soporte</span>
+              <% end %>
+
+            </div>
+          </div>
+          <%= simple_form_for(Soporte.new, url: soportes_path, remote: true, method: :get) do |f| %>
+            <div class="box-body">
+              <div class="col-md-2">
+                <%= label_tag :nro_ticket, 'Nro Ticket' %><br/>
+                <%= text_field_tag :nro_ticket, params[:nro_ticket], class: 'form-control', style: 'width: 100%;', autocomplete: 'off' %>
+              </div>
+              <div class="col-md-3">
+                <%= label_tag :tio, 'Tipo de Soporte' %><br/>
+                <%= select_tag 'ubicacion[tipo]', options_for_select(select_tipo_soporte), prompt: '-- Seleccion --', data: { width: '100%' }, class: 'form-control select2' %>
+              </div>
+              <div class="col-md-2">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="box-body" id="idSearch"></div>
+                <div class="alert alert-danger" id="notContent">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>No hay resultado de la busqueda
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box-header">
+            <div class="flash_messages"></div>
+          </div>
+
+
+        <% elsif @subetapa == '2' %>
+          <div class="box-body">
+            <legend>Soportes en estado pendiente</legend>
+            <% if @soportesPendientes.present? %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th class="text-left text-table" width="5%"></th>
+                  <th class="text-left text-table" width="5%">ID</th>
+                  <th class="text-left text-table" width="15%">Fecha</th>
+                  <th class="text-left text-table" width="20%">Tipo</th>
+                  <th class="text-left text-table">Observación</th>
+                </tr>
+                </thead>
+                <% @soportesPendientes.each do |p| %>
+                  <tr>
+                    <td class="text-table text-center">
+                      <%= link_to edit_soporte_path(p), class: 'edit_cuenta_button',  data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %>
+                    </td>
+                    <td class="text-table"><%= p.id %></td>
+                    <td class="text-table"><%= p.created_at.strftime("%Y-%m-%d %X") %><br/>
+                      <%= p.user.nombre rescue nil %></td>
+                    <td class="text-table"><%= p.tipo %></td>
+                    <td class="text-table"><%= p.observacion %>
+                      <% if p.docsoporte_file_name.present? %><br/>
+                        <%= link_to p.docsoporte.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                          <i class="fa fa-cloud-download text-danger"></i> <%= p.docsoporte_file_name rescue nil %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+              <div class="box-tools pull-right">
+                <%= will_paginate @soportesPendientes, renderer: BootstrapPagination::Rails %>
+              </div>
+            <% else %>
+              <%= render 'layouts/procesos/alert_message' %>
+            <% end %>
+          </div>
+        <% elsif @subetapa == '3' %>
+          <div class="box-body">
+            <legend>Soportes en estado finalizados</legend>
+            <% if @soportesfinalizados.present? %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th class="text-left text-table" width="5%"></th>
+                  <th class="text-left text-table" width="15%">Fecha</th>
+                  <th class="text-left text-table" width="20%">Tipo</th>
+                  <th class="text-center text-table" width="10%">Estado</th>
+                  <th class="text-center text-table" width="15%">Fecha Atención</th>
+                  <th class="text-left text-table">Observación</th>
+                </tr>
+                </thead>
+                <% @soportesfinalizados.each do |p| %>
+                  <tr>
+                    <td class="text-table text-center">
+                      <%= link_to edit_soporte_path(p), class: 'edit_cuenta_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %>
+                    </td>
+                    <td class="text-table"><%= p.created_at.strftime("%Y-%m-%d %X") %><br/>
+                      <%= p.user.nombre rescue nil %></td>
+                    <td class="text-table"><%= p.tipo %></td>
+                    <td class="text-table text-center"><%= p.estado %></td>
+                    <td class="text-table text-center"><%= p.fecha_atencion.strftime("%Y-%m-%d %X") rescue nil %></td>
+                    <td class="text-table"><%= p.observacion %>
+                      <% if p.docsoporte_file_name.present? %><br/>
+                        <%= link_to p.docsoporte.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                          <i class="fa fa-cloud-download text-danger"></i> <%= p.docsoporte_file_name rescue nil %>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+              <div class="box-tools pull-right">
+                <%= will_paginate @soportesfinalizados, renderer: BootstrapPagination::Rails %>
+              </div>
+            <% else %>
+              <%= render 'layouts/procesos/alert_message' %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

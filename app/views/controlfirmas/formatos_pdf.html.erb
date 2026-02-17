@@ -1,0 +1,3 @@
+<% controlfirma = Controlfirma.find(object) if object.present? rescue nil%>
+<%= render "controlformatos/#{controlfirma.url.to_s}", id_registro: controlfirma.id_registro, controlfirma_id: controlfirma.id %>
+

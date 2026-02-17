@@ -1,0 +1,31 @@
+<% if @logo.present?
+     logo = @logo
+   end
+%>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+      .center {
+          text-align: center;
+      }
+  </style>
+</head>
+<body class="center">
+<div align="center">
+  <table width="80%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td align="center" style="padding: 5px; font-size: 10px; font-family: Tahoma;" width="25%">
+        <%= wicked_pdf_image_tag "#{image_url(logo)}", size: "240x80" %>
+      </td>
+      <th align="center" style="padding: 5px; font-size: 20px; font-family: Tahoma;">
+        INFORME DE ENTREGAS EPPS
+      </th>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

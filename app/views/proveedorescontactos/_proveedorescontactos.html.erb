@@ -1,0 +1,22 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Contactos</strong></h3>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('proveedorescontacto') %>
+      <%= link_to new_proveedor_proveedorescontacto_path(@proveedor), id: 'new_proveedorescontacto_button', class: 'btn btn-sm btn-info', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="proveedorescontacto_form" class="collapse"></div>
+  <div id="proveedorescontactos">
+    <% if @proveedor.proveedorescontactos.present? %>
+      <%= render 'proveedorescontactos/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>
+

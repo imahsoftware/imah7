@@ -1,0 +1,14 @@
+
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_salud_observacion<%= @contratosperfecha.id %><%= @estado %>").html('<%= j render "abrir_detalle_salud_observacion", contratospernotas: @contratospernotas, contratosperfecha: @contratosperfecha  %>');
+$("#abrir_observacion<%= @contratosperfecha.id %><%= @estado %>").addClass("hide");
+$("#cerrar_observacion<%= @contratosperfecha.id %><%= @estado %>").removeClass("hide");
+<% else %>
+$("#abrir_observacion<%= @contratosperfecha.id %><%= @estado %>").removeClass("hide");
+$("#cerrar_observacion<%= @contratosperfecha.id %><%= @estado %>").addClass("hide");
+$("#abrir_detalle_salud_observacion<%= @contratosperfecha.id %><%= @estado %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

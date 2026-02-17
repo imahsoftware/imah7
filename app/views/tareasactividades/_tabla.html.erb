@@ -1,0 +1,15 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="8%"></th>
+    <th class="font-size-text-tabla text-table" width="20%">Usuario</th>
+    <th class="font-size-text-tabla text-center text-table" width="13%">Fch Limite</th>
+    <th class="font-size-text-tabla text-table">Descripción</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_tareasactividades">
+  <% @tarea.tareasactividades.order(item: :asc).each do |tareasactividad| %>
+    <%= render 'tareasactividades/tr', tareasactividad: tareasactividad %>
+  <% end %>
+  </tbody>
+</table>

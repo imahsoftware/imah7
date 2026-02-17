@@ -1,0 +1,128 @@
+<% if @visitas.present? %>
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th width="15%" class="text-center text-table">Fecha Inicio Visita</th>
+    <th width="12%" class="text-center text-table">Usuario</th>
+    <th class="text-table">Empresa - Contrato</th>
+    <th width="15%" class="text-center text-table">Fecha Fin Visita</th>
+    <th width="8%" class="text-center text-table">Tiempo</th>
+  </tr>
+  <% for visita in @visitas.order("id desc") %>
+    <tr>
+      <td class="text-tr-table text-center text-table"><%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+        &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+          <i class="fa fa-map-marker text-red"> </i>
+        <% end %>
+        <div class="modal fade" id="consolidado<%= visita.id %>">
+          <div class="modal-dialog" style="width: 80%">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                  <span>&times;</span>
+                </button>
+                <h4 class="modal-title">Visualizacion Inicio Visita -
+                  <small><%= visita.usernombre rescue nil %></small></h4>
+              </div>
+              <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+              <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+              <div class="modal-body">
+                <% if visita.user_id.present? %>
+                  <div id="map_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                  <script type="text/javascript" charset="utf-8">
+                      document.addEventListener('DOMContentLoaded', function () {
+                          $('#consolidado<%= visita.id %>').on('shown.bs.modal', function () {
+                              var mapId = "map_<%= visita.id %>";
+                              var firstLatitude = <%= visita.latitude rescue nil %>;
+                              var firstLongitude = <%= visita.longitude rescue nil %>;
+
+                              var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                              }).addTo(map);
+
+
+                              var marker = L.marker([<%= visita.latitude.to_s %>, <%= visita.longitude.to_s %>]).addTo(map);
+                              marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                              map.invalidateSize();
+                          });
+                      });
+                  </script>
+                <% end %>
+              </div>
+              <br/>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="text-tr-table text-center text-table"><%= visita.usernombre rescue nil %></td>
+      <td class="text-tr-table text-table">
+        <%= link_to formato_visitas_path(id: visita.id), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato Visita' do %>
+          <i class="fa fa-file-pdf-o"></i>
+        <% end %>
+        <% if is_auth_c_vistaedicion %>
+          <%= link_to complementar_visitas_path(id: visita.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Complementar Visita" do %>
+            <i class="fa fa-plane"></i>
+          <% end %>
+        <% end %>
+        <%= visita.identnombre rescue nil %> <br/><strong>Contrato
+        Nro: </strong><%= visita.nro_contrato rescue nil %></td>
+      <td class="text-tr-table text-center text-table">
+        <%= visita.finalizacion.strftime("%d/%m/%Y %X") rescue nil %>
+        <% if visita.finalizacion.present? and visita.fin_latitude.present? %>
+          &nbsp;<%= link_to consolidado_visitas_path(id: visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidadof#{visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+            <i class="fa fa-map-marker text-red"> </i>
+          <% end %>
+          <div class="modal fade" id="consolidadof<%= visita.id %>">
+            <div class="modal-dialog" style="width: 80%">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                  </button>
+                  <h4 class="modal-title">Visualizacion Finalizacion Visita -
+                    <small><%= visita.usernombre rescue nil %></small></h4>
+                </div>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <div class="modal-body">
+                  <% if visita.user_id.present? %>
+                    <div id="mapf_<%= visita.id %>" style="height: 400px; z-index: 0;"></div>
+                    <script type="text/javascript" charset="utf-8">
+                        document.addEventListener('DOMContentLoaded', function () {
+                            $('#consolidadof<%= visita.id %>').on('shown.bs.modal', function () {
+                                var mapId = "mapf_<%= visita.id %>";
+                                var firstLatitude = <%= visita.fin_latitude rescue nil %>;
+                                var firstLongitude = <%= visita.fin_longitude rescue nil %>;
+
+                                var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo(map);
+
+
+                                var marker = L.marker([<%= visita.fin_latitude.to_s %>, <%= visita.fin_longitude.to_s %>]).addTo(map);
+                                marker.bindPopup("<%= visita.descripcion_visita rescue nil %>").openPopup();
+
+                                map.invalidateSize();
+                            });
+                        });
+                    </script>
+                  <% end %>
+                </div>
+                <br/>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </td>
+      <td class="text-tr-table text-center text-table"><%= visita.tiempo_visita.to_s rescue nil %>
+        <br/><small>(<%= visita.teletrabajo rescue nil %>)</small></td>
+    </tr>
+  <% end %>
+</table>
+<% else %>
+  <div class="alert alert-warning"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+<% end %>

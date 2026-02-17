@@ -1,0 +1,28 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="10%" class="text-center"></th>
+    <th width="15%" class="text-left">Identificación</th>
+    <th width="30%" class="text-left">Nombre</th>
+    <th class="text-left">Direccion</th>
+    <th class="text-left">Telefono</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_eproveedores">
+  <%
+    @eproveedores.order(created_at: :desc).each do |eproveedor| %>
+    <%= render 'eproveedores/tr', eproveedor: eproveedor %>
+  <% end %>
+  </tbody>
+</table>
+
+<div class="box-tools pull-right">
+  <%= will_paginate @eproveedores, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+</div><!-- /.box-tools -->
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+</script>
+

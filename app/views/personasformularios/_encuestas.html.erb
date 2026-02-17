@@ -1,0 +1,109 @@
+<%
+  resultadoCalificacion = Personasforencuesta.where("personasformulario_id = #{@personasformulario.id} and calificacion = 'CORRECTO'").count.to_i
+   calificacion = ""
+   if resultadoCalificacion == 11 then calificacion = '5'
+   elsif resultadoCalificacion == 10 then calificacion = '4.6'
+   elsif resultadoCalificacion == 9 then calificacion = '4.2'
+   elsif resultadoCalificacion == 8 then calificacion = '3.8'
+   elsif resultadoCalificacion == 7 then calificacion = '3.4'
+   elsif resultadoCalificacion == 6 then calificacion = '3'
+   elsif resultadoCalificacion == 5 then calificacion = '2.6'
+   elsif resultadoCalificacion == 4 then calificacion = '2.2'
+   elsif resultadoCalificacion == 3 then calificacion = '1.8'
+   elsif resultadoCalificacion == 2 then calificacion = '1.4'
+   elsif resultadoCalificacion == 1 then calificacion = '1' else calificacion = '0'
+   end %>
+<div class="box-body">
+  <%= form_tag '/personasforencuestas/update_individual', method: 'put' do %>
+    <div class="table-responsive">
+      <table class="table table-bordered table-condensed table-striped  table-hover">
+        <thead class="thcolor">
+        <% if ["ESTUDIANTE","CANDIDATO"].exclude?(is_tipoconsulta) %>
+          <tr>
+            <th width="100%" colspan="3">
+              <div align="center"> <b>RESULTADO:</b> <%= resultadoCalificacion.to_i >= 6 ? 'APROBADO' : 'REPROBADO' %> - <b>CALIFICACION:</b> <%= calificacion rescue nil %></div>
+            </th>
+          </tr>
+        <% end %>
+        <tr>
+          <th width="5%" class="text-center">#</th>
+          <th width="45%" class="text-left">Pregunta</th>
+          <th width="50%" class="text-left">Respuesta</th>
+        </tr>
+        </thead>
+        <% cnt = 0
+           for personasforencuesta in Personasforencuesta.where("personasformulario_id = #{@personasformulario.id}").order("id asc") %>
+          <tbody>
+          <%= fields_for "personasforencuestas[]", personasforencuesta do |f| %>
+            <%= hidden_field_tag :personasformulario_id, params[:personasformulario_id], value: @personasformulario.id %>
+            <tr>
+              <td class="text-center">
+                <%= cnt += 1 %>
+              </td>
+              <td><%= Encuestapregunta.find(personasforencuesta.encuestaspregunta_id).pregunta.html_safe rescue nil %></td>
+              <td>
+                <div>
+                  <%= f.select(:encuestapreopcion_id, select_opcion(personasforencuesta.encuestaspregunta_id), {include_blank: true}, { :class => 'select2', style: "width: 100%" }) %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        <% end %>
+      </table>
+      <% if ["ESTUDIANTE","CANDIDATO"].exclude?(is_tipoconsulta) %>
+        <br/>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td style="padding: 5px; font-size: 10px; color: white" colspan="13" class="thcolor"><div align="center"><b>ESCALA DE CALIFICACIÓN</b></div></td>
+          </tr>
+          <tr class="thcolor">
+            <td style="padding: 5px; font-size: 8px; color: white" class="thcolor"><div align="center"><b>RESPUESTAS CORRECTAS</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>11</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>10</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>9</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>8</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>7</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>6</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>5</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>0</b></div></td>
+          </tr>
+          <tr>
+            <td style="padding: 5px; font-size: 8px; color: white" class="thcolor"><div align="center"><b>NOTA</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>5</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4.6</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4.2</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3.8</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3.4</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2.6</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2.2</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1.8</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1.4</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1</b></div></td>
+            <td style="padding: 5px; font-size: 8px;"><div align="center"><b>0</b></div></td>
+          </tr>
+        </table><br/>
+        <% end %>
+    </div>
+    <div class="box-tools pull-right">
+      <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+    </div>
+  <% end %>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    $(".select2").select2();
+</script>
+
+
+
+<style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+</style>

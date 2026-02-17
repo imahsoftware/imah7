@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="5%" class="text-center">ID</th>
+        <th width="40%" class="text-left">Entidad</th>
+        <th width="12%" class="text-center">Tipo Descuento</th>
+        <th width="12%" class="text-right">Valor</th>
+        <th width="16%" class="text-center">Aplicación</th>
+        <th width="10%" class="text-center">Estado</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosperembargos">
+	    <% @contratospersona.contratosperembargos.includes([:tiposentidad,:user]).order(id: :desc).each do |contratosperembargo| %>
+	      <%= render 'contratosperembargos/tr', contratosperembargo: contratosperembargo %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

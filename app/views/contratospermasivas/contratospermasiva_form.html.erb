@@ -1,0 +1,50 @@
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12"><legend>
+        <%= link_to contratospernominas_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Información Proceso Masivo de <%=@contratospermasiva.proceso rescue nil %></legend></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th class="text-left" style="font-size:12px;">Empresa - Contrato</th>
+              <th width="10%" class="text-center">Fecha</th>
+              <th width="30%" class="text-left">Observacion</th>
+              <th width="10%" class="text-center">Estado</th>
+              <th width="10%" class="text-center">Cant</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td class="text-left" style="font-size:10px;"><strong>Empresa : </strong><%= @contratospermasiva.contrato.empresa.identnombre rescue nil%>
+                  <br/><strong>Nro Contrato : </strong><%= @contratospermasiva.contrato.nro_contrato rescue nil%> - <strong>Grupo : </strong><%= @contratospermasiva.contratosgrupo.descripcion rescue nil%> <small>(<%= @contratospermasiva.contratosgrupo.termino rescue nil%>)</small>
+                </td>
+                <td class="text-center" style="font-size:10px;"><%= @contratospermasiva.fecha rescue nil%></td>
+                <td class="text-justify" style="font-size:10px;"><%= @contratospermasiva.observacion rescue nil%></td>
+                <td class="text-center" style="font-size:10px;"><%= @contratospermasiva.estado rescue nil%></td>
+                <td class="text-center" style="font-size:10px;"><%= @contratospermasiva.contratospermasdetalles.count rescue nil%></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box">
+  <div class="box-body">
+    <%= render 'contratospermasdetalles/contratospermasdetalles' %>
+  </div>
+</div>
+
+<div class="modal fade" id="abrircargue">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

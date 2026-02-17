@@ -1,0 +1,189 @@
+<% if @contrato.etapa.to_s == "A" %>
+  <%= render "form" %>
+<% else %>
+  <div class="box ">
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-12">
+          <legend>
+            Contrato (<%= @contrato.empresa.identificacion rescue nil %>
+            -<%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %>) -
+            <% if is_auth_a('contratosdownload') %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'DOCUMENTOS'), data: { toggle: 'tooltip' }, title: 'Descargar Todos los Documentos' do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'CONTRATOS'), data: { toggle: 'tooltip' }, title: 'Descargar solo los contratos firmados' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'AFILIACIONES'), data: { toggle: 'tooltip' }, title: 'Descargar Todos las Afiliaciones' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-download"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'REFIRMAR'), data: { toggle: 'tooltip' }, title: 'Refirmar de todo el contrato' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-smile-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'PERIODICA'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica de todo el contrato' do %>
+                <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'DOTACION'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación de todo el contrato' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'DOTACIONP'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica del contrato' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'DOTACIONPE'), data: { toggle: 'tooltip' }, title: 'Descargar Dotación Periodica SIN CANTIDADES' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'CARTA'), data: { toggle: 'tooltip' }, title: 'Descargar Carta Laboral' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'INDUCCION'), data: { toggle: 'tooltip' }, title: 'Descargar Induccion de todo el contrato' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to descargarepp_contratos_path(contrato_id: @contrato.id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' }, title: 'Descargar Solicitudes EPPS' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to informe_datas_path(infgrupo_id: 98, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: "Descargar Solicitudes EPPS en Excel " do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-file-excel-o"></i>
+                </button>
+              <% end %>
+              <%= link_to informe_datas_path(infgrupo_id: 99, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: "Descargar Entregas EPPS en Excel " do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-file-excel-o"></i></button>
+              <% end %>
+              <%= link_to descargacontrato_contratos_path(contrato_id: @contrato.id, clase: 'CARTASTERMINACION'), data: { toggle: 'tooltip' }, title: 'Descargar Cartas de Terminacion' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+              <%= link_to download_contratos_path(contrato_id: @contrato.id), data: { toggle: 'tooltip' }, title: 'Descargar Especial', remote: true do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-cloud"></i></button>
+              <% end %>
+            <% end %>
+          </legend>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th width="5%" class="text-center">ID</th>
+                <th width="10%" class="text-center">Nro Contrato</th>
+                <th class="text-justify" style="font-size:12px;">Objeto</th>
+                <th width="10%" class="text-center">Fecha Inicio</th>
+                <th width="10%" class="text-center">Fecha Fin</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <tr>
+                <td class="text-center" style="font-size:12px;"><%= @contrato.id rescue nil %></td>
+                <td class="text-center" style="font-size:12px;"><%= @contrato.nro_contrato rescue nil %></td>
+                <td class="text-justify" style="font-size:12px;"><small><%= @contrato.objeto.upcase rescue nil %><br/>
+                  <br/><strong>Tipo de Contrato: <%= @contrato.tiposcontrato.descripcion rescue nil %></strong>
+                  <br/><strong>Municipio: </strong><%= @contrato.municipio.autobuscar rescue nil %>
+                  <br/><strong>Estado: </strong><%= @contrato.estado rescue nil %></small>
+                </td>
+                <td class="text-center" style="font-size:12px;"><%= @contrato.fecha_inicio.strftime("%Y-%m-%d") rescue nil %></td>
+                <td class="text-center" style="font-size:12px;"><%= @contrato.fecha_fin.strftime("%Y-%m-%d") rescue nil %></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-body">
+      <% if @contrato.etapa.to_s == "G" %>
+        <%= render 'contratosmodificaciones/contratosmodificaciones' %>
+      <% elsif @contrato.etapa.to_s == "B" %>
+        <%= render 'contratosobservaciones/contratosobservaciones' %>
+      <% elsif @contrato.etapa.to_s == "C" %>
+        <%= render 'contratosimagenes/contratosimagenes' %>
+      <% elsif @contrato.etapa.to_s == "D" %>
+        <%= render 'contratosusers/contratosusers' %>
+      <% elsif @contrato.etapa.to_s == "E" %>
+        <%= render 'contratospagos/contratospagos' %>
+      <% elsif @contrato.etapa.to_s == "F" %>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#insumosc" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Insumos
+                      Contrato</a></li>
+                  <li><a href="#autoinsumos" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Insumos
+                    Autorizados</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="insumosc">
+                    <%= render 'contratosinsumos/contratosinsumos' %>
+                  </div>
+                  <div class="tab-pane" id="autoinsumos">
+                    <%= render 'contratosautoinsumos/contratosautoinsumos' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% elsif @contrato.etapa.to_s == "A" %>
+        <%= render 'contratoscargos/contratoscargos' %>
+      <% elsif @contrato.etapa.to_s == "H" %>
+        <div class="box-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#sedes" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Sedes</a></li>
+                  <li>
+                    <a href="#proyectos" data-toggle="tab" aria-expanded="true"><i class="fa fa-adn"></i> Proyectos</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="sedes">
+                    <%= render 'contratossedes/contratossedes' %>
+                  </div>
+                  <div class="tab-pane" id="proyectos">
+                    <%= render 'contratosproyectos/contratosproyectos' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% elsif @contrato.etapa.to_s == "I" %>
+        <%= render 'contratoscargos/contratoscargos' %>
+      <% elsif @contrato.etapa.to_s == "M" %>
+        <%= render 'contratosmaquinarias/contratosmaquinarias' %>
+      <% elsif @contrato.etapa.to_s == "O" %>
+        <%= render 'contratosotros/contratosotros' %>
+      <% elsif @contrato.etapa.to_s == "S" %>
+        <%= render 'solicitudes' %>
+      <% elsif @contrato.etapa.to_s == "PR" %>
+        <%= render 'prefactura' %>
+      <% elsif @contrato.etapa.to_s == "P1" %>
+        <%= render 'persona' %>
+      <% elsif @contrato.etapa.to_s == "AC" %>
+        <%= render 'contratosactividades/contratosactividades' %>
+      <% elsif @contrato.etapa.to_s == "AD" %>
+        <%= render 'contratossecciones/contratossecciones' %>
+      <% elsif @contrato.etapa.to_s == "AE" %>
+        <%= render 'contratosservicios/contratosservicios' %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="modal fade" id="abrircargue">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="download">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

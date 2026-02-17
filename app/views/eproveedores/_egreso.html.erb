@@ -1,0 +1,77 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Egresos Generadas</strong></h3>
+  <div class="box-tools pull-right">
+    <div class="alert-danger"><strong>Total egresos: <%=camponumerico (@eproveedor.egresos.sum("total")) rescue 0 %></strong></div>
+  </div>
+</div>
+<% if @eproveedor.egresos.exists? %>
+  <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th width="10%"></th>
+        <th width="10%">Fecha</th>
+        <th width="12%" class="text-center">Nro Egreso</th>
+        <th width="13%" class="text-right">Total</th>
+        <th width="15%">Forma de pago</th>
+        <th width="20%">Nro Cuenta</th>
+        <th width="20%">Concepto / Causacion</th>
+      </tr>
+      </thead>
+  <% for egreso in @eproveedor.egresos.includes([:cuenta]).order('created_at DESC') %>
+    <tr>
+      <td rowspan="2" class="text-center">
+        <%= link_to veregreso_egresos_path(id: egreso.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Egreso' do %>
+          <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+        <% end %>
+        <%= link_to new_egresosimagen_path(egreso_id: egreso.id), remote: true, data: {toggle: 'tooltip'}, title: 'Añadir Soporte Digital' do %>
+          <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+        <% end %>
+        <% if @is_auth_e_egreso and egreso.estado.to_s == "" %>
+          <% if egreso.nro_egreso.to_i == is_egresoactual(egreso.portafolio_id).to_i %>
+            <%= link_to cambio_egresos_path(id: egreso.id, estado: "ELIMINAR"), data: {toggle: 'tooltip', confirm: "Seguro que desea Eliminar este egreso?"}, title: 'Eliminar Egreso' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+            <% end %>
+          <% else %>
+            <%= link_to cambio_egresos_path(id: egreso.id, estado: "ANULAR"), data: {toggle: 'tooltip', confirm: "Seguro que desea Anular este egreso?"}, title: 'Anular Egreso' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+            <% end %>
+          <% end %>
+        <% end %>
+        </td>
+      <td class="text-center"><%=h egreso.fecha.strftime("%Y-%m-%d") rescue nil %></td>
+      <td class="text-center"><%=egreso.nro_egreso rescue nil%></td>
+      <td class="text-right"><%=camponumerico egreso.total rescue nil %></td>
+      <td class="text-left"><%=h egreso.forma_pago rescue nil %></td>
+      <td class="text-left"><%=h egreso.cuenta.descripcionc rescue nil %></td>
+      <td>
+        <div id="abrir<%= egreso.id %>" class="pull-left">
+          <%= link_to show_detalle_eproveedores_path(egreso_id: egreso.id, ruta: 'ABRIR'), remote: true do %>
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+            Ver información (Cant. <%=egreso.egresosdetalles.count.to_i rescue nil %>)
+          <% end %>
+        </div>
+        <div id="cerrar<%= egreso.id %>" class="pull-left hide">
+          <%= link_to show_detalle_eproveedores_path(egreso_id: egreso.id, ruta: 'CERRAR'), remote: true do %>
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+            Ver información (Cant. <%=egreso.egresosdetalles.count.to_i rescue nil %>)
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6">
+        <div id="egresosdetalle<%= egreso.id %>" style="width: 100%"></div>
+      </td>
+    </tr>
+
+      <div class="modal fade" id="adddocumento">
+        <div class="modal-dialog modal-dialog-responsive" role="document">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+  <% end %>
+  </table>
+<% else %>
+  <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+<% end %>

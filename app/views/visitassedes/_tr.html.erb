@@ -1,0 +1,23 @@
+<tr id="visitassede_<%= visitassede.id %>">
+  <td class="text-center">
+    <% if visitassede.visita.finalizacion.blank? %>
+      <%= link_to edit_visita_visitassede_path(@visita, visitassede), remote: true, class: 'edit_visitassede_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to visita_visitassede_path(@visita, visitassede), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= visitassede.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= visitassede.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table">
+    <% if visitassede.contratossede.present? %>
+      <%= visitassede.contratossede.nombre rescue nil %><small>(<%= visitassede.contratossede.municipio rescue nil %>
+    - <%= visitassede.contratossede.departamento rescue nil %>)</small>
+    <% else %>
+      <%= visitassede.sede_direccion rescue nil %>
+    <% end %>
+  </td>
+  <td align="cemter" class="text-table"><%= visitassede.viaticos rescue nil %>
+</tr>

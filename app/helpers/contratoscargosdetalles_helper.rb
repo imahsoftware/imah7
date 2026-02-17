@@ -1,0 +1,2 @@
+module ContratoscargosdetallesHelper
+end

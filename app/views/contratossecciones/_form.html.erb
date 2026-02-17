@@ -1,0 +1,37 @@
+<%= simple_form_for([@contrato, @contratosseccion], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :contratosgrupo_id, collection: Contratosgrupo.where(contrato_id: @contrato.id).order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Grupo de nomina" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :contratoscargo_id, collection: Contratoscargo.where(contrato_id: @contrato.id).order(:perfil).collect { |p| [p.desc_contrato, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Cargo" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%= f.input :municipio_id, collection: Municipio.order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%= f.input :descripcion, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Colegio - Dependencia - Sección" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :cantidad, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Cantidad" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosseccion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosseccion_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosseccion_path(@contrato, @contratosseccion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

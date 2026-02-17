@@ -1,0 +1,52 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<div align="center">
+  <br/><br/>
+  <table width="85%">
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 18px; font-family: Tahoma;">
+          <div align="center">
+            <b style="font-size: 20px">FORMATO DE MANIFESTACIÓN VOLUNTARIA</b>
+          </div>
+          <br/><br/><br/>
+          <b>Continuación de Cotización al Sistema General de Pensiones</b>
+          <br/><br/><br/>
+          Yo, <b><%= contratospersona.nombre_completo rescue nil %></b>, mayor de edad, identificado(a) con cédula de ciudadanía No. <b><%= camponumerico2(contratospersona.identificacion) rescue nil %></b> de <b><%= Municipio.find(contratospersona.municipio_lugar_expedicion).autobuscar rescue nil %></b>, actualmente pensionado(a) por <b><%= contratospersona.tipo_pension rescue nil %></b> en pleno uso de mis facultades y de manera libre, consciente y voluntaria, manifiesto lo siguiente:
+          <br/>
+          <ol id="1">
+            <li>Que me encuentro disfrutando de la pensión de <b><%= contratospersona.tipo_pension rescue nil %></b> reconocida mediante Resolución No. <b><%= contratospersona.resolucion_pension rescue nil %></b> de fecha <b><%= namedate(contratospersona.fecha_resolucion) rescue nil %></b>.</li>
+            <li>Que actualmente me desempeño como trabajador en la empresa <b><%=@nombre_empresa%></b>, vinculándome en calidad de <b><%=@contratosperfecha.contratoscargo.perfil rescue nil %></b>.</li>
+            <li>Que conozco lo dispuesto en el artículo 15 de la Ley 100 de 1993 y demás normas que lo regulan, según el cual los pensionados que se reincorporen a la vida laboral no están obligados a efectuar cotizaciones al Sistema General de Pensiones, salvo que manifiesten su voluntad de continuar efectuándolas.</li>
+            <li>Que de manera expresa y voluntaria MANIFIESTO MI VOLUNTAD DE CONTINUAR EFECTUANDO APORTES AL SISTEMA GENERAL DE PENSIONES, mientras permanezca vinculado laboralmente con la empresa <b><%=@nombre_empresa%></b>.</li>
+          </ol><br/><br/>
+          En constancia, firmo la presente manifestación voluntaria en la ciudad de Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>.
+          <br/><br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

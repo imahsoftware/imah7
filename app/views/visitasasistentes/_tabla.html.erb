@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="5%"></td>
+				<th width="20%" class="text-left text-table">Fecha Registro</th>
+        <th width="20%" class="text-left text-table">Nombre</th>
+        <th width="25%" class="text-left text-table">Cargo</th>
+				<th class="text-left text-table">Email</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_visitasasistentes">
+	    <% @visita.visitasasistentes.order(id: :desc).each do |visitasasistente| %>
+	      <%= render 'visitasasistentes/tr', visitasasistente: visitasasistente %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

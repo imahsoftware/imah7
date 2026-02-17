@@ -1,0 +1,99 @@
+<%
+  @visitas = Visita.select("visitas.id, visitas.created_at, visitas.descripcion,
+                           ifnull((select count(9) from visitassedes where visita_id = visitas.id),0) cantsedes,
+                           ifnull((select count(9) from visitasatenciones where visita_id = visitas.id),0) cantatencion,
+                           ifnull((select count(9) from visitasasistentes where visita_id = visitas.id),0) cantasistentes,
+                           ifnull((select count(9) from visitasdocs where visita_id = visitas.id and docvisita_content_type LIKE 'image%' and tipo not in ('ANTES','DESPUES')),0) cantdoc")
+                   .where("date_format(created_at,'%m-%Y') = '#{@mes.to_s}' and contrato_id = #{@contrato.id.to_i}").order("created_at ASC")
+  @visitascanr = Visita.where("date_format(created_at,'%m-%Y') = '#{@mes.to_s}' and contrato_id = #{@contrato.id.to_i}").count.to_i rescue 0
+  if @visitas.present?
+    @clasesvisita = Visita.select("distinct teletrabajo, count(9) cant")
+                          .where("date_format(created_at,'%m-%Y') = '#{@mes.to_s}' AND contrato_id = #{@contrato.id.to_i}")
+                          .group("teletrabajo").order("teletrabajo asc") rescue nil
+%>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, se realizaron un total de <b>&nbsp;(<%= @visitascanr rescue 0 %>)&nbsp;</b> reuniones y/o seguimientos con el fin de hablar de algunas novedades y hacer
+    seguimiento a la prestación del servicio, las cuales se relacionan a continuacion.
+  </div><br/>
+  <%
+    contador = 0
+    @clasesvisita.each do |a|
+      contador = contador + 1
+  %>
+    <div class="encabezado_izq2"><b><%=contador rescue 0%>. <%=a.teletrabajo %></b> (Nro Total: <%=a.cant.to_i rescue 0 %>) </div>
+    <br/>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="15%" class="encabezado_tabla"><div align="center"><strong>Fecha</strong></div></th>
+        <th class="encabezado_tabla"><div align="left"><strong>Objetivo</strong></div></th>
+        <th width="15%" class="encabezado_tabla"><div align="left"><strong>Lugar Reunion</strong></div></th>
+        <th width="20%" class="encabezado_tabla"><div align="left"><strong>Persona que firmo la visita</strong></div></th>
+      </tr>
+    </table>
+      <% @visitas.where(teletrabajo: a.teletrabajo).each do |visita|
+          if visita.cantsedes.to_i > 0
+            sedes = Visitassede.where(visita_id: visita.id).map { |visitassede| visitassede.contratossede.nombre rescue nil }
+          end
+          if visita.cantatencion.to_i > 0
+            atenciones = Visitasatencion.where(visita_id: visita.id).map { |visitasatencion| "#{visitasatencion.identificacion} #{visitasatencion.nombre}" rescue nil }
+          end
+          rowspan = 0
+          if visita.cantasistentes.to_i > 0 or visita.cantdoc.to_i > 0
+            rowspan = 2
+          end
+      %>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="15%" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><div align="center"><%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></div></td>
+          <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><div align="justify"><%= visita.descripcion.upcase rescue nil %> (ID: <%= visita.id rescue nil %>)</div></td>
+          <td width="15%" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><% if visita.cantsedes.to_i > 0 %><%= sedes.join(", ") rescue nil %><% else %> OFICINA PRICIPAL CLIENTE<% end %></td>
+          <td width="20%" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><% if visita.cantatencion.to_i > 0 %><%= atenciones.join(", ") rescue nil %><% else %> VERIFICACION INTERNA<% end %></td>
+        </tr>
+      </table>
+        <% if rowspan == 2 %>
+          <div align="left" style="font-size: 10px; font-family: Tahoma; padding: 3px;"><strong>* Participantes o Asistentes (ID: <%= visita.id rescue nil %>)</strong></div>
+            <% if visita.cantasistentes.to_i > 0 %>
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                <tr>
+                  <th width="35%" class="encabezado_tabla"><div align="left"><strong>Nombre</strong></div></th>
+                  <th width="35%" class="encabezado_tabla"><div align="left"><strong>Cargo</strong></div></th>
+                  <th width="30%" class="encabezado_tabla"><div align="left"><strong>Email</strong></div></th>
+                </tr>
+                <% visita.visitasasistentes.each do |visitasasistente| %>
+                  <tr>
+                    <td style="border:1px solid #CCCCCC; font-size: 8px; font-family: Tahoma; padding: 3px;"><%= visitasasistente.nombre rescue ni %></td>
+                    <td style="border:1px solid #CCCCCC; font-size: 8px; font-family: Tahoma; padding: 3px;"><%= visitasasistente.cargo rescue ni %></td>
+                    <td style="border:1px solid #CCCCCC; font-size: 8px; font-family: Tahoma; padding: 3px;"><%= visitasasistente.email rescue ni %></td>
+                  </tr>
+                <% end %>
+              </table>
+            <% else %>
+              <div align="left" style="font-size: 10px; font-family: Tahoma; padding: 3px;">No hay informacion ASOCIADA</div>
+            <% end %>
+            <div align="left" style="font-size: 10px; font-family: Tahoma; padding: 3px;"><strong>* Imagenes asociadas (ID: <%= visita.id rescue nil %>)</strong></div>
+            <% if visita.cantdoc.to_i > 0 %>
+                <% visita.visitasdocs.where("docvisita_content_type LIKE 'image%' and tipo not in ('ANTES','DESPUES')").each_slice(4) do |pair| %>
+                  <table width="100%">
+                    <tr>
+                      <% pair.each do |p|%>
+                        <% image_url = image_url(p.docvisita.url(:original, false)) %>
+                        <td style="padding: 5px;"><div align="center">
+                          <img src="<%= image_url %>" alt="" style="width: 200px; height: 200px;" loading="lazy"></div></td>
+                      <% end %>
+                      <% if pair.size == 1 %>
+                        <td></td>
+                      <% end %>
+                    </tr>
+                  </table>
+                <% end %>
+            <% else %>
+              <div align="left" style="font-size: 10px; font-family: Tahoma; padding: 3px;">No hay informacion ASOCIADA</div>
+            <% end %>
+        <% end %>
+      <% end %><br/>
+  <% end %>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizaron reuniones y/o seguimientos.
+  </div><br/>
+<% end %>

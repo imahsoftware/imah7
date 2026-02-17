@@ -1,0 +1,5 @@
+$("#documento<%= @soportesnota.id %> .modal-content").html('<%= j render "soportesnotas/documento" %>');
+$("#documento<%= @soportesnota.id %> ").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();

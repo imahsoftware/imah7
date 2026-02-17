@@ -1,0 +1,47 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Elementos, Equipos y Maquinaria
+  </strong></h3>
+  <% if @contrato.tiposcontrato_id.to_i == 24 %>
+    <%= link_to informe_datas_path(infgrupo_id: 17, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar insumos del contrato' do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Contrato</button>
+    <%end %>
+  <% else %>
+    <%= link_to informe_datas_path(infgrupo_id: 16, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar insumos del contrato' do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Contrato</button>
+    <%end %>
+  <% end %>
+
+  <div class="box-tools pull-right">
+    <% if is_auth_c('contratosmaquinaria') %>
+      <%= link_to new_contrato_contratosmaquinaria_path(@contrato.id), id: 'new_contratosmaquinaria_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<% if @contrato.tiposcontrato_id.to_i == 24 %>
+  <%= form_tag edit_contrato_path, method: :get do %>
+    <%= hidden_field_tag :contrato_id, @contrato.id %>
+    <%= hidden_field_tag :etapa, 'M' %>
+    <div class="box-body">
+      <div class="form-group">
+        <label>Seleccione Elementos, Equipos y Maquinaria</label><br/>
+        <%= select_tag 'ubicacion[insumo_id]', options_from_collection_for_select(Insumo.where(["id in (select insumo_id from contratosmaquinarias where contrato_id = #{@contrato.id})"]).order(bien_servicio: :asc), :id, :insumodetalle), prompt: '--Seleccionar--', data: {width: '520px'}, class: 'form-control select2' %>
+        <%= button_tag type: 'submit', class: 'btn btn-primary', data: {toggle: 'tooltip'}, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosmaquinaria_form" class="collapse"></div>
+  <div id="contratosmaquinarias">
+    <% if @maquinarias.count.to_i > 0 %>
+      <%= render 'contratosmaquinarias/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>

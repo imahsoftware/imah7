@@ -1,0 +1,37 @@
+<%
+  contratosperprocesos = @contratospersona.contratosperprocesos.where("id != #{@contratosperproceso.id}").order(id: :desc)
+  if contratosperprocesos.present?
+%>
+<div class="box-header">
+  <h3 class="box-title"><strong>Otros procesos asociados (<%=@contratosperproceso.contratospersona.nombre_completo rescue nil %>)</strong></h3>
+</div><br/>
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <td width="5%"></td>
+      <th class="text-center text-table" width="5%">ID</th>
+      <th class="text-left text-table" width="15%">Clase de proceso</th>
+      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+      <th class="text-left text-table">Detalle</th>
+      <th class="text-center text-table" width="10%">Estado</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_contratosperprocesos">
+    <% @contratospersona.contratosperprocesos.where("id != #{@contratosperproceso.id}").order(id: :desc).each do |contratosperproceso|
+      contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                           .select("contratos.nro_contrato, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                      contratosgrupos.descripcion, contratosgrupos.termino, contratoscargos.perfil, contratoscargos.salario salariocargo,
+                                                      (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                      (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                       contratosperfechas.*")
+                                           .where(["contratosperfechas.id = #{contratosperproceso.contratosperfecha_id}"]).first
+    %>
+      <%= render 'contratosperprocesos/trdetalle', contratosperproceso: contratosperproceso, contratosperfecha: contratosperfecha %>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<% else %>
+  <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+<% end %>

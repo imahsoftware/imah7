@@ -1,0 +1,2 @@
+module ContratosperinvdetallesHelper
+end

@@ -1,0 +1,24 @@
+<%= simple_form_for([@soportesnota, @soportesnotasimagen], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :descripcion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :docsoportesnota, as: :file, label: 'Archivo a cargar' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @soportesnotasimagen.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#soportesnotasimagen_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", soporte_soportesnotasimagen_path(@soportesnota, @soportesnotasimagen), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

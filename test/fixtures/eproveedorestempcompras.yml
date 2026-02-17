@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedor: one
+  eproveedorescompra: one
+  nro_cheque: MyString
+  forma_pago: MyString
+  concepto: MyString
+  total: 9.99
+  ecuenta: one
+  centroscosto: one
+  cuenta_cobrar: 1
+  fecha: 2022-02-14
+  user: one
+
+two:
+  eproveedor: two
+  eproveedorescompra: two
+  nro_cheque: MyString
+  forma_pago: MyString
+  concepto: MyString
+  total: 9.99
+  ecuenta: two
+  centroscosto: two
+  cuenta_cobrar: 1
+  fecha: 2022-02-14
+  user: two

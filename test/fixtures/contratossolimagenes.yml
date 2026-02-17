@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratossolicitud: one
+  user: one
+  descripcion: MyString
+  solimagenes: 
+
+two:
+  contratossolicitud: two
+  user: two
+  descripcion: MyString
+  solimagenes: 

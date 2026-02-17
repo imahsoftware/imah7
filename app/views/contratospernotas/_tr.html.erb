@@ -1,0 +1,18 @@
+<tr id="contratospernota_<%= contratospernota.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratospernota")%>
+    <%= link_to edit_contratospersona_contratospernota_path(@contratospersona, contratospernota), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to contratospersona_contratospernota_path(@contratospersona, contratospernota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info">
+      <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratospernota.user_nombre.html_safe rescue nil %><%= contratospernota.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+    </button>
+  </td>
+  <td align="left"><%= contratospernota.fecha rescue nil %></td>
+  <td align="left"><%= contratospernota.observacion rescue nil %></td>
+</tr>
+

@@ -1,0 +1,52 @@
+<div class="box box-primary">
+  <div class="box-header">
+    <div class="box-header">
+      <h3 class="box-title">Parametrización de Cargos</h3>
+      <div class="pull-right">
+        <%= link_to new_parcargo_path, data: { toggle: 'tooltip' }, title: "Crear Nuevo Registro", class: 'btn btn-sm btn-primary pull-right' do %>
+          <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <% if @parcargos.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th width="5%"></th>
+                <th width="5%" class="text-center">ID</th>
+                <th width="35%" class="text-left">Descripción</th>
+                <th width="12%" class="text-center">Estado</th>
+                <th class="text-justify">Observación</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @parcargos.each do |parcargo| %>
+                <tr id="parcargo_<%= parcargo.id %>">
+                  <td class="text-center">
+                    <%= link_to edit_parcargo_path(parcargo), class: 'edit_parcargo_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                    <% end %>
+                    <%= link_to replicar_parcargos_path(id: parcargo.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Duplicar este Cargo?"}, title: 'Duplicar' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"> </i></button>
+                    <% end %>
+                  </td>
+                  <td class="text-center"><%= parcargo.id rescue nil %></td>
+                  <td class="text-left"><%= parcargo.descripcion rescue nil %></td>
+                  <td class="text-center"><%= parcargo.estado rescue nil %></td>
+                  <td class="text-justify"><%= parcargo.observacion rescue nil %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-danger">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

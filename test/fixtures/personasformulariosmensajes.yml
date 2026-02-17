@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  personasformulario: one
+  tipo: MyString
+  estado: MyString
+  user_envia: 1
+
+two:
+  personasformulario: two
+  tipo: MyString
+  estado: MyString
+  user_envia: 1

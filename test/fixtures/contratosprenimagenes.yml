@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  contratosgrupo: one
+  user: one
+  nominasimagen: 
+
+two:
+  contrato: two
+  contratosgrupo: two
+  user: two
+  nominasimagen: 

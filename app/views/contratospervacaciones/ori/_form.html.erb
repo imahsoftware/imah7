@@ -1,0 +1,25 @@
+<%= simple_form_for(@contratospervacacion) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :contratospersona %>
+    <%= f.association :contratosperfecha %>
+    <%= f.association :user %>
+    <%= f.input :fecha_inicio %>
+    <%= f.input :dias_disfrute %>
+    <%= f.input :dias_pago %>
+    <%= f.input :fecha_fin %>
+    <%= f.input :valor_disfrute %>
+    <%= f.input :valor_salud %>
+    <%= f.input :valor_pension %>
+    <%= f.input :valor_pago %>
+    <%= f.input :valor_total %>
+    <%= f.input :estado %>
+    <%= f.input :user_aprueba %>
+    <%= f.input :user_paga %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

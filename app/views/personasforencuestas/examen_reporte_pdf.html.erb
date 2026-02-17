@@ -1,0 +1,200 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<%
+  isadmin = is_admin
+  @personasforencuestas.each do |personasforencuesta|
+    @personasformulario = Personasformulario.find(personasforencuesta.personasformulario_id)
+    contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                          .select("contratos.nro_contrato,
+                                                  (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                  contratosgrupos.descripcion,
+                                                  contratosgrupos.termino,
+                                                  contratoscargos.perfil,
+                                                  (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                  (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios")
+                                          .where(["contratosperfechas.personasformulario_id = #{@personasformulario.id}"]).last
+
+    resultadoCalificacion = Personasforencuesta.where("personasformulario_id = #{@personasformulario.id} and calificacion = 'CORRECTO'").count.to_i
+    calificacion = ""
+    if resultadoCalificacion == 11 then calificacion = '5'
+    elsif resultadoCalificacion == 10 then calificacion = '4.6'
+    elsif resultadoCalificacion == 9 then calificacion = '4.2'
+    elsif resultadoCalificacion == 8 then calificacion = '3.8'
+    elsif resultadoCalificacion == 7 then calificacion = '3.4'
+    elsif resultadoCalificacion == 6 then calificacion = '3'
+    elsif resultadoCalificacion == 5 then calificacion = '2.6'
+    elsif resultadoCalificacion == 4 then calificacion = '2.2'
+    elsif resultadoCalificacion == 3 then calificacion = '1.8'
+    elsif resultadoCalificacion == 2 then calificacion = '1.4'
+    elsif resultadoCalificacion == 1 then calificacion = '1' else calificacion = '0'
+    end
+
+%>
+  <div align="center">
+    <table width="94%">
+      <tr>
+        <td>
+          <div align="justify" style="font-size: 18px; font-family: Verdana, Geneva, sans-serif;">
+            <table width="100%">
+              <tr>
+                <td width="20%" valign="center">
+                  <div align="center">
+                   <%= image_tag 'https://appasearesp.com/assets/Imah-logo-7269aa8e83d929a7771a0647e638ed4f184031037aba3b325b5c185678435cc1.png', width: '70%' %>
+                  </div>
+                </td>
+                <th style=" padding: 5px; font-size: 10px;">
+                  <div align="center" style="font-size: 22px">EVALUACIÓN DE CONOCIMIENTO EN OFIMÁTICA</div>
+                </th>
+                <td width="20%" valign="center">
+                  <div align="center">
+                    <%= image_tag 'https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png', size: "200x100" %>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <th colspan="2" rowspan="8" width="20%">
+                  <div align="center">
+                    <% personasformulariosdoc = Personasformulariosdoc.where("personasformulario_id  = #{@personasformulario.id} and parcargosdoc_id in (select id from parcargosdocs where descripcion = 'FOTO PARA EL CARNET')").first %>
+                    <% if personasformulariosdoc.present? %>
+                      <%= wicked_pdf_image_tag image_url(personasformulariosdoc.soporte_digital.url(:original, false)), size: "150x180" %>
+                    <% else %>
+                      <%= wicked_pdf_image_tag image_url('camera.png'), size: "130x180" %>
+                    <% end %>
+                  </div>
+                </th>
+                <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                  <div align="left"> Tipo identificacion</div>
+                </th>
+                <th style="background: #E8E3E3; padding: 5px;" width="15%">
+                  <div align="left">Identificacion</div>
+                </th>
+                <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                  <div align="left">Nombre Completo</div>
+                </th>
+              </tr>
+              <tr>
+                <td style=" padding: 5px; font-size: 10px;">
+                  <div align="left"><%= @personasformulario.tipo_identificacion %>&nbsp;</div>
+                </td>
+                <td style=" padding: 5px; font-size: 10px;">
+                  <div align="left"><%= @personasformulario.identificacion %>&nbsp;</div>
+                </td>
+                <td style=" padding: 5px; font-size: 10px;">
+                  <div align="left"><%= @personasformulario.nombre_completo %>&nbsp;</div>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="3" style="background: #E8E3E3; padding: 5px;" width="20%">
+                  <div align="left">Informacion Contrato</div>
+                </th>
+              </tr>
+              <tr>
+                <td colspan="3" style=" padding: 5px; font-size: 10px;">
+                  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+                    <tr>
+                      <td style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Empresa:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><%= contratosperfecha.identnombre rescue nil %></td>
+                    </tr>
+                    <tr>
+                      <td width="20%" style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Nro Contrato:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><%= contratosperfecha.nro_contrato rescue nil %></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Cargo:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><%= contratosperfecha.perfil rescue nil %></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Sección:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><%= contratosperfecha.seccionnombre rescue nil %> - <%= contratosperfecha.autobuscar_municipios rescue nil %></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Fecha Prueba:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><%= Personasforencuesta.where("personasformulario_id = #{@personasformulario.id}").last.updated_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 5px; font-size: 10px; background: #E8E3E3;"><b>Estado:</b></td>
+                      <td style="padding: 5px; font-size: 10px;"><b>RESULTADO:</b> <%= resultadoCalificacion.to_i >= 6 ? 'APROBADO' : 'REPROBADO' %> - <b>CALIFICACION:</b> <%= calificacion rescue nil %></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <br/>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <th style="background: #E8E3E3; padding: 4px;" height="18" width="2%"><div align="left">#</div></th>
+                <th style="background: #E8E3E3; padding: 4px;" height="18" width="40%"><div align="left">Pregunta</div></th>
+                <th style="background: #E8E3E3; padding: 4px;" height="18"><div align="center">Respuesta</div></th>
+                <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%"><div align="center">Calificación</div></th>
+              </tr>
+              <%
+                coun = 0
+                Personasforencuesta.select("personasforencuestas.*,
+                                            (select pregunta from encuestapreguntas where id = personasforencuestas.encuestaspregunta_id) preguntasss,
+                                            (select respuesta from encuestapreopciones where id = personasforencuestas.encuestapreopcion_id) respuesta,
+                                            (select clase from encuestapreopciones where id = personasforencuestas.encuestapreopcion_id) clase")
+                                   .where("personasformulario_id = #{@personasformulario.id}").each do |personasforencuestadato|
+              %>
+                <tr>
+                  <td style=" padding: 4px; font-size: 10px;"><div align="center"><%= coun += 1 rescue 0 %></div></td>
+                  <td style=" padding: 4px; font-size: 10px;"><div align="left"><%= personasforencuestadato.preguntasss.html_safe rescue nil %>&nbsp;</div></td>
+                  <td style=" padding: 4px; font-size: 10px;"><div align="left"><%= personasforencuestadato.respuesta rescue nil %>&nbsp;</div></td>
+                  <td style=" padding: 4px; font-size: 10px;"><div align="center"><%= personasforencuestadato.clase rescue nil %></div></td>
+                </tr>
+              <% end %>
+            </table>
+            <br/>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <td style="padding: 5px; font-size: 10px; background: #E8E3E3;" colspan="13"><div align="center"><b>ESCALA DE CALIFICACIÓN</b></div></td>
+              </tr>
+              <tr>
+                <td style="padding: 5px; font-size: 8px; background: #E8E3E3;"><div align="center"><b>RESPUESTAS CORRECTAS</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>11</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>10</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>9</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>8</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>7</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>6</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>5</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>0</b></div></td>
+              </tr>
+              <tr>
+                <td style="padding: 5px; font-size: 8px; background: #E8E3E3;"><div align="center"><b>NOTA</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>5</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4.6</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>4.2</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3.8</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3.4</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>3</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2.6</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>2.2</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1.8</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1.4</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>1</b></div></td>
+                <td style="padding: 5px; font-size: 8px;"><div align="center"><b>0</b></div></td>
+              </tr>
+            </table>
+            <br/>
+            <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+              -<%= isadmin %>&nbsp;
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <H1 class=SaltoDePagina></H1>
+<% end %>
+
+
+
+
+

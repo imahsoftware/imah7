@@ -1,0 +1,50 @@
+<% @user = User.find(object0) if object0.present? == true %>
+<div style="background: #F5F9FB; height: 100%; box-shadow: 2px 2px 5px #999;">
+  <div style="width: 100%;  height: 15px;"></div>
+  <div style="width: 100%;  height: 80px;">
+    <div id="div1" style="float:left; width:33.3%; padding-left: 10px; ">
+      <img src="https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png" alt="" width="80%">
+    </div>
+    <div id="div2" style="float:left; width:33.3%;">
+      <ul>
+        <li style="list-style:none; color: #000; font-size: 26px; font-weight: 600; padding: 10px;"><div align="center"></div></li>
+      </ul>
+    </div>
+    <div id="div3" style="float:left; width:33.3%;">
+      <ul>
+        <li style="list-style:none; text-align: right; padding-right: 25px;"></li>
+      </ul>
+    </div>
+  </div>
+  <div style="font-family: Tahoma; font-size: 14px; padding: 20px;"><br/><br/>
+    Estimad@ <%= @user.nombre %><br><br>
+    Aqui esta el resumen de los supervisores y su inicio de visitas en el dia de hoy... Ahora si a trabajar pues!
+    <br><br>
+    <table width="50%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th class="text-center" style="background: #E8E3E3;">Usuario</th>
+        <th width="15%" class="text-center" style="background: #E8E3E3;">Visita hoy?</th>
+      </tr>
+      <% User.select("nombre nombreuser, celular,
+                           (select distinct 'SI' from visitas where user_id = users.id
+                            and DATE_FORMAT(created_at, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')) visitaeneldia")
+             .where("id in (SELECT user_id FROM view_supervisores)")
+             .order("3,1").each do |visita| %>
+        <tr>
+          <td><%= visita.nombreuser rescue nil %> <small>(<%= visita.celular rescue nil %>)</small></td>
+          <td><%= visita.visitaeneldia rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+    <br/>
+    <p><%= link_to "Ir a Asear", "https://appasearesp.com/", :target => "_blank", style: "width: 100%; padding: 8px; background: red; color: #fff; border-radius: 5px; text-decoration: none;" %></p>
+    <br><br>
+    Gracias.
+    <br><br>
+  </div>
+  <div align="justify" style="font-family: Tahoma; font-size: 10px; padding: 20px;">
+    <b>***Por favor no conteste este mensaje, ha sido enviado desde un e-mail automático y no recibirá respuesta.***<br/><br/>CONFIDENCIAL.</b> <br/>
+    La información contenida en este e-mail es confidencial y sólo puede ser utilizada por el individuo o  la compañía a la cual está dirigido. Si no es usted el destinatario autorizado, cualquier retención, difusión,
+    distribución o copia de este mensaje está prohibida y es sancionada por la ley. Si por error recibe este mensaje, le ofrecemos disculpas y le agradecemos reenviar y borrar el mensaje recibido inmediatamente.
+  </div>
+</div><br/><br/>

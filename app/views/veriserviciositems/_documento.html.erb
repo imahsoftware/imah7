@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Soporte Digital: <%= @veriserviciositem.descripcion rescue nil %></h4>
+</div>
+<div class="modal-body">
+  <%= simple_form_for @veriserviciosiimagen, :url => create2_veriserviciosiimagenes_path, :method => :post, remote: true do |f| %>
+    <%= hidden_field_tag :id, params[:id], value: @veriserviciositem.id %>
+    <div class="bs-callout">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :descripcion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :veriimagen, as: :file, label: 'Archivo a cargar' %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<br/>

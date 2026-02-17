@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedor: one
+  user: one
+  descripcion: MyString
+  proveedor_file_name: MyString
+  proveedor_content_type: MyString
+  proveedor_file_size: 1
+  proveedor_updated_at: 2022-02-14
+
+two:
+  eproveedor: two
+  user: two
+  descripcion: MyString
+  proveedor_file_name: MyString
+  proveedor_content_type: MyString
+  proveedor_file_size: 1
+  proveedor_updated_at: 2022-02-14

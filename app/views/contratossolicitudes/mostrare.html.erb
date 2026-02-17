@@ -1,0 +1,136 @@
+<%
+  portafolio = Portafolio.find(@contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+%>
+  <div align="center">
+
+  <table width="700" border="0">
+    <tr valign="top">
+      <td height="700">
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+            </td>
+            <td width="80%">
+              <div align="left">
+                  <h5><strong>SOLICITUD NRO. <%= @contratossolicitud.id rescue nil%> - <%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></strong>
+                    <br/><small><%= @contrato.empresa.identificacion rescue nil %>-<%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %></small></h5>
+              </div></td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="20%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Fecha Solicitud</th>
+            <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Periodo</th>
+            <th width="40%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Solicitante</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Estado</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Nro Contrato</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.periodo rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.user.nombre rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.estado rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.nro_contrato rescue nil%></td>
+          </tr>
+        </table>
+<%
+        array = ['A', 'B', 'C']
+        array.each do |arr|
+          dato = ""
+          tit = ""
+          if arr.to_s == 'A'
+            dato = ' contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0'
+            tit = "Insumos"
+          elsif arr.to_s == 'B'
+            dato = ' contratosmaquinaria_id is not null and precio_unitario > 0 and cantidad > 0'
+            tit = "Equipos, Maquinaria"
+          elsif arr.to_s == 'C'
+            dato = ' contratosotro_id is not null and precio_unitario > 0 and cantidad > 0'
+            tit = "Otros servicios"
+          end
+%>      <% if @contratossolicitud.contratossoldetalles.exists?(["#{dato.to_s}"]) %>
+          <h5><strong><%=tit.to_s%></strong></h5>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+            <tr style="background: #adadad">
+              <th class="text-left" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Item</th>
+              <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Cant.</th>
+              <th width="10%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Vlr Unitario</th>
+              <th width="15%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Total</th>
+            </tr>
+            <% @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order(id: :asc).each do |contratossoldetalle| %>
+              <tr>
+                <td align="left" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">
+                  <% if arr.to_s == 'A' %>
+                    <%= contratossoldetalle.contratosinsumo.insumo_cliente rescue nil %>
+                  <% elsif arr.to_s == 'B' %>
+                    <%= contratossoldetalle.contratosmaquinaria.insumo.insumodetalle rescue nil %>
+                  <% elsif arr.to_s == 'C' %>
+                    <%= contratossoldetalle.contratosotro.descripcion rescue nil %>
+                  <% end %>
+                </td>
+                <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossoldetalle.cantidad rescue nil %></td>
+                <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossoldetalle.precio_unitario rescue nil %></td>
+                <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossoldetalle.total rescue nil %></td>
+              </tr>
+            <% end %>
+            <tr style="background: #adadad">
+              <th class="text-left" colspan="2" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">SUBTOTAL</th>
+              <th colspan="2" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">$ <%= camponumerico @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).sum("total") rescue 0%></th>
+            </tr>
+          </table>
+<%      end
+       end %>
+        <% if @contratossolicitud.contratossolotros.exists? %>
+        <h5><strong>Insumos General</strong></h5>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th class="text-left" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Item</th>
+            <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Cant.</th>
+            <th width="10%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Vlr Unitario</th>
+            <th width="15%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Total</th>
+          </tr>
+          <% @contratossolicitud.contratossolotros.order(id: :desc).each do |contratossolotro| %>
+            <tr>
+              <td align="left" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">
+                  <%= contratossolotro.insumo.insumodetalle rescue nil %>
+              </td>
+              <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossolotro.cantidad rescue nil %></td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossolotro.precio_unitario rescue nil %></td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratossolotro.total rescue nil %></td>
+            </tr>
+          <% end %>
+          <tr style="background: #adadad">
+            <th class="text-left" colspan="2" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">SUBTOTAL</th>
+            <th colspan="2" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">$ <%= camponumerico @contratossolicitud.contratossolotros.sum("total") rescue 0%></th>
+          </tr>
+        </table>
+        <% end  %>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th class="text-left" height="20" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">TOTAL</th>
+            <th width="25%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">$ <%= camponumerico @contratossolicitud.total rescue 0%></th>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+    <br/><br/>
+</div>
+<style>
+  tr {
+    page-break-inside: avoid;
+
+  }
+  table  { page-break-inside:auto }
+  thead { display:table-header-group }
+  tfoot  { display:table-footer-group }
+
+</style>
+
+
+

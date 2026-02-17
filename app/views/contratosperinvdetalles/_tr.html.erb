@@ -1,0 +1,66 @@
+<tr id="contratosperinvdetalle_<%= contratosperinvdetalle.id %>">
+  <td class="text-center">
+    <% if @contratosperinventario.codigo_crea_firma.blank? and @contratosperinventario.codigo_firma.blank? and @contratosperinventario.contratosperinvatenciones.where("codigo_firma is not null").blank? %>
+      <%= link_to edit_contratosperinventario_contratosperinvdetalle_path(@contratosperinventario, contratosperinvdetalle), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosperinventario_contratosperinvdetalle_path(@contratosperinventario, contratosperinvdetalle), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to new_contratosperinvdetalle_contratosperdetallesdoc_path(contratosperinvdetalle_id: contratosperinvdetalle.id), remote: true, data: { toggle: 'tooltip' }, title: "Agregar Imagen" do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-file-text"></i></button>
+    <% end %>
+    <%= link_to fotoweb_contratosperinvdetalles_path(id: contratosperinvdetalle.id), remote: true, data: { toggle: 'tooltip' }, title: "Tomar Foto" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-camera"></i></button>
+    <% end %>
+  </td>
+  <td align="left" class="text-table">
+    <%= contratosperinvdetalle.item rescue nil %><br/>
+    <b>Placa:</b> <%= contratosperinvdetalle.nro_placa rescue nil %>
+    <% if contratosperinvdetalle.contratosperdetallesdocs.present? %><br/>
+      <div id="abrir_documentos<%= contratosperinvdetalle.id %>" class="pull-left">
+        <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'ABRIR'), remote: true do %>
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+          Ver Documentos
+        <% end %>
+      </div>
+      <div id="cerrar_documentos<%= contratosperinvdetalle.id %>" class="pull-left hide">
+        <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'CERRAR'), remote: true do %>
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+          Cerrar Documentos
+        <% end %>
+      </div>
+      <div id="abrir_detalle<%= contratosperinvdetalle.id %>" style="width: 100%"></div>
+    <% end %>
+  </td>
+  <td align="center" class="text-table"><%= contratosperinvdetalle.estado_item rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperinvdetalle.observaciones rescue nil %>
+    <% if contratosperinvdetalle.observacion_devolucion.present? %>
+    <div style="color: red; font-size: 10px;">
+      <b>Observación Devolución:</b> <%= contratosperinvdetalle.observacion_devolucion rescue nil %>
+    </div>
+      <% end %>
+  </td>
+</tr>
+
+<div class="modal fade" id="nuevoSoporte<%= contratosperinvdetalle.id %>">
+  <div class="modal-dialog" style="width: 1000px;">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="fotoweb<%= contratosperinvdetalle.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="marcar<%= contratosperinvdetalle.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

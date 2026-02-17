@@ -1,0 +1,26 @@
+$("#contratossoldetalle_form").collapse("hide");
+
+$("#contratossoldetalle_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratossoldetalle_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratossoldetalle: @active_record %>");
+<% end %>
+
+$("#contratossoldetalle_<%= @contratossoldetalle.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#contratossoldetalle_<%= @contratossoldetalle.id %>").addClass("active_contratossoldetalle");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});

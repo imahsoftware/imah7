@@ -1,0 +1,19 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Descripción</th>
+        <th width="20%" class="text-left">Termino</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosgrupos">
+	    <%
+        @is_auth_a_contratosgrupo = is_auth_a("contratosgrupo")
+        @is_auth_e_contratosgrupo = is_auth_e("contratosgrupo")
+        @contrato.contratosgrupos.order(id: :desc).each do |contratosgrupo| %>
+	      <%= render 'contratosgrupos/tr', contratosgrupo: contratosgrupo %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

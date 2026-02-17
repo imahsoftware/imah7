@@ -1,0 +1,14 @@
+<tr id="tiposimagen_<%= tiposimagen.id %>">
+  <% if is_auth_c('tiposimagen') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposimagen_path(tiposimagen), class: 'edit_tiposimagen_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposimagen, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= tiposimagen.id %></td>
+  <td><%= tiposimagen.descripcion %></td>
+</tr>

@@ -1,0 +1,44 @@
+$("#addtraslado .modal-content").html('<%= j render "form" %>');
+$("#addtraslado").modal();
+
+$(".datetimepicker").datetimepicker();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select2").select2();
+$('.datepicker').datepicker({
+    dayNamesMin: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb"],
+    monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});
+
+$(function () {
+    return $('.select2Contrato<%= @contratosperfact.id %>').select2({
+        minimumInputLength: 3,
+        maximumInputLength: 20,
+        placeholder: "[ Seleccionar Contrato... ]",
+        ajax: {
+            url: '/contratos/searchall.json',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term,
+                    page: params.page
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        };
+                    })
+                };
+            }
+        }
+    });
+});

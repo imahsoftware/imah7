@@ -1,0 +1,42 @@
+<%= form_for(personasforencuesta) do |f| %>
+  <% if personasforencuesta.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(personasforencuesta.errors.count, "error") %> prohibited this personasforencuesta from being saved:</h2>
+
+      <ul>
+      <% personasforencuesta.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :personasformulario_id %>
+    <%= f.number_field :personasformulario_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :encuesta_id %>
+    <%= f.number_field :encuesta_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :encuestaspregunta_id %>
+    <%= f.number_field :encuestaspregunta_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :encuestapreopcion_id %>
+    <%= f.number_field :encuestapreopcion_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :calificacion %>
+    <%= f.text_field :calificacion %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

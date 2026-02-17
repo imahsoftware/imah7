@@ -1,0 +1,17 @@
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor2">
+    <th class="text-left">Empresas</th>
+  </tr>
+  <% @empresas.each do |empresa| %>
+    <tr>
+      <td class="text-table text-left">
+        <div id="abrir<%= empresa.empresa_id %>" class="pull-left">
+          <%= link_to informegeneral_contrato_visitas_path(empresa_id: empresa.empresa_id,  format: :pdf, mes: @mes), class: 'popup', data: { toggle: 'tooltip' } do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+            <em><i class="fa fa-star text-red"></i> <%= empresa.nombre_empresa rescue nil %></em>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+</table>

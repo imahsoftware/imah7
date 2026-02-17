@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <th width="10%" class="text-center">Acciones</th>
+        <th width="10%">Codigo</th>
+        <th>Descripcion</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_centros">
+      <% @centros.order(descripcion: :asc).each do |centro| %>
+	      <%= render 'centros/tr', centro: centro %>
+	    <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="box-footer clear-fix">
+  <div class="box-tools pull-right">
+    <%= will_paginate @centros, renderer: BootstrapPagination::Rails %>
+  </div>
+</div><!-- box-footer -->

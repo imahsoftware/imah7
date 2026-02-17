@@ -1,0 +1,53 @@
+<td width="40%"><small><%= fe.insumo_cliente rescue nil %>
+  <% if fe.insumocce.present? %>
+    <%= link_to fichatecnica_contratosinsumos_path(contratosinsumo_id: fe.id), data: { toggle: 'tooltip' }, title: 'Ficha', remote: true do %>
+      <i class="fa fa-life-ring text-red"></i>
+    <% end %>
+  <% end %>
+</small></td>
+<td width="60%">
+  <select class="form-control select2insumo<%=fe.id%> select2<%=fe.id.to_s%>" id="contratosinsumos_<%=fe.id%>_insumo_id" name="contratosinsumos[<%=fe.id%>][insumo_id]">
+    <option selected="selected" value="<%= f.object.insumo_id -%>">
+      <%= "#{f.object.descinsumo}" -%>
+    </option>
+  </select>
+</td>
+<script type="text/javascript" charset="utf-8">
+    $(function() {
+        return $(".select2insumo<%=fe.id.to_s%>").select2({
+            minimumInputLength: 2,
+            maximumInputLength: 20,
+            placeholder: "[ Seleccionar Insumo... ]",
+            ajax: {
+                url: '/insumos/search.json',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term,
+                        ff: <%=fe.id.to_s%>,
+                        page: params.page
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.name,
+                                id: item.id
+                            };
+                        })
+                    };
+                }
+            }
+        });
+    });
+
+</script>
+
+<style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+</style>

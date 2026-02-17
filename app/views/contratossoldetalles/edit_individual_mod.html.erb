@@ -1,0 +1,213 @@
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %>
+          Información Contrato (<%= @contratossolicitud.contrato.empresa.identificacion rescue nil %>-<%= @contratossolicitud.contrato.empresa.digito rescue nil %> <%= @contratossolicitud.contrato.empresa.nombre rescue nil %>)
+        </legend>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th width="15%" class="text-center">Nro Contrato</th>
+              <th width="10%" class="text-center">Nro Solicitud</th>
+              <th width="20%" class="text-center">Fecha creación</th>
+              <th width="20%" class="text-center">Periodo</th>
+              <th width="15%" class="text-center">Valor Total</th>
+              <th width="20%" class="text-center">Estado Solicitud</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <tr>
+              <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.contrato.nro_contrato rescue nil%></td>
+              <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.id rescue nil%></td>
+              <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+              <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.periodo rescue nil%></td>
+              <td class="text-center" style="font-size:12px;">
+                <button class="btn btn-xs btn-info"><strong>$ <%= camponumerico @contratossolicitud.contratossoldetalles.sum("total") rescue 0%></strong></button>
+              </td>
+              <td class="text-center" style="font-size:12px;"><%= @contratossolicitud.estado rescue nil%></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%
+  dato = @contratossolicitud.datosol.to_s
+  clase = ""
+  if @contratossolicitud.etapa.to_s == 'A'
+    clase = "Insumos"
+  elsif @contratossolicitud.etapa.to_s == 'B'
+    clase = "Equipos, Maquinaria"
+  elsif @contratossolicitud.etapa.to_s == 'C'
+    clase = "Otros servicios"
+  end
+%>
+<legend>
+  Edición Avanzada de <%=clase.to_s %>
+  <div class="box-tools pull-right">
+    <%= link_to edit_contratossolicitud_path(id: @contratossolicitud.id ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-arrow-left fa-fw" aria-hidden="true"></i> Regresar a la solicitud</button>
+    <% end %>
+  </div>
+</legend>
+<div class="box box-primary">
+  <%= form_tag '/contratossoldetalles/update_individual', method: 'put' do %>
+    <% sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc)
+    %>
+    <div class="box-body">
+      <div class="table-responsive">
+        <% if sedesactivas.count.to_i <= 5 %>
+        <table class="table table-bordered table-striped mb-0">
+          <thead class="thcolor">
+            <th class="text-left">Item</th>
+            <th style="width:80px" class="text-center">Total</th>
+            <%
+               sedesactivas.each do |a|%>
+              <th style="width:80px" class="text-center"><span data-toggle="tooltip" data-html="true" data-original-title="<%=a.nombre rescue nil %>"><small>Sede <%=a.ordensede%></small></span></th>
+            <%  end %>
+          </thead>
+        </table>
+        <% end %>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-bordered table-striped mb-0">
+            <% if sedesactivas.count.to_i > 5 %>
+              <thead class="thcolor">
+                <th style="width:250px" class="text-left">Item</th>
+                <th style="width:80px" class="text-center">Total</th>
+              <%
+                sedesactivas.each do |a|%>
+                <th style="width:80px" class="text-center"><span data-toggle="tooltip" data-html="true" data-original-title="<%=a.nombre rescue nil %>"><small>Sede <%=a.ordensede%></small></span></th>
+              <%  end %>
+              </thead>
+            <%  end %>
+            <tbody>
+            <% for contratossoldetalle in @contratossoldetalles.where(["#{dato.to_s}"]).order("id asc") %>
+              <tr>
+                <%= fields_for "contratossoldetalles[]", contratossoldetalle do |f| %>
+                  <%= render "fields",
+                             :f => f,
+                             :fe => contratossoldetalle.nombreinsumo,
+                             :ce => sedesactivas
+                  %>
+                <% end %>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-footer">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead class="thcolor">
+            <th class="text-right">Valor total solicitado (<%=clase.to_s %>)</th>
+            <th style="width:150px" class="text-right"><%= camponumerico @contratossoldetalles.where(["#{dato.to_s}"]).sum("total") rescue 0%></th>
+            </thead>
+          </table>
+          <div class="box-tools pull-right">
+            <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+
+
+</div>
+<% sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc) %>
+
+<div class="grid-container">
+  <div class="grid">
+
+    <div class="grid-col grid-col--fixed-left">
+      <div class="grid-item grid-item--header">
+        <p>Item/Sede</p>
+      </div>
+      <% for contratossoldetalle in @contratossoldetalles.where(["#{dato.to_s}"]).order("id asc") %>
+        <div class="grid-item">
+          <p><%=contratossoldetalle.nombreinsumo rescue nil %></p>
+        </div>
+      <%  end %>
+    </div>
+
+    <% for contratossoldetalle in @contratossoldetalles.where(["#{dato.to_s}"]).order("id asc") %>
+        <%= fields_for "contratossoldetalles[]", contratossoldetalle do |f| %>
+          <%= render "fields2",
+                     :f => f,
+                     :fe => contratossoldetalle.nombreinsumo,
+                     :ce => sedesactivas
+          %>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        overflow: auto;
+        height: 450px;
+    }
+    .grid {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    .grid-col {
+        width: 150px;
+        min-width: 150px;
+    }
+    .grid-item--header {
+        height: auto;
+        min-height: 100px;
+        position: sticky;
+        position: -webkit-sticky;
+        background: white;
+        top: 0;
+    }
+    .grid-col--fixed-left {
+        position: sticky;
+        left: 0;
+        z-index: 9998;
+        background: white;
+        width: 300px;
+    }
+    .grid-col--fixed-right {
+        position: sticky;
+        right: 0;
+        z-index: 9998;
+        background: white;
+    }
+    .grid-item {
+        height: 50px;
+        border: 1px solid gray;
+        width: 100%;
+    }
+/*
+    .my-custom-scrollbar {
+        position: relative;
+        height: 450px;
+        overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+*/
+</style>
+
+
+
+
+

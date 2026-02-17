@@ -1,0 +1,31 @@
+
+<div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+  <br/>
+  Medellin, <%=namedate(@contratospervacacion.created_at) rescue nil %>
+  <br/><br/><br/><br/><br/>
+  Señor(a)<br/>
+  <strong><%=contratospersona.nombre_completo rescue nil%></strong><br/>
+  <strong>C.C. <%=contratospersona.identificacion rescue nil%></strong><br/>
+  La Ciudad<br/>
+  <br/><br/><br/>
+  <strong>ASUNTO:</strong> Notificación periodo de vacaciones.
+  <br/><br/><br/><br/>
+  Atento saludo,
+  <br/><br/><br/>
+  Por medio de la presente le informamos que el tiempo laborado por usted en nuestra empresa ha cumplido un año completo, de manera consecutiva, por este motivo a través de nuestra área de gestión humana le notificamos que ha llegado el momento de otorgarle sus vacaciones respectivas al año en curso.
+  <br/><br/>
+  De esta manera, el día de inicio de su periodo de vacaciones es el día <strong><%=namedate(@contratospervacacion.fecha_inicio).upcase rescue nil %></strong> y se dará por terminado el día <strong><%=namedate(@contratospervacacion.fecha_fin_disfrute).upcase %></strong>; ello quiere decir que estará reincorporándose a sus actividades el día <strong><%=namedate(@contratospervacacion.fecha_reincorpora).upcase %></strong>.
+  <br/><br/>
+  Una vez notificado, deseamos que pueda disfrutar de su tiempo de descanso y agradecemos de antemano todo el desempeño y colaboración brindada por usted.
+  <br/><br/><br/><br/>
+  Atentamente,
+  <br/><br/><br/><br/>
+  <% if portafolio.identificacion_rep.to_s == '15253986' %>
+    <%= wicked_pdf_image_tag "#{image_url("firmaalberto.jpg")}", style: 'position: relative;margin-bottom: -20px;;z-index: 0' %><br>
+  <% else %><br/><br/>
+  <% end %>
+  <b style="font-size: 16px; font-family: Tahoma; margin-top: -30px;position: relative;z-index: 9999"><%=portafolio.nombre_rep rescue nil %></b><br/>
+  <strong>GERENTE</strong><br/>
+  <strong>C.C. <%=camponumerico2 portafolio.identificacion_rep rescue nil %></strong>
+  <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+</div>

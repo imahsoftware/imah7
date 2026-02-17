@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionestallas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Talla pantalon</th>
+      <th>Cant pantalon</th>
+      <th>Talla camisa</th>
+      <th>Cant camisa</th>
+      <th>Talla zapatos</th>
+      <th>Cant zapatos</th>
+      <th>Zapatos</th>
+      <th>Guantes</th>
+      <th>Tapabocas</th>
+      <th>Monogafas</th>
+      <th>Casco</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionestallas.each do |migracionestalla| %>
+      <tr>
+        <td><%= migracionestalla.user %></td>
+        <td><%= migracionestalla.archivo %></td>
+        <td><%= migracionestalla.estado %></td>
+        <td><%= migracionestalla.identificacion %></td>
+        <td><%= migracionestalla.talla_pantalon %></td>
+        <td><%= migracionestalla.cant_pantalon %></td>
+        <td><%= migracionestalla.talla_camisa %></td>
+        <td><%= migracionestalla.cant_camisa %></td>
+        <td><%= migracionestalla.talla_zapatos %></td>
+        <td><%= migracionestalla.cant_zapatos %></td>
+        <td><%= migracionestalla.zapatos %></td>
+        <td><%= migracionestalla.guantes %></td>
+        <td><%= migracionestalla.tapabocas %></td>
+        <td><%= migracionestalla.monogafas %></td>
+        <td><%= migracionestalla.casco %></td>
+        <td><%= link_to 'Show', migracionestalla %></td>
+        <td><%= link_to 'Edit', edit_migracionestalla_path(migracionestalla) %></td>
+        <td><%= link_to 'Destroy', migracionestalla, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionestalla', new_migracionestalla_path %>

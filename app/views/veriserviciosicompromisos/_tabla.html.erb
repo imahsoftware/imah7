@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="5%"></td>
+				<th width="15%" class="text-left text-table">Fecha Creación</th>
+        <th width="10%" class="text-center text-table">Fecha</th>
+        <th class="text-left text-table" width="35%">Compromiso</th>
+				<th class="text-left text-table">Observación</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_veriserviciosicompromisos">
+	    <% @veriserviciositem.veriserviciosicompromisos.order(id: :desc).each do |veriserviciosicompromiso| %>
+	      <%= render 'veriserviciosicompromisos/tr', veriserviciosicompromiso: veriserviciosicompromiso %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

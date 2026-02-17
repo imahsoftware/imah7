@@ -1,0 +1,73 @@
+<%
+  is_auth_c_contratacionconv = is_auth_c("eliminasoporte")
+%>
+<br/><div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="8%" class="text-center"></th>
+      <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+      <th width="40%" class="text-left">Solicitud</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% datos.each do |p|
+      cpl = p.contratosperliquidacion_id rescue nil
+    %>
+      <tr>
+        <td class="text-center" style="font-size:12px;">
+          <% if @autorizacionnomina %>
+            <%= link_to liquidacion_contratosperliquidaciones_path(id: cpl, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+            <% end %>
+          <% end %>
+          <%= link_to new_contratosperlimagen_path(contratosperfecha_id: p.contratosperfecha_id), remote: true, data: { toggle: 'tooltip' }, title: 'Añadir Soporte Digital' do %>
+            <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+          <% end %>
+        </td>
+        <td class="text-left" style="font-size:10px;">
+          <strong><%= p.autobuscar rescue nil %></strong>
+          <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %>
+          <br/><strong>Grupo : </strong><%= p.descripcion rescue nil %> <small>(<%= p.termino rescue nil %>)</small>
+          <% if p.trasladado.to_s == 'SI' %><div class="text-red" style='font-size: 10px;'><strong>->> Trasladado!!</strong></div><% end %>
+          <% if p.existeimagen.to_s == 'X' %>
+            <% Contratosperlimagen.where(contratosperfecha_id: p.contratosperfecha_id).each do |b| %>
+              <div style="color:red;">
+                <% if is_auth_c_contratacionconv %>
+                <%= link_to b, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                  <i class="fa fa-trash"></i>
+                <% end %> <% end %> Soporte Pago liquidación
+                <%= link_to b.liquidacionesimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-cloud-download text-danger"></i></div>
+                <% end %>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-left" style="font-size:10px;">
+          <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+          <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+          <br/><strong>Solicitud realizada por : </strong><%= p.usernombre rescue nil %>
+          <br/><strong>Solicitud aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <div class="box-footer clearfix">
+    <div class="box-tools pull-right">
+      <%= will_paginate datos, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+  <div class="modal fade" id="adddocumento">
+    <div class="modal-dialog modal-dialog-responsive" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+

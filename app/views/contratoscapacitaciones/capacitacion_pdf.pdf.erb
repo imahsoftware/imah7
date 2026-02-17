@@ -1,0 +1,352 @@
+<div align="center">
+  <%
+    isadmin = is_admin
+    portafolio = Portafolio.find(@contratoscapacitacion.contrato.empresa.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  %>
+  <br/>
+  <table width="760" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+              </div>
+            </td>
+            <th style="font-size: 18px; font-family: Tahoma;">
+              <div align="center">CAPACITACIONES</div>
+            </th>
+          </tr>
+
+          <tr>
+            <td colspan="2" width="80%">
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>NOMBRE CAPACITACION </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.descripcion rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>TEMA </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.temas rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>OBJETIVO </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.objetivo rescue nil %></td>
+                </tr>
+                <tr>
+                  <td width="30%" height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>FECHA PROGRAMACION </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.fecha_programacion %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>FECHA LIMITE </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.fecha_limite rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>ESTADO </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.estado rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>CREADO POR </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= User.find(@contratoscapacitacion.user_supervisor).nombre rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>ENTIDAD </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contrato.empresa.identnombre rescue nil %></td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">DOCUMENTOS DIGITALES DE LA CAPACITACIÓN</div>
+
+              <canvas id="miGraficoTorta" width="10" height="10"></canvas>
+              <script>
+
+                  var ctx = document.getElementById("miGraficoTorta").getContext("2d");
+
+                  var data = {
+                      labels: ["Pendiente", "Otros Pendientes", "Pendientes Iniciar Capacitacion", "En Proceso", "Finalizado"],
+                      datasets: [{
+                          data: [<%= 10 %>, <%= Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: @contratoscapacitacion.id).count rescue 0 %>, <%= @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").count rescue 0 %>, <%= 20 %>, <%= 50 %>],
+                          backgroundColor: ["#EE2727", "#1659EA", "#F38217", "#FFCE56", "#28AF10"]
+                      }]
+                  };
+
+                  var myPieChart = new Chart(ctx, {
+                      type: 'pie',
+                      data: data
+                  });
+
+              </script>
+
+
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% if @contratoscapacitacion.capacitacion.capacitaciondocs.present? %>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td height="20" width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>TIPO</strong></td>
+            <td style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+              <div align="left"><strong>DESCRIPCION</strong></div>
+            </td>
+            <td width="30%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+              <div align="center"><strong>DOCUMENTO</strong></div>
+            </td>
+          </tr>
+          <% @contratoscapacitacion.capacitacion.capacitaciondocs.each do |capacitaciondoc| %>
+            <tr>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= capacitaciondoc.tipo rescue nil %></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">
+                <div align="left"><%= capacitaciondoc.descripcion rescue nil %></div>
+              </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">
+                <div align="center">
+                  <% if capacitaciondoc.capacitaciondoc_file_name.present? %>
+                    <%= link_to capacitaciondoc.capacitaciondoc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                      <i class="fa fa-cloud-download text-danger"></i> <%= capacitaciondoc.capacitaciondoc_file_name rescue nil %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+        <% else %>
+        <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+          informacion
+        </div>
+        <% end %>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">EVALUACIÓN</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% if @contratoscapacitacion.capacitacion.capacitacionevaluaciones.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="left"><strong>PREGUNTA</strong></div></td>
+            </tr>
+            <% @contratoscapacitacion.capacitacion.capacitacionevaluaciones.each do |capacitacionevaluacion| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= capacitacionevaluacion.pregunta.html_safe rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">USUARIOS PENDIENTES</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% if @contratoscapacitacion.interno.to_s == 'SI'
+             contratosperfechas = Contratosperfecha.where("estado = 'INTERNO'")
+           else
+             contratosperfechas = Contratosperfecha.select("id, (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) autob")
+                                                    .where("fecha_inicio <= '#{@contratoscapacitacion.capacitacion.fecha_limite.to_date}'
+                                                          and (fecha_fin is null or fecha_fin > now())
+                    and contrato_id = #{@contratoscapacitacion.contrato_id} and id not in (select contratosperfecha_id from contratoscapapersonas where contrato_id = #{@contratoscapacitacion.contrato_id} and contratoscapacitacion_id = #{@contratoscapacitacion.id})").order("id asc")
+           end
+        %>
+        <% if contratosperfechas.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr style="background: #adadad">
+              <td WIDTH="5%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+              <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+            </tr>
+            <% count = 0
+               contratosperfechas.each do |contratosperfecha|
+                 count += 1 %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratosperfecha.autob rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">OTROS PENDIENTES</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% contratoscapapersonas = Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: @contratoscapacitacion.id).order("id asc") %>
+        <% if contratoscapapersonas.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr style="background: #adadad">
+              <td WIDTH="5%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+              <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+            </tr>
+            <% count = 0
+               contratoscapapersonas.each do |contratoscapapersona|
+                 count += 1
+            %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+        <br/>
+
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">PENDIENTES INICIAR CAPACITACIÓN</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% contratoscapapersonas = @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").order("id asc") %>
+        <% if contratoscapapersonas.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr style="background: #adadad">
+              <td WIDTH="5%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+              <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+              <td WIDTH="20%" height="20" style="background: #E8E3E3; padding: 3px;"><strong>FECHA</strong></td>
+            </tr>
+            <% count = 0
+               contratoscapapersonas.each do |contratoscapapersona|
+                 count += 1
+            %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.created_at.strftime('%Y-%m-%d %X') rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+        <br/>
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">USUARIOS EN PROCESO</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% contratoscapapersonas = Contratoscapapersona.where("contratoscapacitacion_id = #{@contratoscapacitacion.id} and estado_evaluacion = 'INICIAR CAPACITACION'").includes([:contratospersona]).where("contratoscapacitacion_id = #{@contratoscapacitacion.id} and estado_evaluacion = 'INICIAR CAPACITACION'").includes([:contratospersona]) %>
+        <% if contratoscapapersonas.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td WIDTH="5%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+              <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+              <td width="20%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>FECHA</strong></div></td>
+            </tr>
+            <% count = 0
+               contratoscapapersonas.each do |contratoscapapersona|
+                 count += 1
+            %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %></div></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay informacion</div>
+        <% end %>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">USUARIOS FINALIZACIÓN</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% contratoscapapersonas = Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  contratoscapacitacion_id = #{@contratoscapacitacion.id} and contrato_id = #{@contratoscapacitacion.contrato_id} and capacitacion_id = #{@contratoscapacitacion.capacitacion_id} and contratoscapacitacion_id = #{@contratoscapacitacion.id}").includes([:contratospersona]) %>
+        <% if contratoscapapersonas.present? %>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr style="background: #adadad">
+              <td WIDTH="3%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+              <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+              <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>ESTADO</strong></div></td>
+              <td width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>RESULTADO</strong></div></td>
+              <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>FECHA FIRMA</strong></div></td>
+              <td width="25%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>CODIFO FIRMA</strong></div></td>
+            </tr>
+            <% count = 0
+               contratoscapapersonas.each do |contratoscapapersona|
+                 count += 1
+            %>
+              <tr>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.contratospersona.autobuscar rescue nil %></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= contratoscapapersona.calificacion rescue nil %></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= contratoscapapersona.resultado_evaluacion rescue nil %></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= contratoscapapersona.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= contratoscapapersona.codigo_firma rescue nil %></div></td>
+              </tr>
+            <% end %>
+          </table>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+        <br/>
+        <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+          - <%= User.find(isadmin).nombre rescue nil %>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

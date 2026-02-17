@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  formato: one
+  seccion: MyString
+  variable: one
+  valor: MyString
+  orden: 1
+  titulo: MyString
+
+two:
+  formato: two
+  seccion: MyString
+  variable: two
+  valor: MyString
+  orden: 1
+  titulo: MyString

@@ -1,0 +1,2 @@
+module EgresosimagenesHelper
+end

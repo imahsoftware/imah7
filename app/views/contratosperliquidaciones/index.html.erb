@@ -1,0 +1,53 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosperliquidaciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosperfecha</th>
+      <th>Autobuscar</th>
+      <th>Salario mes</th>
+      <th>Auxilio</th>
+      <th>Subtotal</th>
+      <th>Dias</th>
+      <th>Cesantias</th>
+      <th>Int cesantias</th>
+      <th>Vacaciones</th>
+      <th>Prima</th>
+      <th>Novedades</th>
+      <th>Total</th>
+      <th>Estado</th>
+      <th>Liquidacionimagen</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosperliquidaciones.each do |contratosperliquidacion| %>
+      <tr>
+        <td><%= contratosperliquidacion.contratosperfecha %></td>
+        <td><%= contratosperliquidacion.autobuscar %></td>
+        <td><%= contratosperliquidacion.salario_mes %></td>
+        <td><%= contratosperliquidacion.auxilio %></td>
+        <td><%= contratosperliquidacion.subtotal %></td>
+        <td><%= contratosperliquidacion.dias %></td>
+        <td><%= contratosperliquidacion.cesantias %></td>
+        <td><%= contratosperliquidacion.int_cesantias %></td>
+        <td><%= contratosperliquidacion.vacaciones %></td>
+        <td><%= contratosperliquidacion.prima %></td>
+        <td><%= contratosperliquidacion.novedades %></td>
+        <td><%= contratosperliquidacion.total %></td>
+        <td><%= contratosperliquidacion.estado %></td>
+        <td><%= contratosperliquidacion.liquidacionimagen %></td>
+        <td><%= link_to 'Show', contratosperliquidacion %></td>
+        <td><%= link_to 'Edit', edit_contratosperliquidacion_path(contratosperliquidacion) %></td>
+        <td><%= link_to 'Destroy', contratosperliquidacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosperliquidacion', new_contratosperliquidacion_path %>

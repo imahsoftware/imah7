@@ -1,0 +1,272 @@
+<%
+
+  @isadmin = is_admin
+  portafolio = Portafolio.find(@visita.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<div align="center">
+  <br/>
+  <table width="760" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td width="25%">
+        <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+      <td>
+        <div align="center" style="font-size: 20px; font-family: Tahoma;"><strong>FORMATO DE VISITA</strong></div>
+        <br/>
+        <div align="center" style="font-size: 12px; font-family: Tahoma;"><%= @visita.contrato.empresa.identnombre rescue nil %>
+          <br/>
+          <strong>Nro de Contrato: </strong><%= @visita.contrato.nro_contrato rescue nil %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" width="80%">
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="35%" height="25" style="background: #E8E3E3;"><strong>ID VISITA : </strong></td>
+            <td>&nbsp;<%= @visita.id rescue nil %> - (<%= @visita.teletrabajo rescue nil %></td>
+          </tr>
+          <tr>
+            <td width="35%" height="25" style="background: #E8E3E3;"><strong>USUARIO REALIZA VISITA : </strong>
+            </td>
+            <td>&nbsp;<%= @visita.user.nombre rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3;"><strong>OBJETIVO DE LA VISITA : </strong></td>
+            <td>&nbsp;<%= @visita.descripcion %></td>
+          </tr>
+          <tr>
+            <td height="25" style="background: #E8E3E3;"><strong>DURACIÓN DE LA VISITA : </strong></td>
+            <td>&nbsp;<%= @visita.tiempo_visita %> Minutos</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="50%" height="25" style="background: #E8E3E3;">
+        <div align="center">
+          <strong>INICIO VISITA: </strong><%= @visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></div>
+      </td>
+      <td width="50%" height="25" style="background: #E8E3E3;">
+        <div align="center"><strong>FIN
+          VISITA: </strong><%= @visita.visitasdocs.where("tipo = 'DESPUES'").first.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="center"><%= image_tag "#{image_url(@visita.visitasdocs.where("tipo = 'ANTES'").first.docvisita.url(:original, false))}", size: "200x200" rescue nil %>
+          <br/>
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+          <div id="map_<%= @visita.id %>" style="height: 220px; z-index: 0;"></div>
+          <script type="text/javascript" charset="utf-8">
+              document.addEventListener('DOMContentLoaded', function () {
+                  var mapId = "map_<%= @visita.id %>";
+                  var firstLatitude = <%= @visita.latitude rescue nil %>;
+                  var firstLongitude = <%= @visita.longitude rescue nil %>;
+
+                  var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  }).addTo(map);
+
+                  var marker = L.marker([<%= @visita.latitude.to_s %>, <%= @visita.longitude.to_s %>]).addTo(map);
+                  marker.bindPopup("<%= @visita.descripcion_visita rescue nil %>").openPopup();
+
+                  // Forzar la actualización del tamaño del mapa
+                  map.invalidateSize();
+              });
+          </script>
+        </div>
+      </td>
+      <td>
+        <div align="center"><%= image_tag "#{image_url(@visita.visitasdocs.where("tipo = 'DESPUES'").first.docvisita.url(:original, false))}", size: "200x200" rescue nil %>
+          <br/>
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+          <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+          <div id="map2_<%= @visita.id %>" style="height: 220px; z-index: 0;"></div>
+          <script type="text/javascript" charset="utf-8">
+              document.addEventListener('DOMContentLoaded', function () {
+                  var mapId = "map2_<%= @visita.id %>";
+                  var firstLatitude = <%= @visita.fin_latitude rescue nil %>;
+                  var firstLongitude = <%= @visita.fin_longitude rescue nil %>;
+
+                  var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  }).addTo(map);
+
+                  var marker = L.marker([<%= @visita.fin_latitude.to_s %>, <%= @visita.fin_longitude.to_s %>]).addTo(map);
+                  marker.bindPopup("<%= @visita.descripcion_visitafin rescue nil %>").openPopup();
+
+                  // Forzar la actualización del tamaño del mapa
+                  map.invalidateSize();
+              });
+          </script>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td colspan="2" style="font-size: 14px; font-family: Tahoma;"><strong>NOTAS</strong></td>
+    </tr>
+    <% if @visita.visitasnotas.present? %>
+      <tr>
+        <td width="20%" height="18" style="background: #E8E3E3;"><strong>Fecha</strong></td>
+        <td style="background: #E8E3E3;"><strong>Nota</strong></td>
+      </tr>
+      <% @visita.visitasnotas.each do |p| %>
+        <tr>
+          <td height="18" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.nota rescue nil %></td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="2"><div align="left" style="font-size: 10px; font-family: Tahoma;">No hay información</div></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td colspan="2" style="font-size: 14px; font-family: Tahoma;"><strong>SEDES</strong></td>
+    </tr>
+  <% if @visita.visitassedes.present? %>
+      <tr>
+        <td width="20%" height="18" style="background: #E8E3E3;"><strong>Fecha</strong></td>
+        <td style="background: #E8E3E3;"><strong>Sede</strong></td>
+      </tr>
+      <% @visita.visitassedes.each do |p| %>
+        <tr>
+          <td height="18" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.contratossede.nombre rescue nil %>
+            <small>(<%= p.contratossede.municipio rescue nil %>
+              - <%= p.contratossede.departamento rescue nil %>)</small></td>
+        </tr>
+      <% end %>
+  <% else %>
+    <tr>
+      <td colspan="2"><div align="left" style="font-size: 10px; font-family: Tahoma;">No hay información</div></td>
+    </tr>
+  <% end %>
+  </table>
+  <br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td colspan="3" style="font-size: 14px; font-family: Tahoma;"><strong>COMPROMISOS</strong></td>
+    </tr>
+    <% if @visita.visitascompromisos.present? %>
+        <tr>
+          <td width="20%" height="18" style="background: #E8E3E3;"><strong>Fecha</strong></td>
+          <td width="10%" style="background: #E8E3E3;"><strong>Estado</strong></td>
+          <td style="background: #E8E3E3;"><strong>Compromiso</strong></td>
+        </tr>
+        <% @visita.visitascompromisos.each do |p| %>
+          <tr>
+            <td height="18" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.fecha.strftime("%d/%m/%Y %X") rescue nil %></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.estado rescue nil %></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.compromiso rescue nil %></td>
+          </tr>
+        <% end %>
+    <% else %>
+      <tr>
+        <td colspan="3"><div align="left" style="font-size: 10px; font-family: Tahoma;">No hay información</div></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td colspan="4" style="font-size: 14px; font-family: Tahoma;"><strong>DOCUMENTOS DIGITALES</strong></td>
+    </tr>
+    <% if @visita.visitasdocs.present? %>
+      <% @visita.visitasdocs.where("tipo not in ('ANTES','DESPUES')").each_slice(2) do |pair| %>
+        <tr>
+          <% pair.each do |p| %>
+            <td width="50%" height="25" style="background: #E8E3E3;">
+              <b><%= p.tipo rescue nil %></b><br/>
+              <b>FECHA:</b> <%= p.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+            </td>
+          <% end %>
+          <% if pair.size == 1 %>
+            <td width="50%" height="25" style="background: #E8E3E3;"></td>
+          <% end %>
+        </tr>
+        <tr>
+          <% pair.each do |p| %>
+            <td>
+              <%= image_tag p.docvisita.url(:original, false), size: "200x200", loading: 'lazy' %>
+            </td>
+          <% end %>
+          <% if pair.size == 1 %>
+            <td></td>
+          <% end %>
+        </tr>
+      <% end %>
+  <% else %>
+      <tr>
+        <td colspan="4"><div align="left" style="font-size: 10px; font-family: Tahoma;">No hay información</div></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td colspan="4" style="font-size: 14px; font-family: Tahoma;"><strong>ATENCION</strong></td>
+    </tr>
+    <% if @visita.visitasatenciones.present? %>
+      <tr>
+        <td height="18" style="background: #E8E3E3;"><strong>Identificacion - Nombre</strong></td>
+        <td width="25%" style="background: #E8E3E3;"><strong>Cargo</strong></td>
+        <td width="10%" style="background: #E8E3E3;"><strong>Movil</strong></td>
+        <td width="25%" style="background: #E8E3E3;"><strong>Email</strong></td>
+      </tr>
+      <% @visita.visitasatenciones.each do |p| %>
+        <tr>
+          <td height="18" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.identificacion rescue nil %>
+            - <%= p.nombre rescue nil %>
+            <br/><small>Fecha Firmada Digital: <%= p.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %><br/>
+            Codigo Firmada Digital: <%= p.codigo_firma rescue nil %></small>
+          </td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.cargo rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.celular rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= p.email rescue nil %></td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="4"><div align="left" style="font-size: 10px; font-family: Tahoma;">No hay información</div></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+    - <%= User.find(is_admin).nombre rescue nil %>
+  </div>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

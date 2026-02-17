@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_perliq<%= @periodo %>_completo").html('<%= j render "periodosliquidaciones/showinfo" %>');
+$("#abrir_perliq<%= @periodo %>_completo").addClass("hide");
+$("#cerrar_perliq<%= @periodo %>_completo").removeClass("hide");
+$("#tr_show_perliq<%= @periodo %>_completo").removeClass("hidden");
+<% else %>
+$("#abrir_perliq<%= @periodo %>_completo").removeClass("hide");
+$("#cerrar_perliq<%= @periodo %>_completo").addClass("hide");
+$("#abrir_detalle_perliq<%= @periodo %>_completo").html(null);
+$("#tr_show_perliq<%= @periodo %>_completo").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

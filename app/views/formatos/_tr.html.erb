@@ -1,0 +1,18 @@
+<tr id="formato_<%= formato.id %>">
+  <td class="text-center">
+    <%= link_to edit_formato_path(formato), class: 'edit_formato_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <% if Iparametrosformato.find_by(formato_id: formato.id).present? == false %>
+      <%= link_to formato, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to clonar_formatos_path(id: formato.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?"  }, title: "Clonar Formato" do %>
+      <button class="btn btn-xs btn-success"><i class="fa fa-clone"></i></button>
+    <% end %>
+  </td>
+  <td class="text-table"><%= formato.nombre rescue nil %></td>
+  <td class="text-table"><%= formato.segmento rescue nil %></td>
+  <td class="text-table"><%= formato.estado rescue nil %></td>
+</tr>

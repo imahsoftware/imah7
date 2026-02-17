@@ -1,0 +1,45 @@
+<%
+  @entregasdetalles = Objeto.find_by_sql("SELECT cp.identificacion, cp.nombre_completo nombre_empleado, g.perfil cargo,
+                                                    GROUP_CONCAT(CONCAT(d.item, ' x ', d.cantidad) ORDER BY d.item SEPARATOR ' | ') AS items_consolidados
+                                          FROM   contratosentepps c, users u, contratospersonas p, `contratosenteppsdetalles` d, contratosperfechas f, 
+                                                  contratos cc, contratoscargos g, empresas e, contratospersonas cp
+                                          WHERE  c.user_id = u.id
+                                          AND    u.contratospersona_id = p.id
+                                          AND    DATE_FORMAT(c.created_at, '%m-%Y') = '#{@mes}'
+                                          AND    cc.id = #{@contrato.id}
+                                          AND    c.estado = 'FINALIZADO'
+                                          AND    c.id = d.contratosentepp_id
+                                          AND    d.contratosperfecha_id = f.id
+                                          AND    f.contrato_id = cc.id
+                                          AND   cc.empresa_id = e.id
+                                          AND    f.contratoscargo_id = g.id
+                                          AND    f.contratospersona_id = cp.id
+                                          GROUP BY  g.perfil,cp.identificacion,cp.nombre_completo") rescue nil
+  puts "Aqui...."
+  if @entregasdetalles.present?
+%>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, se realizaron un total de <b>&nbsp;(<%= @entregasdetalles.count rescue 0 %>)&nbsp;</b> de los elementos de protección personal a todos los colaboradores,
+    elementos que son acordes con la actividad que desempeñan, con la entrega de estos se da cumplimiento al SG SST y se garantiza los elementos adecuados para su protección y cuidado en su lugar de trabajo.
+  </div><br/>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="12%" class="encabezado_tabla alineacion_izq">Identificacion</th>
+        <th width="35%" class="encabezado_tabla alineacion_izq">Nombre</th>
+        <th width="20%" class="encabezado_tabla alineacion_izq">Cargo</th>
+        <th class="encabezado_tabla alineacion_izq">Entrega</th>
+      </tr>
+      <% @entregasdetalles.each do |p| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= p.identificacion rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= p.nombre_empleado rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= p.cargo rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= p.items_consolidados rescue nil %></td>
+        </tr>
+      <% end %>
+    </table><br/>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizaron entrega de elementos de protección personal.
+  </div><br/>
+<% end %>

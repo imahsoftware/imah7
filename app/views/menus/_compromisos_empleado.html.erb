@@ -1,0 +1,80 @@
+<%
+  isadmin = @usr.id
+  contratosperfecha = Contratosperfecha.where("estado = 'ACTIVO' and contratospersona_id = (select id from contratospersonas where identificacion = '#{@usr.identificacion}') and (fecha_fin is null or fecha_fin >= curdate())")[0] rescue nil
+  if contratosperfecha.present?
+    @contratospersona = contratosperfecha.contratospersona
+%>
+  <% if Compromiso.where("estado in ('PENDIENTE', 'RECHAZADO') and personasformulario_id in (select id from personasformularios where identificacion = '#{@usr.identificacion}')").present? %>
+    <div class="col-md-5">
+    </div>
+    <div class="col-md-7">
+      <div class="box box-warning">
+        <div class="box-body">
+          <div class="box-header">
+            <h3 class="box-title"><strong>Cargar aquí tus documentos de los Compromisos</strong></h3>
+          </div>
+          <div class="box-body">
+            <div id="contratosperimagenes">
+              <% if Compromiso.where("estado in ('PENDIENTE', 'RECHAZADO') and personasformulario_id in (select id from personasformularios where identificacion = '#{@usr.identificacion}')").present? %>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead class="thcolor">
+                    <tr>
+                      <td width="15%"></td>
+                      <th class="text-left text-table">Tipo de documento</th>
+                      <th width="20%" class="text-center text-table">Fecha del Compromisos</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_contratosperimagenes">
+                    <% Compromiso.where("estado in ('PENDIENTE', 'RECHAZADO') and personasformulario_id in (select id from personasformularios where identificacion = '#{@usr.identificacion}')").each do |compromiso| %>
+                      <tr>
+                        <td class="text-center">
+                          <%= link_to cargar_compromisos_path(compromiso_id: compromiso.id, parcargosdoc_id: compromiso.parcargosdoc_id, personasformulario_id: compromiso.personasformulario_id, contratosperfecha_id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' } do %>
+                            <button class="btn btn-xs btn-success"><i class="fa fa-upload"></i></button>
+                          <% end %>
+                        </td>
+                        <td align="left" style="font-size: 10px;"><%= compromiso.parcargosdoc.descripcion rescue nil %>
+                          <% if Contratosperimagen.where("compromiso_id = #{compromiso.id}").present? %>
+                            <table class="table table-bordered table-condensed table-striped">
+                              <tr class="thcolor">
+                                <td class="text-table">Documento Digital</td>
+                                <td width="15%" class="text-table text-center">Estado</td>
+                              </tr>
+                              <% Contratosperimagen.where("compromiso_id = #{compromiso.id}").each do |contratosperimagen| %>
+                                <tr>
+                                  <td class="text-table">
+                                    <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                      <i class="fa fa-cloud-download"></i> <%= contratosperimagen.personasimagen_file_name rescue nil %>
+                                    <% end %>
+
+                                  </td>
+                                  <td class="text-table text-center"><%= contratosperimagen.estado rescue nil %></td>
+                                </tr>
+                              <% end %>
+                            </table>
+                          <% end %>
+                        </td>
+                        <td class="text-center"><%= compromiso.fecha_entrega rescue nil %></td>
+                      </tr>
+                      <div class="modal fade" id="cargar_compromiso<%= compromiso.id rescue nil %>">
+                        <div class="modal-dialog modal-dialog-responsive" role="document">
+                          <div class="modal-content">
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

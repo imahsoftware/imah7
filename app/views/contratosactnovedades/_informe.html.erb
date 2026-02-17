@@ -1,0 +1,69 @@
+<div class="box box-danger">
+  <div class="box-body table-responsive">
+    <legend>Metro</legend>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th width="30%">Nombre</th>
+        <th>Parametros</th>
+        <th width="10%" class="text-center">Opciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% Infgrupo.where(tipo: 'METRO').each do |i| %>
+        <% if i.id == 60 %>
+          <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+            <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td>
+                <div class="form-group inline">
+                  <div class="row" style="margin-bottom: 5px">
+                    <div class="col-md-6">
+                      <label>Año</label>
+                      <%= select_tag 'ubicacion[anno60]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                    </div>
+                    <div class="col-md-6">
+                      <label>Mes</label>
+                      <%= select_tag 'ubicacion[mes60]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+            </tr>
+          <% end %>
+        <% end %>
+        <% if i.id == 61 %>
+          <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+            <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td>
+                <div class="form-group inline">
+                  <div class="row" style="margin-bottom: 5px">
+                    <div class="col-md-6">
+                      <label>Año</label>
+                      <%= select_tag 'ubicacion[anno61]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                    </div>
+                    <div class="col-md-6">
+                      <label>Mes</label>
+                      <%= select_tag 'ubicacion[mes61]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                    </div>
+                    <br/><br/>
+                    <div class="col-md-12">
+                      <label>Nodo : </label>
+                      <%= select_tag 'ubicacion[sede61]', options_for_select(select_contratossedesmetro.collect {|p| [p.nombre_consulta, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

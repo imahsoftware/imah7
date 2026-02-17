@@ -1,0 +1,16 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+    <tr class="thcolor">
+      <th width="10%"></th>
+      <th width="5%" class="text-center">Orden</th>
+      <th>Formato</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_iparametrosformatos">
+    <% Iparametrosformato.where("iparametro_id = #{@iparametro.id}").order("orden asc").each do |iparametrosformato| %>
+      <%= render 'iparametrosformatos/tr', iparametrosformato: iparametrosformato %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

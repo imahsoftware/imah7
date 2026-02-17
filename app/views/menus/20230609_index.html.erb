@@ -1,0 +1,93 @@
+<% if @usr.id == 9815 %>
+  <%= render 'nominabyempresa' %>
+<% else %>
+  <% if @validatAdm == 'PENDIENTE' %>
+    <div class="pull-right" style="margin-top: -19px;">
+      <%= link_to new_personasevaluacion_path(persona_id: is_personaid), data: { toggle: 'tooltip' }, title: 'Crear encuesta' do %>
+        <button class="btn btn-info"><strong>Realizar Encuesta</strong></button>
+      <% end %>
+    </div>
+  <% elsif @validatAdm == 'REALIZADA' %>
+    <div class="pull-right" style="margin-top: -19px;">
+      <button class="btn btn-warning"><strong>Encuesta realizada con exito</strong></button>
+    </div>
+  <% elsif @validatAdm == 'NO REALIZADA' %>
+    <div class="pull-right" style="margin-top: -19px;">
+      <button class="btn btn-danger"><strong>Encuesta NO REALIZADA</strong></button>
+    </div>
+  <% end %>
+
+  <% if @existeContratoPendiente.to_s == 'SI'
+       puts " desde el index llego aqui"
+
+  %>
+    <%= render 'firma_otp' %><!-- CONTRATOS -->
+  <% elsif @existeContratoFirmaPendiente.to_s == 'SI' %>
+    <%= render 'firma_otp_otros' %> <!-- DOCUMENTOS -->
+  <% elsif @tipoconsulta == 'RECTOR' %>
+    <%= render 'rector' %>
+  <% else %>
+    <% if @tipoconsulta == 'SUPERVISOR' %>
+      <%= render 'supervisor' %>
+    <% end %>
+    <%= render 'nomina' %>
+    <%= render "documento_personales" %>
+  <% end %>
+
+  <% if @validat == true %>
+    <% if @existeContratoPendiente.to_s == 'SI' %>
+    <% else %>
+      <% if @existeHoy == true %>
+        <%= render 'opcional' %>
+      <% end %>
+    <% end %>
+  <% else
+       if @cadper.include?('dashboard') %>
+      <%= render 'opcional2' %>
+    <% end
+       if @cadper.include?('solicitudseguimiento') %>
+      <%= render 'contratosesp' %>
+    <% end
+       if @cadper.include?('solicitudescontrato') %>
+      <%= render 'contratos' %>
+    <% end
+       if @cadper.include?('solicitudesprefactura') %>
+      <%= render 'prefacturas' %>
+    <% end
+       if @cadper.include?('solicitudesprefacturaesp') %>
+      <%= render 'prefacturasesp' %>
+    <% end
+       if @cadper.include?('dashcausaciones') %>
+      <%= render 'causaciones' %>
+    <% end
+       if @cadper.include?('dashcontratoscargo') %>
+      <%= render 'cargos' %>
+    <% end %>
+    <% if @cadper.include?('dashdotacion') %>
+      <%= render 'dotacion' %>
+    <% end %>
+    <% if @cadper.include?('dashdocumentosFirma') %>
+      <%#= render 'documentosFirma' %>
+      <%= render 'docfirma' %>
+      <%= render 'retiros' %>
+    <% end %>
+    <% if @cadper.include?('dashcarnet') %>
+      <%= render 'carnet' %>
+    <% end %>
+    <% if @cadper.include?('dashsalud') %>
+      <%= render 'seguridad_social' %>
+    <% end %>
+    <% if @cadper.include?('dashevaluadocumentos') %>
+      <%= render 'evaluacion_documento' %>
+    <% end %>
+    <%# if @cadper.include?('dashseguimientocontrato') or @cadper.include?('dashseguimientodotacion') or @cadper.include?('dashseguimientocarnet') or @cadper.include?('dashseguimientoapoyo') %>
+    <%#= render 'seguimientocontrato' %>
+    <%# end %>
+  <% end %>
+<% end %>
+
+<div class="modal fade" id="abrirfirma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

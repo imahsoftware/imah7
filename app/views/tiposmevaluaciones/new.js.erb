@@ -1,0 +1,9 @@
+<% if @active_record.present? %>
+	$("#tiposmevaluacion_<%= @active_record.id %>").replaceWith("<%= j render 'tr', tiposmevaluacion: @active_record %>");
+<% end %>
+$("#tiposmevaluacion_form").html("<%= j render 'form' %>");
+$(".datetimepicker").datetimepicker();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#tiposmevaluacion_form").collapse("show");
+$(".select2").select2();

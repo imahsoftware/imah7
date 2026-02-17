@@ -1,0 +1,162 @@
+<%
+
+  @logo = @contratosprefactura.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosprefactura.contrato.empresa.portafolio_id) rescue nil
+%>
+<div align="center">
+  <table width="780" border="0">
+    <tr valign="top">
+      <td height="700">
+        <br/>
+        <table width="100%">
+          <tr>
+            <td width="40%">
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+              </div>
+            </td>
+            <td style="font-size: 8px; font-family: Tahoma; line-height:150%">
+              <div align="center">
+                <strong><%=portafolio.razon_social rescue nil %></strong><br/>
+                Nit: <%=portafolio.identificacion rescue nil %>-<%=portafolio.digito rescue nil %><br/>
+                <%=portafolio.direccion rescue nil %> MEDELLÍN<br/>
+                Tel: (604) <%=portafolio.telefono_empresa rescue nil %> Ext 101<br/>
+                Medellín - Colombia<br/>
+                asearesp@gmail.com
+              </div></td>
+            <td width="30%" align="center">
+              <table width="80%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <td height="50" class="text-center" style="border:1px solid #CCCCCC;font-size: 14px; font-family: Tahoma;">Prefactura de venta<br/>
+                    <strong>No. <%= @contratosprefactura.id rescue nil%></strong><br/></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <table width="100%">
+          <tr>
+            <td>
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <td height="20" class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Señores</strong></td>
+                  <td class="text-left" colspan="3" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.empresa.nombre rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="20" width="15%" class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Nit</strong></td>
+                  <td class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.empresa.identificacion rescue nil %>-<%= @contrato.empresa.digito rescue nil %></td>
+                  <td width="15%" class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Teléfono</strong></td>
+                  <td class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.telefono_empresa rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="20" class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Dirección</strong></td>
+                  <td class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.direccion rescue nil %></td>
+                  <td class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Ciudad</strong></td>
+                  <td class="text-left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.municipio.descripcion rescue nil %></td>
+                </tr>
+              </table>
+            </td>
+            <td width="2%">&nbsp;</td>
+            <td width="30%" align="center">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <td class="text-center" height="30" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Fecha de Factura</strong></td>
+                  <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><strong>Fecha de Vencimiento</strong></td>
+                </tr>
+                <tr>
+                  <td class="text-center" height="30" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefactura.created_at.strftime("%Y-%m-%d") rescue nil%></td>
+                  <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefactura.created_at.strftime("%Y-%m-%d") rescue nil%></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;">
+          <tr style="background: #adadad">
+            <th width="5%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">ITEM</th>
+            <th class="text-left" height="20" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">DETALLE</th>
+            <th width="5%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">CANT</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">VR UNIT</th>
+            <th width="8%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">IVA %</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">VR BRUTO</th>
+          </tr>
+          <%  i = 0
+              cant = @contratosprefactura.contratosprefdetalles.count.to_i
+              align = "middle"
+            @contratosprefactura.contratosprefdetalles.order("tipo_producto ASC, detalle DESC").each do |contratosprefdetalle|
+              i = i + 1
+              if i == cant
+                align = "top"
+              end
+          %>
+            <tr valign="<%=align%>">
+              <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%=i  rescue nil %></td>
+              <td align="justify" height="20"  style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= contratosprefdetalle.detalle rescue nil %>
+              <% if i == cant %>
+                  <br/>
+                  <br/><strong>ORDEN DE COMPRA NRO. </strong> <%=@contratosprefactura.contrato.nro_contrato.to_s rescue nil%>
+                  <br/><strong>OBJETO: </strong> <%=@contratosprefactura.contrato.objeto.to_s rescue nil%>
+                  <br/><br/><strong>PERIODO FACTURADO: </strong> <%=@contratosprefactura.periodo.to_s rescue nil%>
+              <% end %>
+              </td>
+              <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratosprefdetalle.cantidad rescue nil %></td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratosprefdetalle.valor_unitario rescue nil %>&nbsp;</td>
+              <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratosprefdetalle.iva rescue nil %></td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico contratosprefdetalle.subtotal rescue nil %>&nbsp;</td>
+            </tr>
+          <% end %>
+        </table>
+
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;">
+          <tr VALIGN="middle">
+            <td width="60%" class="text-justify" style="font-size: 10px; font-family: Tahoma;">
+              <% if @contratosprefactura.observacion.to_s == "" %>
+                <strong>SIN OBSERVACION</strong>
+              <% else %>
+                <%=@contratosprefactura.observacion.to_s rescue nil%>
+              <% end %>
+            </td>
+            <th width="5%" class="text-justify">&nbsp;</th>
+            <td class="text-left">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <th width="50%" height="20" class="text-center" style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Sub total</th>
+                  <td class="text-right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%=camponumerico @contratosprefactura.contratosprefdetalles.sum("subtotal") rescue 0 %>&nbsp;</td>
+                </tr>
+                <tr>
+                  <th height="20" class="text-center"  style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Base Gravable</th>
+                  <td class="text-right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%=camponumerico @contratosprefactura.contratosprefdetalles.where("contratosprefdetalles.iva > 0").sum("valor_unitario")%>&nbsp;</td>
+                </tr>
+                <tr>
+                  <th height="20" class="text-center"  style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">IVA</th>
+                  <td class="text-right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%=camponumerico @contratosprefactura.contratosprefdetalles.sum("valor_iva") rescue 0 %>&nbsp;</td>
+                </tr>
+                <tr>
+                  <th height="20" class="text-center"  style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">TOTAL</th>
+                  <th class="text-right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%=camponumerico @contratosprefactura.contratosprefdetalles.sum("total") rescue 0 %>&nbsp;</th>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y%m%d%X") rescue nil%>-<%=is_admin %></div>
+      </td>
+    </tr>
+  </table>
+  <br/><br/>
+</div>
+<style>
+  tr {
+    page-break-inside: avoid;
+
+  }
+  table  { page-break-inside:auto }
+  thead { display:table-header-group }
+  tfoot  { display:table-footer-group }
+
+</style>
+
+
+

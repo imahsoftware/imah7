@@ -1,0 +1,17 @@
+<tr id="contratosimagen_<%= contratosimagen.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosimagen")%>
+      <%= link_to contrato_contratosimagen_path(@contrato, contratosimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <%= link_to contratosimagen.imagen.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i></button>
+    <% end %>
+
+  </td>
+  <td align="left"><%= contratosimagen.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratosimagen.user.nombre rescue nil %></small></td>
+  <td align="left"><%= contratosimagen.tiposimagen.descripcion rescue nil %></td>
+  <td align="left"><%= contratosimagen.imagen_file_name rescue nil %></td>
+</tr>

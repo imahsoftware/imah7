@@ -1,0 +1,23 @@
+<% if @evaluacionesejecucion.evaluacionesejecucionesdocs.present? %><br/>
+  <div id="documentos<%= @evaluacionesejecucion.id %>">
+    <table class="table table-bordered table-condensed table-striped">
+      <tr class="thcolor">
+        <td class="text-table" width="10%"></td>
+        <td class="text-table" width="90%">Documento Digital</td>
+      </tr>
+      <% @evaluacionesejecucion.evaluacionesejecucionesdocs.each do |doc| %>
+        <tr>
+          <td>
+            <%= link_to eliminar_evaluacionesejecucionesdocs_path(id: doc.id, evaluacionesejecucion_id: @evaluacionesejecucion.id), remote: true, data: { toggle: 'tooltip', confirm: 'Estas Seguro?' }, title: 'Eliminar' do %>
+              <i class="fa fa-trash"></i>
+            <% end %>
+            <%= link_to doc.docevaluacion.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+              <i class="fa fa-cloud-download text-danger"></i>
+            <% end %>
+          </td>
+          <td><%= doc.tipo.upcase rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

@@ -1,0 +1,28 @@
+<div style="padding: 10px;">
+<table class="table table-bordered table-condensed table-striped">
+  <tr >
+    <th style="background-color: #CDCDCD; color: black" class="text-left">Periodo</th>
+  </tr>
+
+  <% @meses.each do |mes| %>
+    <tr>
+      <td class="text-table text-left">
+        <% if mes[:mes] == @mesactual %>
+          <%= link_to informegeneral_contrato_contratosentepps_path(contrato_id: @contrato.id,  format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+            <strong><i class="fa fa-file-pdf-o text-red"></i> <%= "#{Date::MONTHNAMES_ES[mes[:mes]]} #{mes[:anno]}" %></strong>
+          <% end %>
+        <% else %>
+          <%= link_to informegeneral_contrato_contratosentepps_path(contrato_id: @contrato.id,  format: :pdf, mes: "#{mes[:mes].to_s.rjust(2, '0')}-#{mes[:anno]}"), class: 'popup', data: { toggle: 'tooltip' } do %>
+            <%= "#{Date::MONTHNAMES_ES[mes[:mes]]} #{mes[:anno]}" %>
+          <% end %>
+        <% end %>
+      </td>
+    </tr>
+    <tr id="tr_show<%= mes[:mes] %><%= mes[:anno] %>" class="hidden">
+      <td colspan="5">
+        <div id="abrir_detalle<%= mes[:mes] %><%= mes[:anno] %>"></div>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</div>

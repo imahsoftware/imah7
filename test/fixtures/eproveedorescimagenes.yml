@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedorescompra: one
+  user: one
+  compraimagen: 
+
+two:
+  eproveedorescompra: two
+  user: two
+  compraimagen: 

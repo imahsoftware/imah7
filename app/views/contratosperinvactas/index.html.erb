@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosperinvactas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosperinventario</th>
+      <th>Consecutivo acta</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosperinvactas.each do |contratosperinvacta| %>
+      <tr>
+        <td><%= contratosperinvacta.contratosperinventario_id %></td>
+        <td><%= contratosperinvacta.consecutivo_acta %></td>
+        <td><%= link_to 'Show', contratosperinvacta %></td>
+        <td><%= link_to 'Edit', edit_contratosperinvacta_path(contratosperinvacta) %></td>
+        <td><%= link_to 'Destroy', contratosperinvacta, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosperinvacta', new_contratosperinvacta_path %>

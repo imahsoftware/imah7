@@ -1,0 +1,10 @@
+<% if @contratosperimagenes.present? %>
+$("#resultado_evalua_todo<%= @p.downcase %>").html("<%= j render 'menus/resultado_evalua_todo'%>");
+$("#evalua_documento<%= @p.downcase %>").remove();
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_evalua_todo<%= @p.downcase %>").html("");
+<% end %>

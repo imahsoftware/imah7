@@ -1,0 +1,56 @@
+<div class="modal-body">
+  <div class="row">
+    <div class="box-body">
+      <section class="content-header">
+        <h1>
+          <i class="fa fa-database"></i>
+          <small>Modulos de Seguridad</small>
+        </h1>
+      </section><br/>
+      <div class="row">
+        <div class="box-body">
+      <%
+        @modulosseguridad = Usersmodulo.joins(:modulo).where(["usersmodulos.user_id = ? and modulos.nivel = ?", is_admin, 4]).select("modulos.*").order("modulos.descripcion")
+        #@modulosseguridad = Modulo.where(id: Usersmodulo.where(user_id: is_admin).pluck(:modulo_id), nivel: 4).order(:descripcion)
+        @modulosseguridad.each do |item| %>
+        <% if item.metodo.to_s == "" %>
+          <% item.metodo = 'GET' %>
+        <% end %>
+          <div class="col-lg-4 col-md-4" style="margin-top: 10px;">
+            <%= link_to item.controlador, class: 'a-control-sidebar btn2 btn-app', input_html: {style: "padding: 10px; min-width: 100%; height: 100px;"} do %>
+                <div class="pull-center">
+                  <i class="<%= item.imagen.blank? ? 'fa fa-link' : item.imagen %>" style="font-size: 30px; color: #000;"></i>
+                  <p style="font-size: 10px;"><%= item.mensaje.blank? ? 'Modulo de administracion' : truncate(item.mensaje, :length => 300) %></p>
+                </div>
+            <% end %>
+          </div>
+      <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<style>
+  .btn2 {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 80px;
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,12 @@
+<tr id="veriserviciosicompromiso_<%= veriserviciosicompromiso.id %>">
+  <td class="text-center">
+    <%= link_to veriserviciositem_veriserviciosicompromiso_path(@veriserviciositem, veriserviciosicompromiso), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= veriserviciosicompromiso.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/>
+    <%= veriserviciosicompromiso.user.nombre rescue nil %></td>
+  <td align="center" class="text-table"><%= veriserviciosicompromiso.fecha rescue nil %></td>
+  <td align="left" class="text-table"><%= veriserviciosicompromiso.compromiso rescue nil %></td>
+  <td align="left" class="text-table"><%= veriserviciosicompromiso.observacion_estado rescue nil %></td>
+</tr>

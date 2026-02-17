@@ -1,0 +1,62 @@
+<tr id="contratosperprestamo_<%= contratosperprestamo.id %>">
+  <td class="text-center" ROWSPAN="2">
+    <% if is_auth_a("contratosperprestamo")%>
+      <%= link_to edit_contratospersona_contratosperprestamo_path(@contratospersona, contratosperprestamo), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("contratosperprestamo")%>
+      <%= link_to contratospersona_contratosperprestamo_path(@contratospersona, contratosperprestamo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperprestamo.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="center" ROWSPAN="2"><%= contratosperprestamo.id rescue nil %></td>
+  <td align="right"><%=camponumerico contratosperprestamo.valor rescue nil %></td>
+  <td align="right"><%=camponumerico contratosperprestamo.cuota rescue nil %></td>
+  <td align="right"><%=camponumerico contratosperprestamo.saldo rescue nil %></td>
+  <td align="center"><%= contratosperprestamo.termino_descuento rescue nil %></td>
+  <td align="center"><%= contratosperprestamo.estado rescue nil %></td>
+  <td align="left"><%=contratosperprestamo.observacion rescue nil %></td>
+</tr>
+<tr>
+  <td colspan="6">
+    <% if Contratospernovedad.where(contratosperprestamo_id: contratosperprestamo.id).exists? or Contratosperliqnovedad.where(contratosperprestamo_id: contratosperprestamo.id).exists? %>
+      <a href="javascript:void(0);" onclick="SINO('demo_<%=contratosperprestamo.id%>')">
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:#ff0000;" data-original-title="Pulsa aqui para ver retenciones"></i>Ver detalle de retenciones</a>
+      <div id="demo_<%=contratosperprestamo.id rescue nil %>" style="display:none;"><br/>
+        <table class="table table-bordered table-condensed table-striped" width="30%">
+          <thead class="thcolor">
+          <tr>
+            <td width="5%" class="text-center">Fecha</td>
+            <th width="10%" class="text-center">Valor Novedad</th>
+          </tr>
+          </thead>
+          <% Contratospernovedad.where(["contratospersona_id = #{contratosperprestamo.contratospersona_id} and contratosperprestamo_id = #{contratosperprestamo.id}"]).order("fecha desc").each do |a| %>
+            <tr>
+              <td align="center"><%= a.fecha rescue nil %></td>
+              <td align="center"><%= camponumerico a.valor_novedad rescue nil %></td>
+            </tr>
+          <% end %>
+        </table>
+        <% if Contratosperliqnovedad.where(contratosperprestamo_id: contratosperprestamo.id).exists? %>
+          <table class="table table-bordered table-condensed table-striped" width="30%">
+            <thead class="thcolor">
+            <tr>
+              <td width="5%" class="text-center">Fecha Liquidación</td>
+              <th width="10%" class="text-center">Valor Novedad</th>
+            </tr>
+            </thead>
+            <% Contratosperliqnovedad.where(["contratosperprestamo_id = #{contratosperprestamo.id}"]).each do |a| %>
+              <tr>
+                <td align="center"><%= a.created_at rescue nil %></td>
+                <td align="center"><%= camponumerico a.valor_novedad rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
+</tr>

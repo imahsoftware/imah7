@@ -1,0 +1,75 @@
+<div class="box ">
+  <div class="box-header with-border">
+    <legend>Registros</legend>
+  </div>
+  <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+    <div class="box-body">
+      <div class="form-group">
+        <%= label_tag :identificacion, 'Identificación' %><br/>
+        <%= text_field_tag :identificacion, params[:identificacion], class: 'form-control', style:'width:150px;', autocomplete: 'off' %>
+      </div>
+      <div class="form-group">
+        <%= label_tag :nombre, 'Nombre' %><br/>
+        <%= text_field_tag :nombre, params[:nombre], class: 'form-control', style:'width:250px;', autocomplete: 'off' %>
+      </div>
+      <div class="form-group">
+        <%= label_tag :fechas_tanque, 'Fecha Registro' %><br/>
+        <%= text_field_tag :fchinicio, params[:fchinicio], { class: 'datepicker form-control', style:'width:110px;', placeholder: 'Fecha Inicial', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %> -
+        <%= text_field_tag :fchfin, params[:fchfin], { class: 'datepicker form-control', style:'width:110px;',placeholder: 'Fecha Final', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+      </div>
+      <div class="form-group">
+        <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+          <i class="fa fa-search" aria-hidden="true"></i>
+        <% end %>
+        <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+          <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="box-header with-border">
+    <% if @entradas.count.to_i > 0 %>
+      <div class="box-body">
+        <div class="box-header with-border">
+          <legend>Persona (<%=@entradas.count rescue 0%>) </legend>
+        </div><!-- /.box-header -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr class="thcolor">
+                <th width="10%" class="text-center">Fecha registro</th>
+                <th width="10%" class="text-center">Identificación</th>
+                <th width="30%" class="text-left">Nombre</th>
+                <th width="25%" class="text-left">Barrio</th>
+                <th width="10%" class="text-center">Celular</th>
+                <th width="10%" class="text-center">Clase</th>
+                <th width="10%" class="text-center">Temp.</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% @entradas.each do |entrada|
+            %>
+              <tr id="entrada_<%= entrada.id %>">
+                <td class="text-center"><small><%= entrada.created_at.strftime('%Y-%m-%d %X') rescue nil %></small></td>
+                <td class="text-center"><%= entrada.identificacion rescue nil %></td>
+                <td><%= entrada.nombre rescue nil %></td>
+                <td><%= entrada.barrio.detalle rescue nil %></td>
+                <td class="text-center"><%= entrada.celular rescue nil %></td>
+                <td class="text-center"><%= entrada.clase rescue nil %></td>
+                <td class="text-center"><%= entrada.temperatura rescue nil %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-tools pull-right">
+          <%= will_paginate @entradas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+        </div><!-- /.box-tools -->
+      </div>
+    <% else %>
+      <div class="alert alert-warning">
+        <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+      </div>
+    <% end %>
+    </div>
+</div>

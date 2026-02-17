@@ -1,0 +1,7 @@
+<% a = Contratosactividad.find(params[:a].to_i)  rescue 0%>
+<tr id="contratosactividad_<%=@a %>">
+  <td class="text-center text-red">Realizada!!!!</td>
+  <td class="text-justify"><i class="fa fa-adn text-red"></i> <%=a.detalle rescue nil %></td>
+  <td class="text-center"><%=a.turno rescue nil %></td>
+  <td class="text-center"><%=a.horario rescue nil %></td>
+</tr>

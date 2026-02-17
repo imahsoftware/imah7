@@ -1,0 +1,13 @@
+<% if @ruta == 'ABRIR' %>
+$("#procesosdetalles<%= @consecutivo %>").html('<%= j render "procesosdetalles", datos: @datos, consecutivo: @consecutivo, consecutivo2: @consecutivo2  %>');
+$("#abrir<%= @consecutivo %>").addClass("hide");
+$("#cerrar<%= @consecutivo %>").removeClass("hide");
+<% else %>
+$("#abrir<%= @consecutivo %>").removeClass("hide");
+$("#cerrar<%= @consecutivo %>").addClass("hide");
+$("#procesosdetalles<%= @consecutivo %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

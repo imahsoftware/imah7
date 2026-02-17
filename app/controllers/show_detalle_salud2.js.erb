@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_salud_contrato<%= @contrato.id %><%= @estado_car %>").html('<%= j render "menus/abrir_detalle_salud_contrato", contrato: @contrato, contratosprefechassalud_contrato: @contratosprefechassalud_contrato, p: @p %>');
+$("#abrir_salud_contrato<%= @contrato.id %><%= @estado_car %>").addClass("hide");
+$("#cerrar_salud_contrato<%= @contrato.id %><%= @estado_car %>").removeClass("hide");
+$("#tr_show_salud_contrato<%= @contrato.id %><%= @estado_car %>").removeClass("hidden");
+<% else %>
+$("#abrir_salud_contrato<%= @contrato.id %><%= @estado_car %>").removeClass("hide");
+$("#cerrar_salud_contrato<%= @contrato.id %><%= @estado_car %>").addClass("hide");
+$("#abrir_detalle_salud_contrato<%= @contrato.id %><%= @estado_car %>").html(null);
+$("#tr_show_salud_contrato<%= @contrato.id %><%= @estado_car %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

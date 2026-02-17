@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  contratosperfecha: one
+  user: one
+  estado: MyString
+  codigo_otp: MyString
+  respuesta_otp: MyString
+  codigo_firma: MyString
+  fecha_firma: 2024-03-06 23:08:17
+
+two:
+  contratospersona: two
+  contratosperfecha: two
+  user: two
+  estado: MyString
+  codigo_otp: MyString
+  respuesta_otp: MyString
+  codigo_firma: MyString
+  fecha_firma: 2024-03-06 23:08:17

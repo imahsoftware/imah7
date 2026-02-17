@@ -1,0 +1,270 @@
+<div align="center">
+  <%
+    isadmin = is_admin
+    portafolio = Portafolio.find(@contratoscapacitacion.contrato.empresa.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+    capacitacionFull = @full.to_s rescue nil
+  %>
+  <br/>
+  <table width="760" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="30%"><div align="center"><%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %></div></td>
+      <th><div align="center" style="font-size: 16px; font-family: Tahoma;">CAPACITACIONES <br/><%= @contratoscapacitacion.capacitacion.descripcion rescue nil %></div></th>
+    </tr>
+  </table><br/>
+  <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>TEMA </strong></td>
+      <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="justify" style="font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= @contratoscapacitacion.capacitacion.temas rescue nil %></div></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>OBJETIVO </strong></td>
+      <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="justify" style="font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= @contratoscapacitacion.capacitacion.objetivo rescue nil %></div></td>
+    </tr>
+  </table>
+  <table width="760" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="460" valign="top">
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="30%" height="20" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>FECHA PROGRAMACION </strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.fecha_programacion %></td>
+          </tr>
+          <tr>
+            <td height="20" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>FECHA LIMITE </strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.fecha_limite rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="20" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>ESTADO </strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratoscapacitacion.capacitacion.estado rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="20" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>CREADO POR </strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= User.find(@contratoscapacitacion.user_supervisor).nombre rescue nil %></td>
+          </tr>
+          <tr>
+            <td height="20" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>ENTIDAD </strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contrato.empresa.identnombre rescue nil %></td>
+          </tr>
+        </table><br/>
+<%
+  if @contratoscapacitacion.interno.to_s == 'SI'
+    @contratosperfechas = Contratosperfecha.where("estado ='INTERNO'")
+  else
+    @contratosperfechas = Contratosperfecha.where("estado ='ACTIVO' and fecha_inicio <= '#{@contratoscapacitacion.capacitacion.fecha_limite.to_date}'
+                                                   and (fecha_fin is null or fecha_fin > now())
+                                                   and contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                   and id not in (select contratosperfecha_id from contratoscapapersonas where capacitacion_id = #{@contratoscapacitacion.capacitacion_id})").order("id asc")
+  end
+  if capacitacionFull == 'SI'
+    @contratoscapapersonasprocesos = Contratoscapapersona.where("estado_evaluacion = 'INICIAR CAPACITACION' and contratoscapacitacion_id in (select id from contratoscapacitaciones where capacitacion_id =#{@contratoscapacitacion.capacitacion_id} and contrato_id = #{@contratoscapacitacion.contrato_id})")
+    @contratoscapapersonasfinalizados = Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  contratoscapacitacion_id in (select id from contratoscapacitaciones where capacitacion_id =#{@contratoscapacitacion.capacitacion_id} and contrato_id = #{@contratoscapacitacion.contrato_id})")
+    @valorpend = @contratosperfechas.count rescue 0
+    @valornoaplica = Contratoscapapersona.where("estado_evaluacion = 'NO APLICA' and contratoscapacitacion_id in (select id from contratoscapacitaciones where capacitacion_id =#{@contratoscapacitacion.capacitacion_id} and contrato_id = #{@contratoscapacitacion.contrato_id})").count.to_i rescue 0
+    @valorpro = @contratoscapapersonasprocesos.count rescue 0
+    @valorf = @contratoscapapersonasfinalizados.count rescue 0
+    @vlrOtrosPendienteB = Contratoscapapersona.where("ruta = 'B' and estado_evaluacion = 'PENDIENTE' and contratoscapacitacion_id in (select id from contratoscapacitaciones where capacitacion_id =#{@contratoscapacitacion.capacitacion_id} and contrato_id = #{@contratoscapacitacion.contrato_id})").count.to_i rescue 0
+    @vlrOtrosPendiente = Contratoscapapersona.where("estado_evaluacion = 'PENDIENTE' and contratoscapacitacion_id in (select id from contratoscapacitaciones where capacitacion_id =#{@contratoscapacitacion.capacitacion_id} and contrato_id = #{@contratoscapacitacion.contrato_id})").count.to_i rescue 0
+  else
+    @contratoscapapersonasprocesos = Contratoscapapersona.where("estado_evaluacion = 'INICIAR CAPACITACION' and contratoscapacitacion_id = #{@contratoscapacitacion.id}")
+    @contratoscapapersonasfinalizados = Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  contratoscapacitacion_id = #{@contratoscapacitacion.id}")
+    @valorpend = @contratosperfechas.count rescue 0
+    @valornoaplica = Contratoscapapersona.where("estado_evaluacion = 'NO APLICA' and contratoscapacitacion_id = #{@contratoscapacitacion.id}").count.to_i rescue 0
+    @valorpro = @contratoscapapersonasprocesos.count rescue 0
+    @valorf = @contratoscapapersonasfinalizados.count rescue 0
+    @vlrOtrosPendienteB = Contratoscapapersona.where("ruta = 'B' and estado_evaluacion = 'PENDIENTE' and contratoscapacitacion_id = #{@contratoscapacitacion.id}").count.to_i rescue 0
+    @vlrOtrosPendiente = Contratoscapapersona.where("estado_evaluacion = 'PENDIENTE' and contratoscapacitacion_id = #{@contratoscapacitacion.id}").count.to_i rescue 0
+  end
+%>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td colspan="2" height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>CONTADORES</strong></div></td>
+          </tr>
+          <tr>
+            <td width="50%" height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>Pendientes</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @valorpend rescue 0 %></div></td>
+          </tr>
+            <tr>
+            <td width="50%" height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>No Aplica</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @valornoaplica rescue 0 %></div></td>
+          </tr>
+            <tr>
+            <td height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>Otros Pendientes</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @vlrOtrosPendienteB rescue 0 %></div></td>
+          </tr>
+          <tr>
+            <td height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>Pend Iniciar Capacitación</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @vlrOtrosPendiente rescue 0 %></div></td>
+          </tr>
+          <tr>
+            <td height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>En Proceso</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @valorpro rescue 0 %></div></td>
+          </tr>
+          <tr>
+            <td height="10" style="background: #E8E3E3; padding: 4px; font-size: 10px; font-family: Tahoma;"><strong>Finalizados</strong></td>
+            <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= @valorf rescue 0 %></div></td>
+          </tr>
+
+        </table>
+      </td>
+      <td valign="top">
+        <canvas id="miGraficoTorta" width="10" height="10"></canvas>
+        <script>
+            var ctx = document.getElementById("miGraficoTorta").getContext("2d");
+            var data = {
+                labels: ["Pendiente", "No aplica", "Otros Pendientes", "Pendientes Iniciar Capacitacion", "En Proceso", "Finalizado"],
+                datasets: [{
+                    data: [<%= @valorpend %>, <%= @valornoaplica %>, <%= @vlrOtrosPendienteB %>, <%= @vlrOtrosPendiente %>, <%= @valorpro %>, <%= @valorf %>],
+                    backgroundColor: ["#EE2727", "#E89E8E", "#1659EA", "#F38217", "#FFCE56", "#28AF10"]
+                }]
+            };
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: data
+            });
+        </script>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <table width="760" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+    <tr>
+      <th style="font-size: 12px; font-family: Tahoma;">
+        <div align="left">DOCUMENTOS DIGITALES DE LA CAPACITACIÓN</div>
+      </th>
+    </tr>
+  </table>
+  <% if @contratoscapacitacion.capacitacion.capacitaciondocs.present? %>
+    <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <td width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>TIPO</strong></td>
+        <td style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="left"><strong>DESCRIPCION</strong></div></td>
+        <td width="30%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>DOCUMENTO</strong></div></td>
+      </tr>
+      <% @contratoscapacitacion.capacitacion.capacitaciondocs.each do |capacitaciondoc| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= capacitaciondoc.tipo rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="left"><%= capacitaciondoc.descripcion rescue nil %></div></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">
+            <div align="center">
+              <% if capacitaciondoc.capacitaciondoc_file_name.present? %>
+                <%= capacitaciondoc.capacitaciondoc_file_name rescue nil %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <div align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay informacion </div>
+  <% end %>
+  <br/>
+  <table width="760" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+    <tr>
+      <th style="font-size: 12px; font-family: Tahoma;"><div align="left">EVALUACIÓN</div></th>
+    </tr>
+  </table>
+  <% if @contratoscapacitacion.capacitacion.capacitacionevaluaciones.present? %>
+    <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <td style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="left"><strong>PREGUNTA</strong></div></td>
+      </tr>
+      <% @contratoscapacitacion.capacitacion.capacitacionevaluaciones.each do |capacitacionevaluacion| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= capacitacionevaluacion.pregunta.html_safe rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+  <br/>
+  <% if @contratoscapacitacion.interno.to_s == 'SI'
+       contratosperfechas = Contratosperfecha.where("estado = 'INTERNO'")
+     else
+       if capacitacionFull == 'SI'
+         contratosperfechas = Contratosperfecha.select("id, (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) autob")
+                                               .where("(fecha_fin is null or fecha_fin > now()) and contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                         and id not in (select contratosperfecha_id from contratoscapapersonas
+                                                                        where contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                                        and   capacitacion_id = #{@contratoscapacitacion.capacitacion_id})").order("id asc")
+       else
+         contratosperfechas = Contratosperfecha.select("id, (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) autob")
+                                               .where("(fecha_fin is null or fecha_fin > now()) and contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                        and id not in (select contratosperfecha_id from contratoscapapersonas
+                                                                       where contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                                       and contratoscapacitacion_id = #{@contratoscapacitacion.id})").order("id asc")
+       end
+     end
+  %>
+  <br/>
+  <%
+
+    vlr_aprobado = @contratoscapacitacion.capacitacion.valor_aprobado.present? ? @contratoscapacitacion.capacitacion.valor_aprobado.to_i : 0
+    if capacitacionFull == 'SI'
+      contratoscapapersonas = Contratoscapapersona.select("contratoscapapersonas.*, (select autobuscar from contratospersonas where id = contratoscapapersonas.contratospersona_id) autobuscar,
+                                                           (case when (select count(9) from contratoscaparesultados where contratoscapapersona_id = contratoscapapersonas.id and resultado = '1') > #{vlr_aprobado} then
+                                                                     'APROBADO' else 'REPROBADO' end) cantidadpreguntasok")
+                                                  .where("estado_evaluacion = 'FINALIZADO'
+                                                          and contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                          and capacitacion_id = #{@contratoscapacitacion.capacitacion_id}")#.includes([:contratospersona])
+    else
+      contratoscapapersonas = Contratoscapapersona.select("contratoscapapersonas.*, (select autobuscar from contratospersonas where id = contratoscapapersonas.contratospersona_id) autobuscar,
+                                                           (case when (select count(9) from contratoscaparesultados where contratoscapapersona_id = contratoscapapersonas.id and resultado = '1') > #{vlr_aprobado} then
+                                                                     'APROBADO' else 'REPROBADO' end) cantidadpreguntasok")
+                                                  .where("estado_evaluacion = 'FINALIZADO'
+                                                          and contratoscapacitacion_id = #{@contratoscapacitacion.id}
+                                                          and contrato_id = #{@contratoscapacitacion.contrato_id}
+                                                          and capacitacion_id = #{@contratoscapacitacion.capacitacion_id}")#.includes([:contratospersona])
+    end
+  %>
+  <table width="760" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+    <tr>
+      <th style="font-size: 12px; font-family: Tahoma;">
+        <div align="left">USUARIOS FINALIZACIÓN <% if contratoscapapersonas.present? == false %> (NO hay Información)<% end %></div>
+      </th>
+    </tr>
+  </table>
+  <% if contratoscapapersonas.present? %>
+    <table width="760" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr style="background: #adadad">
+        <td WIDTH="3%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"></td>
+        <td height="20" style="padding: 3px; background: #E8E3E3; font-size: 10px; font-family: Tahoma;"><strong>USUARIOS</strong></td>
+        <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma; text-align: center"><strong>ESTADO</strong></td>
+        <td width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma; text-align: center"><strong>RESULTADO</strong></td>
+        <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma; text-align: center"><strong>FECHA FIRMA</strong></td>
+        <td width="25%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma; text-align: center"><strong>CODIGO FIRMA</strong></td>
+      </tr>
+      <% count = 0
+         contratoscapapersonas.each do |contratoscapapersona|
+           count += 1
+      %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; text-align: center"><%= count.to_i %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 8px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratoscapapersona.autobuscar rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 8px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center"><%= contratoscapapersona.calificacion rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 8px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center"><%= contratoscapapersona.resultado_evaluacion rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 8px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center"><%= contratoscapapersona.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 8px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center"><%= contratoscapapersona.codigo_firma rescue nil %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+  <br/>
+  <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(isadmin).nombre rescue nil %></div>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

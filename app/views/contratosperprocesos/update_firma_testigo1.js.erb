@@ -1,0 +1,14 @@
+<% if @valida2 == true %>
+$("#menu_firma<%= @contratosperproceso.id %>").removeClass('hide');
+$("#testigo1<%= @contratosperproceso.id %>").addClass('hide');
+<% if @contratosperproceso.firma_testigo1.present? %>
+$('#estado_firma_testigo1<%= @contratosperproceso.id %>').remove();
+var divValue1 = 12;
+var htmlContent = '<div class="col-xs-12 col-sm-12 col-md-' + divValue1 + ' col-lg-' + divValue1 + ' text-center" id="check_firma_testigo1<%= @contratosperproceso.id %>"><%= image_tag @contratosperproceso.firma_testigo1_doc.url(:thumb) %><br/><div stye="text-aling: center">Testigo</div></div>';
+$('#check_firma_testigo1<%= @contratosperproceso.id %>').html(htmlContent);
+$(document).ready(function () {
+    url = "<%= root_path %>";
+    $(location).attr("href", url);
+});
+<% end %>
+<% end %>

@@ -1,0 +1,34 @@
+<%= simple_form_for([@contratoscargo, @contratoscargospersona], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :identificacion, :input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Identificacion" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :primer_apellido, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Primer apellido" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :segundo_apellido, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Segundo apellido" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :celular, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :celular2, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :correo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Email" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :municipio_id, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :recomendado_por, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Recomendado por" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :cargoimagen, as: :file, label: 'Soporte Digital' %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratoscargospersona.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratoscargospersona_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratoscargo_contratoscargospersona_path(@contratoscargo, @contratoscargospersona), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

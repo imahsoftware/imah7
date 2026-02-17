@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosprefactura: one
+  detalle: MyString
+  cantidad: 9.99
+  valor_unitario: 9.99
+  subtotal: 9.99
+  ayu: 9.99
+  iva: 9.99
+  total: 9.99
+
+two:
+  contratosprefactura: two
+  detalle: MyString
+  cantidad: 9.99
+  valor_unitario: 9.99
+  subtotal: 9.99
+  ayu: 9.99
+  iva: 9.99
+  total: 9.99

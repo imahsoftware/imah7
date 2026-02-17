@@ -1,0 +1,234 @@
+<style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+<table width="100%">
+  <tr>
+    <td>
+      <table width="100%" border="0">
+        <tr>
+          <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+            <div align="center">
+              <strong>
+                <div style="font-size: 18px; font-family: Tahoma;">CONTRATO INDIVIDUAL DE TRABAJO A TÉRMINO FIJO DE DIRECCIÓN CONFIANZA Y MANEJO</div>
+              </strong>
+            </div>
+          </td>
+          <td width="30%">
+            <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>Empleador(a): </strong></td>
+          <td>&nbsp;<%= @portafolio.razon_social rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>NIT o identificación: </strong></td>
+          <td>&nbsp;<%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Dirección y ciudad: </strong></td>
+          <td>&nbsp;<%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Teléfono de contacto: </strong></td>
+          <td>&nbsp;<%= @portafolio.telefono_empresa rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Trabajador(a): </strong></td>
+          <td>&nbsp;<%= @contratospersona.nombre_completo rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Tipo y número de identificación: </strong></td>
+          <td>&nbsp;<%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Dirección y ciudad: </strong></td>
+          <td>&nbsp;<%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Teléfono de contacto: </strong></td>
+          <td>&nbsp;<%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Lugar y fecha de nacimiento: </strong></td>
+            <td>&nbsp;<%=Municipio.find(@contratospersona.municipio_lugar_nacimiento).autobuscar rescue nil %> - <%= @contratospersona.fecha_nacimiento.strftime("%d-%m-%Y") rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Cargo: </strong></td>
+          <td>&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Salario: </strong></td>
+          <td>&nbsp;<%= camponumerico(@contratosperfecha.contratoscargo.salario) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Período o forma de pago: </strong></td>
+          <td>&nbsp;<%= @contratosperfecha.contratosgrupo.termino rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Fecha de inicio:</strong></td>
+          <td>&nbsp;<%= @contratosperfecha.fecha_inicio rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Fecha de finalización:</strong></td>
+          <td>&nbsp;<%= @contratosperfecha.fecha_fin rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Ciudad donde ha sido contratado el trabajador:</strong></td>
+          <td>&nbsp;Medellín – Antioquia</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Lugar donde desempeña sus labores: </strong></td>
+          <td>&nbsp;Contrato Nº <%= @contratosperfecha.contrato.nro_contrato rescue nil %> - <%= @contratosperfecha.contratosgrupo.descripcion rescue nil %></td>
+        </tr>
+      </table>
+      <br/>
+      <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+        Entre el empleador y el (la) trabajador(a), ambos mayores de edad, identificados como ya se anotó, se suscribe el presente <strong>CONTRATO DE TRABAJO A TÉRMINO FIJO DE DIRECCIÓN CONFIANZA Y MANEJO</strong>, regido por las siguientes cláusulas:<br/><br/>
+        <strong>PRIMERA: Lugar.</strong> El (La) trabajador(a) desarrollará sus funciones en las dependencias de la empresa o el lugar que esta determine. Cualquier modificación del lugar de trabajo, que signifique cambio de residencia, se hará conforme al Código Sustantivo de Trabajo.  Las partes podrán convenir que el trabajo se preste en lugar distinto al inicialmente contratado, siempre que tales traslados no desmejoren las condiciones laborales o de remuneración del trabajador, o impliquen perjuicios para él. Los gastos que se originen con el traslado serán cubiertos por el empleador de conformidad con el numeral 8º del artículo 57 del Código Sustantivo del Trabajo. El trabajador se obliga a aceptar los cambios de oficio que decida el empleador dentro de su poder subordinante, siempre que se respeten las condiciones laborales del trabajador y no se le causen perjuicios. Todo ello sin que se afecte el honor, la dignidad y los derechos mínimos del trabajador, de conformidad con el artículo 23 del Código Sustantivo del Trabajo, modificado por el artículo 1º de la Ley 50 de 1990.<br/><br/>
+        <strong>SEGUNDA: Funciones.</strong> El empleador contrata al (a la) trabajador(a) para desempeñarse en el cargo indicado en el cuadro inicial ejecutando labores propias de su cargo, según lo establecido por el centro de trabajo donde prestará sus servicios y/o en el manual de funciones del empleador.<br/><br/>
+        <strong>TERCERA: Elementos de trabajo.</strong> Corresponde al empleador suministrar los elementos necesarios para el normal desempeño de las funciones del cargo contratado.<br/><br/>
+        <strong>CUARTA: Obligaciones del contratado.</strong> El (La) trabajador(a), por su parte, se obliga a A) prestar su fuerza laboral cumpliendo debidamente el reglamento interno de trabajo, el manual de higiene, la política de seguridad y salud en el trabajo, y en general todos los procedimientos internos establecidos por el empleador o por el centro de trabajo donde prestará sus servicios, cumpliendo las órdenes e instrucciones que le imparta el empleador o sus representantes. B) A poner al servicio del empleador toda su capacidad normal de trabajo, en forma exclusiva en el desempeño de las funciones propias del oficio mencionado y las labores anexas y complementarias del mismo, de conformidad con las órdenes e instrucciones que le imparta el empleador o sus representantes, y C) A no prestar directa ni indirectamente servicios laborales a otros empleadores, ni a trabajar por cuenta propia en el mismo oficio, durante la vigencia de este contrato. D) A guardar estricta reserva de todo cuando llegue a su conocimiento por razón de su oficio y cuya comunicación a otras personas puedan causar perjuicio al Empleador. E) A cumplir con el registro de entrada y salida en el dispositivo biométrico ubicado en las instalaciones principales de la compañía o con el registro de visitas en la plataforma appasear dejando según sea procedente evidencia de todos los ingresos y salidas y visitas que haya realizado.<br/><br/>
+        <strong>QUINTA: Duración del contrato.</strong> El presente contrato tendrá como término el periodo comprendido entre la fecha de inicio y la fecha de fin, pero podrá darse por terminado por cualquiera de las partes, cumpliendo con las exigencias legales descritas en el Código Sustantivo del Trabajo.<br/><br/>
+        <strong>SEXTA: Período de prueba.</strong> Acuerdan las partes fijar como período de prueba la quinta parte del término inicial del presente contrato, sin exceder los dos meses. Durante este período las partes pueden dar por terminado unilateralmente el contrato. Este período de prueba solo es para el contrato inicial y no se aplicará en las prórrogas.<br/><br/>
+        <strong>SÉPTIMA: Justas causas para despedir.</strong> Son justas causas para dar por terminado unilateralmente el presente contrato por cualquiera de las partes, el incumplimiento a las obligaciones y prohibiciones que se expresan en el capítulo V del título I y siguientes del Código Sustantivo del Trabajo, además del incumplimiento o violación a las normas establecidas en el reglamento interno de trabajo y las previamente establecidas por el (la) empleador(a) o sus representantes.<br/><br/>
+        <strong>PARAGRAFO- prohibición especial:</strong> Están prohibidas las relaciones sentimentales al interior de la Empresa entre compañeros de trabajo, superiores o subordinados, ya que esto puede afectar el ritmo de ejecución de las labores, el ambiente laboral y la objetividad en el desempeño de las funciones propias de cada cargo.<br/><br/>
+        <strong>OCTAVA: Salario.</strong> El empleador cancelará al (a la) trabajador(a) un salario mensual/quincenal ya indicados en el cuadro inicial pagaderos máximos el quinto día hábil de cada mes cuando sean pagos mensuales. Cuando la frecuencia de pago establecida sea quincenal se pagará máximo los días 15 y 30 o 31 de cada mes. Dentro de este pago se encuentra incluida la remuneración de los descansos dominicales y festivos de que tratan los capítulos I y II del título VII del Código Sustantivo del Trabajo.<br/><br/>
+        <strong>NOVENA: Horario.</strong> Por razón de las funciones que desempeña el trabajador y por el hecho de desempeñar un cargo de dirección, confianza y manejo el trabajador está excluido de la regulación sobre la jornada máxima legal y deberá trabajar el número de horas necesarias para el cabal desempeño de sus funciones. Por lo cual no habrá lugar al reconocimiento de horas extras cuando sobrepasen el límite legal- Ello sin perjuicio de cumplir los horarios mínimos señalados por el Empleador. Todo lo anterior de conformidad con el artículo 162 del Código Sustantivo de Trabajo. Adicionalmente por la esencia de sus labores se compromete a contestar todo el tiempo las llamadas y mensajes<br/><br/>
+        <strong>DECIMO: Invenciones y/o descubrimientos.:</strong> Las invenciones o descubrimientos realizados por el trabajador contratado para investigar pertenecen al empleador, de conformidad con el artículo 539 del Código de Comercio, así como el artículo 20 y concordantes de la ley 23 de 1982 sobre derechos de autor.<br/><br/>
+        <strong>DÉCIMA PRIMERA: Afiliación y pago a seguridad social.</strong> Es obligación del empleador afiliar al (a la) trabajador(a) a la seguridad social en salud, pensión y riesgos laborales. A su vez, el (la) trabajador(a) autoriza el descuento en su salario de los valores que le corresponda aportar, en la proporción establecida por la ley.<br/><br/>
+        <strong>DÉCIMA SEGUNDA: Prórroga.</strong> Si el aviso de no prorrogar el contrato no se da o se da con una anticipación menor a treinta (30) días, el contrato se prorroga por un período igual al inicial, siempre que subsistan las causas que lo originaron y la materia del trabajo.<br/><br/>
+        <strong>DÉCIMA TERCERA: Interpretación y Modificaciones.</strong> Cualquier modificación al presente contrato debe efectuarse por escrito y anexarse a este documento. Este contrato ha sido redactado estrictamente de acuerdo con la ley y la jurisprudencia y será interpretado de buena fe y en consonancia con el Código Sustantivo del Trabajo cuyo objeto, definido en su artículo 1º, es lograr la justicia en las relaciones entre empleadores y trabajadores dentro de un espíritu de coordinación económica y equilibrio social.<br/><br/>
+        <strong>DECIMA CUARTA: Liquidación.</strong> En consideración de que toda liquidación exige varios días para obtener los reportes de tiempo y datos contables, revisarlos, verificar las deducciones autorizadas por el personal, hacer entrega de los enseres recibidos por el trabajador, etc., las partes convienen en fijar un plazo de treinta (30) días hábiles contados a partir de la fecha de terminación del contrato, dentro del cual el empleador podrá reconocer y pagar los salarios y prestaciones a que haya lugar, sin que por ello incurra en mora ni quede obligado a indemnización a que se refiere el Artículo 65 del C.S.T<br/><br/>
+        <strong>DECIMA QUINTA: Autorización de descuento:</strong> El trabajador se compromete a salvaguardar y responder por los equipos y herramientas entregados; en caso de pérdida o daño que no obedezca a fuerza mayor o caso fortuito el trabajador se compromete, desde ya, a responder por el elemento a su cargo, o con otro de características iguales o autoriza al empleador para descontar el valor correspondiente de su salario y/o prestaciones sociales.<br/><br/>
+        <strong>DECIMA SEXTA: Notificaciones.</strong> el trabajador(a) en el cuadro inicial indico la dirección actual de su residencia permanente, así como su dirección de correo electrónico. para todos los efectos relacionados con el presente contrato y en especial para las comunicaciones que el empleador tenga que enviar a el trabajador(a). se tendrán como direcciones oficiales las que figuran en el cuadro inicial. es obligación especial del trabajador actualizar la información de la dirección de su residencia y/o email cada vez que la cambie.<br/><br/>
+        <strong>DÉCIMA SEPTIMA: Efectos.</strong> El presente contrato reemplaza y deja sin efecto cualquier otro contrato verbal o escrito que se hubiera celebrado entre las partes con anterioridad.<br/><br/>
+        <strong>DECIMA OCTAVA: Protección de datos.</strong> El (La) empleador(a) tiene establecidas unas políticas de manejo de datos personales que se encuentran disponibles en la página web de la compañia, en cumplimiento de estas políticas y de la normativa legal vigente : Ley 1581 de octubre 17 de 2012 y decretos reglamentarios 1377 de 2013 y 1081 de 2015; el (la) empleador(a) guardará estricta reserva y confidencialidad sobre la información del (de la) trabajador(a), por lo tanto, queda autorizado de manera expresa e inequívoca para mantener y manejar dicha información.<br/><br/>
+        <br/>
+        Se firma por las partes, en la ciudad de Medellín, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>.
+        <br/><br/><br/>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="40%" height="30" ALIGN="center"><strong>EL EMPLEADOR</strong></td>
+            <td>&nbsp;</td>
+            <td width="55%" height="30" ALIGN="center"><strong>EL TRABAJADOR</strong></td>
+          </tr>
+          <tr>
+            <td height="50">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+              <%else %>
+                <br/><br/><br/>
+              <%end %>
+              <br/><%= @nombre_firma rescue nil %><br/>
+              <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/>
+              <%= @portafolio.telefono_empresa rescue nil %>
+            </td>
+            <td >&nbsp</td>
+            <td height="50" style="background: #E8E3E3;">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <div style="font-size: 9px;">
+                  <%= @contratospersona.nombre_completo rescue nil %><br/>
+                  <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                  <b>Firma Digital:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                  <b>Fecha Firma:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                  <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                  <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                  <%= @contratospersona.correo rescue nil %><br/>
+                  * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                  conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                </div>
+              <% else %>
+                <br/><br/><br/><br/>
+                <%= @contratospersona.nombre_completo rescue nil %><br/>
+                <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                <%= @contratospersona.correo rescue nil %><br/>
+            <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+</table>
+<H1 class=SaltoDePagina>&nbsp;</H1>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <table width="100%" border="0">
+          <tr>
+            <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+              <div align="center"><strong><div style="font-size: 18px; font-family: Tahoma;">PRORROGA Y PREAVISO AL CONTRATO A TÉRMINO FIJO</div></strong></div>
+            </td>
+            <td width="30%">
+              <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+          <br/>
+          Entre los suscritos a saber: <b><%= @portafolio.razon_social rescue nil %></b> representada por <b><%= @nombre_firma rescue nil %></b>, mayor de edad, identificado con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal, quien de ahora en adelante se denominará <b>EL CONTRATANTE</b>, con sede en la ciudad de Medellín, por una parte; y por la otra <strong><%= @contratospersona.nombre_completo rescue nil %></strong>, mayor de edad, identificado con <b><%=@contratospersona.tipo_identificacion rescue nil %></b> N° <b><%= camponumerico2(@contratospersona.identificacion) rescue nil %></b>, que para efectos del presente contrato se denominará <b>TRABAJADOR</b>, hemos convenido en PRORROGAR el término del contrato de trabajo suscrito entre las partes hasta el <%= namedate(@contratosperfecha.fecha_fin) rescue nil %>, de esta manera el trabajador continuará prestando sus servicios hasta la fecha ya indicada.
+          <br/><br/>
+          En señal de conformidad y de común acuerdo entre las partes contratantes, Para constancia de lo anterior, se firma por las partes en la ciudad de Medellín, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>.
+          <br/><br/><br/>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="30" ALIGN="center"><strong>EL CONTRATANTE</strong></td>
+              <td>&nbsp;</td>
+              <td width="55%" height="30" ALIGN="center"><strong>EL TRABAJADOR</strong></td>
+            </tr>
+            <tr>
+              <td height="50">
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><%= @nombre_firma rescue nil %><br/>
+                <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/>
+                <%= @portafolio.telefono_empresa rescue nil %>
+              </td>
+              <td >&nbsp</td>
+              <td height="50" style="background: #E8E3E3;">
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <div style="font-size: 9px;">
+                    <%= @contratospersona.nombre_completo rescue nil %><br/>
+                    <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                    <b>Firma Digital:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                    <b>Fecha Firma:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                    <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                    <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                    <%= @contratospersona.correo rescue nil %><br/>
+                    * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                    conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                  </div>
+                <% else %>
+                  <br/><br/><br/><br/>
+                  <%= @contratospersona.nombre_completo rescue nil %><br/>
+                  <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                  <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                  <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                  <%= @contratospersona.correo rescue nil %><br/>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+

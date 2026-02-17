@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  descripcion: MyString
+  municipio: one
+  contratosgrupo: one
+  contratoscargo: one
+  cantidad: 1
+
+two:
+  contrato: two
+  user: two
+  descripcion: MyString
+  municipio: two
+  contratosgrupo: two
+  contratoscargo: two
+  cantidad: 1

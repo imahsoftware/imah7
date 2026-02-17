@@ -1,0 +1,36 @@
+<div id="inicioOTP" class="container">
+  <%
+    @usr = current_user
+    if controlfirma.estado == 'PENDIENTE'
+  %>
+    <div class="alert alert-danger" align="justify">
+      <h4>Hola, <%= @usr.nombre.upcase rescue nil %></h4>
+      <p>Tienes un documento listo para firma - <b>Documento <%= controlfirma.tipo_documento rescue nil %></b></p>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 text-center">
+        <%= link_to generar_otp_controlfirmas_path(controlfirma_id: controlfirma.id), method: :post, remote: true, data: { toggle: 'tooltip', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" } do %>
+          <button type="button" class="btn btn-danger"><i class="fa fa-sort-numeric-asc"></i> Iniciar
+          </button>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+    </div>
+  <% else %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya fue Firmado</div>
+  <% end %>
+</div>
+
+<div class="row" id="tratamientoOTP"></div>
+<div class="row" id="otp2"></div>
+<div class="row" id="codigo_firma_cifrada"></div>
+
+<script type="text/javascript" charset="utf-8">
+    const onConfirmRefresh = function (event) {
+        event.preventDefault();
+        return event.returnValue = "Are you sure you want to leave the page?";
+    }
+    window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+</script>
+

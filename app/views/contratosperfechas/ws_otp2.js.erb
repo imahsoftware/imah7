@@ -1,0 +1,9 @@
+<% if @valida %>
+$("#mensaje").replaceWith("<div class='row' id='mensaje'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2' style='text-align: center;width: 100%;margin-bottom: 30px;color: red;font-weight: 600;font-size: 20px;'>CODIGO NO VALIDO</div></div>");
+<% else %>
+$("#codigo_firma_cifrada").html("<%= j render 'menus/codigo_firma',  codigo_firma: @codigoFirma%>");
+$("#mensaje").replaceWith("<div class='row' id='mensaje'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2'></div></div>");
+$("#otp1").remove();
+$("#otp2").remove();
+<% end %>
+

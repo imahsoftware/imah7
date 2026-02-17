@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  contratosperfecha: one
+  contratoscargo: one
+  resultado: MyString
+  user_interventor: 1
+  anno: MyString
+  mes: MyString
+
+two:
+  contratospersona: two
+  contratosperfecha: two
+  contratoscargo: two
+  resultado: MyString
+  user_interventor: 1
+  anno: MyString
+  mes: MyString

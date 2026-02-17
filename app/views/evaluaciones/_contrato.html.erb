@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Grupos de Nomina Interventor (<%=User.find(@user_id).nombre rescue nil %>)</h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+        <% if @contratosgrupos.present? %>
+          <table class="table table-bordered table-condensed table-striped">
+            <tr>
+              <th width="35%" class="thcolor text-left">Grupo de Nomina</th>
+              <th width="10%" class="thcolor text-center">Termino</th>
+              <th width="45%" class="thcolor text-left">Empresa</th>
+              <th width="10%" class="thcolor text-center">Nro Empleados</th>
+            </tr>
+              <% @contratosgrupos.each do |a| %>
+              <tr>
+                <td class="text-left" style="font-size:10px;"><%= a.descripcion rescue nil%> <em><strong>(<%= a.nro_contrato rescue nil%>)</strong></em></td>
+                <td class="text-center" style="font-size:10px;"><%= a.termino rescue nil%></td>
+                <td class="text-left" style="font-size:11px;"><%= a.identnombre rescue nil%></td>
+                <td class="text-center" style="font-size:11px;"><%= a.nroempleados rescue 0%></td>
+              </tr>
+          <% end %>
+          </table>
+        <% else %>
+          <div class="alert alert-danger"><strong><%=t :atencion%> NO hay datos</strong></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

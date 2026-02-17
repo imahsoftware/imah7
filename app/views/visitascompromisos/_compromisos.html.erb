@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Compromiso</h4>
+  <br/>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="12%" class="text-center text-table">Fecha Inicio Visita</th>
+      <th class="text-left text-table" width="35%">Empresa - Contrato</th>
+      <th class="text-left text-table">Compromiso</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td align="center" class="text-table"><%= @visitascompromiso.visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+      <td align="left" class="text-table"><%= @identnombre rescue nil %> <br/><strong>Contrato
+        Nro: </strong><%= @nro_contrato rescue nil %></td>
+      <td align="left" class="text-table"><%= @visitascompromiso.compromiso rescue nil %></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="modal-body">
+    <legend>Observación  de la atención</legend>
+    <div class="col-xs-12">
+      <%= simple_form_for([@visita, @visitascompromiso], remote: true) do |f| %>
+        <%= hidden_field_tag :ruta, params[:ruta], value: 'X' %>
+        <%= hidden_field_tag :userVisita, params[:userVisita], value: @userVisita %>
+        <%= hidden_field_tag :nro_contrato, params[:nro_contrato], value: @nro_contrato %>
+        <%= hidden_field_tag :identnombre, params[:identnombre], value: @identnombre %>
+        <div class="bs-callout">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <%= f.input :obs_atencion, as: :text, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: 'Observación' %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+            </div>
+            <div class="col-md-6">
+              <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>
+

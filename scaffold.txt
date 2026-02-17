@@ -1,0 +1,936 @@
+m.talla_pantalon = (CASE WHEN (p.talla_pantalon is null) then m.talla_pantalon else p.talla_pantalon end),
+m.cant_pantalon = (CASE WHEN (p.cant_pantalon is null) then m.cant_pantalon else p.cant_pantalon end),
+m.talla_camisa = (CASE WHEN (p.talla_camisa is null) then m.talla_camisa else p.talla_camisa end),
+m.cant_camisa = (CASE WHEN (p.cant_camisa is null) then m.cant_camisa else p.cant_camisa end),
+m.talla_zapatos = (CASE WHEN (p.talla_zapatos is null) then m.talla_zapatos else p.talla_zapatos end),
+m.cant_zapatos = (CASE WHEN (p.cant_zapatos is null) then m.cant_zapatos else p.cant_zapatos end),
+m.zapatos = (CASE WHEN (p.zapatos is null) then m.zapatos else p.zapatos end),
+m.guantes = (CASE WHEN (p.guantes is null) then m.guantes else p.guantes end),
+m.tapabocas = (CASE WHEN (p.tapabocas is null) then m.tapabocas else p.tapabocas end),
+m.monogafas = (CASE WHEN (p.monogafas is null) then m.monogafas else p.monogafas end),
+m.casco = (CASE WHEN (p.casco is null) then m.casco else p.casco end)
+
+
+talla_pantalon = replace(talla_pantalon,'.0',''),
+cant_pantalon = replace(cant_pantalon,'.0',''),
+talla_camisa = replace(talla_camisa,'.0',''),
+cant_camisa = replace(cant_camisa,'.0',''),
+talla_zapatos = replace(talla_zapatos,'.0',''),
+cant_zapatos = replace(cant_zapatos,'.0',''),
+zapatos = replace(zapatos,'.0',''),
+guantes = replace(guantes,'.0',''),
+tapabocas = replace(tapabocas,'.0',''),
+monogafas = replace(monogafas,'.0',''),
+casco = replace(casco,'.0',''),
+
+rails g scaffold bitacorasproceso codigo:string user:references proceso:string codigo_recibido:string fecha_firma:datetime codigo_firma:string id_tabla:string controlador_tabla:string contratosperproceso:references
+
+
+
+rails g scaffold formato nombre:string leyenda:string segmento:string estado:string detalle:text detalle_pdf:text contratosperfecha_id:integer firma_empleado:string{2} firma_representante:string{2}
+
+bundle exec rails g scaffold variable nombre:string campo:string segmento:string
+bundle exec rails g scaffold formatosvariable formato:references seccion:string variable:references valor:string orden:integer titulo:string
+bundle exec rails db:migrate
+
+bundle exec rails g scaffold iparametrosformato formato:references seccion:string variable:references valor:string orden:integer titulo:string
+
+bundle exec rails g scaffold iparametrosformato iparametro:references formato:references orden:integer
+
+
+
+
+
+
+
+
+(PUNTERAS, DIALECTRICA, SIN PUNTERA, PLASTICA, NO APLICA)
+
+--------->  2024-08-03  <--------------
+-------------------><------------------
+
+rails g scaffold veriservicio contrato:references user:references fecha:date objetivo:string{2000} cal_servicio:integer cal_cumplimiento:integer cal_personal:integer resultado:integer fecha_final:date estado:string{40} -- ok
+rails g scaffold veriserviciosuser veriservicio:references user:references -- ok
+rails g scaffold veriserviciosagenda veriservicio:references user:references fecha_reprogramacion:date nota:string{1000} -- ok
+rails g scaffold veriserviciositem veriservicio:references clasificacion:string descripcion:string{500} orden:integer calificacion:integer -- ok
+
+rails g scaffold veriserviciosinota veriserviciositem:references user:references observacion:string{1000} -- ok
+rails g scaffold veriserviciosiimagen veriserviciositem:references user:references descripcion:string veriimagen:attachment
+rails g scaffold veriserviciosicompromiso veriserviciositem:references user:references compromiso:string{1000} fecha:date estado:string{50} observacion_estado:string{1000}
+rails g scaffold veriserviciosicimagen veriserviciositem:references veriserviciosicompromiso:references user:references descripcion:string vericompromiso:attachment
+
+rails g scaffold veriserviciosasoporte veriserviciosagenda:references user:references descripcion verisoporte:attachment
+
+
+https://appasearesp.com/insumos/3185/edit?etapa=A
+
+-- Hijo asociado al Insumo
+
+
+
+
+-------------------><------------------
+--------->  2024-03-11  <--------------
+-------------------><------------------
+
+rails g scaffold insumosficha insumo:references user:references marca:string referencia:string estado:string{50} docficha:attachment
+https://appasearesp.com/insumos/3185/edit?etapa=A
+
+-- Hijo asociado al Insumo
+
+-------------------><------------------
+--------->  2024-03-06  <--------------
+-------------------><------------------
+
+rails g scaffold contratosperinventario contratospersona:references contratosperfecha:references user:references estado:string{10} codigo_otp:string{20} respuesta_otp:string{20} codigo_firma:string{100} fecha_firma:datetime
+rails g scaffold contratosperinvdetalle contratrosperinventario:references item:string{2000} estado_item:string{100} nro_placa:string{100} observaciones:string{2000}
+
+-- Formulario Asociado al Contrato -- ok
+-- Firma digital como en visitas, atenciones -- ok
+-- Formato de Visualizacion -- ok
+-- El estado por default es pendiente, luego solicitar firma y por ultimo firmado -- ok
+-- boton para eliminar mientras esta pendiente -- ok
+-- Informe con los registros generados, los parametros son contrato, anno y mes
+-- Debe estar como una opcion mas, asi como donde se crea el proceso, es decir un icono mas para este proceso que se debe llamar Inventario -- ok
+-- Para que salga el boton de esta nueva funcionalidad, debemos poner en el contrato un check que diga si se activa o no inventario
+
+-------------------><------------------
+-------------------><------------------
+
+variables
+
+rails g scaffold variable nombre:string campo:string segmento:string
+rails g scaffold formato nombre:string segmento:string estado:string detalle:text
+rails g scaffold formatosvariable formato:references seccion:string variable_id:integer valor:string orden:integer titulo:string
+
+CREATE TABLE `informe_94` (
+  `id` int(32) NOT NULL DEFAULT '0',
+  `nombre` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `anno_mes` varchar(7) DEFAULT NULL,
+  `cantvisitas` bigint(21) NOT NULL DEFAULT '0',
+  `tiempo_semana1` time DEFAULT NULL,
+  `tiempo_semana2` time DEFAULT NULL,
+  `tiempo_semana3` time DEFAULT NULL,
+  `tiempo_semana4` time DEFAULT NULL,
+  `tiempo_semana5` time DEFAULT NULL,
+  `tiempo1` varchar(20) DEFAULT NULL,
+  `tiempo2` varchar(20) DEFAULT NULL,
+  `tiempo3` varchar(20) DEFAULT NULL,
+  `tiempo4` varchar(20) DEFAULT NULL,
+  `tiempo5` varchar(20) DEFAULT NULL,
+  `tiempo_total` time DEFAULT NULL,
+  `tiempot` varchar(20) DEFAULT NULL,
+
+alter table informe_94 add cantvis_a bigint(21) NOT NULL DEFAULT '0';
+alter table informe_94 add tiesem1_a varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem2_a varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem3_a varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem4_a varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem5_a varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesemt_a varchar(20) DEFAULT NULL;
+
+alter table informe_94 add cantvis_b bigint(21) NOT NULL DEFAULT '0';
+alter table informe_94 add tiesem1_b varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem2_b varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem3_b varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem4_b varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem5_b varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesemt_b varchar(20) DEFAULT NULL;
+
+alter table informe_94 add cantvis_c bigint(21) NOT NULL DEFAULT '0';
+alter table informe_94 add tiesem1_c varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem2_c varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem3_c varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem4_c varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem5_c varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesemt_c varchar(20) DEFAULT NULL;
+
+alter table informe_94 add cantvis_d bigint(21) NOT NULL DEFAULT '0';
+alter table informe_94 add tiesem1_d varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem2_d varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem3_d varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem4_d varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesem5_d varchar(20) DEFAULT NULL;
+alter table informe_94 add tiesemt_d varchar(20) DEFAULT NULL;
+
+
+alter table informe_94 add semana1 varchar(30) DEFAULT NULL;
+alter table informe_94 add semana2 varchar(30) DEFAULT NULL;
+alter table informe_94 add semana3 varchar(30) DEFAULT NULL;
+alter table informe_94 add semana4 varchar(30) DEFAULT NULL;
+alter table informe_94 add semana5 varchar(30) DEFAULT NULL;
+
+
+
+
+
+/*** 2024-02-18 DOTACION ***/
+
+rails g scaffold contratosperdotacion contrato:references contratosperfecha:references contratospersona:references fecha_prox_entrega:date talla_pantalon:string{10} cant_pantalon:integer talla_camisa:string{10} cant_camisa:integer talla_zapatos:string{10} cant_zapatos:integer zapatos:string{40} observacion:string{500} estado:string{50} user_estado:integer
+
+
+- [ ] Dotación periódica, es cada 4 meses pero si el contrato es superior a las 4 meses la siguiente dotación es a los 8 meses,
+esto es un informe y un proceso en el dash para hacer seguimiento  y en un chuleo por mes, considerar, la fecha de entrega se recalcula la fecha del próximo envío
+
+
+
+/*** 2024-02-18 EPP ***/
+
+rails g scaffold contratossolepp contrato:references user:references estado:string{50} (activo y nacto)
+rails g scaffold contratossoleppsdetalle contratossolepp:references item:string  (iparaneteos) observacion:string{500} cantidad:integer cant_aprobada:integer
+rails g scaffold contratossoleppsbitacora contratossolepp:references detalle:string
+
+rails g scaffold contratosentepp contrato:references user:references contratosperfecha:references contratospersona:references codigo_otp_env:integer codigo_otp_rec:integer codigo_otp_fecha:datetime codigo_otp_firma:string{50} estado:string{50}
+rails g scaffold contratosenteppsdetalle contratosentepp:references item:string observacion:string{500} cantidad:integer
+
+
+codigo_otp_rec = null, codigo_otp2_env = null, codigo_otp2_rec = null, fecha_firma = null, status_sms_opt1 = null,
+status_sms = null, body_sms = null, status_sms_opt2 = null, body_sms_otp2 = null, codigo_firma = null
+
+
+/*** 2023-12-31 ***/
+
+rails g scaffold visitasatencion visita:references user:references nombre:string identificacion:string{30}
+cargo:string celular:string{30} email:string
+codigo_env:integer codigo_rec:integer codigo_fecha:datetime codigo_firma:string
+
+/*** 2023-12-28 ***/
+
+Modulo de Evaluaciones  KIOSSS y ASEAR
+nota: la clase en evaluacionesdetalle es una lista pero de iparametros
+
+rails g scaffold evaluacion tema:string objetivo:string{1000} estado:string{40} user:references
+rails g scaffold evalacionesdetalle evaluacion:references clase:string actividad:string{2000} requieredoc:string{2}
+rails g scaffold evaluacionescontrato evaluacion:references contrato:references user:references user_responsable:integer fecha_limite:date estado:string{50}
+
+-- LA EJECUCION SE CREA AUTOMATICAMENTE CONTRA LA creacion de evaluacionescontrato
+
+rails g scaffold evaluacionesejecucion evaluacionescontrato:references evaluacion:references evalacionesdetalle:references estado:string{50} user:references resultado:string{1000}
+rails g scaffold evaluacionesejecucionesdoc evaluacionesejecucion:references user:references tipo:string docevaluacion:attachment
+
+
+/******
+
+Tipo:
+INSERT INTO iparametros VALUES (0,'NUEVO DESARROLLO','soporte','ACTIVO',NOW(),NOW(),NULL,NULL,NULL);
+INSERT INTO iparametros VALUES (0,'MEJORA','soporte','ACTIVO',NOW(),NOW(),NULL,NULL,NULL);
+INSERT INTO iparametros VALUES (0,'INCONSISTENCIA','soporte','ACTIVO',NOW(),NOW(),NULL,NULL,NULL);
+INSERT INTO iparametros VALUES (0,'SOPORTES','soporte','ACTIVO',NOW(),NOW(),NULL,NULL,NULL);
+
+rails g scaffold soporte user:references tipo:string{50} observacion:string{1000} estado:string{50} fecha_atencion:datetime docsoporte:attachment
+rails g scaffold soportesnota soporte:references user:references observaciones:string{1000}
+rails g scaffold soportesnotasimagen soportesnota:references user:references descripcion:string docsoportesnota:attachment
+
+
+/******
+
+rails g scaffold visitasdoc visita:references user:references tipo:string docvisita:attachment
+rails g scaffold visitasnota visita:references user:references nota:string{2000}
+rails g scaffold visitascompromiso visita:references user:references fecha:date estado:string{50} compromiso:string{2000}
+rails g scaffold visitassede visita:references user:references contratossede:references
+
+rails g scaffold contratoscargosdetalle contratoscargo:references user:references nota:string{2000}
+
+*****/
+
+-----------------------------------------------------------------------------
+TEMAS PARA TRABAJAR 2023-11-28
+-----------------------------------------------------------------------------
+Nota: Este documento debe ser firmado por la persona.. y agregado a contratosperprodoc, si la persona no la firma la pueden firmar tambien el testigo1 y testigo2 (Esto puede ser lo ultimo)
+Nota: todas las listas deben ser pegadas de la tabla iparametros
+
+Clase es: APERTURA DE PROCESO / ABANDONO DE PUESTO / LLAMADO DE ATENCION
+Estado: PENDIENTE / FIRMADO / FINALIZADO (default PENDIENTE)
+rails g scaffold contratosperproceso contratospersona:references contratosperfecha:references user:references clase:string{100} fecha:datetime detalle:string{4000} estado:string{50} user_testigo1:integer user_testigo2:integer
+Funciona como padre e hijo
+-----------------------------------------------------------------------------
+rails g scaffold contratosperprodoc contratosperproceso:references contratospersona:references user:references tipo:string docproceso:attachment
+-----------------------------------------------------------------------------
+Estado: PENDIENTE / ATENDIDA / NO ATENDIDA (default PENDIENTE)
+rails g scaffold contratosperprocitacion contratosperproceso:references contratospersona:references fecha:datetime lugar:string{500} user:references estado:string{50}
+-----------------------------------------------------------------------------
+rails g scaffold contratosperprode  scargo contratosperproceso:references contratospersona:references empleado:string{4000} asear:string{4000} user:references
+-----------------------------------------------------------------------------
+rails g scaffold contratosperprosancion contratosperproceso:references contratospersona:references user:references sancion:string{500} reglamento:string{2000}
+-----------------------------------------------------------------------------
+rails g scaffold contratosperpronota contratosperproceso:references contratospersona:references user:references nota:string{2000}
+-----------------------------------------------------------------------------
+FIN PARA TRABAJAR 2023-11-28
+-----------------------------------------------------------------------------
+
+
+
+
+rails g scaffold personasimagen persona:references user:references documentos:attachment
+
+Objeto.find_by_sql("SELECT f.id contratosperfecha_id, u.id user_id, i.id contratosperimagen_id
+                    FROM   contratosperfechas f, users u, contratosperimagenes i, contratospersonas p
+                    WHERE  f.contrato_id = 620
+                    AND    p.id = f.contratospersona_id
+                    AND    f.codigo_firma IS NOT NULL
+                    AND    f.id = i.contratosperfecha_id
+                    AND    i.descripcion LIKE 'CONTRATO FIRMADO DIGITALMENTE%'
+                    AND    f.contratospersona_id = u.contratospersona_id").each do |a|
+      a = Contratosperimagen.find(a.contratosperimagen_id)
+      a.destroy
+      ContratosperfechasController.firmacontrato(a.contratosperfecha_id,a.user_id)
+    end
+
+
+user = User.new
+identificacion
+email
+password
+nombre
+nombre_real
+username
+celular
+
+activo
+portafolio_id
+etapa
+tipoconsulta
+
+
+user = User.new
+user.identificacion = pp.identificacion
+user.email = pp.identificacion.to_s + '@asearesp.com'
+user.password = pp.identificacion
+user.nombre = pp.nombre.to_s
+user.nombre_real = pp.nombre.to_s
+user.tipoconsulta = 'CANDIDATO'
+user.portafolio_id = 1
+user.username = pp.identificacion.to_s
+user.activo = 'S'
+user.etapa = 'A'
+user.celular = pp.celular.to_i
+user.personasformulario_id = pp.id
+user.save(validate: false)
+
+git branch
+git checkout -b copia_20211012
+git add .
+git push origin copia_20211012
+git checkout dev
+git branch
+
+
+(TRANVIA, ESTACION, METROPLUS, PLAZOLETA, CABLE, GARAJES)
+
+ -- inscripcion
+rails g scaffold antecedente identificacion:string{20} nombre:string edad:string{5} menores5:string{5} mayores60:string{5} sexo:string{5} 'peso:decimal{11,2}' 'talla:decimal{11,2}' 'imc:decimal{11,2}' ant_1:string{5} ant_2:string{5} ant_3:string{5} ant_3a:string{5} ant_3b:string{5} ant_3c:string{5} ant_3d:string{5} ant_3e:string{5} ant_4:string{5} ant_4a:string{5} ant_5:string{5} ant_5a:string{5} ant_6:string{5} ant_7:string{5} ant_8:string{5} ant_9:string{5} ant_10:string{5} ant_11:string{5} ant_12:string{5} ant_13:string{5} persona_id:integer
+rails g scaffold persona identificacion:string{20} nombre:string
+
+cuando se crea el antecedente se crea el usuario y la persona.
+ç
+
+
+rails g scaffold personasimagen persona:references user:references documentos:attachment
+
+rails g scaffold usersreporte user:references infgrupo:references
+
+rails g scaffold controlformato proceso:string{40} controlador:string modelo:string{100} url:string tipo_documento:string estado:string{20}
+
+rails g migration AddControlToControlfirma controlformato_id:integer
+
+rails g migration AddArchivo2ToMigracionesreportes archivo_id:integer
+
+rake db:rollback version=20200425132022
+rake db:migrate:down VERSION=20200425132351
+
+
+
+rails g scaffold centro codigo:string{20} descripcion:string
+rails g migration AddCentroToAntecedentes centro_id:integer
+
+
+INSERT INTO users (id,email,nombre,etapa,persona_id,username,activo,identificacion,portafolio_id,tipoconsulta,failed_attempts,celular)
+SELECT 0,CONCAT(identificacion,'@asear.esp.com'),nombre,'A',id,identificacion,'S',identificacion,portafolio_id,'PERSONA',0,0
+FROM personas WHERE identificacion = '43277494';
+
+
+
+
+/****** 2020-07-16 ******/
+
+/*** EMPRESAS Y CONTRATOS ***/
+/*** EMPRESAS Y CONTRATOS ***/
+
+
+rails g scaffold tiposdocumento descripcion:string
+rails g scaffold tiposimagen descripcion:string
+rails g scaffold tiposcuenta entidad:string tipo:string nro_cuenta:string
+rails g scaffold tiposcontrato descripcion:string
+rails g scaffold municipio descripcion:string coddian_municipio:string departamento:string coddian_departamento:string autobuscar:string
+
+rails g scaffold empresa tiposdocumento:references identificacion:string{20} digito:string{2} nombre:string direccion:string dircampo1:string{20} dircampo2:string{5} dircampo3:string{5} dircampo4:string{20} dircampo5:string{5} dircampo6:string{5} dircampo7:string{20} dircampo8:string{5} dircampo9:string{100} municipio:references representante_legal:string contacto:string celular:string email:string paginaweb:string user:references user_act:integer
+rails g scaffold empresassede empresa:references nombre:string direccion:string dircampo1:string{20} dircampo2:string{5} dircampo3:string{5} dircampo4:string{20} dircampo5:string{5} dircampo6:string{5} dircampo7:string{20} dircampo8:string{5} dircampo9:string{100} municipio:references user:references user_act:integer
+rails g scaffold contrato empresa:references nro_contrato:string{50} objeto:sring{4000} tiposcontrato:references estado:string 'valor:decimal{11,2}' plazo_mes:integer plazo_dia:integer fecha_firma:date fecha_inicio:date fecha_fin:date anticipo:string{5} 'valor_anticipo:decimal{11,2}' fecha_liquidacion:date fechamasmodi:date 'valormasmodi:decimal{11,2}' user:references user_act:integer
+rails g scaffold contratosimagen contrato:references tiposimagen:references user:references imagen:attachment
+rails g scaffold contratosuser contrato:references user:references user_interventor:integer fecha_inicio:date fecha_fin:date
+rails g scaffold contratosmodificacion contrato:references user:references tipo_modificacion:string fecha_modificacion:date 'valor:decimal{11,2}' plazo_mes:integer plazo_dia:integer observacion:string{4000}
+rails g scaffold contratosobservacion contrato:references user:references observacion:string{4000}
+c
+rails g migration AddSedeToContratosusers empresassede_id:integer
+
+rails g migration AddEtapaToEmpresas etapa:string{5}
+rails g migration AddEtapaToContratos etapa:string{5}
+rails g migration AddDireccionToContratos municipio_id:integer direccion:string
+rails g migration AddFinToContratosmodificaciones fecha_fin:date
+
+rails g migration AddResponsableToContratosusers nombre:string telefono:string
+
+
+rails g scaffold insumo tipo:string bien_servicio:string especificacion:text presentacion:string 'valor1:decimal{20,2}' 'valor2:decimal{20,2}' estado:string{20}
+
+rails g scaffold contratosinsumo contrato:references insumo:references user:references 'valor:decimal{20,2}' cantidad:integer user_act:integer
+
+rails g scaffold tiposarea descripcion:string
+
+---->
+
+rails g scaffold contratospedido contrato:references insumo:references user:references 'valor:decimal{20,2}' cantidad:integer
+
+
+rake db:rollback version=20200718225449
+
+rails g scaffold migracionesinsumo user:references archivo:references estado:string contrato_id:integer insumo_id:integer
+
+
+rails g scaffold migracionescuenta user:references archivo:references estado:string{50} identificacion:string{30} nro_cuenta:string{30}
+
+rails g scaffold migracionestelefono user:references archivo:references estado:string{50} identificacion:string{30} telefono:string{30}
+
+rails g scaffold migracionesterminacion user:references archivo:references estado:string{50} identificacion:string{30} contratosperfecha:references contratospersona:references fecha_fin:date contratospervalidacion:integer
+
+Field                   Type          Collation        Null    Key     Default  Extra           Privileges                       Comment
+----------------------  ------------  ---------------  ------  ------  -------  --------------  -------------------------------  ---------
+id                      int(11)       (NULL)           NO      PRI     (NULL)   auto_increment  select,insert,update,references
+user_id                 int(11)       (NULL)           YES     MUL     (NULL)                   select,insert,update,references
+archivo_id              int(11)       (NULL)           YES     MUL     (NULL)                   select,insert,update,references
+estado                  varchar(255)  utf8_general_ci  YES             (NULL)                   select,insert,update,references
+identificacion          varchar(20)   utf8_general_ci  YES             (NULL)                   select,insert,update,references
+contratosperfecha_id    int(11)       (NULL)           YES             (NULL)                   select,insert,update,references
+contratospersona:references fecha_fin:date contratospervalidacion:integer
+
+
+
+/*Column Information*/
+----------------------
+
+Field                 Type          Collation        Null    Key     Default  Extra           Privileges                       Comment
+--------------------  ------------  ---------------  ------  ------  -------  --------------  -------------------------------  ---------
+id                    int(11)       (NULL)           NO      PRI     (NULL)   auto_increment  select,insert,update,references
+user_id               int(11)       (NULL)           YES     MUL     (NULL)                   select,insert,update,references
+archivo_id            int(11)       (NULL)           YES     MUL     (NULL)                   select,insert,update,references
+estado                varchar(255)  utf8_general_ci  YES             (NULL)                   select,insert,update,references
+identificacion        varchar(20)   utf8_general_ci  YES             (NULL)                   select,insert,update,references
+identificacion_super  varchar(20)   utf8_general_ci  YES             (NULL)                   select,insert,update,references
+userasig_id           int(11)       (NULL)           YES             (NULL)                   select,insert,update,references
+contratospersona_id   int(11)       (NULL)           YES             (NULL)                   select,insert,update,references
+created_at            datetime      (NULL)           NO              (NULL)                   select,insert,update,references
+updated_at            datetime      (NULL)           NO              (NULL)                   select,insert,update,references
+
+/*I
+
+
+cantidad_mensual:integer 'precio_unitario:decimal{20,2}' 'descuento:decimal{11,2}' 'precio_condescuento:decimal{20,2}' 'total:decimal{20,2}'
+
+
+rails g scaffold contratossede contrato:references empresassede:references user:references user_act:integer
+rails g scaffold tiposcargo descripcion:string perfil:string{4000}
+rails g scaffold contratoscargo contrato:references tiposcargo:references perfil:string{4000} disponibilidad:string{50} cantidad:integer 'salario:decimal{11,2}' user:references user_act:integer
+
+rails g scaffold contratossede contrato:references empresassede:references user:references user_act:integer
+
+
+rails g scaffold contratos contrato:references tiposcargo:references perfil:string{4000} disponibilidad:string{50} cantidad:integer 'salario:decimal{11,2}' user:references user_act:integer
+
+
+rails g scaffold tiposcargo descripcion:string perfil:string{4000}
+
+rails g migration AddTipoToContratosusers tipo:string
+
+rails g migration AddSedeToContratosusers empresassede_id:integer
+
+rails g migration AddClaseToInsumos clase:string
+
+
+rails g migration AddClaseToMigracionesinsumos clase:string
+
+rails g migration AddClaseToArchivos clase:string
+
+rails g scaffold contratosmaquinaria contrato:references insumo:references user:references cantidad_mensual:integer 'precio_unitario:decimal{20,2}' 'descuento:decimal{20,2}' 'precio_condescuento:decimal{20,2}' 'total:decimal{20,2}' user_act:integer
+
+rails g scaffold contratosotro contrato:references descripcion:string{2000} user:references cantidad_mensual:integer 'precio_unitario:decimal{20,2}' 'descuento:decimal{20,2}' 'precio_condescuento:decimal{20,2}' 'total:decimal{20,2}' user_act:integer
+
+
+
+rails g scaffold contratossolicitud contrato:references user:references estado:string
+rails g scaffold contratossolbitacora contratossolicitud:references user:references estado:string
+rails g scaffold contratossoldetalle contratossolicitud:references user:references contratosinsumo:references contratosmaquinaria:references contratosotro:references insumo:references cantidad:integer cantidad_real:integer 'precio_unitario:decimal{20,2}' 'total:decimal{20,2}' user_act:integer
+
+rails g scaffold userstemporal identificacion:string{30} nombre:string email:string celular:string{30} user:references
+
+rails g migration AddUseractToContratosusers user_act:integer
+
+rails g migration AddSedeToContratosinsumos empresassede_id:integer
+rails g migration AddSedeToContratosmaquinarias empresassede_id:integer
+rails g migration AddSedeToContratosotros empresassede_id:integer
+
+rails g migration AddUseractToContratospagos user_act:integer
+rails db:migrate
+
+
+rails g migration AddCantsedeToContratosinsumos cantsede_1:integer cantsede_2:integer cantsede_3:integer cantsede_4:integer cantsede_5:integer cantsede_6:integer cantsede_7:integer cantsede_8:integer cantsede_9:integer cantsede_10:integer
+rails g migration AddCantsedeToContratossoldetalles cantsede_1:integer cantsede_2:integer cantsede_3:integer cantsede_4:integer cantsede_5:integer cantsede_6:integer cantsede_7:integer cantsede_8:integer cantsede_9:integer cantsede_10:integer
+rails g migration AddEstadoToContratossedes estado:string{20}
+
+
+rake db:rollback version=20200724171418
+
+<%= simple_form_for(@user) do |f| %>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-header">
+          <legend>
+            <%= @user.new_record? ? 'Agregar nuevo' : 'Editar' %> Usuario
+          </legend>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-2"><%= f.input :identificacion, label: 'Identificación' %></div>
+            <div class="col-md-6"><%= f.input :nombre, input_html: {onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase'} %></div>
+            <div class="col-md-4"><%= f.input :email %></div>
+            <div class="col-md-2"><%= f.input :celular %></div>
+          </div>
+        </div>
+        <div class="box-footer">
+          <div class="box-tools pull-right">
+            <%= f.button :submit, 'Aceptar', class: 'btn-flat btn-danger' %>
+          </div><!-- /.box-tools -->
+        </div><!-- box-footer -->
+      </div><!-- /.box -->
+    </div>
+  </div>
+<% end %>
+
+
+
+
+
+DELIMITER $$
+
+USE `coquetin`$$
+
+DROP PROCEDURE IF EXISTS `migracionesinsumos`$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `migracionesinsumos`(IN archivoId INT(11), nmUserId INT(11), nmPortafolioId INT(11))
+BEGIN
+
+	UPDATE migracionesinsumos SET identificacion = REPLACE(identificacion,' 0',''), identificacion = REPLACE(identificacion,'.0',''),
+																  celular = REPLACE(celular,' 0',''), celular = REPLACE(celular,'.0','')
+	WHERE archivo_id = archivoId;
+
+-- *******************************
+-- Cuando la persona existe...
+-- *******************************
+-- Identifica las personas
+	 	 UPDATE migracionesinsumos m  INNER JOIN personas p ON m.identificacion = p.identificacion
+	 SET m.persona_id = p.id
+	 WHERE m.archivo_id = archivoId
+	 AND  m.portafolio_id = nmPortafolioId
+	 AND  m.persona_id IS NULL;
+
+	 UPDATE migracionesinsumos m  INNER JOIN personas p ON m.celular = p.telefono
+	 SET m.persona_id = p.id
+	 WHERE m.archivo_id = archivoId
+	 AND  m.portafolio_id = nmPortafolioId
+	 AND  m.persona_id IS NULL;
+
+-- Cargue de los datos en el modulo de personas
+	 INSERT INTO personas (id,identificacion,nombre,telefono,correo,user_id,created_at,updated_at,portafolio_id,archivo_id)
+	 SELECT 0,identificacion, nombre, celular, correo, nmUserId, NOW(),NOW(),nmPortafolioId, archivo_id FROM migracionesinsumos WHERE archivo_id = archivoId AND persona_id IS NULL;
+
+-- Se carga el programa que coloca el estudiante - Plataforma Facebook
+	 INSERT INTO personasprogramas (id,persona_id,user_id,enrollment,carrera,fecha_creacion,archivo_id,created_at,updated_at)
+	 SELECT 0,p.id, nmUserId, 'INSCRIPCION FACEBBOK', programa, NOW(), m.archivo_id,NOW(),NOW() FROM migracionesinsumos m
+	 LEFT JOIN personas p ON p.identificacion = m.identificacion
+	 WHERE m.archivo_id = archivoId
+	 AND   m.persona_id IS NULL;
+
+END$$
+
+DELIMITER ;
+
+rails g scaffold entrada portafolio:references user:references identificacion:string{20} nombre:string celular:string{20} temperatura:string{5} direccion:string clase:string barrio_id:integer
+rails g scaffold barrio comuna:string descripcion:string
+
+rails g scaffold empresa
+persona:references eva_1:string{5} eva_2:string{5} eva_3:string{5} eva_4:string{5} eva_5:string{5} eva_6:string{5} eva_7:string{5} eva_8:string{5} eva_9:string{5}
+
+rails g scaffold proveedor identificacion:string nombre_proveedor:string nombre_camara:string telefono:string{50} celular:string{50} email:string direccion:string municipio:references nro_cuenta:string{50} entidad:string{50} tipo_cuenta:string{50} pertenece_cuenta:string identificacion_cuenta:string user:references user_act:integer estado:string{50}
+rails g scaffold proveedorescontacto proveedor:references user:references nombre:string telefono:string{50} email:string cargo:string user_act:integer estado:string{50}
+rails g scaffold proveedoresimagen proveedor:references user:references tiposimagen:references prodocumentos:attachment
+rails g migration AddClaseToTiposimagenes clase:string{50}
+rails g migration AddEtapaToProveedores etapa:string{2}
+
+
+nombre_proveedor:
+nombre_camara:
+telefono:
+celular:
+email:
+direccion:
+municipio:
+nro_cuenta:
+entidad:
+tipo_cuenta:
+pertenece_cuenta:
+identificacion_cuenta:
+user_act:
+estado:
+
+
+        update portafolioscierres set recaudo_capital = nvl(recaudo_capital,0), recaudo_corriente = nvl(recaudo_corriente,0), recaudo_mora = nvl(recaudo_mora,0),
+                                      recaudo_otros = nvl(recaudo_otros,0), recaudo_igv = nvl(recaudo_igv,0), recaudo_seguro2 = nvl(recaudo_seguro2,0),
+                                      recaudo_comp = nvl(recaudo_comp,0), recaudo_igv_comp = nvl(recaudo_igv_comp,0), recaudo_sfc = nvl(recaudo_sfc,0),
+                                      recaudo_comisiones = nvl(recaudo_comisiones,0), recaudo_costas = nvl(recaudo_costas,0), recaudo_honorarios = nvl(recaudo_honorarios,0),
+                                      recaudo_penalidades = nvl(recaudo_penalidades,0), recaudo_porte = nvl(recaudo_porte,0),
+                                      recaudo_total = nvl(recaudo_total,0), recaudo_seguro = nvl(recaudo_seguro,0),
+                                      ajuste_seguro = nvl(ajuste_seguro,0), ajuste_capital = nvl(ajuste_capital,0), ajuste_corriente = nvl(ajuste_corriente,0),
+                                      ajuste_mora = nvl(ajuste_mora,0),ajuste_otros = nvl(ajuste_otros,0), ajuste_igv = nvl(ajuste_igv,0), ajuste_seguro2 = nvl(ajuste_seguro2,0),
+                                      ajuste_comp = nvl(ajuste_comp,0), ajuste_igv_comp = nvl(ajuste_igv_comp,0),ajuste_comisiones = nvl(ajuste_comisiones,0),
+                                      ajuste_costas = nvl(ajuste_costas,0), ajuste_honorarios = nvl(ajuste_honorarios,0), ajuste_penalidades = nvl(ajuste_penalidades,0),
+                                      ajuste_porte = nvl(ajuste_porte,0), ajuste_total = nvl(ajuste_total,0),
+                                      final_saldo = nvl(final_saldo,0),
+                                      causacion_mora = lg.final_mora,
+                                      final_capital = lg.final_capital,
+                                      final_corriente = lg.final_corriente,
+                                      final_otros = inicial_otros,
+                                      final_mora = lg.final_mora,
+                                      final_igv = lg.final_igv,
+                                      final_seguro2 = lg.final_seguro2,
+                                      final_seguro = lg.final_seguro,
+                                      final_comp = lg.final_comp,
+                                      final_igv_comp = lg.final_igv_comp,
+                                      final_comisiones = lg.final_comisiones,
+                                      final_costas = lg.final_costas,
+                                      final_honorarios = lg.final_honorarios,
+                                      final_penalidades = lg.final_penalidades,
+                                      final_porte = lg.final_porte
+        where id = lg.id;
+        commit;
+      end loop;
+
+rails g migration AddDatoToContratossedes nombre:string direccion:string telefono:string{50} departamento:string{100} municipio:string{100}
+
+rails g migration AddSeddeToContratoscargos sede1:integer sede2:integer sede3:integer sede4:integer sede5:integer sede6:integer sede7:integer sede8:integer sede9:integer sede10:integer sede11:integer sede12:integer sede13:integer sede14:integer sede15:integer sede16:integer sede17:integer sede18:integer sede19:integer sede20:integer sede21:integer sede22:integer sede23:integer sede24:integer sede25:integer sede26:integer sede27:integer sede28:integer sede29:integer sede30:integer sede31:integer sede32:integer sede33:integer sede34:integer sede35:integer sede36:integer sede37:integer sede38:integer sede39:integer sede40:integer
+
+rails g migration AddSedesToContratoscargos dias_trabajo:string{100} horario:string{100} observaciones:string{2000}
+
+rails g migration AddSedde2ToContratosinsumos cantsede_11:integer cantsede_12:integer cantsede_13:integer cantsede_14:integer cantsede_15:integer cantsede_16:integer cantsede_17:integer cantsede_18:integer cantsede_19:integer cantsede_20:integer cantsede_21:integer cantsede_22:integer cantsede_23:integer cantsede_24:integer cantsede_25:integer cantsede_26:integer cantsede_27:integer cantsede_28:integer cantsede_29:integer cantsede_30:integer cantsede_31:integer cantsede_32:integer cantsede_33:integer cantsede_34:integer cantsede_35:integer cantsede_36:integer cantsede_37:integer cantsede_38:integer cantsede_39:integer cantsede_40:integer
+
+rails g migration AddAdminToPersonas administrativo:string{2}
+
+
+rails g migration AddSedde2ToContratosusers sede1:integer sede2:integer sede3:integer sede4:integer sede5:integer sede6:integer sede7:integer sede8:integer sede9:integer sede10:integer sede11:integer sede12:integer sede13:integer sede14:integer sede15:integer sede16:integer sede17:integer sede18:integer sede19:integer sede20:integer sede21:integer sede22:integer sede23:integer sede24:integer sede25:integer sede26:integer sede27:integer sede28:integer sede29:integer sede30:integer sede31:integer sede32:integer sede33:integer sede34:integer sede35:integer sede36:integer sede37:integer sede38:integer sede39:integer sede40:integer
+rails g migration AddSedde3ToContratosotros cantsede_1:integer cantsede_2:integer cantsede_3:integer cantsede_4:integer cantsede_5:integer cantsede_6:integer cantsede_7:integer cantsede_8:integer cantsede_9:integer cantsede_10:integer cantsede_11:integer cantsede_12:integer cantsede_13:integer cantsede_14:integer cantsede_15:integer cantsede_16:integer cantsede_17:integer cantsede_18:integer cantsede_19:integer cantsede_20:integer cantsede_21:integer cantsede_22:integer cantsede_23:integer cantsede_24:integer cantsede_25:integer cantsede_26:integer cantsede_27:integer cantsede_28:integer cantsede_29:integer cantsede_30:integer cantsede_31:integer cantsede_32:integer cantsede_33:integer cantsede_34:integer cantsede_35:integer cantsede_36:integer cantsede_37:integer cantsede_38:integer cantsede_39:integer cantsede_40:integer
+rails g migration AddSedde4ToContratosmaquinarias cantsede_1:integer cantsede_2:integer cantsede_3:integer cantsede_4:integer cantsede_5:integer cantsede_6:integer cantsede_7:integer cantsede_8:integer cantsede_9:integer cantsede_10:integer cantsede_11:integer cantsede_12:integer cantsede_13:integer cantsede_14:integer cantsede_15:integer cantsede_16:integer cantsede_17:integer cantsede_18:integer cantsede_19:integer cantsede_20:integer cantsede_21:integer cantsede_22:integer cantsede_23:integer cantsede_24:integer cantsede_25:integer cantsede_26:integer cantsede_27:integer cantsede_28:integer cantsede_29:integer cantsede_30:integer cantsede_31:integer cantsede_32:integer cantsede_33:integer cantsede_34:integer cantsede_35:integer cantsede_36:integer cantsede_37:integer cantsede_38:integer cantsede_39:integer cantsede_40:integer
+rails g migration AddSedde5ToContratossoldetalles cantsede_11:integer cantsede_12:integer cantsede_13:integer cantsede_14:integer cantsede_15:integer cantsede_16:integer cantsede_17:integer cantsede_18:integer cantsede_19:integer cantsede_20:integer cantsede_21:integer cantsede_22:integer cantsede_23:integer cantsede_24:integer cantsede_25:integer cantsede_26:integer cantsede_27:integer cantsede_28:integer cantsede_29:integer cantsede_30:integer cantsede_31:integer cantsede_32:integer cantsede_33:integer cantsede_34:integer cantsede_35:integer cantsede_36:integer cantsede_37:integer cantsede_38:integer cantsede_39:integer cantsede_40:integer
+
+rails g migration AddProveedorToInsumos 'valor_unitario:decimal{11,2}' 'porc_iva:decimal{11,2}' 'valor_iva:decimal{11,2}' proveedor_id:integer
+
+/*
+2020-09-24 FFA
+*/
+rails g scaffold contratospersona contrato:references tipo_identificacion:string identificacion:integer fecha_expedicion:date lugar_expedicion:string nombres:string apellidos:string ciudad:string direccion:string telefono:integer movil:integer correo:string lugar_nacimiento:string fecha_nacimiento:date genero:string{50} estrato:string{50} estado_civil:string{50} numero_hijos:integer registra_familiares:string{10} nivel_educacion:string fecha_ingreso:date fecha_retiro:date fecha_fin:date fecha_periodo_prueba:date salario:integer banco:string{50} cuenta_bancolombia:string{50} tipo_cuenta:string{50} consignar:string grupo_nomina:string seccion:string area:string oficio:string cargo:string tipo_contrato:string eps:string fondo_pension:string activo:string{30} talla_pantalon:string{10} talla_camisa:string{10} talla_zapatos:string{10} talla_camisa:string{10} talla_pantalon:string{10} talla_zapatos:string{10} etapa:string{10} user_asignado:integer autobuscar:string
+rails g migration AddEstadoToContratospersonas estado:string
+rails g scaffold contratosperexamen contratospersona:references descripcion:string estado:string user:references user_act:integer
+rails g scaffold contratosperestado contratospersona:references descripcion:string user:references user_act:integer
+rails g scaffold contratospergrupo contratospersona:references tipo_identificacion:string identificacion:integer nombre:string parentesco:string user:references user_act:integer
+rails g scaffold contratosperbitacora contratospersona:references estado:string user:references
+
+rails g scaffold iparametro descripcion:string campo:string estado:string{20}
+rails g migration AddNombreToContratospersonas user_id:integer user_act:integer
+rails g migration AddSegToContratospersonas identificacion2:integer fecha_nacimiento2:date
+
+rails g migration AddNomToContratospersonas nombre_completo:string
+
+rails g migration AddDescToContratosperexamenes direccion:string recomendaciones:string
+
+rails g migration AddFechaToContratosperexamenes fecha:date hora:string{20}
+
+rails g migration AddRecordacionToContratosperexamenes recordacion:string{20}
+
+rails g migration AddContratoToContratospersonas contrato:string{2}
+
+rails g migration AddAsiToContratosperexamenes observacion_llamada:string{2000}
+
+rails g scaffold contratosperagenda contratospersona:references user:references fecha:date hora:string{10}
+
+rails g migration AddAgendaToContratospersonas contrato_fecha:date contrato_hora:string{10}
+rails g migration AddAgendaToContratosperexamenes contrato_fecha:date contrato_hora:string{10}
+
+rails g migration AddPuestoToContratospersonas puesto_nuevo:string{500}
+
+rails g migration AddTipousuarioToContratospersonas tipo_usuario:string{20}
+
+        ActiveRecord::Base.connection.execute("update contratospersonas set contrato_fecha = '#{@contratosperagenda.fecha.to_date}',
+
+
+rails g scaffold personastemporal contrata:references user:references tipo_identificacion:string identificacion:string{20} nombres:string apellidos:string telefono:string{20} movil:string{20} cargo:string user_asignado:integer autobuscar:string nombre_completo:string tipo_usuario:string{20}
+
+rails g scaffold destino nombre_ciudad_origen:string tipo_trayecto:string regional_destino:string nombre_ciudad_destino:string frecuencia_destino:string tiempo_entrega_comercial:string restriccion_fisica:string
+
+
+
+rails g migration AddSedead2ToContratoscargos sede41:integer sede42:integer sede43:integer sede44:integer sede45:integer sede46:integer sede47:integer sede48:integer sede49:integer sede50:integer sede51:integer sede52:integer sede53:integer sede54:integer sede55:integer sede56:integer sede57:integer sede58:integer sede59:integer sede60:integer sede61:integer sede62:integer sede63:integer sede64:integer sede65:integer sede66:integer sede67:integer sede68:integer sede69:integer sede70:integer sede71:integer sede72:integer sede73:integer sede74:integer sede75:integer sede76:integer sede77:integer sede78:integer sede79:integer sede80:integer sede81:integer sede82:integer sede83:integer sede84:integer sede85:integer sede86:integer sede87:integer sede88:integer sede89:integer sede90:integer sede91:integer sede92:integer sede93:integer sede94:integer sede95:integer sede96:integer sede97:integer sede98:integer sede99:integer
+rails g migration AddSedead3ToContratosusers sede41:integer sede42:integer sede43:integer sede44:integer sede45:integer sede46:integer sede47:integer sede48:integer sede49:integer sede50:integer sede51:integer sede52:integer sede53:integer sede54:integer sede55:integer sede56:integer sede57:integer sede58:integer sede59:integer sede60:integer sede61:integer sede62:integer sede63:integer sede64:integer sede65:integer sede66:integer sede67:integer sede68:integer sede69:integer sede70:integer sede71:integer sede72:integer sede73:integer sede74:integer sede75:integer sede76:integer sede77:integer sede78:integer sede79:integer sede80:integer sede81:integer sede82:integer sede83:integer sede84:integer sede85:integer sede86:integer sede87:integer sede88:integer sede89:integer sede90:integer sede91:integer sede92:integer sede93:integer sede94:integer sede95:integer sede96:integer sede97:integer sede98:integer sede99:intege
+rails g migration AddSedead4ToContratosinsumos cantsede_41:integer cantsede_42:integer cantsede_43:integer cantsede_44:integer cantsede_45:integer cantsede_46:integer cantsede_47:integer cantsede_48:integer cantsede_49:integer cantsede_50:integer cantsede_51:integer cantsede_52:integer cantsede_53:integer cantsede_54:integer cantsede_55:integer cantsede_56:integer cantsede_57:integer cantsede_58:integer cantsede_59:integer cantsede_60:integer cantsede_61:integer cantsede_62:integer cantsede_63:integer cantsede_64:integer cantsede_65:integer cantsede_66:integer cantsede_67:integer cantsede_68:integer cantsede_69:integer cantsede_70:integer cantsede_71:integer cantsede_72:integer cantsede_73:integer cantsede_74:integer cantsede_75:integer cantsede_76:integer cantsede_77:integer cantsede_78:integer cantsede_79:integer cantsede_80:integer cantsede_81:integer cantsede_82:integer cantsede_83:integer cantsede_84:integer cantsede_85:integer cantsede_86:integer cantsede_87:integer cantsede_88:integer cantsede_89:integer cantsede_90:integer cantsede_91:integer cantsede_92:integer cantsede_93:integer cantsede_94:integer cantsede_95:integer cantsede_96:integer cantsede_97:integer cantsede_98:integer cantsede_99:integer
+rails g migration AddSedead5ToContratosotros cantsede_41:integer cantsede_42:integer cantsede_43:integer cantsede_44:integer cantsede_45:integer cantsede_46:integer cantsede_47:integer cantsede_48:integer cantsede_49:integer cantsede_50:integer cantsede_51:integer cantsede_52:integer cantsede_53:integer cantsede_54:integer cantsede_55:integer cantsede_56:integer cantsede_57:integer cantsede_58:integer cantsede_59:integer cantsede_60:integer cantsede_61:integer cantsede_62:integer cantsede_63:integer cantsede_64:integer cantsede_65:integer cantsede_66:integer cantsede_67:integer cantsede_68:integer cantsede_69:integer cantsede_70:integer cantsede_71:integer cantsede_72:integer cantsede_73:integer cantsede_74:integer cantsede_75:integer cantsede_76:integer cantsede_77:integer cantsede_78:integer cantsede_79:integer cantsede_80:integer cantsede_81:integer cantsede_82:integer cantsede_83:integer cantsede_84:integer cantsede_85:integer cantsede_86:integer cantsede_87:integer cantsede_88:integer cantsede_89:integer cantsede_90:integer cantsede_91:integer cantsede_92:integer cantsede_93:integer cantsede_94:integer cantsede_95:integer cantsede_96:integer cantsede_97:integer cantsede_98:integer cantsede_99:integer
+rails g migration AddSedead6ToContratosmaquinarias cantsede_41:integer cantsede_42:integer cantsede_43:integer cantsede_44:integer cantsede_45:integer cantsede_46:integer cantsede_47:integer cantsede_48:integer cantsede_49:integer cantsede_50:integer cantsede_51:integer cantsede_52:integer cantsede_53:integer cantsede_54:integer cantsede_55:integer cantsede_56:integer cantsede_57:integer cantsede_58:integer cantsede_59:integer cantsede_60:integer cantsede_61:integer cantsede_62:integer cantsede_63:integer cantsede_64:integer cantsede_65:integer cantsede_66:integer cantsede_67:integer cantsede_68:integer cantsede_69:integer cantsede_70:integer cantsede_71:integer cantsede_72:integer cantsede_73:integer cantsede_74:integer cantsede_75:integer cantsede_76:integer cantsede_77:integer cantsede_78:integer cantsede_79:integer cantsede_80:integer cantsede_81:integer cantsede_82:integer cantsede_83:integer cantsede_84:integer cantsede_85:integer cantsede_86:integer cantsede_87:integer cantsede_88:integer cantsede_89:integer cantsede_90:integer cantsede_91:integer cantsede_92:integer cantsede_93:integer cantsede_94:integer cantsede_95:integer cantsede_96:integer cantsede_97:integer cantsede_98:integer cantsede_99:integer
+rails g migration AddSedead7ToContratossoldetalles cantsede_41:integer cantsede_42:integer cantsede_43:integer cantsede_44:integer cantsede_45:integer cantsede_46:integer cantsede_47:integer cantsede_48:integer cantsede_49:integer cantsede_50:integer cantsede_51:integer cantsede_52:integer cantsede_53:integer cantsede_54:integer cantsede_55:integer cantsede_56:integer cantsede_57:integer cantsede_58:integer cantsede_59:integer cantsede_60:integer cantsede_61:integer cantsede_62:integer cantsede_63:integer cantsede_64:integer cantsede_65:integer cantsede_66:integer cantsede_67:integer cantsede_68:integer cantsede_69:integer cantsede_70:integer cantsede_71:integer cantsede_72:integer cantsede_73:integer cantsede_74:integer cantsede_75:integer cantsede_76:integer cantsede_77:integer cantsede_78:integer cantsede_79:integer cantsede_80:integer cantsede_81:integer cantsede_82:integer cantsede_83:integer cantsede_84:integer cantsede_85:integer cantsede_86:integer cantsede_87:integer cantsede_88:integer cantsede_89:integer cantsede_90:integer cantsede_91:integer cantsede_92:integer cantsede_93:integer cantsede_94:integer cantsede_95:integer cantsede_96:integer cantsede_97:integer cantsede_98:integer cantsede_99:integer
+
+
+rails g migration AddSedeadt2ToContratoscargos sede100:integer sede101:integer sede102:integer sede103:integer sede104:integer sede105:integer sede106:integer sede107:integer sede108:integer sede109:integer sede110:integer sede111:integer sede112:integer sede113:integer sede114:integer sede115:integer sede116:integer sede117:integer sede118:integer sede119:integer sede120:integer sede121:integer sede122:integer sede123:integer sede124:integer sede125:integer sede126:integer sede127:integer sede128:integer sede129:integer sede130:integer sede131:integer sede132:integer sede133:integer sede134:integer sede135:integer sede136:integer sede137:integer sede138:integer sede139:integer sede140:integer sede141:integer sede142:integer sede143:integer sede144:integer sede145:integer sede146:integer sede147:integer sede148:integer sede149:integer sede150:integer
+rails g migration AddSedeadt3ToContratosusers sede100:integer sede101:integer sede102:integer sede103:integer sede104:integer sede105:integer sede106:integer sede107:integer sede108:integer sede109:integer sede110:integer sede111:integer sede112:integer sede113:integer sede114:integer sede115:integer sede116:integer sede117:integer sede118:integer sede119:integer sede120:integer sede121:integer sede122:integer sede123:integer sede124:integer sede125:integer sede126:integer sede127:integer sede128:integer sede129:integer sede130:integer sede131:integer sede132:integer sede133:integer sede134:integer sede135:integer sede136:integer sede137:integer sede138:integer sede139:integer sede140:integer sede141:integer sede142:integer sede143:integer sede144:integer sede145:integer sede146:integer sede147:integer sede148:integer sede149:integer sede150:integer
+rails g migration AddSedeadt4ToContratosinsumos cantsede_100:integer cantsede_101:integer cantsede_102:integer cantsede_103:integer cantsede_104:integer cantsede_105:integer cantsede_106:integer cantsede_107:integer cantsede_108:integer cantsede_109:integer cantsede_110:integer cantsede_111:integer cantsede_112:integer cantsede_113:integer cantsede_114:integer cantsede_115:integer cantsede_116:integer cantsede_117:integer cantsede_118:integer cantsede_119:integer cantsede_120:integer cantsede_121:integer cantsede_122:integer cantsede_123:integer cantsede_124:integer cantsede_125:integer cantsede_126:integer cantsede_127:integer cantsede_128:integer cantsede_129:integer cantsede_130:integer cantsede_131:integer cantsede_132:integer cantsede_133:integer cantsede_134:integer cantsede_135:integer cantsede_136:integer cantsede_137:integer cantsede_138:integer cantsede_139:integer cantsede_140:integer cantsede_141:integer cantsede_142:integer cantsede_143:integer cantsede_144:integer cantsede_145:integer cantsede_146:integer cantsede_147:integer cantsede_148:integer cantsede_149:integer cantsede_150:integer
+rails g migration AddSedeadt5ToContratosotros cantsede_100:integer cantsede_101:integer cantsede_102:integer cantsede_103:integer cantsede_104:integer cantsede_105:integer cantsede_106:integer cantsede_107:integer cantsede_108:integer cantsede_109:integer cantsede_110:integer cantsede_111:integer cantsede_112:integer cantsede_113:integer cantsede_114:integer cantsede_115:integer cantsede_116:integer cantsede_117:integer cantsede_118:integer cantsede_119:integer cantsede_120:integer cantsede_121:integer cantsede_122:integer cantsede_123:integer cantsede_124:integer cantsede_125:integer cantsede_126:integer cantsede_127:integer cantsede_128:integer cantsede_129:integer cantsede_130:integer cantsede_131:integer cantsede_132:integer cantsede_133:integer cantsede_134:integer cantsede_135:integer cantsede_136:integer cantsede_137:integer cantsede_138:integer cantsede_139:integer cantsede_140:integer cantsede_141:integer cantsede_142:integer cantsede_143:integer cantsede_144:integer cantsede_145:integer cantsede_146:integer cantsede_147:integer cantsede_148:integer cantsede_149:integer cantsede_150:integer
+rails g migration AddSedeadt6ToContratosmaquinarias cantsede_100:integer cantsede_101:integer cantsede_102:integer cantsede_103:integer cantsede_104:integer cantsede_105:integer cantsede_106:integer cantsede_107:integer cantsede_108:integer cantsede_109:integer cantsede_110:integer cantsede_111:integer cantsede_112:integer cantsede_113:integer cantsede_114:integer cantsede_115:integer cantsede_116:integer cantsede_117:integer cantsede_118:integer cantsede_119:integer cantsede_120:integer cantsede_121:integer cantsede_122:integer cantsede_123:integer cantsede_124:integer cantsede_125:integer cantsede_126:integer cantsede_127:integer cantsede_128:integer cantsede_129:integer cantsede_130:integer cantsede_131:integer cantsede_132:integer cantsede_133:integer cantsede_134:integer cantsede_135:integer cantsede_136:integer cantsede_137:integer cantsede_138:integer cantsede_139:integer cantsede_140:integer cantsede_141:integer cantsede_142:integer cantsede_143:integer cantsede_144:integer cantsede_145:integer cantsede_146:integer cantsede_147:integer cantsede_148:integer cantsede_149:integer cantsede_150:integer
+rails g migration AddSedeadt7ToContratossoldetalles cantsede_100:integer cantsede_101:integer cantsede_102:integer cantsede_103:integer cantsede_104:integer cantsede_105:integer cantsede_106:integer cantsede_107:integer cantsede_108:integer cantsede_109:integer cantsede_110:integer cantsede_111:integer cantsede_112:integer cantsede_113:integer cantsede_114:integer cantsede_115:integer cantsede_116:integer cantsede_117:integer cantsede_118:integer cantsede_119:integer cantsede_120:integer cantsede_121:integer cantsede_122:integer cantsede_123:integer cantsede_124:integer cantsede_125:integer cantsede_126:integer cantsede_127:integer cantsede_128:integer cantsede_129:integer cantsede_130:integer cantsede_131:integer cantsede_132:integer cantsede_133:integer cantsede_134:integer cantsede_135:integer cantsede_136:integer cantsede_137:integer cantsede_138:integer cantsede_139:integer cantsede_140:integer cantsede_141:integer cantsede_142:integer cantsede_143:integer cantsede_144:integer cantsede_145:integer cantsede_146:integer cantsede_147:integer cantsede_148:integer cantsede_149:integer cantsede_150:integer
+
+
+
+rails g scaffold contratossolotro contratossolicitud:references user:references insumo:references cantidad:integer cantidad_real:integer 'precio_unitario:decimal{11,2}' 'total:decimal{11,2} user_act:integer cantsede_1:integer cantsede_2:integer cantsede_3:integer cantsede_4:integer cantsede_5:integer cantsede_6:integer cantsede_7:integer cantsede_8:integer cantsede_9:integer cantsede_10:integer cantsede_11:integer cantsede_12:integer cantsede_13:integer cantsede_14:integer cantsede_15:integer cantsede_16:integer cantsede_17:integer cantsede_18:integer cantsede_19:integer cantsede_20:integer cantsede_21:integer cantsede_22:integer cantsede_23:integer cantsede_24:integer cantsede_25:integer cantsede_26:integer cantsede_27:integer cantsede_28:integer cantsede_29:integer cantsede_30:integer cantsede_31:integer cantsede_32:integer cantsede_33:integer cantsede_34:integer cantsede_35:integer cantsede_36:integer cantsede_37:integer cantsede_38:integer cantsede_39:integer cantsede_40:integer cantsede_41:integer cantsede_42:integer cantsede_43:integer cantsede_44:integer cantsede_45:integer cantsede_46:integer cantsede_47:integer cantsede_48:integer cantsede_49:integer cantsede_50:integer cantsede_51:integer cantsede_52:integer cantsede_53:integer cantsede_54:integer cantsede_55:integer cantsede_56:integer cantsede_57:integer cantsede_58:integer cantsede_59:integer cantsede_60:integer cantsede_61:integer cantsede_62:integer cantsede_63:integer cantsede_64:integer cantsede_65:integer cantsede_66:integer cantsede_67:integer cantsede_68:integer cantsede_69:integer cantsede_70:integer cantsede_71:integer cantsede_72:integer cantsede_73:integer cantsede_74:integer cantsede_75:integer cantsede_76:integer cantsede_77:integer cantsede_78:integer cantsede_79:integer cantsede_80:integer cantsede_81:integer cantsede_82:integer cantsede_83:integer cantsede_84:integer cantsede_85:integer cantsede_86:integer cantsede_87:integer cantsede_88:integer cantsede_89:integer cantsede_90:integer cantsede_91:integer cantsede_92:integer cantsede_93:integer cantsede_94:integer cantsede_95:integer cantsede_96:integer cantsede_97:integer cantsede_98:integer cantsede_99:integer cantsede_100:integer cantsede_101:integer cantsede_102:integer cantsede_103:integer cantsede_104:integer cantsede_105:integer cantsede_106:integer cantsede_107:integer cantsede_108:integer cantsede_109:integer cantsede_110:integer cantsede_111:integer cantsede_112:integer cantsede_113:integer cantsede_114:integer cantsede_115:integer cantsede_116:integer cantsede_117:integer cantsede_118:integer cantsede_119:integer cantsede_120:integer cantsede_121:integer cantsede_122:integer cantsede_123:integer cantsede_124:integer cantsede_125:integer cantsede_126:integer cantsede_127:integer cantsede_128:integer cantsede_129:integer cantsede_130:integer cantsede_131:integer cantsede_132:integer cantsede_133:integer cantsede_134:integer cantsede_135:integer cantsede_136:integer cantsede_137:integer cantsede_138:integer cantsede_139:integer cantsede_140:integer cantsede_141:integer cantsede_142:integer cantsede_143:integer cantsede_144:integer cantsede_145:integer cantsede_146:integer cantsede_147:integer cantsede_148:integer cantsede_149:integer cantsede_150:integer
+
+rails g scaffold contratossolimagen contratossolicitud:references user:references descripcion:string solimagenes:attachment
+
+rails g scaffold contratossolnota contratossolicitud:references user:references 'observacion:string{4000}'
+
+rails g migration AddPermisosToContratos 'monto_maximo_mes:decimal{20,2}' tipo_validacion:string{40}
+
+-- Tipo de validacion : Restringue
+-- Tipo de validacion : Informa
+
+rails g migration AddPermisosespecialesToContratosusers multiples_solicitudes:string{2} marca_entrega_sitio:string{2}
+rails g migration AddPermisosesp2ToContratosusers marca_noreal:string{2}
+
+rails g migration AddPermisosesp3ToContratos insumos_convalorbase:string{2}
+
+rails g scaffold contratoscargo contrato:references user:references descripcion:string cantidad:integer disponible:integer rechazados:integer
+
+------------------
+--- 2020-12-29 ---
+------------------
+rails g scaffold contratosprefactura contrato:references user:references 'subtotal:decimal{20,2}' 'ayu:decimal{20,2}' 'iva:decimal{20,2}' 'total:decimal{20,2}' siigo_id:integer siigo_nro:integer
+rails g scaffold contratosprefdetalle contratosprefactura:references detalle:string{4000} 'cantidad:decimal{11,2}' 'valor_unitario:decimal{20,2}' 'subtotal:decimal{20,2}' 'ayu:decimal{20,2}' 'iva:decimal{20,2}' 'total:decimal{20,2}'
+
+
+rails g migration AddEtapaToContratosprefacturas etapa:string{5}
+
+rails g migration AddDatosToContratosprefdetalles user_id:integer user_act:integer
+
+rails g migration AddValoresToContratosprefdetalles 'valor_iva:decimal{20,2}' 'retencion:decimal{20,2}' 'retecre:decimal{20,2}' 'porc_au:decimal{20,2}' 'porc_utilidad:decimal{20,2}'
+
+
+rake db:rollback version=20201229204503
+rake db:migrate:down VERSION=20201229204503
+
+rails g migration AddClaseToPersonas clase:string{50}
+
+tipo: Normal /Aseo Fuerte
+
+rails g scaffold contratosactividad contrato:references user:references detalle:string{4000} clase:string{50} cantidad:integer tipo:string{30} contratossede_id:integer dia_semana:string{15}
+
+rails g scaffold contratosactejecucion contratosactividad:references contratossede:references user:references
+rails g scaffold contratosactnota  contratosactividad:references contratossede:references user:references nota:string{4000}
+
+rails g migration AddClasesToUsers contrato_id:integer clase:string{50}
+
+rails g migration AddClasesdToContratossedes clase_aseo:string{50}
+
+rails g migration AddClasesmasToContratossedes clase_aseo2:string{50} clase_aseo3:string{50} clase_aseo4:string{50} clase_aseo5:string{50}
+
+rails g migration AddNorealizadaToContratosactejecuciones realizada:string{2} nota:string{2000} sap_codigo:string{20} sap_clasificacion:string sap_nota:string{2000}
+rails g scaffold contratosactcodigo contratossede:references user:references sap_codigo:string{20} sap_clasificacion:string sap_nota:string{2000}
+
+----------
+2021-02-11
+----------
+
+1. proceso para consultar las personas
+2. Novedades asociadas a la persona por dia
+3. Maestro de novedades (suma y resta)
+
+rails g scaffold tiposnovedad codigo:string{10} descripcion:string tipo:string{20} estado:string{20}
+rails g scaffold contratospernovedad contratospersona:references user:references tiposnovedad:references fecha:date observacion:string{1000}
+
+rails g scaffold periodosliquidacion inicio:date fin:date estado:string{10}
+
+rails g scaffold contratospernomina periodosliquidacion:references contrato:references contratospersona:references 'salario:decimal{20,2} 'quincena:decimal{20,2} dias:integer dias_novedad:integer dias_incg:integer dias_incl:integer dias_vaca:integer 'valor_novedad:decimal{20,2}' 'bonificacion:decimal{20,2}' 'incapacidad:decimal{20,2}' 'subtotal:decimal{20,2}' 'ajuste:decimal{20,2}' 'salud:decimal{20,2}' 'pension:decimal{20,2}' 'auxilio:decimal{20,2}' 'seguro:decimal{20,2}' 'dotacion:decimal{20,2}' 'prestamo:decimal{20,2}' 'total:decimal{20,2}' 'prov_cesantias:decimal{20,2}' 'prov_intcesantias:decimal{20,2}' 'prov_prima:decimal{20,2}' 'prov_vacaciones:decimal{20,2}' 'arl:decimal{20,2}' 'caja:decimal{20,2}' 'otros_desc:decimal{20,2}' 'salud_emp:decimal{20,2}' 'pension_emp:decimal{20,2}' 'valor_vaca:decimal{20,2}' estado:string{20} observacion:string{500}
+
+rails g migration AddClasevalorToContratos clasevalor:string{10}
+
+-----------
+2021-02-17
+-----------
+
+control de tiempo de apertura y cierre
+control de rango de fechas para el registro de novedades
+------------------------------------------------------------------------
+soporte digital por cada novedad
+------------------------------------------------------------------------
+proceso de contratacion nueva
+------------------------------------------------------------------------
+......
+novedades habilitadas por contrato....
+......
+Liquidacion de Contratos con control de informacion
+......
+
+rails g scaffold contratostiposnovedad contrato:references tiposnovedad:references
+
+rails g scaffold contratosretencion contrato:references user:references tipo_producto:string{20} descripcion:string 'porcentaje:decimal{20,2}'
+rails g scaffold contratosperfecha contrato:references user:references fecha_inicio:date fecha_fin:date 'salario:decimal{20,2}'
+
+rails g scaffold contratosprefretencion contratosprefactura:references contratosprefdetalle:references contratosretencion:references 'valor_retencion:decimal{20,2}'
+
+rails g scaffold tiposevaluacion tipo:string{50} descripcion:string detalle:string
+
+rails g migration AddCalificascionToTiposevaluaciones 'valor1:decimal{5,2}' 'valor2:decimal{5,2}' 'valor3:decimal{5,2}'
+
+rails g scaffold contratosgrupo contrato:references descripcion:string
+
+rails g migration AddGrupoToContratospersonas contratosgrupo_id:integer
+rails g migration AddGrupopersonaToContratosperfechas contratoscargo_id:integer contratosgrupo_id:integer seccion:string
+
+rails g migration AddPrenominaToContratosusers prenomina:string{2}
+
+rails g migration AddGrupoToTiposevaluaciones clase:string{20}
+
+
+rails g scaffold tiposmevaluacion tipo:string{50} descripcion:string{100} detalle:string{100} valor1:string{20} valor2:string{20} valor3:string{20} clase:string{20}
+
+rails g scaffold contratosactmcodigo contratossede:references nodo:string{30} user:references tiposevaluacion:references calificacion:string{20} observaciones:string{2000}
+
+rails g scaffold contratosactcodigosinfo contratossede:references nodo:string{30} user:references fecha:date rsteva_1:string{30} rsteva_2:string{30} rsteva_3:string{30} rsteva_4:string{30} rsteva_5:string{30} rsteva_6:string{30} rsteva_7:string{30} rsteva_8:string{30} rsteva_9:string{30} rsteva_10:string{30} rsteva_11:string{30} rsteva_12:string{30} rsteva_13:string{30} rsteva_14:string{30} rsteva_15:string{30} rsteva_16:string{30} rsteva_17:string{30} rsteva_18:string{30} rsteva_19:string{30} rsteva_20:string{30} rsteva_21:string{30} rsteva_22:string{30} rsteva_23:string{30} rsteva_24:string{30} rsteva_44:string{30} rsteva_45:string{30} rsteva_46:string{30} rsteva_47:string{30} rsteva_48:string{30} rsteva_49:string{30} rsteva_50:string{30} rsteva_51:string{30}
+
+rails g scaffold contratosactmcodigosinfo contratossede:references nodo:string{30} user:references fecha:date rsteva_2:string{30} rsteva_3:string{30} rsteva_4:string{30} rsteva_5:string{30} rsteva_6:string{30} rsteva_7:string{30} rsteva_8:string{30} rsteva_9:string{30} rsteva_10:string{30} rsteva_11:string{30} rsteva_12:string{30} rsteva_13:string{30} rsteva_14:string{30} rsteva_15:string{30} rsteva_16:string{30} rsteva_17:string{30} rsteva_18:string{30} rsteva_19:string{30} rsteva_20:string{30} rsteva_21:string{30} rsteva_22:string{30} rsteva_23:string{30} rsteva_24:string{30} rsteva_25:string{30} rsteva_26:string{30} rsteva_27:string{30} rsteva_28:string{30} rsteva_29:string{30} rsteva_30:string{30} rsteva_31:string{30} rsteva_32:string{30} rsteva_33:string{30} rsteva_34:string{30} rsteva_35:string{30} rsteva_36:string{30} rsteva_37:string{30} rsteva_38:string{30} rsteva_39:string{30} rsteva_40:string{30} rsteva_41:string{30} rsteva_42:string{30} rsteva_43:string{30} rsteva_44:string{30} rsteva_45:string{30} rsteva_46:string{30} rsteva_47:string{30} rsteva_48:string{30} rsteva_49:string{30} rsteva_50:string{30} rsteva_51:string{30} rsteva_52:string{30}
+
+
+rails g scaffold contratosautoinsumo contrato:references insumo:references user:references
+
+rails g scaffold contratosprefimagen contratosprefactura:references descripcion:string user:references facturasimagen:attachment
+
+rails g scaffold tipospretencion codigo:string{10} descripcion:string estado:string{10}
+
+rails g migration AddTiposretencionToContratosretenciones tipospretencion_id:integer
+
+
+rails g migration AddRetencionToContratospagos 'valor_retencion:decimal{11,2}' 'rete_1:decimal{11,2}' 'rete_2:decimal{11,2}' 'rete_3:decimal{11,2}' 'rete_4:decimal{11,2}' 'rete_5:decimal{11,2}' 'rete_6:decimal{11,2}' 'rete_7:decimal{11,2}' 'rete_8:decimal{11,2}' 'rete_9:decimal{11,2}' 'rete_10:decimal{11,2}' 'rete_11:decimal{11,2}' 'rete_12:decimal{11,2}' 'rete_13:decimal{11,2}' 'rete_14:decimal{11,2}' 'rete_15:decimal{11,2}' 'rete_16:decimal{11,2}' 'rete_17:decimal{11,2}' 'rete_18:decimal{11,2}' 'rete_19:decimal{11,2}' 'rete_20:decimal{11,2}'
+
+
+rails g scaffold contratosnodo contrato:references user:references contratossede:references user_act:integer estado:string{20} nombre:string{255} clase_aseo:string{50} clase_aseo2:string{50} clase_aseo3:string{50} clase_aseo4:string{50} clase_aseo5:string{50}
+rails g migration AddNodoToContratosactividades contratosnodo_id:integer
+
+rails g migration AddNodoToContratosactejecuciones contratosnodo_id:integer
+
+rails g scaffold contratosperuser contratospersona:references user:references fecha_inicio:date fecha_fin:date
+
+rails g scaffold contratossecuser contratosseccion:references user:references
+
+
+rails g scaffold tiposentidad identificacion:string{20} nombre:string descripcion:string estado:string{20} user:references
+rails g scaffold contratosperembargo contratospersona:references tiposentidad:references user:references tipodescuento:string prestaciones:string{10} porcentaje:string 'valor:decimal{11,2}' termino_descuento:string{20} 'tope:decimal{11,2}' user_actualiza:integer
+
+rails g scaffold contratosperprestamo contratospersona:references user:references 'valor:decimal{11,2}' 'cuota:decimal{11,2}' 'saldo:decimal{11,2}' termino_descuento:string{20} user_actualiza:integer estado:string{20}
+rails g scaffold contratosperrodamiento contratospersona:references user:references 'valor:decimal{11,2}' termino_descuento:string{20} user_actualiza:integer estado:string{20}
+rails g scaffold contratosperdescuento contratospersona:references user:references 'valor:decimal{20,2}' termino_descuento:string{20} user_actualiza:integer estado:string{20}
+
+rails g scaffold contratosnomina user:references consecutivo:integer periodosliquidacion:references contratospersona:references contratosgrupo:references estado:string{20}
+
+rake db:rollback version=20210922145423
+rake db:migrate:down VERSION=20210922145423
+
+20210922145423_create_contratospermasivas.rb
+
+20210710190845_create_contratosnominas.r
+
+rails g scaffold contratosperliquidacion contratosperfecha:references autobuscar:string
+'salario_mes:decimal{20,2}' 'auxilio:decimal{20,2}' 'subtotal:decimal{20,2}' dias:integer
+'cesantias:decimal{20,2}' 'int_cesantias:decimal{20,2}' 'vacaciones:decimal{20,2}' 'prima:decimal{20,2}'
+
+'novedades:decimal{20,2}' 'total:decimal{20,2}' estado:string{20} liquidacionimagen:attachment
+
+
+user:references nominasimagen:attachment
+
+
+
+
+
+rails g scaffold contratosprenimagen contrato:references contratosgrupo:references user:references nominasimagen:attachment
+
+rails g scaffold contratosperlimagen contratosperfecha:references liquidacionesimagen:attachment
+
+rails g scaffold solicitudesretiro contrato:references contratosgrupo:references contratospersona:references user:references fecha:date justificacion:string user_aprobacion:int fecha_aprobacion:date user_liquidacion:int fecha_liquidacion:date
+
+rails g scaffold contratoscaractividad contratoscargo:references user:references actividad:string{1000}
+
+rails g scaffold contratosprefcredito contrato:references contratosprefactura:references user:references fecha:date 'valor:decimal{20,2}' observacion:string{1000}
+rails g scaffold contratosprefdebito contrato:references contratosprefactura:references user:references fecha:date 'valor:decimal{20,2}' observacion:string{1000}
+
+
+rails g migration AddDescripcionToContratosperimagenes descripcion:string
+
+rails g scaffold contratospermasiva contrato:references contratosgrupo:references user:references fecha:date observacion:string
+rails g scaffold contratospermasdetalle contratospermasiva:references contratosperfecha:references
+(CASE WHEN p.fecha_fin IS NOT NULL AND p.fecha_fin >= '2021-09-30' AND p.fecha_inicio < '2021-09-16' THEN
+	                     vcTerminoDias -- TIMESTAMPDIFF(DAY, '2021-09-16',p.fecha_fin)+1
+	                WHEN DATE_FORMAT(p.fecha_inicio,'%Y-%m') = DATE_FORMAT('2021-09-30','%Y-%m') AND p.fecha_inicio >= '2021-09-16' AND p.fecha_fin >= '2021-09-30'  THEN
+	                     TIMESTAMPDIFF(DAY, p.fecha_inicio,'2021-09-30')+1 -- Aqui habian un +1, se vuelve a colocar 20210813
+                        WHEN DATE_FORMAT(p.fecha_inicio,'%Y-%m') = DATE_FORMAT('2021-09-30','%Y-%m') AND p.fecha_fin < '2021-09-30' AND p.fecha_inicio >= '2021-09-16' THEN
+	                     TIMESTAMPDIFF(DAY, p.fecha_inicio,p.fecha_fin)+1
+                        WHEN p.fecha_fin < '2021-09-30'  THEN
+	                     TIMESTAMPDIFF(DAY, '2021-09-16',p.fecha_fin)+1
+                        WHEN p.fecha_inicio >= '2021-09-16' AND p.fecha_fin IS NULL  THEN
+	                     TIMESTAMPDIFF(DAY, p.fecha_inicio,'2021-09-30')+1 -- 20210831 Se agrega
+                        ELSE vcTerminoDias END) dias,
+
+
+rails g scaffold contratospervacacion contratospersona:references contratosperfecha:references user:references fecha_inicio:date dias_disfrute:integer dias_pago:integer fecha_fin:date 'valor_disfrute:decimal{20,2}' 'valor_salud:decimal{20,2}' 'valor_pension:decimal{20,2}' 'valor_pago:decimal{20,2}' 'valor_total:decimal{20,2}' estado:string{50} user_aprueba:integer user_paga:integer
+
+
+rails g scaffold contratosperqueja contratospersona:references fecha:date queja_maltrato:string{2} queja_persecucion:string{2} queja_discriminacion:string{2} queja_entorpecimiento:string{2} queja_inequidad:string{2} queja_desproteccion:string{2} queja_explica:text queja_pruebas:text conciliar:string{2} conciliar_explique:text
+
+rails g scaffold contratospersugerencia contratospersona:references fecha:date prevencion:text correccion:text
+
+CREATE TABLE `clientesemplsugerencias` (
+
+rails g scaffold contratospernota contratospersona:references fecha:date observacion:text
+
+
+
+call prc_liquidacion_recal_esp(20668);
+
+************************************************************************************
+FORMATOS PARA FIRMA DIGITAL
+************************************************************************************
+ALTER TABLE contratosperfechas ADD fr_examen_retiro VARCHAR(5); _examen_retiro_temporal.html.erb
+ALTER TABLE contratosperfechas ADD fr_fch_terminacion VARCHAR(5); _fecha_estimada_terminacion.html.erb
+ALTER TABLE contratosperfechas ADD fr_otrosi_cambio_lugar VARCHAR(5); _otrosi_cambio_lugar.html.erb
+ALTER TABLE contratosperfechas ADD fr_otrosi_lugar_trabajo VARCHAR(5); _otrosi_lugar_trabajo.html.erb
+ALTER TABLE contratosperfechas ADD fr_otrosi_salario VARCHAR(5); _otrosi_salario.html.erb
+ALTER TABLE contratosperfechas ADD fr_otrosi_ult_labor VARCHAR(5); _otrosi_ultima_labor.html.erb
+ALTER TABLE contratosperfechas ADD fr_prorroga_fijo VARCHAR(5); _prorroga_termino_fijo.html.erb
+ALTER TABLE contratosperfechas ADD fr_contrato_labor VARCHAR(5);  _terminacion_contrato_labor.html.erb
+ALTER TABLE contratosperfechas ADD fr_contrato_obra_labor VARCHAR(5); _terminacion_contrato_obra_labor.html.erb
+ALTER TABLE contratosperfechas ADD fr_periodo_prueba VARCHAR(5); _terminacion_periodo_prueba.html.erb
+ALTER TABLE contratosperfechas ADD fr_termino_fijo VARCHAR(5); _terminacion_termino_fijo.html.erb
+ALTER TABLE contratosperfechas ADD fr_contrato_obra_labor_adc VARCHAR(5); _terminacion_contrato_obra_labor_adicional.html.erb
+
+
+
+

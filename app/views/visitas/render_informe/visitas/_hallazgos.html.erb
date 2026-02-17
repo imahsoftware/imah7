@@ -1,0 +1,30 @@
+<%
+  @hallazgos = Visitashallazgo.where("DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and visita_id in (select id from visitas where contrato_id = #{@contrato.id})")
+  if @hallazgos.present?
+%>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, en el desarrollo de las labores para dar cumplimiento al servicio que se tiene con la entidad, hemos
+    evidenciado algunos hallazgos <b>&nbsp;(<%= @hallazgos.count rescue 0 %>)&nbsp;</b> que desde nuestro punto son importantes detallar, a continuación se relacionan.
+  </div><br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="15%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>Fecha</strong></div></td>
+      <td width="35%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><strong>Hallazgo</strong></td>
+      <td width="40%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;"><div align="center"><strong>Registro Fotográfico</strong></div></td>
+    </tr>
+    <% @hallazgos.each do |hallazgo| %>
+      <tr>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><div align="center"><%= hallazgo.created_at.strftime("%d/%m/%Y %X") rescue nil %></div></td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= hallazgo.tipo rescue nil %></td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 5px; padding: 5px;">
+          <div align="center">
+            <%#= image_tag "#{image_url(hallazgo.docvisitashallazgo.url(:original))}", size: "200x200" rescue nil %>
+            <%= wicked_pdf_image_tag image_url(hallazgo.docvisitashallazgo.url(:original)), size: "200x200" rescue nil %></div></td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizo ningun hallazgo.
+  </div><br/>
+<% end %>

@@ -1,0 +1,234 @@
+<% acceso = is_auth_c("marcarestados")
+   cambiarsolicitanteepp = is_auth_c("cambiarsolicitanteepp")
+%>
+<div class="box-body" style="margin-right: 25px;padding-top: 0px; margin-top: -15px;">
+  <div class="row">
+    <h4>
+      <%= @contratossolepp.formulario.nombre_completo rescue nil %>
+    </h4>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-header with-border">
+    <h3 class="box-title">
+      <%= link_to procesos_contratossolepps_path(etapa: 'A'), data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+        <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+      <% end %> Solicitudes EPP</h3>
+
+    <div class="box-body">
+      <table class="table table-bordered table-condensed table-striped">
+        <tr class="thcolor">
+          <th width="10%" class="text-left text-tr-table"></th>
+          <th width="35%" class="text-left text-tr-table">Fecha Creación</th>
+          <th class="text-left text-tr-table">Contrato</th>
+          <th width="13%" class="text-center"></th>
+        </tr>
+        <tr>
+          <td class="text-center text-tr-table">
+            <div class="btn-group" id="botones<%= @contratossolepp.id %>">
+              <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+                Opciones <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to edit_contrato_path(id: @contratossolepp.contrato_id, etapa: 'A'), class: 'edit_contrato_button', data: { toggle: 'tooltip' } do %>
+                    <div class="text-blue"><i class="fa fa-file-o"></i> Ir al contrato</div>
+                  <% end %>
+                </li>
+                <% if @contratossolepp.estado.to_s != 'PENDIENTE' %>
+                  <li>
+                    <%= link_to rotulo_contratossolepps_path(id: @contratossolepp.id), data: { toggle: 'tooltip' }, class: 'popup_rotulo' do %>
+                      <div class="text-blue"><i class="fa fa-file-o"></i> Generar Rotulo</div>
+                    <% end %>
+                  </li>
+                <% end %>
+                <li>
+                  <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'A'), class: 'edit_contratossolepp_button', data: { toggle: 'tooltip' } do %>
+                    <div class="text-orange"><i class="fa fa-edit"></i> Editar solicitud</div>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to ver_contratossolepps_path(id: @contratossolepp.id), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                    <div class="text-blue"><i class="fa fa-clone"></i> Ver solicitud</div>
+                  <% end %>
+                </li>
+                <% if acceso
+                     if @contratossolepp.estado.to_s == 'ENVIADO' %>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "PENDIENTE"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a PENDIENTE?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar PENDIENTE
+                        </div>
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "APROBADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar EN PROCESO?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar APROBADO
+                        </div>
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "RECHAZADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar EN PROCESO?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar RECHAZADO
+                        </div>
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to contratossolepp_path(id: @contratossolepp.id), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                        <div class="text-blue"><i class="fa fa-trash"></i> Eliminar</div>
+                      <% end %>
+                    </li>
+                  <% elsif @contratossolepp.estado.to_s == 'PENDIENTE' %>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "ENVIADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar ENVIADO?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar ENVIADO</div>
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to contratossolepp_path(id: @contratossolepp.id), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                        <div class="text-orange"><i class="fa fa-trash"></i> Eliminar</div>
+                      <% end %>
+                    </li>
+                  <% elsif @contratossolepp.estado.to_s == 'APROBADO' %>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "DESPACHADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea reversar a ENVIADO?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-right" aria-hidden="true"></i> Marcar DESPACHADO
+                        </div>
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "ENVIADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar ENVIADO?" } do %>
+                        <div class="text-blue"><i class="fa fa-arrow-left" aria-hidden="true"></i> Marcar ENVIADO</div>
+                      <% end %>
+                    </li>
+                  <% elsif @contratossolepp.estado.to_s == 'DESPACHADO'
+                       if @contratossolepp.contratossoleppsatenciones.where("codigo_firma is not null").present? %>
+                      <li>
+                        <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: "ENTREGADO"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar ENTREGADO?" } do %>
+                          <div class="text-blue"><i class="fa fa-truck" aria-hidden="true"></i> Marcar Como Entregado</div>
+                        <% end %>
+                        <%#= link_to otp_contratossolepps_path(id: @contratossolepp.id), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea marcar ENTREGADO?" } do %>
+                          <!-- <div class="text-blue"><i class="fa fa-truck" aria-hidden="true"></i> Marcar Como Entregado</div>-->
+                        <%# end %>
+                      </li>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </ul>
+            </div>
+          </td>
+          <td class="text-left text-tr-table"><%= @contratossolepp.created_at.strftime("%Y-%m-%d %X") rescue nil %> <%= @contratossolepp.user.nombre rescue nil %><br/>
+            <small>
+              <% if @contratossolepp.user.email.present? %>
+                <i class="fa fa-envelope"></i> <%= @contratossolepp.user.email rescue nil %>
+              <% end %>
+              <% if @contratossolepp.user.celular.present? %>
+                &nbsp;-&nbsp;<i class="fa fa-phone"></i> <%= @contratossolepp.user.celular rescue nil %>
+              <% end %>
+            </small>
+          </td>
+          <td class="text-tr-table">
+            <small><%= @contratossolepp.contrato.empresa.identnombre rescue nil %>
+              <br/><strong>Nro Contrato : </strong><%= @contratossolepp.contrato.nro_contrato rescue nil %></small>
+          </td>
+          <td class="text-tr-table text-center">
+            <% if @contratossolepp.contratossoleppsdetalles.present? and ['PENDIENTE', 'RECHAZADO'].include?(@contratossolepp.estado) and @contratossolepp.cedula.present? and @contratossolepp.nombre.present? and @contratossolepp.telefono.present? and @contratossolepp.direccion.present? and @contratossolepp.municipio_id.present? %>
+              <%= link_to estado_contratossolepps_path(id: @contratossolepp.id, estado: 'ENVIADO'), remote: true, data: { confirm: "Estas Seguro?", toggle: 'tooltip' }, title: "Enviar" do %>
+                <button class="btn btn-xs btn-success"><i class="fa fa-check"></i> ENVIAR</button>
+              <% end %>
+            <% else %>
+              <span class="label label-success"><%= @contratossolepp.estado rescue nil %></span>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <%= simple_form_for @contratossolepp, remote: true do |f| %>
+      <%= hidden_field_tag :validador, params[:validador], value: 'VALIDADOR' %>
+      <% if ['PENDIENTE', 'RECHAZADO'].include?(@contratossolepp.estado) %>
+        <div class="alert alert-danger">Para habilitar el envio de la solicitud debes de diligenciar toda
+          la informacion del registro de usuario y tener el detalle <b>(Items)</b> cargado
+        </div>
+      <% end %>
+      <div class="box-header">
+        <h3 class="box-title">Datos para el Envio de los EPP's <br/><small>Nota: Para poder enviar la solicitud deben estar estos datos completos..</small></h3>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+            <%= f.input :cedula, :input_html => { :onChange => "javascript:this.value=this.value.toUpperCase();" } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <%= f.input :nombre, :input_html => { :onChange => "javascript:this.value=this.value.toUpperCase();" } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+            <%= f.input :telefono, :input_html => { :onChange => "javascript:this.value=this.value.toUpperCase();" } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <%= f.input :direccion, :input_html => { :onChange => "javascript:this.value=this.value.toUpperCase();" } %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <%= f.input :municipio_id, collection: Municipio.order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          </div>
+          <% if cambiarsolicitanteepp %>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+              <%= f.input :user_id, collection: User.where(["tipoconsulta in ('SUPERVISOR')"]).order(:nombre).collect { |p| [p.nombre, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Usuario solicitante" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="box-footer">
+        <div class="box-tools pull-right">
+          <%= f.button :submit, "Guardar", class: "btn btn-primary", data: { disable_with: "Guardar  " } %>
+        </div><!-- /.box-tools -->
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+      <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Notas" do %>
+        <i class="fa fa-edit"></i> Detalle
+      <% end %>
+    </li>
+    <li class="<%= @etapa == 'B' ? 'active' : '' %>">
+      <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'B'), data: { toggle: 'tooltip' }, title: "Bitacora" do %>
+        <i class="fa fa-backward"></i> Bitacora
+      <% end %>
+    </li>
+    <li class="<%= @etapa == 'C' ? 'active' : '' %>">
+      <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'C'), data: { toggle: 'tooltip' }, title: "Documentos de Envio" do %>
+        <i class="fa fa-image"></i> Documentos de Envio
+      <% end %>
+    </li>
+    <li class="<%= @etapa == 'D' ? 'active' : '' %>">
+      <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'D'), data: { toggle: 'tooltip' }, title: "Atención" do %>
+        <i class="fa fa-pencil"></i> Atención
+      <% end %>
+    </li>
+    <li class="<%= @etapa == 'H' ? 'active' : '' %>">
+      <%= link_to complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'H'), data: { toggle: 'tooltip' }, title: "Ficha Tecnica Contrato" do %>
+        <i class="fa fa-edit"></i> Ficha Tecnica Contrato
+      <% end %>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <% if @etapa == 'A' %>
+      <%= render 'contratossoleppsdetalles/contratossoleppsdetalles' %>
+    <% elsif @etapa == 'B' %>
+      <%= render 'contratossoleppsbitacoras/contratossoleppsbitacoras' %>
+    <% elsif @etapa == 'C' %>
+      <%= render 'contratossoleppsdocs/contratossoleppsdocs' %>
+    <% elsif @etapa == 'D' %>
+      <%= render 'contratossoleppsatenciones/contratossoleppsatenciones' %>
+    <% elsif @etapa == 'H' %>
+      <%= render 'contratossolepps/contratos' %>
+    <% end %>
+  </div>
+</div>
+

@@ -1,0 +1,34 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF7DB4F4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FFE87F07", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosiz = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+  datoscent = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosder = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  fecha = wd.styles.add_style(sz: 11, font_name: "Calibri", :format_code => 'dd-mm-yyyy', :alignment => {:horizontal => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,###.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  datosnumerosf = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE',:format_code => '#,###,###.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  observacion = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left, :wrap_text => true})
+  header41 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+
+  consecutivo = 0
+  proveedores = Objeto.find_by_sql(["select distinct proveedor from informe_insumos where proveedor is not null order by proveedor"])
+  proveedores.each do |a|
+    consecutivo = consecutivo + 1
+    wd.add_worksheet(:name => "Proveedor "+consecutivo.to_s) do |sheet|
+      sheet.add_row ["Proveedor: ",a.proveedor.to_s], :style => [header41,datosiz]
+      sheet.add_row ["Periodo: ",@periodo.to_s], :style => [header41,datosiz]
+      sheet.add_row []
+      sheet.add_row ["Identificacion","Nombre","Nro Solicitud","Insumo Cliente","Bien o servicio","Cantidad"],
+                     :style => [title,title,title,title,title,title,title,title,title]
+      Objeto.find_by_sql(["select * from informe_insumos where proveedor = '#{a.proveedor.to_s}'"]).each do |i|
+        sheet.add_row [i.identificacion,i.nombre,i.nro_solicitud,i.insumo_cliente,i.bien_servicio,i.cantidad],
+                      :style => [datosiz,datosiz,datoscent,observacion,observacion,datosnumeros]
+      end
+    end
+  end
+end

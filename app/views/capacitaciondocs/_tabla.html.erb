@@ -1,0 +1,17 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="5%"></th>
+    <th class="font-size-text-tabla text-center text-table" width="5%">ID</th>
+    <th class="font-size-text-tabla text-table" width="10%">Tipo</th>
+    <th class="font-size-text-tabla text-table">Descripción</th>
+    <th class="font-size-text-tabla text-table" width="25%">Documento</th>
+    <th class="font-size-text-tabla text-center text-table" width="10%">Estado</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_capacitaciondocs">
+  <% @capacitacion.capacitaciondocs.order(id: :desc).each do |capacitaciondoc| %>
+    <%= render 'capacitaciondocs/tr', capacitaciondoc: capacitaciondoc %>
+  <% end %>
+  </tbody>
+</table>

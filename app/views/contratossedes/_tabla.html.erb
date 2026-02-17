@@ -1,0 +1,22 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Nombre Sede</th>
+        <th width="25%" class="text-left">Municipio</th>
+        <th width="25%" class="text-left">Dirección</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratossedes">
+	    <% @contratosedes.includes([:user]).each do |contratossede| %>
+	      <%= render 'contratossedes/tr', contratossede: contratossede %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%= will_paginate @contratosedes, :param_name => 'contratosedes' , renderer: BootstrapPagination::Rails %>
+</div>
+
+

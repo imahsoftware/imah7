@@ -1,0 +1,47 @@
+<%
+  @visualiza_iva = @contratossolicitud.contrato.visualiza_iva.to_s rescue nil
+%>
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="2%"></td>
+        <th class="text-left">Bien o Servicio</th>
+        <th width="5%" class="text-center">Cant.</th>
+        <th width="8%" class="text-right">Vlr Unitario</th>
+        <% if @visualiza_iva.to_s == 'SI' %>
+          <th width="5%" class="text-right">% IVA</th>
+          <th width="8%" class="text-right">Valor IVA</th>
+          <th width="10%" class="text-right">Vlr Unitario + IVA</th>
+        <% end %>
+        <th width="10%" class="text-right">Total</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratossoldetalles">
+      <%
+        dato = @contratossolicitud.datosol.to_s
+      %>
+	      <% @contratossolicitud.contratossoldetalles.select(["contratossoldetalles.*,
+	                                                           (select distinct 'X' from contratosinsimagenes where contratosinsumo_id = contratossoldetalles.contratosinsumo_id) existeimg,
+	                                                           (select presentacion from insumos where id = (select insumocce from contratosinsumos where id = contratossoldetalles.contratosinsumo_id)) presentacion"])
+                                                   .includes([:contratosinsumo])
+                                                   .where(["#{dato.to_s}"]).order(id: :asc).each do |contratossoldetalle| %>
+	      <%= render 'contratossoldetalles/tr', contratossoldetalle: contratossoldetalle %>
+	    <% end %>
+	  </tbody>
+    <tr class="thcolor">
+      <% if @visualiza_iva.to_s == 'SI' %>
+         <th colspan="7" class="text-right">Valor total solicitado (<%=@clase.to_s%>)</th>
+      <% else %>
+				 <th colspan="4" class="text-right">Valor total solicitado (<%=@clase.to_s%>)</th>
+      <% end %>
+      <th width="10%" class="text-right"><%= camponumerico @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).sum("total") rescue 0%></th>
+    </tr>
+	</table>
+</div>
+
+<div class="modal fade" id="fichatecnica">
+	<div class="modal-dialog modal-dialog-responsive" style="width: 80%" role="document">
+		<div class="modal-content"></div>
+	</div>
+</div>

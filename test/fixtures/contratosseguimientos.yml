@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperfecha_id: 1
+  contratospersona_id: 1
+  user_id: 1
+  tipo: MyString
+  estado: MyString
+
+two:
+  contratosperfecha_id: 1
+  contratospersona_id: 1
+  user_id: 1
+  tipo: MyString
+  estado: MyString

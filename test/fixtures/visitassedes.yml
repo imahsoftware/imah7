@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  visita: one
+  user: one
+  contratossede: one
+
+two:
+  visita: two
+  user: two
+  contratossede: two

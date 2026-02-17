@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionessupervisores</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Identificacion</th>
+      <th>Userasig</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionessupervisores.each do |migracionessupervisor| %>
+      <tr>
+        <td><%= migracionessupervisor.user %></td>
+        <td><%= migracionessupervisor.archivo %></td>
+        <td><%= migracionessupervisor.estado %></td>
+        <td><%= migracionessupervisor.identificacion %></td>
+        <td><%= migracionessupervisor.userasig_id %></td>
+        <td><%= link_to 'Show', migracionessupervisor %></td>
+        <td><%= link_to 'Edit', edit_migracionessupervisor_path(migracionessupervisor) %></td>
+        <td><%= link_to 'Destroy', migracionessupervisor, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionessupervisor', new_migracionessupervisor_path %>

@@ -1,0 +1,5 @@
+<% if @ruta == 'SI' %>
+$("#evaluar<%= @consecutivo %>").remove();
+<% else %>
+$("#evaluar<%= @solicitudesretiro.id %>").remove();
+<% end %>

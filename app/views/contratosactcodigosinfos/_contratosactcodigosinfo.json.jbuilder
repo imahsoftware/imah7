@@ -1,0 +1,2 @@
+json.extract! contratosactcodigosinfo, :id, :contratossede_id, :nodo, :user_id, :fecha, :rsteva_1, :rsteva_2, :rsteva_3, :rsteva_4, :rsteva_5, :rsteva_6, :rsteva_7, :rsteva_8, :rsteva_9, :rsteva_10, :rsteva_11, :rsteva_12, :rsteva_13, :rsteva_14, :rsteva_15, :rsteva_16, :rsteva_17, :rsteva_18, :rsteva_19, :rsteva_20, :rsteva_21, :rsteva_22, :rsteva_23, :rsteva_24, :rsteva_44, :rsteva_45, :rsteva_46, :rsteva_47, :rsteva_48, :rsteva_49, :rsteva_50, :rsteva_51, :created_at, :updated_at
+json.url contratosactcodigosinfo_url(contratosactcodigosinfo, format: :json)

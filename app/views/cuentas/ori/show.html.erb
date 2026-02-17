@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Codigo:</strong>
+  <%= @cuenta.codigo %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @cuenta.descripcion %>
+</p>
+
+<p>
+  <strong>Tipo:</strong>
+  <%= @cuenta.tipo %>
+</p>
+
+<p>
+  <strong>Nro:</strong>
+  <%= @cuenta.nro %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @cuenta.estado %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @cuenta.user %>
+</p>
+
+<%= link_to 'Edit', edit_cuenta_path(@cuenta) %> |
+<%= link_to 'Back', cuentas_path %>

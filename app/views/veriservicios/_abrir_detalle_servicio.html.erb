@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-xs-12">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th width="5%"></th>
+        <th width="5%" class="text-center">ID</th>
+        <th width="25%" class="text-left">Contrato</th>
+        <th width="15%" class="text-center">Fecha</th>
+        <th width="10%" class="text-center">Estado</th>
+        <th class="text-justify">Objetivo</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @veriservicios.order(created_at: :desc).each do |veriservicio| %>
+        <tr id="veriservicio_<%= veriservicio.id %>">
+          <td class="text-center">
+            <%= link_to edit_veriservicio_path(veriservicio, etapa: 'A'), class: 'edit_veriservicio_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+            <% end %>
+          </td>
+          <td class="text-center"><%= veriservicio.id rescue nil %></td>
+          <td class="text-left">
+            <%= veriservicio.contrato.empresa.identnombre rescue nil %><%= veriservicio.contrato.nro_contrato rescue nil %>
+          </td>
+          <td class="text-center"><%= veriservicio.fecha rescue nil %></td>
+          <td class="text-center">
+            <div style="margin-top: 10px;">
+              <%= veriservicio.estado_color rescue nil %>
+            </div>
+          </td>
+          <td class="text-justify"><%= veriservicio.objetivo rescue nil %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+

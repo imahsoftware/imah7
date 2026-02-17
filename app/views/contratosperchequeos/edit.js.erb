@@ -1,0 +1,26 @@
+$("#contratosperchequeo_form").collapse("hide");
+
+$("#contratosperchequeo_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratosperchequeo_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratosperchequeo: @active_record %>");
+<% end %>
+
+$("#contratosperchequeo_<%= @contratosperchequeo.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#contratosperchequeo_<%= @contratosperchequeo.id %>").addClass("active_contratosperchequeo");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});

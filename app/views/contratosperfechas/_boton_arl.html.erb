@@ -1,0 +1,12 @@
+<div style="display: flex; align-items: flex-end; justify-content: center; text-align: center">
+  <div>
+    <%= link_to new_contratosperfecha_contratosperfechasdoc_path(contratosperfecha_id: contratosperfecha.id, estado: p, tipo: 'ARL'), remote: true, data: { toggle: 'tooltip' }, title: "#{contratosperfecha.contratosperfechasdocs.where("tipo = 'ARL'").present? ? 'Seguir Cargando Documento' : 'Añadir Documento'}" do %>
+      <span class="btn btn-<%= contratosperfecha.contratosperfechasdocs.where("tipo = 'ARL'").present? ? 'danger' : 'primary' %> btn-xs"><strong><i class="fa fa-<%= contratosperfecha.contratosperfechasdocs.where("tipo = 'ARL'").present? ? 'file-pdf-o' : 'file-image-o' %>"></i> </strong></span>
+    <% end %>
+  </div>
+  <div style="margin-left: 5px;">
+    <%= link_to observacion_salud_menus_path(id: contratosperfecha.id, tipo: "ARL"), remote: true do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i></button>
+    <% end %>
+  </div>
+</div>

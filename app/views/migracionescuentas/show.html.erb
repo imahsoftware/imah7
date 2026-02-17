@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionescuenta.user %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionescuenta.archivo %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionescuenta.estado %>
+</p>
+
+<p>
+  <strong>Identificacion:</strong>
+  <%= @migracionescuenta.identificacion %>
+</p>
+
+<p>
+  <strong>Nro cuenta:</strong>
+  <%= @migracionescuenta.nro_cuenta %>
+</p>
+
+<%= link_to 'Edit', edit_migracionescuenta_path(@migracionescuenta) %> |
+<%= link_to 'Back', migracionescuentas_path %>

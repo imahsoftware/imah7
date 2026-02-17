@@ -1,0 +1,34 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @contratosprefactura.contratosprefdetalles.count == 1 %>
+	$("#contratosprefdetalles").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_contratosprefdetalles").prepend("<%= j render 'tr', contratosprefdetalle: @contratosprefdetalle %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#contratosprefdetalle_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);
+
+let idSubtotal = $("#idSubtotal<%= @contratosprefactura.id %>");
+idSubtotal.html("<div><%= camponumerico @contratosprefactura.contratosprefdetalles.sum("subtotal") rescue 0 %> </div>");
+let idValor_iva = $('#idValor_iva<%= @contratosprefactura.id %>');
+idValor_iva.html("<div><%= camponumerico @contratosprefactura.contratosprefdetalles.sum("valor_iva") rescue 0 %> </div>");
+let idValor_total = $('#idValor_total<%= @contratosprefactura.id %>');
+idValor_total.html("<div><%= camponumerico @contratosprefactura.contratosprefdetalles.sum("total") rescue 0 %> </div>");
+

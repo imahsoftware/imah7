@@ -1,0 +1,63 @@
+<%
+  @visitasbrigadas = Visita.select(:id, :user_id, :descripcion, :created_at, :finalizacion, :latitude, :longitude, :direccion, :contrato_id)
+                           .where("DATE_FORMAT(created_at, '%m-%Y') = ? AND contrato_id = ? AND teletrabajo = ?", @mes, @contrato.id, 'BRIGADA DE ASEO')
+                           .order("id ASC")
+  @visitasCountbragadas = Visita.where("DATE_FORMAT(created_at, '%m-%Y') = ? AND contrato_id = ? AND teletrabajo = ?", @mes, @contrato.id, 'BRIGADA DE ASEO').count rescue 0
+%>
+
+<br/>
+<div class="encabezado_izq"><b>Relación de reuniones - Total: (<%= @visitasCountbragadas %>)</b></div>
+<br/>
+
+<% if @visitasbrigadas.present? %>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <th width="18%" class="encabezado_tabla">
+        <div align="left"><strong>Fecha Visita</strong></div>
+      </th>
+      <th class="encabezado_tabla">
+        <div align="left"><strong>Objetivo</strong></div>
+      </th>
+      <th width="30%" class="encabezado_tabla">
+        <div align="left"><strong>Lugar Reunión</strong></div>
+      </th>
+    </tr>
+    <% @visitasbrigadas.each do |visita| %>
+      <%
+        sedes = Visitassede.where(visita_id: visita.id).map { |visitassede| visitassede.contratossede.nombre rescue nil }
+      %>
+      <tr>
+        <td style="border: 1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+        </td>
+        <td style="border: 1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visita.descripcion rescue nil %>
+        </td>
+        <td style="border: 1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= sedes.join(", ") rescue nil %>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" style="border: 1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <table width="100%">
+            <% visita.visitasdocs.each_slice(2) do |pair| %>
+              <tr>
+                <% pair.each do |p| %>
+                  <td style="padding: 5px;"><div align="center">
+                    <%= wicked_pdf_image_tag(image_url(p.docvisita.url(:original, false)), size: "200x200", loading: 'lazy') %>
+                  </div>
+                  </td>
+                <% end %>
+                <% if pair.size == 1 %>
+                  <td></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div align="left" style="border: 1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">No hay información</div>
+<% end %>

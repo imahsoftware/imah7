@@ -1,0 +1,57 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionespersonas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Lote</th>
+      <th>Identificacion</th>
+      <th>Nombre</th>
+      <th>Celular</th>
+      <th>Correo</th>
+      <th>Cargo</th>
+      <th>Observacion</th>
+      <th>Municipio</th>
+      <th>Departamento</th>
+      <th>Colegio</th>
+      <th>Estado sms</th>
+      <th>Estado correo</th>
+      <th>Estado cargue</th>
+      <th>Error</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionespersonas.each do |migracionespersona| %>
+      <tr>
+        <td><%= migracionespersona.user %></td>
+        <td><%= migracionespersona.archivo %></td>
+        <td><%= migracionespersona.lote %></td>
+        <td><%= migracionespersona.identificacion %></td>
+        <td><%= migracionespersona.nombre %></td>
+        <td><%= migracionespersona.celular %></td>
+        <td><%= migracionespersona.correo %></td>
+        <td><%= migracionespersona.cargo_id %></td>
+        <td><%= migracionespersona.observacion %></td>
+        <td><%= migracionespersona.municipio %></td>
+        <td><%= migracionespersona.departamento %></td>
+        <td><%= migracionespersona.colegio %></td>
+        <td><%= migracionespersona.estado_sms %></td>
+        <td><%= migracionespersona.estado_correo %></td>
+        <td><%= migracionespersona.estado_cargue %></td>
+        <td><%= migracionespersona.error %></td>
+        <td><%= link_to 'Show', migracionespersona %></td>
+        <td><%= link_to 'Edit', edit_migracionespersona_path(migracionespersona) %></td>
+        <td><%= link_to 'Destroy', migracionespersona, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionespersona', new_migracionespersona_path %>

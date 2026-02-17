@@ -1,0 +1,37 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF7DB4F4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FFE87F07",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FFE16E28",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosiz = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :left, :vertical => :center})
+  datoscent = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosder = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  fecha = wd.styles.add_style(sz: 11,font_name: "Calibri", :format_code => 'dd-mm-yyyy',:alignment=>{:horizontal => :center, :vertical => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,###.#0',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+
+  encabezado = @moduloscampos.map(&:encabezado).join(',').split(',')
+  encabezado << 'Error'
+  if @codigomigracion == 10 or @codigomigracion == 13 # Migracion de Persona
+  encabezado << 'Error Observación'
+  end
+  campo = @moduloscampos.map(&:campo).join(',').split(',')
+  campo << 'estado'
+  if @codigomigracion == 10 or @codigomigracion == 13 # Migracion de Persona
+  campo << 'error'
+  end
+  typesHoja = []
+
+  nombreinforme = "Incons. ".to_s + @nombreinforme.to_s
+
+  wd.add_worksheet(:name => nombreinforme)  do |sheet|
+    sheet.add_row encabezado, :style => title#, :widths => tamano
+    @mconerror.each do |dat|
+      datosHoja = JSON.parse(dat.to_json(only: [campo], :methods =>campo))
+      sheet.add_row datosHoja.values#, :types => typesHoja
+    end
+  end
+
+end

@@ -1,0 +1,12 @@
+<tr id="migracionesuser_<%= migracionesuser.id %>">
+	<td class="text-center">
+		<%= link_to edit_user_migracionesuser_path(@user, migracionesuser), remote: true, class: 'edit_usersmodulo_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+			<button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+		<% end %>
+		<%= link_to user_migracionesuser_path(@user, migracionesuser), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+			<button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+		<% end %>
+	</td>
+	<td><%=migracionesuser.migracion.nombre rescue nil %></td>
+	<td><%=migracionesuser.migracion.detalle.to_s rescue nil %></td>
+</tr>

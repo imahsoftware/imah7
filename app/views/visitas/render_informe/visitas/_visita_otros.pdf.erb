@@ -1,0 +1,52 @@
+<%
+  @visitas = Visita.select(:id, :user_id, :descripcion, :created_at, :finalizacion, :latitude, :longitude, :direccion, :contrato_id).
+    where("DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and contrato_id = #{@contrato.id} and teletrabajo = 'SERVICIO ESPECIAL'").order("id asc")
+  @visitasCount = Visita.where("DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' AND contrato_id = #{@contrato.id} and teletrabajo = 'SERVICIO ESPECIAL'") rescue 0
+%>
+
+<br/>
+<div class="encabezado_izq"><b>Relación de reuniones  - Total: (<%= @visitasCount.count rescue 0 %>)</b></div><br/>
+
+<% if @visitas.present? %>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <th width="18%" class="encabezado_tabla">
+        <div align="left"><strong>Fecha Visita</strong></div>
+      </th>
+      <th class="encabezado_tabla">
+        <div align="left"><strong>Objetivo</strong></div>
+      </th>
+      <th width="30%" class="encabezado_tabla">
+        <div align="left"><strong>Lugar Reunion</strong></div>
+      </th>
+      <th width="25%" class="encabezado_tabla">
+        <div align="left"><strong>Persona que firmo la visita</strong></div>
+      </th>
+    </tr>
+    <% @visitas.each do |visita| %>
+      <%
+        sedes = Visitassede.where(visita_id: visita.id).map { |visitassede| visitassede.contratossede.nombre rescue nil }
+        atenciones = Visitasatencion.where(visita_id: visita.id).map { |visitasatencion| "#{visitasatencion.identificacion} #{visitasatencion.nombre}" rescue nil }
+      %>
+      <tr>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visita.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+        </td>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= visita.descripcion rescue nil %>
+        </td>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= sedes.join(", ") rescue nil %>
+        </td>
+        <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;">
+          <%= atenciones.join(", ") rescue nil %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
+<% else %>
+  <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+    informacion
+  </div>
+<% end %>

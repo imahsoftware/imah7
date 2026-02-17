@@ -1,0 +1,227 @@
+<% title 'Seguimiento' %>
+<legend style="margin-top: -19px;">Seguimiento Administrativo</legend>
+<div class="row">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-blue"><strong>Pendientes</strong>
+      <br/> <%= camponumerico2 @contratosactnovedades.where(estado: 'PENDIENTE').count.to_f rescue 0 %></div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-purple"><strong>En Proceso</strong>
+      <br/> <%= camponumerico2 @contratosactnovedades.where(estado: 'EN PROCESO').count.to_f rescue 0 %></div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-red"><strong>Atendidas</strong>
+      <br/> <%= camponumerico2 @contratosactnovedades.where(estado: 'ATENDIDO').count.to_f rescue 0 %></div>
+  </div>
+</div>
+<%
+  usr = current_user
+  estados = ["PENDIENTE", "EN PROCESO", "ATENDIDO", "DASHGRAFICO", "INFORMES"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <% class1 = ""
+           class2 = ""
+           class3 = ""
+           class4 = ""
+           if @etapa == '1'
+             class1 = "class=active"
+           elsif @etapa == '2'
+             class2 = "class=active"
+           elsif @etapa == '3'
+             class3 = "class=active"
+           elsif @etapa == '4'
+             class4 = "class=active"
+           elsif @etapa == '5'
+             class5 = "class=active"
+           end
+        %>
+        <li <%= class1 %>><%= link_to indexadmin_contratosactnovedades_path(etapa: "1") do %>
+            <i class="fa fa-search"></i> <span></span>Pendientes
+          <% end %></li>
+        <li <%= class2 %>><%= link_to indexadmin_contratosactnovedades_path(etapa: "2") do %>
+            <i class="fa fa-search"></i> <span></span> En proceso
+          <% end %></li>
+        <li <%= class3 %>><%= link_to indexadmin_contratosactnovedades_path(etapa: "3") do %>
+            <i class="fa fa-search"></i> <span></span> Atendidos
+          <% end %></li>
+        <li <%= class4 %>><%= link_to indexadmin_contratosactnovedades_path(etapa: "4") do %><i class="fa fa-file"></i>
+            <span></span> DashGrafico
+          <% end %></li>
+        <li <%= class5 %>><%= link_to indexadmin_contratosactnovedades_path(etapa: "5") do %><i class="fa fa-file"></i>
+            <span></span> Informes
+          <% end %></li>
+      </ul>
+      <div class="tab-content">
+        <% if @etapa == '1' %>
+          <div class="box-body">
+            <% if @pendientes.present? == false %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th class="text-left">Usuario</th>
+                  <th width="15%" class="text-left">Tipo Evaluacion</th>
+                  <th width="25%" class="text-center">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <% @pendientes.includes([:contratossede, :tiposevaluacion, :user]).each do |a| %>
+                  <tr>
+                    <td class="text-center"><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil %></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.user.nombre rescue nil %><br/>
+                      <em><%= a.user.email rescue nil %></em></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.observaciones rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @etapa == '2' %>
+          <div class="box-body">
+            <% if @procesos.present? == false %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th class="text-left">Usuario</th>
+                  <th width="15%" class="text-left">Tipo Evaluacion</th>
+                  <th width="25%" class="text-center">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <% @procesos.includes([:contratossede, :tiposevaluacion, :user]).each do |a| %>
+                  <tr>
+                    <td class="text-center"><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil %></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.user.nombre rescue nil %><br/>
+                      <em><%= a.user.email rescue nil %></em></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.observaciones rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @etapa == '3' %>
+          <div class="box-body">
+            <% if @atendidos.present? == false %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th class="text-left">Usuario</th>
+                  <th width="15%" class="text-left">Tipo Evaluacion</th>
+                  <th width="25%" class="text-center">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <% @atendidos.includes([:contratossede, :tiposevaluacion, :user]).each do |a| %>
+                  <tr>
+                    <td class="text-center"><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil %></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.user.nombre rescue nil %><br/>
+                      <em><%= a.user.email rescue nil %></em></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp rescue nil %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.observaciones rescue nil %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @etapa == '4' %>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#individual" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i>
+                      Individual</a>
+                  </li>
+                  <li><a href="#consolidado" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i>
+                    Consolidado</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="individual">
+                    <% @contratosactnovedades.select("estado").distinct.each do |contratosactnovedad| %>
+                      <div class="box-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="box box-primary">
+                              <IFRAME SRC=<%= "/contratosactnovedades/dash_seguimientos?estado=#{contratosactnovedad.estado.gsub(' ', '_')}" %> WIDTH="100%" HEIGHT="400" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                  <div class="tab-pane" id="consolidado">
+                    <% @contratosactnovedades.select("estado").distinct.each do |contratosactnovedad| %>
+                      <div class="box-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="box box-primary">
+                              <IFRAME SRC=<%= "/contratosactnovedades/dash_seguimientosacumulado?estado=#{contratosactnovedad.estado.gsub(' ', '_')}" %> WIDTH="100%" HEIGHT="400" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <% if @etapa == '5' %>
+          <div class="box-body">
+            Informes
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+

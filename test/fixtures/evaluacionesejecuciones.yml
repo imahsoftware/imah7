@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  evaluacionescontrato: one
+  evaluacion: one
+  evalacionesdetalle: one
+  estado: MyString
+  user: one
+  resultado: MyString
+
+two:
+  evaluacionescontrato: two
+  evaluacion: two
+  evalacionesdetalle: two
+  estado: MyString
+  user: two
+  resultado: MyString

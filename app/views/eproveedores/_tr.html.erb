@@ -1,0 +1,11 @@
+<tr id="eproveedor_<%= eproveedor.id %>">
+  <td class="text-center" style="font-size:12px;">
+      <%= link_to edit_eproveedor_path(eproveedor.id, etapa: 'A'), class: 'edit_eproveedor_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+  </td>
+  <td class="text-left" style="font-size:12px;"><%= eproveedor.identificacion rescue nil%></td>
+  <td class="text-left" style="font-size:11px;"><%= eproveedor.nombre_completo rescue nil%></td>
+  <td class="text-left" style="font-size:11px;"><%= eproveedor.direccion rescue nil%></td>
+  <td class="text-left" style="font-size:11px;"><%= eproveedor.telefono rescue nil%></td>
+</tr>

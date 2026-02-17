@@ -1,0 +1,2 @@
+module ContratosactnovdocsHelper
+end

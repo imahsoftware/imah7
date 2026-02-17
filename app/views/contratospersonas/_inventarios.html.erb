@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Registro de inventario - <strong><%= @contratospersona.autobuscar rescue nil %></strong>
+    <%= link_to inventario_items_contratospersonas_path(id: @contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Descagar Inventario por Empleado' do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i> Inventario</button>
+    <% end %>
+  </h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12" style="width: 99%;">
+      <div class="table-responsive">
+
+        <%= render 'contratosperinventarios/contratosperinventarios' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

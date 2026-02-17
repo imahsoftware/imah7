@@ -1,0 +1,36 @@
+
+<% @contratossecciones =  @contrato.contratossecciones.select("contratossecciones.*, (select autobuscar from municipios where id = contratossecciones.municipio_id) autobuscar_municipios,
+                                              (select descripcion from contratosgrupos where id = contratossecciones.contratosgrupo_id) descripcion_contratosgrupo,
+                                              (select nombre from users where id = contratossecciones.user_id) nombre_users,
+                                              (select concat(perfil,' ($ ',salario,')') from contratoscargos where id = contratossecciones.contratoscargo_id) descripcion_contratoscargo,
+                                              (select distinct 'X' from contratosperfechas where contratosseccion_id = contratossecciones.id) existeseccion,
+                                              (select distinct 'X' from contratossecusers where contratosseccion_id = contratossecciones.id) existeusers")
+					 .order(id: :desc).paginate(:page => params[:contratossecciones], :per_page => 10)  %>
+<div class="table-responsive" id="tabla">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left text-table">Descripción</th>
+				<th width="20%" class="text-left text-table">Municipio</th>
+				<th width="15%" class="text-left text-table">Grupo</th>
+				<th width="20%" class="text-left text-table">Cargo</th>
+				<th width="5%" class="text-center text-table">Cnt</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratossecciones">
+	    <% @contratossecciones.each do |contratosseccion| %>
+	      <%= render 'contratossecciones/tr', contratosseccion: contratosseccion %>
+	    <% end %>
+	  </tbody>
+	</table>
+
+	<div class="box-tools pull-right">
+		<%= will_paginate @contratossecciones, :param_name => "contratossecciones", renderer: BootstrapPagination::Rails %>
+	</div><!-- /.box-tools -->
+</div>
+<div class="modal fade" id="secuser">
+	<div class="modal-dialog modal-dialog-responsive" role="document">
+		<div class="modal-content"></div>
+	</div>
+</div>

@@ -1,0 +1,14 @@
+<tr id="variable_<%= variable.id %>">
+  <td class="text-center">
+    <%= link_to edit_variable_path(variable), class: 'edit_variable_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to variable, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="text-table"><%= variable.id %></td>
+  <td class="text-table"><%= variable.nombre rescue nil %></td>
+  <td class="text-table"><%= variable.campo rescue nil %></td>
+  <td class="text-table"><%= variable.segmento rescue nil %></td>
+</tr>

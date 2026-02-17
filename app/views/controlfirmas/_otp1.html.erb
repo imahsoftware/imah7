@@ -1,0 +1,29 @@
+<% @usr = current_user %>
+<div id="otp1">
+  <div class="alert alert-danger" align="justify" style="margin-left: 100px; margin-right: 100px;">
+    <h4>Hola, <%= @usr.nombre.upcase rescue nil %></h4>
+    <p>Se te ha enviado el primer codigo de validación a tu numero de celular registrado para la firma del documento
+      <b><%= controlfirma.tipo_documento rescue nil %></b></p>
+    <p>
+      <br/>
+      <span class="badge bg-yellow"><em>Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</em></span>
+    </p>
+  </div>
+
+  <div class="box-body" style="margin-right: 10px;">
+    <%= form_tag ws_otp_controlfirmas_path(controlfirma_id: controlfirma.id), remote: true, method: :post, class: 'form-inline' do %>
+      <%= render 'menus/input_otp' %>
+      <div class="row" id="mensaje">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+          <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+            Verificar Codigo
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="row" id="otp2"></div>

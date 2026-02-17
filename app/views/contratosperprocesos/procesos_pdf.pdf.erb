@@ -1,0 +1,42 @@
+<% valida = object.present? ? true : false  rescue nil%>
+<%
+  if valida
+    @proceso = object
+     if ['CITACION','CITACION_NO_ATENDIDA'].include?(@proceso)
+       @contratosperprocitacion = Contratosperprocitacion.find(object1)
+       @contratosperproceso = @contratosperprocitacion.contratosperproceso
+     elsif @proceso == 'DESCARGO'
+       @contratosperproceso = Contratosperproceso.find(object1)
+       @contratosperprodescargos = @contratosperproceso.contratosperprodescargos
+     elsif @proceso == 'SANCION' or @proceso == 'TERMINACION'
+       @contratosperprosancion = Contratosperprosancion.find(object1)
+       @contratosperproceso = @contratosperprosancion.contratosperproceso
+     elsif @proceso == 'ATENCION'
+       @contratosperproceso = Contratosperproceso.find(object1)
+     end
+  end
+  contratospersona = @contratosperproceso.contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperproceso.contratosperfecha.contrato.empresa.portafolio_id)
+  @porta = portafolio
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<% if @proceso == 'CITACION' %>
+  <%= render 'contratosperprocesos/render_pdf/citacion.html.erb' %>
+<% elsif @proceso == 'DESCARGO' %>
+  <%= render 'contratosperprocesos/render_pdf/descargos.html.erb' %>
+<% elsif @proceso == 'SANCION' %>
+  <%= render 'contratosperprocesos/render_pdf/sancion.html.erb' %>
+<% elsif @proceso == 'TERMINACION' %>
+  <%= render 'contratosperprocesos/render_pdf/terminacion.html.erb' %>
+<% elsif @proceso == 'ATENCION' %>
+  <%= render 'contratosperprocesos/render_pdf/llamado_atencion.html.erb' %>
+<% elsif @proceso == 'CITACION_NO_ATENDIDA' %>
+  <%= render 'contratosperprocesos/render_pdf/citacion_no_atendida.html.erb' %>
+<% end %>

@@ -1,0 +1,31 @@
+<%= simple_form_for([@contratospersona, @contratosperchequeo], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :nombre_obra, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nombre del centro de trabajo" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :responsable, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Responsable de la inspección" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :encargado_seguridad, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Encargado de seguridad y salud en el trabajo (contratista)" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :n_trabajadores, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "N° Trabajadores" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :encargado_obra, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nombre del encargado del proyecto" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :nombre_empresa, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nombre de la empresa o persona contratista" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><%= f.input :actividad, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 },  label: "Actividad que realiza" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperchequeo.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperchequeo_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperchequeo_path(@contratospersona, @contratosperchequeo), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

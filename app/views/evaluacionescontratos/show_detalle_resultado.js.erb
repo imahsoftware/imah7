@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_resultado<%= @evaluacionescontrato.id %>").html('<%= j render "evaluacionescontratos/show_detalle_resultado" %>');
+$("#abrir_resultado<%= @evaluacionescontrato.id %>").addClass("hide");
+$("#cerrar_resultado<%= @evaluacionescontrato.id %>").removeClass("hide");
+$("#tr_show_resultado<%= @evaluacionescontrato.id %>").removeClass("hidden");
+<% else %>
+$("#abrir_resultado<%= @evaluacionescontrato.id %>").removeClass("hide");
+$("#cerrar_resultado<%= @evaluacionescontrato.id %>").addClass("hide");
+$("#abrir_detalle_resultado<%= @evaluacionescontrato.id %>").html(null);
+$("#tr_show_resultado<%= @evaluacionescontrato.id %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

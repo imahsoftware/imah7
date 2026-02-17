@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nombre: MyString
+  leyenda: MyString
+  segmento: MyString
+  estado: MyString
+  detalle: MyText
+  detalle_pdf: MyText
+  contratosperfecha_id: 1
+  firma_empleado: MyString
+  firma_representante: MyString
+
+two:
+  nombre: MyString
+  leyenda: MyString
+  segmento: MyString
+  estado: MyString
+  detalle: MyText
+  detalle_pdf: MyText
+  contratosperfecha_id: 1
+  firma_empleado: MyString
+  firma_representante: MyString

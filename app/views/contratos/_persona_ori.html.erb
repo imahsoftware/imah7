@@ -1,0 +1,440 @@
+<%
+  vcCampoEstado = is_auth_c('cambioestadoexamen')
+  permisoE = is_auth_e('contratospersona')
+%>
+<div class="box-body">
+  <div class="row">
+    <div class="col-md-11">
+      <legend>Información Personas
+        <% if is_auth_c('dashseguimientocontrato') %>
+        <% else %>
+          <%= link_to informe_datas_path(infgrupo_id: 20, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Personal' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Contrato</button>
+          <%end %>
+          <%= link_to informe_datas_path(infgrupo_id: 21, portafolio_id: @contrato.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Examenes' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Examenes</button>
+          <%end %>
+        <%end %>
+      </legend>
+    </div>
+    <div class="col-md-1">
+      <%= link_to new_contratospersona_path(contrato_id: @contrato.id), data: {toggle: 'tooltip'}, title: 'Crear' do %>
+        <button class="btn btn-info"><strong>Nuevo</strong></button>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#informacion" data-toggle="tab" aria-expanded="true"><i class="fa fa-heartbeat"></i> Informacion (<%=@contratospersonas.count.to_i %>)</a></li>
+          <li><a href="#programados" data-toggle="tab" aria-expanded="true"><i class="fa fa-ambulance"></i> Programado (<%=@contratosperexamenesp.count.to_i %>)</a></li>
+          <li><a href="#realizados" data-toggle="tab" aria-expanded="true"><i class="fa fa-comments"></i> Realizados (<%=@contratosperexamenesr.count.to_i %>)</a></li>
+          <li><a href="#contratos" data-toggle="tab" aria-expanded="true"><i class="fa fa-comments"></i> Contratos (<%=@contratospersonascon.count.to_i %>)</a></li>
+          <li><a href="#dotacion" data-toggle="tab" aria-expanded="true"><i class="fa fa-comments"></i> Dotacion (<%=@contratospersonasdot.count.to_i %>)</a></li>
+          <li><a href="#carnets" data-toggle="tab" aria-expanded="true"><i class="fa fa-comments"></i> Carnets (<%=@contratospersonascar.count.to_i %>)</a></li>
+          <li><a href="#documentos" data-toggle="tab" aria-expanded="true"><i class="fa fa-file-pdf-o"></i> Digital</a></li>
+          <li><a href="#rechazados" data-toggle="tab" aria-expanded="true"><i class="fa fa-file-pdf-o"></i> Estados (<%=@contratosperestados.count.to_i %>)</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="informacion">
+            <% if @contratospersonassin.count.to_i > 0 %>
+              <legend>Sin Agendamiento (<%=@contratospersonassin.count.to_i %>)</legend>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Responsable</th>
+                        <th width="15%" class="text-center">Telefonos</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratospersonassin.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <% if permisoE %>
+                              <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                              <% end %>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)</small></td>
+                          <td class="text-left" style="font-size:12px;"><%= p.responsable rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.telefono rescue nil%> - <%= p.movil rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <% if @contratospersonas.count.to_i > 0 %>
+              <legend>Agendados (<%=@contratospersonas.count.to_i %>)</legend>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="15%" class="text-center">Telefonos</th>
+                        <th width="5%" class="text-center">Contrato</th>
+                        <th width="5%" class="text-center">Dotación</th>
+                        <th width="5%" class="text-center">Carnet</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratospersonas.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <% if permisoE %>
+                              <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                                <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                              <% end %>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;">
+                            <% if p.user_asignado.to_s == "" %>
+                              <strong class="text-blue"><%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)<br/><%= p.responsable rescue nil%></small></strong>
+                          <% else %>
+                              <%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)<br/><%= p.responsable rescue nil%></small>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.telefono rescue nil%> - <%= p.movil rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.tienecontrato.to_s rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.dotacion rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.carnet rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="programados">
+            <% if @contratosperexamenesp.count.to_i > 0 %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Ubicación</th>
+                        <th width="15%" class="text-center">Fecha y Hora</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratosperexamenesp.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'B'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <% if vcCampoEstado  %>
+                              <%= link_to cambioestado_contratosperexamenes_path(id: p.id, estado: "APROBADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea Aprobar?"}, title: 'Aprobar' do %>
+                                <button class="btn btn-xs btn-info"><i class="fa fa-chrome"></i></button>
+                              <% end %>
+                              <%= link_to cambioestado_contratosperexamenes_path(id: p.id, estado: "RECHAZADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea Rechazar?"}, title: 'Rechazar' do %>
+                                <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                              <% end %>
+                            <% end %>
+                            <% if p.recordacion.to_s == "" %>
+                              <%= link_to cambioestado_contratosperexamenes_path(id: p.id, estado: "RECORDATORIO"), data: {toggle: 'tooltip', confirm: "Seguro que desea marcar la recordacion?"}, title: 'LLamada realizada' do %>
+                                <button class="btn btn-xs btn-info"><i class="fa fa-phone"></i></button>
+                              <% end %>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.contratospersona.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.contratospersona.nombre_completo rescue nil%> <small>(Edad <%=p.contratospersona.edad%>)</small>
+                            <small><br/><strong>Oficio: </strong><%= p.contratospersona.oficio rescue nil%>
+                            <br/><strong>Cargo: </strong><%= p.contratospersona.cargo rescue nil%>
+                            <br/><%= p.descripcion rescue nil%>
+                            <br/><%= p.contratospersona.telefono rescue nil%>- <%= p.contratospersona.movil rescue nil%></small>
+                          </td>
+                          <td class="text-left" style="font-size:12px;"><%= p.direccion rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.fecha rescue nil%> - <%= p.hora rescue nil%>
+                            <% if p.recordacion.to_s != "" %> <br/><small>Recordación realizada <i class="fa fa-phone"></i></small><% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="realizados">
+            <% if @contratosperexamenesra.count.to_i > 0 %>
+              <legend>Aprobados (<%=@contratosperexamenesra.count.to_i%>)</legend>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Examen</th>
+                        <th width="15%" class="text-center">Fecha y Hora</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratosperexamenesra.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= p.user_nombre.html_safe rescue nil %><%= p.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.contratospersona.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.contratospersona.nombre_completo rescue nil%> <small>(Edad <%=p.contratospersona.edad%>)</small>
+                            <small><br/><strong>Oficio: </strong><%= p.contratospersona.oficio rescue nil%>
+                              <br/><strong>Cargo: </strong><%= p.contratospersona.cargo rescue nil%>
+                              <br/><%= p.descripcion rescue nil%>
+                              <br/><%= p.contratospersona.telefono rescue nil%>- <%= p.contratospersona.movil rescue nil%></small>
+                          </td>
+                          <td class="text-left" style="font-size:12px;"><%= p.direccion rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.fecha rescue nil%> - <%= p.hora rescue nil%>
+                          <% if p.contratospersona.contrato_fecha.to_s != "" %>
+                              <br/><small>Cita Contrato: <%= p.contrato_fecha rescue nil%> - <%= p.contrato_hora rescue nil%></small>
+                          <% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% end %>
+
+            <% if @contratosperexamenesrr.count.to_i > 0 %>
+              <legend>Rechazados (<%=@contratosperexamenesrr.count.to_i%>)</legend>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Examen</th>
+                        <th width="15%" class="text-center">Fecha y Hora</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratosperexamenesrr.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'B'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                            <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= p.user_nombre.html_safe rescue nil %><%= p.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.contratospersona.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.contratospersona.nombre_completo rescue nil%> <small>(Edad <%=p.contratospersona.edad%>)</small>
+                            <small><br/><strong>Oficio: </strong><%= p.contratospersona.oficio rescue nil%>
+                              <br/><strong>Cargo: </strong><%= p.contratospersona.cargo rescue nil%>
+                              <br/><%= p.descripcion rescue nil%>
+                              <br/><%= p.contratospersona.telefono rescue nil%>- <%= p.contratospersona.movil rescue nil%></small>
+                          </td>
+                          <td class="text-left" style="font-size:12px;"><%= p.direccion rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.fecha rescue nil%> - <%= p.hora rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% end %>
+
+          </div>
+          <div class="tab-pane" id="contratos">
+            <% if @contratospersonascon.count.to_i > 0 %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Dirección</th>
+                        <th width="15%" class="text-center">Telefonos</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratospersonascon.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)</small></td>
+                          <td class="text-left" style="font-size:12px;"><%= p.responsable rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.telefono rescue nil%> - <%= p.movil rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="dotacion">
+            <% if @contratospersonasdot.count.to_i > 0 %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Dirección</th>
+                        <th width="15%" class="text-center">Telefonos</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratospersonasdot.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)</small></td>
+                          <td class="text-left" style="font-size:12px;"><%= p.responsable rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.telefono rescue nil%> - <%= p.movil rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="carnets">
+            <% if @contratospersonascar.count.to_i > 0 %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th width="25%" class="text-left">Dirección</th>
+                        <th width="15%" class="text-center">Telefonos</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratospersonascar.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.nombre_completo rescue nil%> <small>(Edad <%=p.edad%>)</small></td>
+                          <td class="text-left" style="font-size:12px;"><%= p.responsable rescue nil%></td>
+                          <td class="text-center" style="font-size:12px;"><%= p.telefono rescue nil%> - <%= p.movil rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="tab-pane" id="rechazados">
+            <% if @contratosperestados.count.to_i > 0 %>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <thead>
+                      <tr class="thcolor">
+                        <th width="10%" class="text-center"></th>
+                        <th width="10%" class="text-center">Identificación</th>
+                        <th width="40%" class="text-justify" style="font-size:12px;">Nombre</th>
+                        <th class="text-left">Motivo</th>
+                      </tr>
+                      </thead>
+                      <tbody id="tbody">
+                      <% @contratosperestados.each do |p| %>
+                        <tr>
+                          <td class="text-center" style="font-size:12px;">
+                            <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'D'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                            <% end %>
+                          </td>
+                          <td class="text-center" style="font-size:12px;"><%= p.contratospersona.identificacion rescue nil%></td>
+                          <td class="text-justify" style="font-size:12px;"><%= p.contratospersona.nombre_completo rescue nil%> <small>(Edad <%=p.contratospersona.edad%>)</small>
+                            <small><br/><strong>Oficio: </strong><%= p.contratospersona.oficio rescue nil%>
+                              <br/><strong>Cargo: </strong><%= p.contratospersona.cargo rescue nil%>
+                              <br/><%= p.descripcion rescue nil%></small>
+                          </td>
+                          <td class="text-left" style="font-size:12px;"><%= p.descripcion rescue nil%></td>
+                        </tr>
+                      <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% end %>
+          </div>
+
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

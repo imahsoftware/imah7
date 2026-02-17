@@ -1,0 +1,1024 @@
+<%
+  isadmin = is_admin
+%>
+<div align="center">
+  <table width="94%">
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 18px; font-family: Verdana, Geneva, sans-serif;">
+          <table width="100%">
+            <tr>
+              <th style=" padding: 5px; font-size: 10px;">
+                <div align="center" style="font-size: 28px">HOJA DE VIDA</div>
+              </th>
+              <td width="20%">
+                <div align="right">
+                  <%= image_tag 'https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png', size: "200x100" %>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th colspan="2" rowspan="8" width="20%">
+                <div align="center">
+                  <% personasformulariosdoc = Personasformulariosdoc.where("personasformulario_id in (select id from personasformularios where identificacion = '#{@contratospersona.identificacion}') and parcargosdoc_id in (select id from parcargosdocs where descripcion = 'FOTO PARA EL CARNET')").first %>
+                  <% if personasformulariosdoc.present? %>
+                    <%= wicked_pdf_image_tag image_url(personasformulariosdoc.soporte_digital.url(:original, false)), size: "150x180" %>
+                  <% else %>
+                    <%= wicked_pdf_image_tag image_url('camera.png'), size: "130x180" %>
+                  <% end %>
+                </div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left"> Tipo identificacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="15%">
+                <div align="left">Identificacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Nombre Completo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.tipo_identificacion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.identificacion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.nombre_completo %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left">Fecha expedicion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="15%">
+                <div align="left">Genero</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Lugar expedición</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.fecha_expedicion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.genero %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_lugar_expedicion).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%">
+                <div align="left">Fecha nacimiento</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%" colspan="2">
+                <div align="left">Lugar nacimiento</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.fecha_nacimiento %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;" colspan="2">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_lugar_nacimiento).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 5px;" width="20%" colspan="2">
+                <div align="left">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 5px;" width="25%">
+                <div align="left">Ciudad de la dirección</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 5px; font-size: 10px;" colspan="2">
+                <div align="left"><%= @contratospersona.direccion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 5px; font-size: 10px;">
+                <div align="left"><%= Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">Teléfono</th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">Celular</th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="30%">
+                <div align="left">Correo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.telefono %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.movil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.correo %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Estrato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="left">Estado civil</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="30%">
+                <div align="left">Nivel educacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Numero hijos</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.estrato %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.estado_civil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.nivel_educacion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.numero_hijos %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="4">
+                <div align="center">INFORMACIÓN FAMILIAR</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre esposa(o) o compañera(o)</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Profesión, ocupación u oficio</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Empresa donde trabaja</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.nombre_familiar %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.ocupacion_familiar %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.empresa_trabaja_familiar %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Cargo actual</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Teléfono</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.cargo_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.direccion_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.telefono_familiar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="40%">
+                <div align="center">Ciudad</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nro de personas que dependen económicamente del solicitante</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= Municipio.find(@contratospersona.ciudad_familiar).autobuscar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.nro_personas_depende_familiar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Parentesco</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Edades</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre(s) padre(s)</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Profesión, ocupación u oficio</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.parentesto_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.edad_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.nombre_padre_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.profesion_familiar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Teléfono</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre(s) hermano(s)</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Profesión, ocupación u oficio</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Teléfono</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.telefono_familiar2 rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.nombre_herm_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.profesion_herm_familiar rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.telefono_herm_familiar rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="7">
+                <div align="center">INFORMACIÓN EDUCACIÓN Y APTITUDES</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Estudios</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Tipo</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Año finalizacion</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Año cursado</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Titulo obtenido</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Nombre Institución</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Ciudad</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center">Primaria</div>
+              </td>
+              <th></th>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_primaria_anno_fin %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_primaria_anno_cur %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_primaria_titulo %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_primaria_institucion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= Municipio.find(@contratospersona.est_primaria_ciudad).autobuscar rescue nil %></div>
+              </td>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center">Bachillerato</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_bachiller_tipo %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_bachiller_anno_fin %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_bachiller_anno_cur %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_bachiller_titulo %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_bachiller_institucion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= Municipio.find(@contratospersona.est_bachiller_ciudad).autobuscar rescue nil  %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center">Educación Superior</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center">
+                  <%= @contratospersona.est_edu_superior_tipo %>
+                </div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_edu_superior_anno_fin %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_edu_superior_anno_cur %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_edu_superior_titulo %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_edu_superior_institucion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= Municipio.find(@contratospersona.est_edu_superior_ciudad).autobuscar rescue nil  %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center">Postgrado</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;"></td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_postgrado_anno_fin %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_postgrado_anno_cur %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_postgrado_titulo %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_postgrado_institucion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= Municipio.find(@contratospersona.est_postgrado_ciudad).autobuscar rescue nil  %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center"></div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Intensidad horario</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre del programa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Institución</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;"><div align="center">Otros: cursos, diplomados, seminarios</div></td>
+              <td style=" padding: 4px; font-size: 10px;"><div align="center"><%= @contratospersona.est_otro_intensidad rescue nil %>&nbsp;</div></td>
+              <td style=" padding: 4px; font-size: 10px;"><div align="center"><%= @contratospersona.est_otro_nombre rescue nil %>&nbsp;</div></td>
+              <td style=" padding: 4px; font-size: 10px;"><div align="center"><%= @contratospersona.est_otro_institucion rescue nil %>&nbsp;</div></td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">¿Cursa estudios actualmente?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="23%">
+                <div align="center">¿Que tipo de estudios?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="27%">
+                <div align="center">Duración (años, semestres, meses)</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Año / semestre que cursa</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_estudia_actualmente rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_estudia_tipo rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_estudia_duracion rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_estudia_semestre rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="75%">
+                <div align="center">Nombre de la institución</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Horario</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_nombre_institucion rescue nil %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.est_horario rescue nil %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="7">
+                <div align="center">INFORMACIÓN REFERENCIA LABORAL</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de la última o actual empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Teléfono</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Cargo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_direccion %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_telefono %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_cargo %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de su jefe inmediato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha ingreso</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha retiro</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="18%">
+                <div align="center">Total tiempo servido</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Sueldo inicial</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre_jefe %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_ingreso %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_retiro %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_total_servicio %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_sueldo_inicial %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cargo(s) desempeñado(s) por usted</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_cargo_desempenado %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Funciones realizadas</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_funciones %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Logros obtenidos</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_logros %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Tipo de Contrato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Cuanto tiempo?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato directo con la empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato por medio de la agencia</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tipo_contrato %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tiempo_contrato %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_empresa %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_agencia %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="left">Otro?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cual?</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_contrato_otro %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_contrato_cual %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="7">
+                <div align="center">INFORMACIÓN REFERENCIA LABORAL 2</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de la última o actual empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Teléfono</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Cargo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_direccion2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_telefono2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_cargo2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de su jefe inmediato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha ingreso</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha retiro</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="18%">
+                <div align="center">Total tiempo servido</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Sueldo inicial</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre_jefe2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_ingreso2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_retiro2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_total_servicio2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_sueldo_inicial2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cargo(s) desempeñado(s) por usted</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_cargo_desempenado2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Funciones realizadas</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_funciones2 %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Logros obtenidos</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_logros2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Tipo de Contrato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Cuanto tiempo?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato directo con la empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato por medio de la agencia</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tipo_contrato2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tiempo_contrato2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_empresa2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_agencia2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="left">Otro?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cual?</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_contrato_otro2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_contrato_cual2 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="7">
+                <div align="center">INFORMACIÓN REFERENCIA LABORAL 3</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de la última o actual empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="center">Teléfono</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="center">Cargo</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_direccion3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_telefono3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_cargo3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="center">Nombre de su jefe inmediato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha ingreso</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Fecha retiro</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="18%">
+                <div align="center">Total tiempo servido</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Sueldo inicial</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_nombre_jefe3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_ingreso3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_fecha_retiro3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_total_servicio3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_sueldo_inicial3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cargo(s) desempeñado(s) por usted</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_cargo_desempenado3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Funciones realizadas</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_funciones3 %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Logros obtenidos</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_logros3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Tipo de Contrato</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="15%">
+                <div align="center">Cuanto tiempo?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato directo con la empresa</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="center">Contrato por medio de la agencia</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tipo_contrato3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_tiempo_contrato3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_empresa3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="center"><%= @contratospersona.exp_contrato_agencia3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="left">Otro?</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18">
+                <div align="left">Cual?</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;"><div align="left"><%= @contratospersona.exp_contrato_otro3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.exp_contrato_cual3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 10px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" colspan="7">
+                <div align="center">INFORMACIÓN REFERENCIAS PERSONALES - LABORALES</div>
+              </th>
+            </tr>
+            <tr>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="20%">
+                <div align="left">Nombre</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="left">Ocupación</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="25%">
+                <div align="left">Dirección</div>
+              </th>
+              <th style="background: #E8E3E3; padding: 4px;" height="18" width="10%">
+                <div align="left">Teléfono</div>
+              </th>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_nombre1 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_ocupacion1 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_direccion1 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_telefono1 %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_nombre2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_ocupacion2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_direccion2 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_telefono2 %>&nbsp;</div>
+              </td>
+            </tr>
+            <tr>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_nombre3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_ocupacion3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_direccion3 %>&nbsp;</div>
+              </td>
+              <td style=" padding: 4px; font-size: 10px;">
+                <div align="left"><%= @contratospersona.ref_telefono3 %>&nbsp;</div>
+              </td>
+            </tr>
+          </table>
+
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+            -<%= isadmin %>&nbsp;</div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+

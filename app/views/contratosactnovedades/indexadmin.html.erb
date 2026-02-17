@@ -1,0 +1,118 @@
+<% title 'Seguimiento' %>
+<legend style="margin-top: -19px;">Seguimiento Administrativo</legend>
+<div class="row">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-red"><strong>Pendientes</strong> ( <%= camponumerico2 @contratosactnovedades.where(estado: 'PENDIENTE').count.to_f rescue 0 %> )</div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-yellow-active"><strong>En Proceso</strong> ( <%= camponumerico2 @contratosactnovedades.where(estado: 'EN PROCESO').count.to_f rescue 0 %> )</div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <div class="alert bg-green"><strong>Atendidas</strong> ( <%= camponumerico2 @contratosactnovedades.where(estado: 'ATENDIDO').count.to_f rescue 0 %> )</div>
+  </div>
+</div>
+<%
+  usr = current_user
+  estados = ["PENDIENTE", "EN PROCESO", "ATENDIDO", "DASHGRAFICO", "DASHGRAFICO ESP", "INFORMES"]
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p # .estado2
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar2_contratosactnovedades_path(etapa: p) do %>
+              <i class="fa fa-adn"></i>&nbsp;<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% cont = 0
+           clase = ""
+           estados.each do |e|
+             if usr.etapa.to_s == e
+        %>
+            <div class="tab-pane active" id="<%= e %>">
+              <div class="box-body">
+                <% if ["PENDIENTE", "EN PROCESO", "ATENDIDO"].include?(e.to_s) %>
+                  <% if @contratosactnovedades.where(estado: e.to_s).present? == false %>
+                    <legend>Solicitudes en estado <strong><%=e.to_s %></strong> (0)</legend>
+                    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+                  <% else %>
+                    <legend>Solicitudes en estado <strong><%=e.to_s %></strong> (<%=@contratosactnovedades.where(estado: e.to_s).count.to_i %>)</legend>
+                    <div class="box-body">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <tbody>
+                        <% @contratosactnovedades.where(estado: e.to_s).select("distinct date_format(fecha,'%Y-%m') fechaff, count(9) cant").group("date_format(fecha,'%Y-%m')").each do |a|  %>
+                          <tr>
+                            <td class="text-left">
+                              <a href="javascript:void(0);" onclick="SINO('demo_<%=a.fechaff%>')">
+                                Ver Periodo <%=a.fechaff %> (<%=a.cant rescue 0 %>)
+                              </a>
+                              <div id="demo_<%=a.fechaff%>" style="display:none;"><br/>
+                                <table class="table table-bordered table-condensed table-striped">
+                                  <thead>
+                                  <tr class="thcolor">
+                                    <th width="5%"></th>
+                                    <th width="10%" class="text-center">Fecha</th>
+                                    <th width="10%" class="text-center">Sede</th>
+                                    <th width="10%" class="text-center">Nodo</th>
+                                    <th class="text-left">Usuario</th>
+                                    <th width="15%" class="text-left">Tipo Evaluacion</th>
+                                    <th width="25%" class="text-left">Observacion</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody id="tbody">
+                                  <%@contratosactnovedades.includes([:contratossede,:tiposevaluacion, :user]).where(["estado = '#{e.to_s}' and date_format(fecha,'%%Y-%%m') = '#{a.fechaff.to_s}'"]).each do |a| %>
+                                    <tr>
+                                      <td class="text-center"><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                                          <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                                        <% end %>
+                                        <%= link_to solicitud_contratosactnovedades_path(id: a.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'PDF Solicitud' do %>
+                                          <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                                        <% end %>
+                                      </td>
+                                      <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil %></td>
+                                      <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil %></td>
+                                      <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil %></td>
+                                      <td class="text-left" style="font-size:12px;"><%= a.user.nombre rescue nil %><br/>
+                                        <em><%= a.user.email rescue nil %></em></td>
+                                      <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp2 rescue nil %></td>
+                                      <td class="text-justify" style="font-size:11px;"><em><%= a.observaciones rescue nil %></em></td>
+                                    </tr>
+                                  <% end %>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  <% end %>
+                <% elsif e.to_s == 'DASHGRAFICO' %>
+                  <%= render 'grafico' %>
+                <% elsif e.to_s == 'DASHGRAFICO ESP' %>
+                  <%= render 'graficoesp' %>
+                <% elsif e.to_s == 'INFORMES' %>
+                  <%= render 'informe' %>
+                <% end  %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+

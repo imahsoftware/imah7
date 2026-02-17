@@ -1,0 +1,29 @@
+<%= simple_form_for([@capacitacionevaluacion, @capacitacionevaopcion], remote: true) do |f| %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @capacitacionevaopcion.new_record? ? 'Agregar' : 'Editar' %> Opciones</strong>
+    </h3>
+    <div class="pull-left">
+      <small><%= @capacitacionevaluacion.pregunta rescue nil %></small>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%= f.input :descripcion, input_html: { class: "form-control uppercaseInput" }, label: "Descripción" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <%= f.input :imagen, as: :file, label: 'Archivo a cargar' %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :respuesta, as: :select, collection: select_clasificacion_respuesta, input_html: { class: 'select2', style: "width: 100%" }, label: "Respuesta" %>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+<% end %>

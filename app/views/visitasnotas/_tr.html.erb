@@ -1,0 +1,16 @@
+<tr id="visitasnota_<%= visitasnota.id %>">
+  <td class="text-center">
+    <% if visitasnota.visita.finalizacion.blank? %>
+      <%# if is_auth_e("visitasnota")%>
+      <%= link_to edit_visita_visitasnota_path(@visita, visitasnota), remote: true, class: 'edit_visitasnota_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to visita_visitasnota_path(@visita, visitasnota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= visitasnota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= visitasnota.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= visitasnota.nota rescue nil %></td>
+</tr>

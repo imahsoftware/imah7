@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h3 class="modal-title"><strong>Actividades realizadas hoy: <%=Time.now.strftime("%Y-%m-%d") rescue nil%></strong></h3>
+</div>
+  <div class="modal-body">
+    <div class="contenedor">
+      <div class="row">
+        <div class="col-md-12">
+          <% if @contratosactejecuciones.count.to_i > 0 %>
+            <table class="table table-bordered table-striped">
+              <tr>
+                <th width="50%" class="thcolor text-left">Actividad</th>
+                <th width="35%" class="thcolor text-left">Lugar</th>
+                <th width="15%" class="thcolor text-center">Fecha y hora</th>
+              </tr>
+              <% @contratosactejecuciones.each do |a| %>
+              <tr>
+                <td class="text-left"><%=a.contratosactividad.detalle %> <small><em>(<%=a.contratosactividad.clase %>)</em></small>
+                <% if a.realizada.to_s == 'NO' %>
+                    <div class="text-red" style='font-size: 11px;'><strong>NO REALIZADA: <%=a.nota %></strong></div>
+                <% end %>
+                </td>
+                <td class="text-left"><small><%=a.contratosnodo.nombre_consulta rescue nil %></small></td>
+                <td class="text-center"><small><%=a.created_at.strftime("%Y-%m-%d %X") rescue nil%></small></td>
+              </tr>
+              <% end %>
+            </table>
+          <% else %>
+            <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

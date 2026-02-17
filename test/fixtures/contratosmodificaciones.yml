@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  tipo_modificacion: MyString
+  fecha_modificacion: 2020-07-17
+  valor: 9.99
+  plazo_mes: 1
+  plazo_dia: 1
+  observacion: MyString
+
+two:
+  contrato: two
+  user: two
+  tipo_modificacion: MyString
+  fecha_modificacion: 2020-07-17
+  valor: 9.99
+  plazo_mes: 1
+  plazo_dia: 1
+  observacion: MyString

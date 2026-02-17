@@ -1,0 +1,2 @@
+module ContratosprefimagenesHelper
+end

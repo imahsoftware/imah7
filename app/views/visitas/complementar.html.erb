@@ -1,0 +1,160 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <div class="box">
+    <div class="box-header with-border">
+      <h3 class="box-title"><i class="fa fa-map-marker"></i> Visita (<%=@visita.teletrabajo rescue nil %>)</h3>
+      <div class="pull-right">
+        <% if @visita.visitasdocs.where("tipo = 'ANTES'").blank? %>
+          <%= link_to antes_trasera_visitas_path(id: @visita.id), class: 'btn btn-xs btn-warning' do %>
+            <i class="fa fa-camera"> </i> <span>Inicio Camara Trasera</span>
+          <% end %>
+          <%= link_to antes_visitas_path(id: @visita.id), class: 'btn btn-xs btn-warning' do %>
+            <i class="fa fa-camera"> </i> <span>Inicio Camara Delantera</span>
+          <% end %>
+        <% else %>
+          <% if @visita.mensaje_faltante.present? %>
+            <i class="fa fa-sticky-note" style="color: red;"></i> <%= @visita.mensaje_faltante.html_safe %>
+          <% else %>
+            <% if @visita.visitasdocs.where("tipo = 'ANTES'").present? and @visita.visitasdocs.where("tipo = 'DESPUES'").blank? %>
+              <%= link_to despues_visitas_path(id: @visita.id), class: 'btn btn-xs btn-warning' do %>
+                <i class="fa fa-camera"> </i> <span>Finalización</span>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="box-body">
+        <table class="table table-bordered table-condensed table-striped">
+          <tr class="thcolor">
+            <th width="20%" class="text-center">Fecha Inicio Visita</th>
+            <th width="20%" class="text-center">Usuario</th>
+            <th>Contrato</th>
+          </tr>
+          <tr>
+            <td class="text-tr-table text-center"><%= @visita.created_at.strftime("%d/%m/%Y %X") rescue nil %></td>
+            <td class="text-tr-table text-center"><%= @visita.user.nombre rescue nil %></td>
+            <td class="text-tr-table text-left">
+              <%= link_to consolidado_visitas_path(id: @visita.id), remote: true, data: { toggle: 'tooltip', toggle: 'modal', target: "#consolidado#{@visita.id}" }, title: 'Ver Consolidado de Georreferenciación por usuario' do %>
+                <i class="fa fa-map-marker text-red"> </i>
+              <% end %>&nbsp;
+              <%= @visita.contrato.empresa.identnombre rescue nil %><%= @visita.contrato.nro_contrato rescue nil %>
+              <br/><small><strong>Objetivo de la Visita: </strong><%= @visita.descripcion rescue nil %></small>
+              <div class="modal fade" id="consolidado<%= @visita.id %>">
+                <div class="modal-dialog" style="width: 80%">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                      </button>
+                      <h4 class="modal-title">Consolidado Georreferenciación -
+                        <small><%= @visita.user.nombre rescue nil %></small></h4>
+                    </div>
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+                    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                    <div class="modal-body">
+
+                      <div id="map3_<%= @visita.id %>" style="height: 400px; z-index: 0;"></div>
+                      <script type="text/javascript" charset="utf-8">
+                          document.addEventListener('DOMContentLoaded', function () {
+                              $('#consolidado<%= @visita.id %>').on('shown.bs.modal', function () {
+                                  var mapId = "map3_<%= @visita.id %>";
+                                  var firstLatitude = <%= @visita.latitude rescue nil %>;
+                                  var firstLongitude = <%= @visita.longitude rescue nil %>;
+
+                                  var map = L.map(mapId).setView([firstLatitude, firstLongitude], 13);
+
+                                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                  }).addTo(map);
+
+
+                                  var marker = L.marker([<%= @visita.latitude.to_s %>, <%= @visita.longitude.to_s %>]).addTo(map);
+                                  marker.bindPopup("<%= @visita.descripcion_visita rescue nil %>").openPopup();
+
+                                  map.invalidateSize();
+                              });
+                          });
+                      </script>
+
+                    </div>
+                    <br/>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-header with-border">
+      <% if @visita.visitasdocs.where("tipo = 'ANTES'").present? %>
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'A'), data: { toggle: 'tooltip' }, title: "Notas" do %>
+                  <i class="fa fa-sticky-note"></i> Notas
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'D' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'D'), data: { toggle: 'tooltip' }, title: "Sedes" do %>
+                  <i class="fa fa-edit"></i> Sedes
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'B' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'B'), data: { toggle: 'tooltip' }, title: "Compromisos" do %>
+                  <i class="fa fa-edit"></i> Compromisos
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'C' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'C'), data: { toggle: 'tooltip' }, title: "Documentos" do %>
+                  <i class="fa fa-file-pdf-o"></i> Documentos
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'E' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'E'), data: { toggle: 'tooltip' }, title: "Atencion" do %>
+                  <i class="fa fa-file-pdf-o"></i> Atencion
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'F' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'F'), data: { toggle: 'tooltip' }, title: "Hallazgos" do %>
+                  <i class="fa fa-black-tie"></i> Hallazgos
+                <% end %>
+              </li>
+              <% if ['REUNION'].include?(@visita.teletrabajo) %>
+                <li class="<%= @etapa == 'G' ? 'active' : '' %>">
+                  <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'G'), data: { toggle: 'tooltip' }, title: "Asistentes" do %>
+                    <i class="fa fa-users"></i> Asistentes
+                  <% end %>
+                </li>
+              <% end %>
+              <li class="<%= @etapa == 'H' ? 'active' : '' %>">
+                <%= link_to complementar_visitas_path(id: @visita.id, etapa: 'H'), data: { toggle: 'tooltip' }, title: "Ficha Tecnica Contrato" do %>
+                  <i class="fa fa-edit"></i> Ficha Tecnica Contrato
+                <% end %>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <% if @etapa == 'A' %>
+                <div class="active"><%= render 'visitasnotas/visitasnotas' %></div>
+              <% elsif @etapa == 'B' %>
+                <div class="active"><%= render 'visitascompromisos/visitascompromisos' %></div>
+              <% elsif @etapa == 'D' %>
+                <div class="active"><%= render 'visitassedes/visitassedes' %></div>
+              <% elsif @etapa == 'C' %>
+                <div class="active"><%= render 'visitasdocs/visitasdocs' %></div>
+              <% elsif @etapa == 'E' %>
+                <div class="active"><%= render 'visitasatenciones/visitasatenciones' %></div>
+              <% elsif @etapa == 'F' %>
+                <div class="active"><%= render 'visitashallazgos/visitashallazgos' %></div>
+              <% elsif @etapa == 'G' %>
+                <div class="active"><%= render 'visitasasistentes/visitasasistentes' %></div>
+              <% elsif @etapa == 'H' %>
+                <div class="active"><%= render 'visitas/contratos' %></div>
+              <% end %>
+            </div>
+          </div>
+      <% end %>
+    </div>
+  </div>

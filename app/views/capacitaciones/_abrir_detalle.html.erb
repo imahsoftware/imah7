@@ -1,0 +1,103 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">
+    Evaluación y Firma de la Capacitación
+    <div class="text-right" style="margin-top: 10px;">
+      <% if @mostrarboton %>
+        <%= link_to envia_capacitacion_capacitaciones_path(contrato_id: @contratoscapapersona.contrato_id, contratoscapapersona_id: @contratoscapapersona.id, capacitacion_id: @contratoscapapersona.capacitacion_id), class: "envia-capacitacion-boton#{@contratoscapapersona.id}", data: { disable_with: "Enviando Codigo de firma..." }, remote: true do %>
+          <button class="btn btn-xs btn-warning">
+            <i class="fa fa-check" data-toggle="tooltip" data-original-title="Enviar respuestas"></i> Firmar
+            Capacitación
+          </button>
+        <% end %>
+      <% end %>
+      <div id="boton_enviar<%= @contratoscapapersona.id %>"></div>
+    </div>
+  </h4>
+  <br/>
+  <%= render "capacitaciones/escritorio/capacitacion_usuario" %>
+</div>
+
+<div class="modal-body">
+  <div class="row" id="codigo_otp<%= @contratoscapapersona.capacitacion_id %>"></div>
+  <div class="row" id="capacitacion_proceso<%= @contratoscapapersona.capacitacion_id %>">
+    <div class="col-xs-12">
+      <table class="table table-bordered table-condensed table-striped  table-hover">
+        <thead>
+        <tr>
+          <th width="4%" class="text-center thcolor">#</th>
+          <th width="40%" class="text-left thcolor">Pregunta</th>
+          <th width="50%" class="text-left thcolor">Respuesta</th>
+        </tr>
+        <% cnt2 = 0
+           Contratoscaparesultado.where("capacitacion_id = #{@contratoscapapersona.capacitacion_id} and contratosperfecha_id = #{@contratoscapapersona.contratosperfecha_id} and contratoscapapersona_id = #{@contratoscapapersona.id}").includes([:capacitacionevaluacion]).each do |contratoscaparesultado|
+        %>
+          <tr>
+            <td class="text-center"><%= cnt2 += 1 %></td>
+            <td align="justify"><%= contratoscaparesultado.capacitacionevaluacion.pregunta.html_safe rescue nil %></td>
+            <td>
+              <table class="table table-bordered table-condensed table-striped  table-hover">
+                <% Capacitacionevaopcion.where("capacitacionevaluacion_id = #{contratoscaparesultado.capacitacionevaluacion.id}").each do |opcion| %>
+                  <tr>
+                    <td width="5%" class="text-center">
+                      <% checked = contratoscaparesultado.respuesta == opcion.id ? 'checked' : '' %>
+                      <label>
+                        <input type="radio" class="form-check-input respuesta-radio" name="respuesta_<%= contratoscaparesultado.id %>" data-resultado-id="<%= contratoscaparesultado.id %>" value="<%= opcion.id %>" <%= checked %> />
+                      </label>
+                    </td>
+                    <td><%= opcion.descripcion %></td>
+                    <% if opcion.imagen_file_name.present? %>
+                      <td class="text-center" width="25%">
+                        <%= image_tag opcion.imagen.url(:thumb) %>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </table>
+            </td>
+          </tr>
+        <% end %>
+        </thead>
+      </table>
+      <div class="text-right" style="margin-top: 10px;">
+        <% if @mostrarboton %>
+          <%= link_to envia_capacitacion_capacitaciones_path(contrato_id: @contratoscapapersona.contrato_id, contratoscapapersona_id: @contratoscapapersona.id, capacitacion_id: @contratoscapapersona.capacitacion_id), class: "envia-capacitacion-boton2#{@contratoscapapersona.id}", data: { disable_with: "Enviando Codigo de firma..." }, remote: true do %>
+            <button class="btn btn-xs btn-warning">
+              <i class="fa fa-check" data-toggle="tooltip" data-original-title="Enviar respuestas"></i> Firmar Capacitación
+            </button>
+          <% end %>
+        <% end %>
+        <div id="boton_enviar2<%= @contratoscapapersona.id %>"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $(".select2").select2();
+
+    $('.respuesta-select').select2({
+        templateResult: function (data, container) {
+            if (!data.element) {
+                return data.text;
+            }
+
+            var imagenUrl = $(data.element).data('imagen');
+            var $option = $('<div class="select2-option"></div>');
+
+            // Agregar la imagen solo si hay una URL de imagen y no es "-- Seleccionar respuesta --"
+            if (imagenUrl != '/imagenes/thumb/missing.png' && data.text !== "-- Seleccionar respuesta --") {
+                $option.append('<img class="select2-option-imagen" src="' + imagenUrl + '" alt="Imagen" style="max-width: 90px; max-height: 90px;">');
+            }
+
+            $option.append('<span class="select2-option-text">' + data.text + '</span>');
+
+            return $option;
+        },
+
+        escapeMarkup: function (markup) {
+            return markup;
+        }
+    });
+
+
+</script>

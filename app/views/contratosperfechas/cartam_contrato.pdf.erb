@@ -1,0 +1,98 @@
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<%
+  contrato = object rescue nil
+  vcFch = object0 rescue nil
+  if vcFch == '-1'
+    @contratosperfechas = Contratosperfecha.where("contrato_id = #{contrato} AND codigo_firma IS NOT NULL")
+  else
+    @contratosperfechas = Contratosperfecha.where("contrato_id = #{contrato} AND codigo_firma IS NOT NULL and date_format(fecha_inicio,'%Y-%m') = '#{vcFch}'")
+  end
+
+  @contratosperfechas.each do |c|
+    isadmin = is_admin
+    contratospersona = c.contratospersona
+    contador = 0
+    empresas = Portafolio.where("id in (select distinct e.portafolio_id
+                                     from   contratos c, contratosperfechas f, empresas e
+                                     where  f.contratospersona_id = #{contratospersona.id}
+                                     and    f.contrato_id = c.id
+                                     and    c.empresa_id = e.id)")
+    empresas.each do |e|
+      contratosperfechas = Contratosperfecha.where("contratospersona_id = #{contratospersona.id}
+                                                    and contrato_id in (select distinct c.id
+                                                               from   contratos c, empresas e
+                                                               where  c.id = contratosperfechas.contrato_id
+                                                               and    c.empresa_id = e.id
+                                                               and    e.portafolio_id = #{e.id})")
+      portafolio = e
+      @logo = portafolio.logo_empresa_assets
+      @logo_firma = portafolio.logo_firma
+      contador = contador + 1
+%>
+  <% if contador > 1 %>
+    <H1 class=SaltoDePagina>&nbsp;</H1>
+  <% end %>
+    <table width="100%">
+      <tr>
+        <td width="10%" style="font-family: Tahoma; text-align: center"><%= image_tag "#{@logo}", size: "280x120" %></td>
+        <td width="90%" style="font-family: Tahoma; text-align: center">&nbsp;</td>
+      </tr>
+    </table><br/>
+    <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+      <br/>
+      <div align="center"><strong>A QUIEN PUEDA INTERESAR</strong></div><br/>
+      La empresa <%=portafolio.razon_social rescue nil %>, con Nit <%=portafolio.identificacion rescue nil %>-<%=portafolio.digito rescue nil %> y domicilio en la ciudad de Medellín <%=portafolio.direccion rescue nil %>, teléfono <%=portafolio.telefono_empresa rescue nil %> Ext 101.
+      <br/><br/><br/>
+      <div align="center"><strong>CERTIFICA QUE:</strong></div>
+      <br/><br/>
+      El (a) señor (a) <strong><%=contratospersona.nombre_completo rescue nil%></strong> identificado (a) con <%= contratospersona.tipo_identificacion rescue nil %> número <strong><%=camponumerico2(contratospersona.identificacion) rescue nil%></strong> desempeñó (a) los siguientes cargos.
+      <br/><br/>
+      <% contratosperfechas.order("fecha_inicio desc").each do |a| %>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th width="80%" height="20" style="background: #E8E3E3;"><div align="left">CARGO</div></th>
+            <th width="20%" style="background: #E8E3E3;">SALARIO</th>
+          </tr>
+          <tr>
+            <td height="20"><div align="left"><%=a.contratoscargo.perfil rescue nil %></div></td>
+            <td><div align="center">$ <%=camponumerico2 a.salariofinal rescue nil %></div></td>
+          </tr>
+        </table>
+        <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <th width="25%" height="20" style="background: #E8E3E3;">FECHA DE INICIO</th>
+            <th width="25%" style="background: #E8E3E3;">FECHA DE TERMINACIÓN</th>
+            <th width="30%" style="background: #E8E3E3;">TIPO DE CONTRATO</th>
+            <th width="20%" style="background: #E8E3E3;">ESTADO</th>
+          </tr>
+          <tr>
+            <td height="20"><div align="center"><%=a.fecha_inicio.strftime("%d-%m-%Y") rescue nil %></div></td>
+            <td><div align="center"><% if a.estado.to_s == 'INACTIVO' %><%=a.fecha_fin.strftime("%d-%m-%Y") rescue nil %><% else %>ACTIVO<% end %></div></td>
+            <td><div align="center"><%=a.tipo_contrato rescue nil %></div></td>
+            <td><div align="center"><%=a.estado rescue nil %></div></td>
+          </tr>
+        </table><br/>
+      <% end  %>
+      <br/>
+      Se expide el presente certificado a solicitud del interesado el <%=namedate(Time.now) rescue nil %>.
+      <br/><br/>
+      Para mayor información favor comunicarse telefónicamente al <%=portafolio.telefono_empresa rescue nil %> ext 101.
+      <br/><br/><br/>
+      Atentamente,
+      <br/><br/><br/>
+
+      <%= image_tag 'https://appasearesp.com/assets/firmamanuela-07d77558a523eda2577eab4ee465d1e64ad8fdfddc5e1b69bf4609b943567891.png', style: 'position: relative;margin-bottom: -10px;;z-index: 0' %>
+      <b style="font-size: 16px; font-family: Tahoma; margin-top: -30px;position: relative;z-index: 9999">
+        <br/>MANUELA RAMIREZ<br/>
+        TALENTO HUMANO<br/>
+        <%=portafolio.razon_social rescue nil %><br/>
+        TLFNO: <%=portafolio.telefono_empresa rescue nil %> EXT 101<br/></b>
+      <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%>-<%=isadmin %></div>
+    </div>
+  <% end %>
+<% end %>
+
+
+
+
+

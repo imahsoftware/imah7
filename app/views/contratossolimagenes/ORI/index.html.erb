@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratossolimagenes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratossolicitud</th>
+      <th>User</th>
+      <th>Descripcion</th>
+      <th>Solimagenes</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratossolimagenes.each do |contratossolimagen| %>
+      <tr>
+        <td><%= contratossolimagen.contratossolicitud %></td>
+        <td><%= contratossolimagen.user %></td>
+        <td><%= contratossolimagen.descripcion %></td>
+        <td><%= contratossolimagen.solimagenes %></td>
+        <td><%= link_to 'Show', contratossolimagen %></td>
+        <td><%= link_to 'Edit', edit_contratossolimagen_path(contratossolimagen) %></td>
+        <td><%= link_to 'Destroy', contratossolimagen, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratossolimagen', new_contratossolimagen_path %>

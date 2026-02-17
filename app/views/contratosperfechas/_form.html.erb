@@ -1,0 +1,98 @@
+<%= simple_form_for([@contratospersona, @contratosperfecha], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+        <label>Contrato</label>
+        <select class="form-control select2Contrato<%= @contratosperfecha.id %> select2" style="width:100%;" name="contratosperfecha[contrato_id]" id="contratosperfecha_contrato_id">
+          <option selected="selected" value="<%= f.object.contrato_id -%>">
+            <%= "#{f.object.descripcion_contrato}" -%>
+          </option>
+        </select>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+        <% if @contratosperfecha.contratoscargo_id %>
+          <%= f.input :contratoscargo_id, collection: Contratoscargo.where(contrato_id: @contratosperfecha.contrato_id).order(:perfil).collect { |p| [p.desc_contrato, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Cargo" %>
+        <% else %>
+          <%= f.input :contratoscargo_id, as: :select, input_html: { class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Cargo', disabled: true %>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <% if @contratosperfecha.contratosgrupo_id %>
+          <%= f.input :contratosgrupo_id, collection: Contratosgrupo.where("contrato_id = ?", @contratosperfecha.contrato_id).order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Grupo" %>
+        <% else %>
+          <%= f.input :contratosgrupo_id, as: :select, input_html: { class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Grupo', disabled: true %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <% if @contratosperfecha.contratosseccion_id %>
+          <%= f.input :contratosseccion_id, collection: Contratosseccion.where("contrato_id = ? and contratosgrupo_id = ? and contratoscargo_id = ? ", @contratosperfecha.contrato_id, @contratosperfecha.contratosgrupo_id,@contratosperfecha.contratoscargo_id ).order(:descripcion2).collect { |p| [p.descripcion2, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Sección" %>
+        <% else %>
+          <%= f.input :contratosseccion_id, as: :select, input_html: { class: 'select2' }, collection: [], prompt: 'Seleccione', label: 'Sección', disabled: true %>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :seccion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Otras Secciones" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :tipo_contrato, collection: Iparametro.where(campo: 'tipo_contrato').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <% if is_auth_c("actualizarfechafin") %>
+          <%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %>
+        <% else %>
+          <% if @contratosperfecha.fecha_fin.to_s != "" %>
+            <%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true, disabled: true } %>
+          <% else %>
+            <%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :laboro, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Laboro?"  %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :dotacion, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: "Requiere Dotación?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :carne, as: :boolean, checked_value: 'SI', unchecked_value: 'NO', input_html: { style: 'font-size: 9px;'},label: "Requiere Carnet?" %></div>
+      <% if is_auth_c('pasoalfondo') %>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_pasoalfondo, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY'} } }, label: "Fecha paso al fondo" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_pasoregrefondo, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY' } } }, label: "Fecha regreso del fondo" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :observacion_pasoalfondo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Centro de Trabajo anterior" %></div>
+      <% end %>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4"><%= f.input :seguridadsocial, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Descuento Seguridad Social?"  %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperfecha.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperfecha_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperfecha_path(@contratospersona, @contratosperfecha), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" charset="utf-8">
+      $(function() {
+          $('#contratosperfecha_contratoscargo_id, #contratosperfecha_contratosgrupo_id').on('change', function() {
+              if ($('#contratosperfecha_contratoscargo_id').val() != '' && $('#contratosperfecha_contratosgrupo_id').val() != '') {
+                  $.ajax({
+                      url: "contratosperfechas/get_contratosseccion_contratoid?cargo_id=" + $('#contratosperfecha_contratoscargo_id').val() + "&grupo_id=" + $('#contratosperfecha_contratosgrupo_id').val() + "&contrato_id=" + $('#contratosperfecha_contrato_id').val(),
+                      data: function (params) {
+                          return {
+                              q: $('#contratosperfecha_contratoscargo_id').val()
+                          };
+                      },
+                  });
+              } else {
+                  alert("no ingresa");
+              }
+          });
+      });
+  </script>
+<% end %>
+<br/>

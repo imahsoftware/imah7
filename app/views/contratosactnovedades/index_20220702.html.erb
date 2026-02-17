@@ -1,0 +1,121 @@
+<% title 'Solicitudes' %>
+  <legend style="margin-top: -19px;">
+  <%= link_to actividades_menus_path, title: 'Regresar' do %>
+    <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+    <% end %>  Bienvenido, <%= @usr.nombre rescue nil %> al proceso de seguimiento de Solicitudes</legend>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#pendientes" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i> Pendientes (<%=@contratosactnovedades.where(estado: 'PENDIENTE').count rescue 0 %>)</a></li>
+        <li><a href="#proceso" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i> En proceso (<%=@contratosactnovedades.where(estado: 'EN PROCESO').count rescue 0 %>)</a></li>
+        <li><a href="#atendido" data-toggle="tab" aria-expanded="true"><i class="fa fa-thumbs-o-up"></i> Atendidos (<%=@contratosactnovedades.where(estado: 'ATENDIDO').count rescue 0 %>)</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="pendientes">
+          <div class="box-body">
+            <% if @contratosactnovedades.where(estado: 'PENDIENTE').present? == false %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th width="20%" class="text-left">Tipo Evaluacion</th>
+                  <th class="text-left">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <%@contratosactnovedades.includes([:contratossede,:tiposevaluacion]).where(estado: 'PENDIENTE').each do |a| %>
+                  <tr>
+                    <td class="text-center" ><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil%></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp2 rescue nil%></td>
+                    <td class="text-justify" style="font-size:11px;"><em><%= a.observaciones rescue nil%></em></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </div>
+        <div class="tab-pane" id="proceso">
+          <div class="box-body">
+            <% if @contratosactnovedades.where(estado: 'EN PROCESO').present? == false %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th width="20%" class="text-left">Tipo Evaluacion</th>
+                  <th class="text-left">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <%@contratosactnovedades.includes([:contratossede,:tiposevaluacion]).where(estado: 'EN PROCESO').each do |a| %>
+                  <tr>
+                    <td class="text-center" ><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil%></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp2 rescue nil%></td>
+                    <td class="text-justify" style="font-size:11px;"><em><%= a.observaciones rescue nil%></em></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </div>
+        <div class="tab-pane" id="atendido">
+          <div class="box-body">
+            <% if @contratosactnovedades.where(estado: 'ATENDIDO').present? == false %>
+              <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                <tr class="thcolor">
+                  <th width="5%"></th>
+                  <th width="10%" class="text-center">Fecha</th>
+                  <th width="10%" class="text-center">Sede</th>
+                  <th width="10%" class="text-center">Nodo</th>
+                  <th width="20%" class="text-left">Tipo Evaluacion</th>
+                  <th class="text-left">Observacion</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <%@contratosactnovedades.includes([:contratossede,:tiposevaluacion]).where(estado: 'ATENDIDO').each do |a| %>
+                  <tr>
+                    <td class="text-center" ><%= link_to edit_contratosactnovedad_path(a.id, etapa: 'A'), class: 'edit_contratosactnovedad_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.fecha rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.contratossede.nombre rescue nil%></td>
+                    <td class="text-center" style="font-size:12px;"><%= a.nodo rescue nil%></td>
+                    <td class="text-left" style="font-size:12px;"><%= a.tiposevaluacion.detalle_esp2 rescue nil%></td>
+                    <td class="text-justify" style="font-size:12px;"><%= a.observaciones rescue nil%></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

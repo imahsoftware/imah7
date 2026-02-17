@@ -1,0 +1,36 @@
+<tr id="contratosentepp_<%= contratosentepp.id %>">
+  <td class="text-center">
+    <div class="btn-group" id="botones<%= contratosentepp.id %>">
+      <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+        Opciones <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <%= link_to complementar_contratosentepps_path(id: contratosentepp.id, etapa: 'A'), class: 'edit_contratosentepp_button',  data: { toggle: 'tooltip' } do %>
+            <div class="text-orange"><i class="fa fa-edit"></i> Editar Entrega</div>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to ver_contratosentepps_path(id: contratosentepp.id), data: { toggle: 'tooltip' }, class: 'popup' do %>
+            <div class="text-blue"><i class="fa fa-clone"></i> Ver Entrega</div>
+          <% end %>
+        </li>
+        <% if contratosentepp.estado == 'PENDIENTE' %>
+          <li>
+          <%= link_to contratosentepp_path(id: contratosentepp.id), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+              <div class="text-blue"><i class="fa fa-trash"></i> Eliminar Entrega</div>
+          <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+  </td>
+  <td class="text-left text-tr-table"><%= contratosentepp.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= contratosentepp.user.username rescue nil %></td>
+  <td class="text-tr-table">
+    <small><%= contratosentepp.contrato.empresa.identnombre rescue nil %>
+      <br/><strong>Nro Contrato : </strong><%= contratosentepp.contrato.nro_contrato rescue nil %></small>
+  </td>
+  <td class="text-tr-table text-center"><%= contratosentepp.estado rescue nil %></td>
+</tr>

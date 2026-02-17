@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperproceso: one
+  contratospersona: one
+  empleado: MyString
+  asear: MyString
+  user: one
+
+two:
+  contratosperproceso: two
+  contratospersona: two
+  empleado: MyString
+  asear: MyString
+  user: two

@@ -1,0 +1,81 @@
+<legend style="margin-top: -19px;">DashBoard Seguimiento control de Firma</legend>
+<% usr = @usr
+   estados = Controlfirma.select("estado, count(9) cantidad")
+                         .where("portafolio_id = #{is_portafolio}").group("estado").distinct.order("estado desc")
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: p.estado) do %>
+              <i class="fa fa-adn"></i> <%= p.estado %> (<%= p.cantidad rescue 0 %>)
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado
+        %>
+            <div class="tab-pane active" id="<%= p.estado %>">
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="row" style="margin-top: -10px;">
+                      <div class="col-md-4">
+                        <%= form_tag searchdocumento_todo_menus_path(estado: p.estado), remote: true, method: :get do %>
+                          <div class="form-group input-group" style="padding-bottom: 10px;">
+                            <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                            <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Identificación, Nombre o Apellido' %>
+                            <span class="input-group-btn">
+                              <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              <% end %>
+                            </span>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div id="resultado_documento_todo<%= p.estado.downcase %>"></div>
+                  </div>
+                  <br/><br/>
+                  <% if @controlfirmas.present? %>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <thead>
+                      <tr class="thcolor">
+                        <th class="text-left" width="25%">Empleado</th>
+                        <th class="text-left" width="35%">Contrato</th>
+                        <th class="text-center" width="10%">Fecha Solicitud</th>
+                        <th class="text-center" width="10%">Fecha Firma</th>
+                        <th class="text-left">Tipo Documento</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <% @controlfirmas.where("estado = '#{p.estado}'").each do |c| %>
+                        <%= render 'menus/tr_doc_todo', c: c, p: p %>
+                      <% end %>
+                      </tbody>
+                    </table>
+                    <div class="box-tools pull-right">
+                      <%= will_paginate @controlfirmas.where("estado = '#{p.estado}'"), :param_name => "doc_#{p.estado.downcase.to_s}", remote: true, renderer: BootstrapPagination::Rails %>
+                    </div><!-- /.box-tools -->
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

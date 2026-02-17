@@ -1,0 +1,2 @@
+class Contratosseguimiento < ApplicationRecord
+end

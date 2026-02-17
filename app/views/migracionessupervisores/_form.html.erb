@@ -1,0 +1,15 @@
+<%= simple_form_for(@migracionessupervisor) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :user %>
+    <%= f.association :archivo %>
+    <%= f.input :estado %>
+    <%= f.input :identificacion %>
+    <%= f.input :userasig_id %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

@@ -1,0 +1,739 @@
+<div align="center">
+  <table width="100%">
+    <tr>
+      <td height="50px">
+        <div align="right"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+          <div align="center" style="font-size: 20px; font-family: Verdana, Geneva, sans-serif;"><strong>Manual de Políticas y Procedimientos Habeas Data<br/> <%= @portafolio.razon_social rescue nil %></strong></div>
+          <br/><br/>
+          En cumplimiento de lo dispuesto en la Ley 1581 de 2012, el Decreto Reglamentario 1377 de 2013 y demás disposiciones complementarias, <strong><%= @portafolio.razon_social rescue nil %></strong>, en su calidad de responsable del tratamiento de la información que reposa en sus bases de datos, adopta las siguientes políticas encaminadas a garantizar su protección.
+          <br/><br/>
+          <strong>I. IDENTIFICACIÓN DEL RESPONSABLE DEL TRATAMIENTO NOMBRE DE LA EMPRESA: <%= @portafolio.razon_social rescue nil %></strong>
+          <br/><br/>
+          <strong>NIT:</strong> <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %><br/>
+          <strong>DIRECCIÓN:</strong> <%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA<br/>
+          <strong>CORREO ELECTRÓNICO:</strong> Asearesp@gmail.com<br/>
+          <strong>TELEFÓNO:CORREO ELECTRÓNICO:</strong> 3222278
+          <br/><br/>
+
+          <div align="center"><strong>Capítulo I : Políticas y Seguridad de Procedimientos</strong></div>
+
+          <br/><strong>1. Base legal y ámbito de aplicación.</strong><br/><br/>
+          El derecho a la Protección de los Datos tiene como finalidad permitir a todas las personas a conocer, actualizar y rectificar las informaciones que se hayan recogido sobre ellas en archivos o bases de datos. Este derecho constitucional se recoge en los artículos 15 y 20 de la Constitución Política; en la Ley Estatutaria 1581 de 2012, por la cual se dictan disposiciones generales para la ley de Protección de Datos Personales (LEPD); en el decreto 1074 de 2015, y capítulo 25 sección 3 Articulo 2.2.2.25.3.2. del decreto 1074 de 2015, por el cual se reglamenta parcialmente la 1581 de 2012.<br/><br/>
+          Cuando el Titular de los datos presta su consentimiento para que estos formen parte de una base de datos de una institución, pública o privada, jurídica o natural, ésta se hace mediante el responsable del tratamiento de estos datos y adquiere una serie de obligaciones como son: la de tratar dichos datos con seguridad y cautela, velar por su integridad y aparecer como órgano a quien el Titular puede dirigirse para el seguimiento de la información y el control de la misma, pudiendo ejercitar los derechos de consultas y reclamos.<br/><br/>
+          Si bien, la responsabilidad del tratamiento de los datos recae en el responsable del tratamiento, sus competencias se materializan en las funciones que corresponden a su personal de servicio. El personal de la institución responsable del tratamiento con acceso, directo o indirecto, a bases de datos que contienen datos personales han de conocer la normativa de protección de datos, la política de protección de datos de la organización; y deben cumplir con las obligaciones en materia de seguridad de los datos correspondientes a sus funciones y cargo.<br/><br/>
+          Para velar con el cumplimiento de sus obligaciones de seguridad, <strong><%= @portafolio.razon_social rescue nil %></strong>, nombra a Valentina Marín García de seguridad encargados de desarrollar, coordinar, controlar y verificar el cumplimiento de las medidas de seguridad recogidas en este manual.<br/><br/>
+          Esta política seráaplicable a todos los datos personales registrados en bases de datos que sean objeto de tratamiento por el responsable del tratamiento y se encuentra dirigida a todos los usuarios de datos, que son tanto el personal propio como al personal externo de <strong><%= @portafolio.razon_social rescue nil %></strong>.<br/><br/>
+          Todos los usuarios identificados en el presente documento de Seguridad están obligados a cumplir con las medidas de seguridad establecidas para el tratamiento de los datos y están sujetos al deber de confidencialidad, incluso después de acabada su relación laboral o profesional con la organización responsable del tratamiento. El deber de confidencialidad, recogido en el artículo 4 literal h) de la ley de Protección de Datos (LEPD), se formaliza a través de la firma de un acuerdo de confidencialidad suscrito entre el usuario y el responsable del tratamiento.<br/><br/>
+          <br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td height="25" style="background: #E8E3E3;"><strong>Tipo de Norma</strong></td>
+              <td height="25" style="background: #E8E3E3;"><strong>Número y fecha de expedición</strong></td>
+              <td height="25" style="background: #E8E3E3;"><strong>Titulo</strong></td>
+              <td height="25" style="background: #E8E3E3;"><strong>Expedida por</strong></td>
+              <td height="25" style="background: #E8E3E3;"><strong>Aplicación especifica</strong></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Ley Estatutaria</strong></td>
+              <td>1581 de 2012</td>
+              <td>“Por la cual se dictan disposiciones generales para la protección de datos personales”.</td>
+              <td>Congreso de la Republica.</td>
+              <td>Por medio de la cual desarrollar el derecho constitucional que tienen todas las personas a conocer, actualizar y rectificar las informaciones que se hayan recogido sobre ellas en bases de datos o archivos, y los demás derechos, libertades y garantías constitucionales a que se refiere el artículo 15 de la Constitución Política; así como el derecho a la información consagrado en el artículo 20 de la misma.</td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Ley</strong></td>
+              <td>1273 de 2009</td>
+              <td>Por medio de la cual se modifica el Código Penal, se crea un nuevo bien jurídico tutelado - denominado “de la protección de la información y de los datos”</td>
+              <td>Congreso de la Republica.</td>
+              <td>Por medio de la cual se modifica el Código Penal, se crea un nuevo bien jurídico tutelado - denominado “de la protección de la información y de los datos”- y se preservan integralmente los sistemas que utilicen las tecnologías de la información y las comunicaciones, entre otras disposiciones.</td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Decreto</strong></td>
+              <td>1377 de 2013</td>
+              <td>'Por medio del cual se reglamenta parcialmente la ley 1581 de 2012'</td>
+              <td>Presidente de la República de Colombia.</td>
+              <td>Mediante la cual se reglamenta parcialmente la Ley 1581 de 2012, por la cual se dictan disposiciones generales para la protección de datos personales.</td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Decreto</strong></td>
+              <td>1074 de 2015</td>
+              <td>'Por medio del cual se expide el Decreto Único Reglamentario del Sector Comercio, Industria y Turismo.'</td>
+              <td>Presidente de la República de Colombia.</td>
+              <td>El Ministerio de Comercio, Industria y Turismo tiene como objetivo primordial dentro del marco de su competencia: formular, adoptar, dirigir y coordinar las políticas generales en materia de desarrollo económico y social del país, relacionadas con la competitividad, integración y desarrollo de los sectores productivos de la industria</td>
+            </tr>
+          </table><br/>
+          <br/><strong>2. Definiciones establecidas en el artículo 3 de la LEPD y el capítulo 25 sección 1 artículo 2.2.2.25.1.3 del Decreto 1074 de 2015.</strong><br/><br/>
+          <strong>Acceso autorizado:</strong> Autorización concedida a un usuario para el uso de determinados recursos. En dispositivos automatizados es el resultado de una autentificació correcta, generalmente mediante el ingreso de usuario y contraseña.<br/><br/>
+          <strong>Autenticación:</strong> Procedimiento de verificación de la identidad de un usuario.<br/><br/>
+          <strong>Autorización:</strong> Consentimiento previo, expreso e informado del Titular para llevar a cabo el tratamiento de datos personales.<br/><br/>
+          <strong>Aviso de privacidad:</strong> Comunicación verbal o escrita generada por el responsable, dirigida al Titular para el tratamiento de sus datos personales, mediante la cual se le informa acerca de la existencia de las políticas de tratamiento de información que le serán aplicables, la forma de acceder a las mismas y las finalidades del tratamiento que se pretende dar a los datos personales.<br/><br/>
+          <strong>Base de Datos:</strong> Conjunto organizado de datos personales que sea objeto de tratamiento.<br/><br/>
+          <strong>Contraseña:</strong> Seña secreta que permite el acceso a dispositivos, información o bases de datos antes inaccesibles. Se utiliza en la autentificación de usuarios que permite el acceso autorizado.<br/><br/>
+          <strong>Control de acceso:</strong> Mecanismo que permite acceder a dispositivos, información o bases de datos mediante la autentificación.<br/><br/>
+          <strong>Copia de respaldo:</strong> Copia de los datos de una base de datos en un soporte que permita su recuperación.<br/><br/>
+          <strong>Dato personal:</strong> Cualquier información vinculada o que pueda asociarse a una o varias personas naturales determinadas o determinables.<br/><br/>
+          <strong>Dato público:</strong> Es el dato que no sea semiprivado, privado o sensible. Son considerados datos públicos, entre otros, los datos relativos al estado civil de las personas, a su profesión u oficio y a su calidad de comerciante o de servidor público. Por su naturaleza, los datos públicos pueden estar contenidos, entre otros, en registros públicos, documentos públicos, gacetas y boletines oficiales y sentencias judiciales debidamente ejecutoriadas que no estén sometidas a reserva.<br/><br/>
+          <strong>Datos sensibles:</strong> Se entiende por datos sensible aquellos que afectan la intimidad del Titular o cuyo uso indebido puede generar su discriminación, tales como aquellos que revelen el origen racial o étnico, la orientación política, las convicciones religiosas o filosóficas, la pertenencia a sindicatos, organizaciones sociales, de derechos humanos o que promueva intereses de cualquier partido político o que garanticen los derechos y garantías de partidos políticos de oposición, así como los datos relativos a la salud, a la vida sexual, y los datos biométricos.<br/><br/>
+          <strong>Encargado del tratamiento:</strong> Persona natural o jurídica, pública o privada, que por sí misma o en asocio con otros, realice el tratamiento de datos personales por cuenta del responsable del tratamiento.<br/><br/>
+          <strong>Identificación:</strong> Proceso de reconocimiento de la identidad de los usuarios.<br/><br/>
+          <strong>Incidencia:</strong> Cualquier anomalía que afecte o pueda afectar a la seguridad de los datos, constituyendo un riesgo para la confidencialidad, disponibilidad o integridad de las bases de datos o de los datos personales que contienen.<br/><br/>
+          <strong>Perfil de usuario:</strong> Grupo de usuarios a los que se da acceso.<br/><br/>
+          <strong>Recurso protegido:</strong> Cualquier componente del sistema de información, como bases de datos, programas, soportes o equipos, empleados para el almacenamiento y tratamiento de datos personales.<br/><br/>
+          <strong>Responsable de seguridad:</strong> Una o varias personas designadas por el responsable del tratamiento para el control y la coordinación de las medidas de seguridad. • Sistema de información: Conjunto de bases de datos, programas, soportes y/o equipos empleados para el tratamiento de datos personales.<br/><br/>
+          <strong>Responsable del tratamiento:</strong> Persona natural o jurídica, pública o privada, que por sí misma o en asocio con otros, decida sobre la base de datos y/o el tratamiento de los datos.<br/><br/>
+          <strong>Soporte:</strong> Material en cuya superficie se registra información o sobre el cual se pueden guardar o recuperar datos, como el papel, la cinta de video, el CD, el DVD, el disco duro, etc.<br/><br/>
+          <strong>Usuario:</strong> Sujeto autorizado para acceder a los datos o recursos, o proceso que accede a los datos o recursos sin identificación de un sujeto.<br/><br/>
+          <strong>Titular:</strong> Persona natural cuyos datos personales sean objeto de tratamiento.<br/><br/>
+          <strong>Tratamiento:</strong> Cualquier operación o conjunto de operaciones sobre datos personales, tales como la recolección, almacenamiento, uso, circulación o supresión.<br/><br/>
+          <strong>Transferencia:</strong> La transferencia de datos tiene lugar cuando el responsable y/o encargado del tratamiento de datos personales, ubicado en Colombia, envía la información o los datos personales a un receptor, que a su vez es responsable del tratamiento y se encuentra dentro o fuera del país.<br/><br/>
+          <strong>Transmisión:</strong> Tratamiento de datos personales que implica la comunicación de estos dentro o fuera del territorio de la República de Colombia cuando tenga por objeto la realización de un tratamiento por el encargado por cuenta del responsable.<br/><br/>
+
+          <br/><strong>3. Principios de la protección de datos.</strong><br/><br/>
+          El artículo 4 de la Ley de Protección de Datos (LEPD), establece unos principios para el tratamiento de datos personales que se han de aplicar, de manera armónica e integral, en el desarrollo, interpretación y aplicación de la Ley. Los principios legales de la protección de datos son los siguientes:<br/><br/>
+          <strong>Principio de legalidad:</strong> El tratamiento de los datos es una actividad reglada que debe sujetarse a lo establecido en la Ley de Protección de Datos (LEPD), el Decreto 1074 de 2015 y en las demás disposiciones que la desarrollen.<br/><br/>
+          <strong>Principio de finalidad:</strong> El tratamiento debe obedecer a una finalidad legítima de acuerdo con la Constitución y la Ley, la cual debe ser informada al Titular.<br/><br/>
+          <strong>Principio de libertad:</strong> El tratamiento solo puede ejercerse con el consentimiento previo, expreso e informado del Titular. Los datos personales no podrán ser obtenidos o divulgados sin previa autorización, o en ausencia de mandato legal o judicial que revele el consentimiento. El tratamiento de los datos requiere la autorización previa e informada del Titular por cualquier medio que permita ser consultado con posterioridad, salvo en los siguientes casos que exceptúa el artículo 10 de la Ley de Protección de Datos (LEPD):<br/><br/>
+          Información requerida por una entidad pública o administrativa en ejercicio de sus funciones legales o por orden judicial.<br/>
+          <ul>
+            <li>Datos de naturaleza pública.</li>
+            <li>Casos de urgencia médica o sanitaria.</li>
+          </ul><br/>
+          <strong>Principio de veracidad o calidad:</strong> La información sujeta a tratamiento debe ser veraz, completa, exacta, actualizada, comprobable y comprensible. Se prohíbe el tratamiento de datos parciales, incompletos, fraccionados o que induzcan a error.<br/><br/>
+          <strong>Principio de transparencia:</strong> En el tratamiento debe garantizarse el derecho del Titular a obtener del responsable del tratamiento o del encargado del tratamiento, en cualquier momento y sin restricciones, información acerca de la existencia de datos que le conciernan. En el momento de solicitar la autorización al titular, el responsable del tratamiento deberá informarle de manera clara y expresa lo siguiente, conservando prueba del cumplimiento de este deber:<br/><br/>
+          <ul>
+            <li>El tratamiento al cual será sometidos sus datos y la finalidad del mismo.</li>
+            <li>El carácter facultativo de la respuesta del Titular a las preguntas que le sean hechas cuando éstas traten sobre datos sensibles o sobre datos de niños, niñas o adolescentes.</li>
+            <li>Los derechos que le asisten como Titular.</li>
+            <li>La identificación, dirección física, correo electrónico y teléfono del responsable del tratamiento.</li>
+          </ul><br/>
+          <strong>Principio de acceso y circulación restringida:</strong> El tratamiento se sujeta a los límites que se derivan de la naturaleza de los datos personales, de las disposiciones de la Ley de Protección de Datos (LEPD) y la Constitución. En este sentido, el tratamiento solo podrá hacerse por personas autorizadas por el titular y/o por las personas previstas en la Ley. Los datos personales, salvo la información pública, no podrán estar disponibles en internet y otros medios de divulgación o comunicación masiva, salvo que el acceso sea técnicamente controlable para brindar un conocimiento restringido solo a los Titulares o terceros autorizados conforme a la Ley.<br/><br/>
+          <strong>Principio de seguridad:</strong> La información sujeta a tratamiento por el responsable del tratamiento o encargado del tratamiento se deberá manejar con las medidas técnicas, humanas y administrativas que sean necesarias para otorgar seguridad a los registros evitando su adulteración, pérdida, consulta, uso o acceso no autorizado o fraudulento. El responsable del tratamiento tiene la responsabilidad de implantar las medidas de seguridad correspondientes y de ponerlas en conocimiento todo personal que tenga acceso, directo o indirecto, a los datos. Los usuarios que accedan a los sistemas de información del responsable del tratamiento deben conocer y cumplir con las normas y medidas de seguridad que correspondan a sus funciones. Estas normas y medidas de seguridad se recogen en el presente documento, de obligado cumplimiento para todo usuario y personal de <strong><%= @portafolio.razon_social rescue nil %></strong>;Cualquier modificación de las normas y medidas en materia de seguridad de datos personales por parte del responsable del tratamiento ha de ser puesta en conocimiento de los usuarios.<br/><br/>
+          <strong>Principio de confidencialidad:</strong> Todas las personas que intervengan en el tratamiento de datos personales que no tengan la naturaleza de públicos están obligadas a garantizar la reserva de la información, inclusive después de finalizada su relación con alguna de las labores que comprende el tratamiento, pudiendo solo realizar suministro o comunicación de datos personales cuando ello corresponda al desarrollo de las actividades autorizadas en la LEPD y en los términos de esta.<br/><br/>
+
+          <br/><strong>4. Categorías especiales de datos.</strong><br/><br/>
+          <strong>4.1. Datos sensibles.</strong><br/><br/>
+          Los datos sensibles son aquellos que afectan la intimidad del Titular o cuyo uso indebido puede generar su discriminación, tales como aquellos que revelen el origen racial o étnico, la orientación política, las convicciones religiosas o filosóficas, la pertenencia a sindicatos, organizaciones sociales, de derechos humanos o que promueva intereses de cualquier partido político o que garanticen los derechos y garantías de partidos políticos de oposición así como los datos relativos a la salud, a la vida sexual y los datos biométricos.<br/><br/>
+          Según el artículo 6 de la Ley Estatuaria de Protección de datos Personales (LEPD), se prohíbe el tratamiento de datos sensibles, excepto cuando:<br/><br/>
+          El Titular haya dado su autorización explícita a dicho tratamiento, salvo en los casos que por ley no sea requerido el otorgamiento de dicha autorización.<br/><br/>
+          El tratamiento sea necesario para salvaguardar el interés vital del Titular y éste se encuentre física o jurídicamente incapacitado. En estos eventos, los representantes legales deberán otorgar su autorización.<br/><br/>
+          El tratamiento sea efectuado en el curso de las actividades legítimas y con las debidas garantías por parte de una fundación, ONG, asociación o cualquier otro organismo sin ánimo de lucro, cuya finalidad sea política, filosófica, religiosa o sindical, siempre que se refieran exclusivamente a sus miembros o a las personas que mantengan contactos regulares por razón de su finalidad. En estos eventos, los datos no se podrán suministrar a terceros sin la autorización del Titular.<br/><br/>
+          El tratamiento se refiera a datos que sean necesarios para el reconocimiento, ejercicio o defensa de un derecho en un proceso judicial.<br/><br/>
+          El tratamiento tenga una finalidad histórica, estadística o científica. En este evento deberán adoptarse las medidas conducentes a la supresión de identidad de los Titulares.<br/><br/>
+
+          <br/><strong>4.2. Derechos de los niños, niñas y adolescentes</strong><br/><br/>
+          El tratamiento de datos personales de niños, niñas y adolescentes está prohibido, excepto cuando se trate de datos de naturaleza pública, y cuando dicho tratamiento cumpla con los siguientes requisitos:<br/><br/>
+          <ul>
+            <li>Que responda y respete el interés superior de los niños, niñas y adolescentes.</li>
+            <li>Que se asegure el respeto de sus derechos fundamentales.</li>
+          </ul><br/>
+          Cumplidos los anteriores requisitos, el representante legal del niño, niña o adolescente otorgará la autorización previo ejercicio del menor a su derecho a ser escuchado, opinión que será valorada teniendo en cuenta la madurez, autonomía y capacidad para entender el asunto.<br/><br/>
+          Es tarea del Estado y las entidades educativas de todo tipo proveer información y capacitar a los representantes legales y tutores sobre los eventuales riesgos a los que se enfrentan los niños, niñas y adolescentes respecto del tratamiento indebido de sus datos personales, y proveer de conocimiento acerca del uso responsable y seguro por parte de niños, niñas y adolescentes de sus datos personales, su derecho a la privacidad y protección de su información personal y la de los demás.<br/><br/>
+          Todo responsable y encargado involucrado en el tratamiento de los datos personales de niños, niñas y adolescentes, deberá velar por el uso adecuado de los mismos, cumpliendo en todo momento con los principios y obligaciones recogidos en la LEPD y el Decreto 1074 de 2015. En todo caso, el tratamiento se asegurará el respeto a los derechos prevalentes de los niños, niñas y adolescentes.<br/><br/>
+          Los derechos de acceso, corrección, supresión, revocación o reclamo por infracción sobre los datos de los niños, niñas adolescentes se ejercerán por las personas que estén facultadas para representarlos.<br/><br/>
+
+          <strong>4.3 Derechos de los Titulares.</strong><br/><br/>
+          De acuerdo con el artículo 8 de la LEPD y al capítulo 25 sección 4 del decreto 1074 de 2015, los Titulares de los datos pueden ejercer una serie de derechos en relación con el tratamiento de sus datos personales. Estos derechos podrán ejercerse por las siguientes personas.<br/><br/>
+          <ul>
+            <li>Por el Titular, quién deberá acreditar su identidad en forma suficiente por los distintos medios que le ponga a disposición el responsable.</li>
+            <li>Por sus causahabientes, quienes deberán acreditar tal calidad.</li>
+            <li>Por el representante y/o apoderado del Titular, previa acreditación de la representación o apoderamiento.</li>
+            <li>Por estipulación a favor de otro y para otro.</li>
+            <li>Los derechos de los niños, niñas o adolescentes se ejercerán por las personas que estén facultadas para representarlos.</li>
+            <li>Los derechos del Titular son los siguientes:</li>
+          </ul><br/>
+          <strong>Derecho de acceso o consulta:</strong> Se trata del derecho del Titular a ser informado por el responsable del tratamiento, previa solicitud, respecto al origen, uso y finalidad que les han dado a sus datos personales.<br/><br/>
+          <strong>Derechos de quejas y reclamos:</strong> La Ley distingue cuatro tipos de reclamos:<br/><br/>
+          <strong>Reclamo de corrección:</strong> El derecho del Titular a que se actualicen, rectifique o modifiquen aquellos datos parciales, inexactos, incompletos, fraccionados, que induzcan a error, o aquellos cuyo tratamiento esté expresamente prohibido o no haya sido autorizado.<br/><br/>
+          <strong>Reclamo de supresión:</strong> El derecho del Titular a que se supriman los datos que resulten inadecuados, excesivos o que no respeten los principios, derechos y garantías constitucionales y legales.<br/><br/>
+          <strong>Reclamo de revocación:</strong> El derecho del Titular a dejar sin efecto la autorización previamente prestada para el tratamiento de sus datos personales.<br/><br/>
+          <strong>Reclamo de infracción:</strong> El derecho del Titular a solicitar que se subsane el incumplimiento de la normativa en materia de Protección de Datos.<br/><br/>
+          <strong>Derecho a solicitar prueba de la autorización otorgada al responsable del tratamiento:</strong> salvo cuando expresamente se exceptúe como requisito para el tratamiento de conformidad con lo previsto en el artículo 10 de la LEPD.<br/><br/>
+          <strong>Derecho a presentar ante la Superintendencia de Industria y Comercio quejas por infracciones:</strong> El Titular o causahabiente solo podrá elevar esta queja una vez haya agotado el trámite de consulta o reclamo ante el responsable del tratamiento o encargado del tratamiento.<br/><br/>
+
+          <strong>5. Autorización de la política de tratamiento.</strong><br/><br/>
+          De acuerdo con el artículo 9 de la LEPD, para el tratamiento de datos personales se requiere la autorización previa e informada del Titular. Mediante la aceptación de la presente política, todo Titular que facilite información relativa a sus datos personales está consintiendo el tratamiento de sus datos por parte de <strong><%= @portafolio.razon_social rescue nil %></strong>, en los términos y condiciones recogidos en la misma.<br/><br/>
+          No será necesaria la autorización del Titular cuando se trate de:<br/><br/>
+          <ul>
+            <li>Información requerida por una entidad pública o administrativa en ejercicio de sus funciones legales o por orden judicial.</li>
+            <li>Datos de naturaleza pública.</li>
+            <li>Casos de urgencia médica o sanitaria.</li>
+            <li>Tratamiento de información autorizado por la ley para fines históricos, estadísticos o científicos.</li>
+            <li>Datos relacionados con el Registro Civil de las personas.</li>
+          </ul>
+          <br/><strong>6. Responsable del tratamiento.</strong><br/><br/>
+          El responsable del tratamiento de las bases de datos objeto de esta política es <strong><%= @portafolio.razon_social rescue nil %></strong>, cuyos datos de contacto son:<br/>
+          Dirección: Carrera 51c # 12b - Sur 66. Medellín, Antioquia<br/>
+          Correo electrónico: juridica@asearesp.com<br/>
+          Teléfono: 3222278 – 3015758037<br/>
+
+          <br/><strong>6.1. las obligaciones del responsable del tratamiento.</strong><br/><br/>
+          Las obligaciones en materia de seguridad de los datos de<strong><%= @portafolio.razon_social rescue nil %></strong> son las siguientes:<br/>
+          <ul>
+            <li>Coordinar e implantar las medidas de seguridad recogidas en el presente documento.</li>
+            <li>Difundir el referido documento entre el personal afectado.</li>
+            <li>Mantener este Manual actualizado y revisado siempre que se produzcan cambios relevantes en el sistema de información, el sistema de tratamiento, la organización de la institución, el contenido de la información de las bases de datos, o como consecuencia de los controles periódicos realizados. De igual modo, se revisará su contenido cuando se produzca algún cambio que pueda afectar al cumplimiento de las medidas de seguridad.</li>
+            <li>Designar uno o más responsables de seguridad e identificar a los usuarios autorizados para acceder a las bases de datos.</li>
+            <li>Cuidar que el acceso mediante sistemas y aplicaciones informáticas se lleve a cabo mediante acceso identificado y contraseña.</li>
+            <li>Autorizar, salvo delegación expresa a usuarios autorizados e identificados en este Manual, la salida de soportes fuera de los establecimientos donde se encuentran las bases de datos; las entradas y salidas de información por red, mediante dispositivos de almacenamiento electrónico o en papel y el uso de módems y las descargas de datos.</li>
+            <li>Verificar semestralmente la correcta aplicación del procedimiento de copias de respaldo y recuperación de datos.</li>
+            <li>Garantizar la existencia de una lista de usuarios autorizados y perfiles de usuario.</li>
+            <li>Analizar, junto con el responsable de seguridad correspondiente, las incidencias registradas para establecer las medidas correctoras oportunas, al menos cada dos meses.</li>
+            <li>Realizar una auditoría, interna o externa, para verificar el cumplimiento de las medidas de seguridad en materia de protección de datos, al menos cada año.</li>
+          </ul><br/>
+
+          <br/><strong>7. Tratamiento y finalidades de las bases de datos</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, en el desarrollo de sus actividades, lleva a cabo el tratamiento de datos personales relativos a personas naturales que están contenidos y son tratados en bases de datos destinadas a finalidades legítimas, cumpliendo con la Constitución y la Ley.<br/><br/>
+          De acuerdo con lo establecido en la Ley 1581 de 2012 y de conformidad con las autorizaciones impartidas por los titulares de la información, <strong><%= @portafolio.razon_social rescue nil %></strong> realizará operaciones o conjunto de operaciones que incluyen recolección de datos, su almacenamiento, uso, circulación y/o supresión, entrega de los datos a terceras entidades a título de encargados o de responsables; esto de acuerdo con el acuerdo al que entre las partes se llegue. Este Tratamiento de datos se realizará exclusivamente para las finalidades autorizadas y previstas en la presente Política y en las autorizaciones específicas otorgadas por parte del titular. De la misma forma se realizará Tratamiento de Datos Personales cuando exista una obligación legal o contractual para ello, siempre bajo los lineamientos de las políticas de Seguridad de la Información de <strong><%= @portafolio.razon_social rescue nil %></strong>, en todos los casos los datos personales podrán ser tratados con la finalidad de adelantar los procesos de control y auditorías internas y externas y evaluaciones que realicen los organismos de control. Así mismo y en ejecución del objeto social de <strong><%= @portafolio.razon_social rescue nil %></strong>, los datos personales serán tratados de acuerdo con el grupo de interés y en proporción a la finalidad o finalidades que tenga cada tratamiento, como se describe a continuación:<br/><br/>
+          La siguiente tabla presenta las distintas bases de datos y las finalidades asignadas a cada una de ellas.<br/><br/>
+
+          <br/><strong>TABLA I. BASES DE DATOS Y FINALIDADES</strong><br/><br/>
+          <br/><strong>CLIENTES</strong><br/><br/>
+          Los datos serán utilizados con las siguientes finalidades: Gestionar trámites como solicitudes, quejas y/o reclamos; Reportes a centrales de riesgo por incumplimiento de las obligaciones financieras derivadas de la relación comercial; Envío de comunicaciones a través de mensajes de texto y correos electrónicos; para llevar un historial de consumo; uso de imágenes fotográficas y videos con fines corporativos, gestión comercial; Conocer información del comportamiento de los clientes de las tiendas, de los clientes institucionales y de E-commerce y sus canales de contacto para realizar ofrecimientos ajustados a sus necesidades; Envío de información de los productos, servicios o novedades de la compañía, Conservar registros históricos y mantener contacto comercial; Se realizará el envío de la información otorgada y autorizada por el titular las entidades con las cuales se tienen convenios, estas transferencias estarán siempre mediadas por un documento que garantice que el tratamiento que se le dará a sus datos será el mandado por la normatividad vigente. Las anteriores finalidades son enunciativas y no taxativas.<br/><br/>
+          <br/><strong>EMPLEADOS</strong><br/><br/>
+          Los datos serán utilizados con las siguientes finalidades: Solicitud de datos concernientes a identificación personal; Información de contacto; Datos de carácter académico; Datos del historial laboral, Profesional y financiero; Desarrollar adecuadamente el proceso de registro y vinculación laboral; Desarrollar adecuadamente el proceso de actualización de los datos; Adelantar la actualización de datos y verificación de identidad de los trabajadores y sus familiares (pareja, padres hijos); Confección de artículos de dotación; Envío de información a través de mensajes de texto y correos electrónicos; Uso de imágenes fotográficas y videos con fines corporativos, La toma de fotografías y videos para publicaciones en los canales web oficiales de la empresa, se deja constancia que estos son con fines netamente corporativos y están sujetos a supresión o modificación por parte de los titulares de la información; Obtención y suministro de datos de los hijos de los colaboradores en el desarrollo de actividades recreativas y de bienestar a través de la Instituciones o entidades aliadas; Generación de certificaciones laborales, de ascenso, traslado, entrevista de retiro, en procesos de auditoría y control interno y externo, en la entrega de reportes obligatorios institucionales en entrevistas de retiro; Uso de huellas digitales y demás datos de salud y/o datos sensibles para los fines misionales. Las anteriores finalidades son enunciativas y no taxativas.<br/><br/>
+          <br/><strong>PROVEEDORES</strong><br/><br/>
+          Los datos serán utilizados con las siguientes finalidades: Solicitud de ofertas y propuestas económicas para la adquisición de productos y servicios; para el análisis y la viabilidad de cada producto y/o servicio; envío de comunicaciones a través de mensajes de texto y correos electrónicos; presentación de informes pertinentes a los diferentes entes de control; revisión y verificación de referencias comerciales gestiones precontractuales y contractuales; suministro de información en procesos de auditoría interna y externa que se realicen en el interior de la agrupación; rastreo en bases de datos restrictivas tales como policía, procuraduría, contraloría, SARLAFT (sistema de administración de riesgo de lavado de activos y financiación del terrorismo y las demás que la normatividad colombiana disponga). Las anteriores finalidades son enunciativas y no taxativas.<br/><br/>
+          <br/><strong>VIDEO VIGILANCIA</strong><br/><br/>
+          Los datos serán utilizados con las siguientes finalidades: monitoreo y control para la vigilancia de entrada, salida y tráfico de personas dentro de la compañía, así como para el control de ingreso y salida de vehículos de los parqueaderos; monitoreo de incidentes, medida de disuasión de conductas irregulares de terceros, monitoreo y control de la prestación de los servicios institucionales; Se realizará el envío de la información otorgada y autorizada por el titular las entidades con las cuales se tienen convenios, estas transferencias estarán siempre mediadas por un documento que garantice que el tratamiento que se le dará a sus datos será el mandado por la normatividad vigente.<br/><br/>
+
+          <br/><strong>7. 1 Atención a los Titulares de datos</strong><br/><br/>
+          Valentina Marín García, será el encargado de la atención de peticiones, consultas y reclamos ante la cual el titular de los datos puede ejercer sus derechos, en el siguiente Correo electrónico: juridica@asearesp.com<br/><br/>
+
+          <strong>8. Procedimientos para ejercer los derechos del Titular.</strong><br/><br/>
+          <strong>8.1. Derecho de acceso o consulta.</strong><br/><br/>
+          Según el capítulo 25 sección 4 del decreto 1074 de 2015, el Titular podrá consultar de forma gratuita sus datos personales en dos casos:<br/><br/>
+          <ul>
+            <li>Al menos una vez cada mes calendario.</li>
+            <li>Cada vez que existan modificaciones sustanciales de las políticas de tratamiento de la información que motiven nuevas consultas.</li>
+            <li>Para consultas cuya periodicidad sea mayor a una por cada mes calendario, <strong><%= @portafolio.razon_social rescue nil %></strong>, solamente podrá cobrar al Titular gastos de envío, reproducción y, en su caso, certificación de documentos. Los costos de reproducción no podrán ser mayores a los costos de recuperación del material correspondiente. Para tal efecto, el responsable deberá demostrar a la Superintendencia de Industria y Comercio, cuando ésta así lo requiera, el soporte de dichos gastos.</li>
+            <li>El Titular de los datos puede ejercitar el derecho de acceso o consulta de sus datos mediante un escrito dirigido a <strong><%= @portafolio.razon_social rescue nil %></strong>, enviado mediante correo electrónico juridica@asearesp.com, indicando en el asunto “ejercicio del derecho de acceso o consulta” la solicitud deberá contener los siguientes datos:</li>
+            <li>Nombre y apellidos del Titular.</li>
+            <li>Fotocopia de la Cédula de Ciudadanía del Titular y, en su caso, de la persona que lo representa, así como del documento acreditativo de tal representación.</li>
+            <li>Petición en que se concreta la solicitud de acceso o consulta.</li>
+            <li>Dirección para notificaciones, fecha y firma del solicitante.</li>
+            <li>Documentos acreditativos de la petición formulada, cuando corresponda.</li>
+            <li>El Titular podrá elegir una de las siguientes formas de consulta de la base de datos para recibir la información solicitada:</li>
+            <li>Visualización en pantalla.</li>
+            <li>Por escrito, con copia o fotocopia remitida por correo certificado o no.</li>
+            <li>Correo u otros medios electrónicos.</li>
+            <li>Otro sistema adecuado a la configuración de la base de datos o a la naturaleza del tratamiento, ofrecido por la empresa <strong><%= @portafolio.razon_social rescue nil %></strong>.</li>
+          </ul><br/>
+          Una vez recibida la solicitud, la empresa <strong><%= @portafolio.razon_social rescue nil %></strong>, resolverá la petición de consulta en un plazo máximo de diez (10) días hábiles contados a partir de la fecha de recibo de la misma. Cuando no fuere posible atender la consulta dentro de dicho término, se informará al interesado, expresando los motivos de la demora y señalando la fecha en que se atenderá su consulta, la cual en ningún caso podrá superar los cinco (5) días hábiles siguientes al vencimiento del primer término. Estos plazos están fijados en el artículo 14 de la LEPD.<br/><br/>
+          Una vez agotado el trámite de consulta, el Titular o causahabiente podrá elevar queja ante la Superintendencia de Industria y Comercio.<br/><br/>
+
+          <br/><strong>8.2. Derechos de quejas y reclamos.</strong><br/><br/>
+          El Titular de los datos puede ejercitar los derechos de reclamo sobre sus datos mediante un escrito dirigido a la <strong><%= @portafolio.razon_social rescue nil %></strong> enviado, mediante correo electrónico a juridica@asearesp.com indicando en el asunto “ejercicio del derecho queja o reclamo”, la solicitud deberá contener los siguientes datos:<br/><br/>
+          <ul>
+            <li>Nombre y apellidos del Titular.</li>
+            <li>Fotocopia de la Cédula de Ciudadanía del Titular y, en su caso, de la persona que lo representa, así como del documento acreditativo de tal representación.</li>
+            <li>Descripción de los hechos y petición en que se concreta la solicitud de corrección, supresión, revocación o inflación.</li>
+            <li>Dirección para notificaciones, fecha y firma del solicitante.</li>
+            <li>Documentos acreditativos de la petición formulada que se quieran hacer valer, cuando corresponda.</li>
+          </ul><br/>
+          Si el reclamo resulta incompleto, se requerirá al interesado dentro de los cinco (5) días siguientes a la recepción del reclamo para que subsane las fallas. Transcurridos dos (2) meses desde la fecha del requerimiento, sin que el solicitante presente la información requerida, se entenderá que ha desistido del reclamo.<br/><br/>
+          Una vez recibido el reclamo completo, se incluirá en la base de datos una leyenda que diga “reclamo en trámite” y el motivo del mismo, en un término no mayor a dos (2) días hábiles. Dicha leyenda deberá mantenerse hasta que el reclamo sea decidido. <strong><%= @portafolio.razon_social rescue nil %></strong>, resolverá la petición de consulta en un plazo máximo de quince (15) días hábiles contados a partir de la fecha de recibo de la misma. Cuando no fuere posible atender al reclamo dentro de dicho término, se informará al interesado los motivos de la demora y la fecha en que se atenderá su reclamo, la cual en ningún caso podrá superar los ocho (8) días hábiles siguientes al vencimiento del primer término.<br/><br/>
+          Una vez agotado el trámite de reclamo, el Titular o causahabiente podrá elevar queja ante la Superintendencia de Industria y Comercio.<br/><br/>
+
+          <br/><strong>9. Medidas de seguridad</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, con el fin de cumplir con el principio de seguridad consagrado en el artículo 4 literal g) de la LEPD, ha implementado medidas técnicas, humanas y administrativas necesarias para garantizar la seguridad a los registros evitando su adulteración, pérdida, consulta, uso o acceso no autorizado o fraudulento.<br/><br/>
+          Por otra parte,<strong><%= @portafolio.razon_social rescue nil %></strong>, mediante la suscripción de los correspondientes contratos de transmisión, ha requerido a los encargados del tratamiento con los que trabaje la implementación de las medidas de seguridad necesarias para garantizar la seguridad y confidencialidad de la información en el tratamiento de los datos personales.<br/><br/>
+          A continuación, se exponen las medidas de seguridad implantadas por <strong><%= @portafolio.razon_social rescue nil %></strong>, que están recogidas y desarrolladas en este documento (Tablas II, III, IV y V).<br/><br/>
+
+          <br/><strong>TABLA II. MEDIDAS DE SEGURIDAD COMUNES PARA TODO TIPO DE DATOS (PúBLICOS, SEMIPRIVADOS, PRIVADOS, SENSIBLES) Y BASES DE DATOS (AUTOMATIZADAS, NO AUTOMATIZADAS)</strong><br/><br/>
+          <strong>Auditoria</strong><br/>
+          <ul>
+            <li>Auditoría ordinaria (interna o externa) cada año.</li>
+            <li>Eventuales Auditorías extraordinaria por modificaciones sustanciales en los sistemas de información. - Informe de detección de deficiencias y propuesta de correcciones.</li>
+            <li>Análisis y conclusiones del responsable de seguridad y del responsable del tratamiento.</li>
+            <li>Conservación del Informe a disposición de la autoridad.</li>
+          </ul><br/>
+          <strong>Gestión de documentos y soportes.</strong><br/>
+          <ul>
+            <li>Medidas tales como, destructora de papel que eviten el acceso indebido o la recuperación de los datos que han sido descartados, borrados o destruidos.</li>
+            <li>Acceso restringido al lugar donde se almacenan los datos.</li>
+            <li>Sistema de etiquetado o identificación del tipo de información.</li>
+            <li>Inventario de los soportes en los que se almacenan bases de datos.</li>
+            <li>Autorización del responsable para la salida de documentos o soportes por medio físico o electrónico.</li>
+          </ul><br/>
+          <strong>Control de acceso</strong><br/>
+          <ul>
+            <li>Acceso de usuarios limitado a los datos necesarios para el desarrollo de sus funciones, de acuerdo con el rol que desempeña.</li>
+            <li>Lista actualizada de usuarios y accesos autorizados.</li>
+            <li>Autorización escrita del titular de la información para la entrega de sus datos a terceras personas, para evitar el acceso a datos con derechos distintos de los autorizados.</li>
+            <li>Concesión, alteración o anulación de permisos por el personal autorizado.</li>
+          </ul><br/>
+          <strong>Incidencias</strong><br/>
+          <ul>
+            <li>Registro de incidencias: tipo de incidencia, momento en que se ha producido, emisor de la notificación, receptor de la notificación, efectos y medidas correctoras.</li>
+            <li>Procedimiento de notificación y gestión de incidencias.</li>
+          </ul><br/>
+          <strong>Personal</strong><br/>
+          <ul>
+            <li>Definición de las funciones y obligaciones de los usuarios con acceso a los datos.</li>
+            <li>Definición de las funciones de control y autorizaciones delegadas por el responsable del tratamiento. - Divulgación entre el personal de las normas y de las consecuencias del incumplimiento de estas.</li>
+          </ul><br/>
+          <strong>Políticas y Procedimientos</strong><br/>
+          <ul>
+            <li>Elaboración e implementación del Manual de obligatorio cumplimiento para el personal.</li>
+            <li>Contenido mínimo: ámbito de aplicación, medidas y procedimientos de seguridad, funciones y obligaciones del personal, descripción de las bases de datos, procedimiento ante incidencias, procedimiento de copias y recuperación de datos, medidas de seguridad para el transporte, destrucción y reutilización de documentos, identificación de los encargados del tratamiento.</li>
+          </ul><br/>
+
+          <br/><strong>TABLA III. MEDIDAS DE SEGURIDAD COMUNES PARA TODO TIPO DE DATOS (PúBLICOS, SEMIPRIVADOS, PRIVADOS, SENSIBLES) SEGúN EL TIPO DE BASES DE DATOS BASES DE DATOS NO AUTOMATIZADAS</strong><br/><br/>
+          <strong>Archivo</strong><br/>
+          Archivo de documentación siguiendo procedimientos que garanticen una correcta conservación, localización y consulta y ejercicio de los derechos de los Titulares.<br/><br/>
+          <strong>Almacenamiento de documentos.</strong><br/>
+          Dispositivos de almacenamiento con mecanismos que impidan el acceso a personas no autorizadas.<br/><br/>
+          <strong>Custodia de documentos</strong><br/>
+          Deber de diligencia y custodia de la persona a cargo de documentos durante la revisión o tramitación de estos.<br/><br/>
+          <br/><strong>BASES DE DATOS AUTOMATIZADAS Identificación y autenticación</strong><br/><br/>
+          <ul>
+            <li>Identificación personalizada de usuarios para acceder a los sistemas de información y verificación de su autorización.</li>
+            <li>Mecanismos de identificación y autenticación; Contraseñas: asignación, caducidad y almacenamiento cifrado.</li>
+          </ul><br/>
+          <strong>Telecomunicaciones</strong><br/>
+          Acceso a datos mediante redes seguras.<br/><br/>
+          
+          <br/><strong>TABLA IV. MEDIDAS DE SEGURIDAD PARA DATOS PRIVADOS SEGúN EL TIPO DE BASES DE DATOS BASES DE DATOS AUTOMATIZADAS Y NO AUTOMATIZADAS</strong><br/><br/>
+          <strong>Auditoría</strong><br/>
+          <ul>
+            <li>Auditoría ordinaria (interna o externa) cada año.</li>
+            <li>Eventuales Auditorías extraordinaria por modificaciones sustanciales en los sistemas de información. - Informe de detección de deficiencias y propuesta de correcciones.</li>
+            <li>Análisis y conclusiones del responsable de seguridad y del responsable del tratamiento.</li>
+            <li>Conservación del Informe a disposición de la autoridad.</li>
+          </ul><br/>
+          <strong>Responsable de seguridad</strong><br/>
+          <ul>
+            <li>Designación de uno o varios responsables de seguridad.</li>
+            <li>Designación de uno o varios encargados del control y la coordinación de las medidas del Manual políticas y procedimientos.</li>
+            <li>Prohibición de delegación de la responsabilidad del responsable del tratamiento en el responsable de seguridad.</li>
+          </ul><br/>
+          <strong>Políticas y Procedimientos Habeas Data</strong><br/>
+          <ul>
+            <li>Controles al menos una vez al año de cumplimiento, consistente en la auditoria anual, así como la capacitación al personal mínimo una vez al año.</li>
+          </ul><br/>
+          <br/><strong>BASES DE DATOS AUTOMATIZADAS</strong><br/>
+          <strong>Gestión de documentos y soportes</strong><br/>
+          Registro de entrada y salida de documentos y soportes: fecha, emisor y receptor, número, tipo de información, forma de envío, responsable de la recepción o entrega.<br/><br/>
+          <strong>Control de acceso</strong><br/>
+          Control de acceso al lugar o lugares donde se ubican los sistemas de información.<br/><br/>
+          <strong>Identificación y autenticación</strong><br/>
+          Mecanismo que limite el número de intentos reiterados de acceso no autorizados.<br/><br/>
+          <strong>Incidencias</strong><br/>
+          Registro de los procedimientos de recuperación de los datos, persona que los ejecuta, datos restaurados y datos grabados manualmente.<br/><br/>
+          Autorización del responsable del tratamiento para la ejecución de los procedimientos de recuperación.<br/><br/>
+
+          <br/><strong>TABLA V. MEDIDAS DE SEGURIDAD PARA DATOS SENSIBLES SEGúN EL TIPO DE BASES DE DATOS BASES DE DATOS NO AUTOMATIZADAS</strong><br/>
+          <strong>Control de acceso</strong><br/>
+          <ul>
+            <li>Acceso solo para personal autorizado.</li>
+            <li>Mecanismo de identificación de acceso.</li>
+            <li>Registro de accesos de usuarios no autorizados.</li>
+          </ul><br/>
+          <strong>Almacenamiento de documentos</strong><br/>
+          <ul>
+            <li>Archivadores, armarios u otros ubicados en áreas de acceso protegidas con llaves u otras medidas.</li>
+          </ul><br/>
+          <strong>Copia o reproducción</strong><br/>
+          <ul>
+            <li>Solo por usuarios autorizados.</li>
+            <li>Destrucción que impida el acceso o recuperación de los datos.</li>
+          </ul><br/>
+          <strong>Traslado de documentación</strong><br/>
+          <ul>
+            <li>Medidas que impidan el acceso o manipulación de documentos</li>
+          </ul><br/>
+          <br/><strong>BASES DE DATOS AUTOMATIZADAS</strong><br/>
+          <strong>Gestión de documentos y soportes</strong><br/>
+          <ul>
+            <li>Sistema de etiquetado confidencial.</li>
+            <li>Cifrado de datos.</li>
+            <li>Cifrado de dispositivos portátiles cuando sean retirados.</li>
+          </ul>
+          <strong>Control de acceso</strong><br/>
+          <ul>
+            <li>Registro de accesos: usuario, hora, base de datos a la que accede, tipo de acceso, registro al que accede.</li>
+            <li>Control del registro de accesos por el responsable de seguridad. Informe mensual.</li>
+            <li>Conservación de los datos: por el periodo que las leyes impongan.</li>
+          </ul>
+          <strong>Telecomunicaciones</strong><br/>
+          <ul>
+            <li>Transmisión de datos mediante redes electrónicas cifradas.</li>
+          </ul><br/>
+          <br/><strong>9.1. Encargados de seguridad</strong><br/><br/>
+          Los encargados de seguridad tienen las siguientes funciones:<br/><br/>
+          <ul>
+            <li>Coordinar y controlar la implantación de las medidas de seguridad, y colaborar con el responsable del tratamiento en la difusión del manual de Políticas y Procedimientos Habeas Data.</li>
+            <li>Coordinar y controlar los mecanismos que permiten acceder a la información contenida en las bases de datos y elaborar un informe periódico sobre dicho control.</li>
+            <li>Gestionar los permisos de acceso a los datos por parte de los usuarios autorizados identificados en este manual.</li>
+            <li>Habilitar el registro de incidencias a todos los usuarios para que comuniquen y registren las incidencias relacionadas con la seguridad de los datos; así como acordar con el responsable del tratamiento las medidas correctoras y registrarlas.</li>
+            <li>Comprobar periódicamente, la validez y vigencia de la lista de usuarios autorizados, la existencia y validez de las copias de seguridad para la recuperación de los datos, la actualización en este manual y el cumplimiento de las medidas relacionadas con las entradas y salidas de datos.</li>
+            <li>Definir los tiempos dentro de los cuales se realizarán las auditorias, los cuales NO podrán ser superiores a un año.</li>
+            <li>Recibir y analizar el informe de auditoría para elevar sus conclusiones y proponer medidas correctoras al responsable del tratamiento.</li>
+            <li>Gestionar y controlar los registros de entradas y salidas de documentos o soportes que contengan datos personales.</li>
+          </ul>
+
+          <br/><strong>9.2. Usuarios</strong><br/><br/>
+          Todas las personas que intervienen en el almacenamiento, tratamiento, consulta o cualquier otra actividad relacionada con los datos personales y sistemas de información de <strong><%= @portafolio.razon_social rescue nil %></strong>, deben actuar de conformidad a las funciones y obligaciones recogidas en el presente apartado.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, cumple con el deber de información con su inclusión de acuerdos de confidencialidad y deber de secreto que suscriben, en su caso, los usuarios de sistemas de identificación sobre bases de datos y sistemas de información, y mediante una circular informativa dirigida a los mismos.<br/><br/>
+          Las funciones y obligaciones del personal de <strong><%= @portafolio.razon_social rescue nil %></strong> se definen, con carácter general, según el tipo de actividad que desarrollan de acuerdo con sus funciones dentro de la institución y, específicamente, por el contenido de este Manual. La lista de usuarios y perfiles con acceso a los recursos protegidos están recogidos en este documento.<br/><br/>
+          Con carácter general, cuando un usuario trate documentos o soportes que contiene datos personales tiene el deber de custodiarlos, así como de vigilar y controlar que personas no autorizadas no puedan tener acceso a ellos.<br/><br/>
+          El incumplimiento de las obligaciones y medidas de seguridad establecidas en este manual de Políticas y Procedimientos Habeas Data. por parte del personal al servicio de <strong><%= @portafolio.razon_social rescue nil %></strong>, es sancionable de acuerdo con la normativa aplicable a la relación jurídica existente entre el usuario y la organización.<br/><br/>
+          Las funciones y obligaciones de los usuarios de las bases de datos personales bajo responsabilidad de <strong><%= @portafolio.razon_social rescue nil %></strong>. son las siguientes:<br/><br/>
+          <strong>Deber de secreto: </strong>Aplica a todas las personas que, en el desarrollo de su profesión o trabajo, acceden a bases de datos personales y vincula tanto a usuarios como a prestadores de servicios contratados; en cumplimiento de este deber, los usuarios de <strong><%= @portafolio.razon_social rescue nil %></strong> no pueden comunicar o relevar a terceras personas, datos que manejen o de los que tengan conocimiento en el desempeño o cargo de sus funciones, y deben velar por la confidencialidad e integridad de los mismos.<br/><br/>
+          <strong>Funciones de control y autorizaciones delegadas: </strong>El responsable del tratamiento puede delegar el tratamiento de datos a terceros, para que actúe como encargado del tratamiento, mediante un contrato de transmisión de datos.<br/><br/>
+          <strong>Obligaciones relacionadas con las medidas de seguridad implantadas: </strong>Acceder a las bases de datos solamente con la debida autorización y cuando sea necesario para el ejercicio de sus funciones.<br/><br/>
+          <ul>
+            <li>No revelar información a terceras personas ni a usuarios no autorizados. - Observar las normas de seguridad y trabajar para mejorarlas.</li>
+            <li>No realizar acciones que supongan un peligro para la seguridad de la información.</li>
+            <li>No sacar información de las instalaciones de la organización sin la debida autorización.</li>
+          </ul><br/>
+          <strong>Uso de recursos y materiales de trabajo: </strong>Debe estar orientado al ejercicio de las funciones asignadas. No se autoriza el uso de estos recursos y materiales para fines personales o ajenos a las tareas correspondientes al puesto de trabajo. Cuando, por motivos justificados de trabajo, sea necesaria la salida de dispositivos periféricos o extraíbles, deberá comunicarse al responsable de seguridad correspondiente que podrá autorizarla y, en su caso, registrarla.<br/><br/>
+          <strong>Uso de impresoras, escáneres y otros dispositivos de copia: </strong>Cuando se utilicen este tipo de dispositivos debe procederse a la recogida inmediata de las copias, evitando dejar éstas en las bandejas de los mismos.<br/><br/>
+          <strong>Obligación de notificar incidencias: </strong>Los usuarios tienen la obligación de notificar las incidencias de las que tenga conocimiento al responsable de seguridad que corresponda, quien se encargará de su gestión y resolución. Algunos ejemplos de incidencias son: la caída del sistema de seguridad informática que permita el acceso a los datos personales a personas no autorizadas, el intento no autorizado de la salida de un documento o soporte, la pérdida de datos o la destrucción total o parcial de soportes, el cambio de ubicación física de bases de datos, el conocimiento por terceras personas de contraseñas, la modificación de datos por personal no autorizado, etc.<br/><br/>
+          <strong>Deber de custodia de los soportes utilizados: </strong>Obliga al usuario autorizado a vigilar y controlar que personas no autorizadas accedan a la información contenida en los soportes. Los soportes que contienen bases de datos deben identificar el tipo de información que contienen mediante un sistema de etiquetado y ser inventariados. Cuando la información esté clasificada con nivel de seguridad sensible el sistema de etiquetado solo debe ser comprensible para los usuarios autorizados a acceder a dicha información.<br/><br/>
+          <strong>Responsabilidad sobre los terminales de trabajo y portátiles: </strong>Cada usuario es responsable de su propio terminal de trabajo; cuando esté ausente de su puesto, debe bloquear dicho terminal (ej. protector de pantalla con contraseña) para impedir la visualización o el acceso a la información que contiene; y tiene el deber de apagar el terminal al finalizar la jornada laboral. Asimismo, los ordenadores portátiles han de estar controlados en todo momento para evitar su pérdida o sustracción.<br/><br/>
+          <strong>Uso limitado de Internet y correo electrónico: </strong>El envío de información por vía electrónica y el uso de Internet por parte del personal está limitado al desempeño de sus actividades.<br/><br/>
+          <strong>Salvaguarda y protección de contraseñas: </strong>Las contraseñas proporcionadas a los usuarios son personales e intransferibles, por lo que se prohíbe su divulgación o comunicación a personas no autorizadas. Cuando el usuario accede por primera vez con la contraseña asignada es necesario que la cambie. Cuando sea necesario restaurar la contraseña, el usuario debe comunicarlo al administrador del sistema.<br/><br/>
+          <strong>Copias de respaldo y recuperación de datos: </strong>Debe realizarse copia de seguridad de toda la información de bases de datos personales de la institución.<br/><br/>
+          <strong>Deber de archivo y gestión de documentos y soportes: </strong>Los documentos y soportes deben de ser debidamente archivados con las medidas de seguridad recogidas en este manual.<br/><br/>
+
+          <br/><strong>10. Transferencia de datos a terceros países.</strong><br/><br/>
+          De acuerdo con el Título VIII de la LEPD, se prohíbe la transferencia de datos personales a países que no proporcionen niveles adecuados de protección de datos. Se entiende que un país ofrece un nivel adecuado de protección de datos cuando cumpla con los estándares fijados por la Superintendencia de Industria y Comercio sobre la materia en la de acuerdo con la circular 005 de 10 de agosto de 2017, los cuales en ningún caso podrán ser inferiores a los que la presente ley exige a sus destinatarios. Esta prohibición no regirá cuando se trate de:<br/><br/>
+          <ul>
+            <li>Información respecto de la cual el Titular haya otorgado su autorización expresa e inequívoca para la transferencia.</li>
+            <li>Intercambio de datos de carácter médico, cuando así lo exija el tratamiento del Titular por razones de salud o higiene pública.</li>
+            <li>Transferencias bancarias o bursátiles, conforme a la legislación que les resulte aplicable.</li>
+            <li>Transferencias acordadas en el marco de tratados internacionales en los cuales la República de Colombia sea parte, con fundamento en el principio de reciprocidad.</li>
+            <li>Transferencias necesarias para la ejecución de un contrato entre el Titular y el responsable del tratamiento, o para la ejecución de medidas precontractuales siempre y cuando se cuente con la autorización del Titular.</li>
+            <li>Transferencias legalmente exigidas para la salvaguardia del interés público, o para el reconocimiento, ejercicio o defensa de un derecho en un proceso judicial.</li>
+          </ul><br/>
+          En los casos no contemplados como excepción, corresponderá a la Superintendencia de Industria y Comercio proferir la declaración de conformidad relativa a la transferencia internacional de datos personales. El Superintendente está facultado para requerir información y adelantar las diligencias tendentes a establecer el cumplimiento de los presupuestos que requiere la viabilidad de la operación.<br/><br/>
+          Las transmisiones internacionales de datos personales que se efectúen entre un responsable y un encargado para permitir que el encargado realice el tratamiento por cuenta del responsable, no requerirán ser informadas al Titular ni contar con su consentimiento, siempre que exista un contrato de transmisión de datos personales.<br/><br/>
+          <br/>
+          <div align="center"><strong>Capitulo II : De Las Medidas de Seguridad</strong></div>
+        
+          <br/><strong>1. Cumplimiento y actualización.</strong><br/><br/>
+          Este es un documento interno de obligatorio cumplimiento para todo el personal <strong><%= @portafolio.razon_social rescue nil %></strong> , con acceso a los sistemas de información que contengan datos personales.<br/><br/>
+          Este manual de Políticas y Procedimientos Habeas Data, debe ser sometido a permanente revisión y actualización siempre que se produzcan cambios en los sistemas de información, el sistema de tratamiento, la organización o el contenido de la información de las bases de datos, que puedan afectar a las medidas de seguridad implementadas. Asimismo, el manual debe adaptarse en todo momento a la normativa legal en materia de seguridad de datos personales.<br/><br/>
+          
+          <br/><strong>2. Medidas de seguridad.</strong><br/><br/>
+          Las bases de datos son accesibles únicamente por las personas designadas por <strong><%= @portafolio.razon_social rescue nil %></strong> , y referidas en el numeral 12 de este documento.<br/><br/>
+          Los responsables de seguridad <strong><%= @portafolio.razon_social rescue nil %></strong>, señalados en el numeral 12 del presente manual, se encargan de gestionar los permisos de acceso a los usuarios, el procedimiento de asignación y distribución que garantiza la confidencialidad, integridad y almacenamiento de las contraseñas, durante su vigencia, así como la periodicidad con la que se cambian.<br/><br/>
+          A continuación, se enumeran y detallan las medidas de seguridad implementadas por <strong><%= @portafolio.razon_social rescue nil %></strong>.<br/><br/>
+          
+          <br/><strong>2.1 Medidas de seguridad comunes.</strong><br/><br/>
+          <br/><strong>2.1.1 Gestión de documentos y soportes.</strong><br/><br/>
+          Los documentos y soportes en los que se encuentran las bases de datos se determinan en el inventario de documentos y soportes.<br/><br/>
+          Los encargados de vigilar y controlar que personas no autorizadas no puedan acceder a los documentos y soportes con datos personales son los usuarios autorizados para acceder a estos. Los usuarios autorizados están referidos en el numeral 12 sobre bases de datos y sistemas de información del presente manual.<br/><br/>
+          Los documentos y soportes deben clasificar los datos según el tipo de información que contienen, ser inventariados y ser accesibles solo por el personal autorizado, salvo que las características de estos hagan imposible la identificación referida, en cuyo caso se dejará constancia motivada en el registro de entrada y de salida de documentos y en este manual.<br/><br/>
+          La identificación de los documentos y soportes de contengan datos personales sensibles debe realizarse utilizando sistemas de etiquetado comprensibles y con significado que permita a los usuarios autorizados identificar su contenido y que dificulten la identificación para el resto de las personas.<br/><br/>
+          La salida de documentos y soportes que contengan datos personales fuera de los locales que están bajo el control del responsable del tratamiento debe ser autorizada por este último. Este precepto también es aplicable a los documentos o soportes anexados y enviados por correo electrónico.<br/><br/>
+          El inventario de documentos y soportes de <strong><%= @portafolio.razon_social rescue nil %></strong> debe incluirse como anexo del presente manual.<br/><br/>
+          
+          <br/><strong>3. Control de acceso.</strong><br/><br/>
+          El personal de <strong><%= @portafolio.razon_social rescue nil %></strong> solamente debe acceder a aquellos datos y recursos necesarios para el desarrollo de sus funciones y sobre los cuales se encuentren autorizados por el responsable del tratamiento en este manual.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>. se ocupa del almacenamiento de una lista actualizada de usuarios, perfiles de usuarios, y de los accesos autorizados para cada uno de ellos. Además, tiene mecanismos para evitar el acceso a datos con derechos distintos de los autorizados. En el caso de soportes informáticos, puede consistir en la asignación de contraseñas, y en el caso de documentos, en la entrega de llaves o mecanismos de apertura de dispositivos de almacenamiento donde se archive la documentación.<br/><br/>
+          La modificación sobre algún dato o información, así como la concesión, alteración, inclusión o anulación de los accesos autorizados y de los usuarios recogidos en la lista actualizada mencionada en el párrafo anterior, corresponde de manera exclusiva al personal autorizado.<br/><br/>
+          Cualquier personal ajeno a <strong><%= @portafolio.razon_social rescue nil %></strong>, que, de forma autorizada y legal, tenga acceso a los recursos protegidos, estará sometido a las mismas condiciones y tendrá las mismas obligaciones de seguridad que el personal propio.<br/><br/>
+          Los usuarios autorizados para el acceso a las bases de datos se establecen en el numeral 6 de este manual.<br/><br/>
+          
+          <br/><strong>3.1 Ejecución del tratamiento fuera de la institución.</strong><br/><br/>
+          El almacenamiento de datos personales del responsable del tratamiento o encargado del tratamiento en dispositivos portátiles y su tratamiento fuera del lugar natural de trabajo, requiere una autorización previa por parte de <strong><%= @portafolio.razon_social rescue nil %></strong>, y el cumplimiento de las garantías de seguridad correspondientes al tratamiento de este tipo de datos.<br/><br/>
+          
+          <br/><strong>3.2 Bases de datos temporales, copias y reproducciones.</strong><br/><br/>
+          Las bases de datos temporales o copias de documentos creadas para trabajos temporales o auxiliares deben cumplir con el mismo nivel de seguridad que corresponde a las bases de datos o documentos originales. Una vez que dejan de ser necesarias, estas bases de datos temporales o copias son borradas o destruidas, impidiéndose así el acceso o recuperación de la información que contienen.<br/><br/>
+          Solamente el personal autorizado en el numeral 12 puede realizar copias o reproducir los documentos.<br/><br/>
+          
+          <br/><strong>3.3 responsable de seguridad.</strong><br/><br/>
+          De acuerdo con la normativa sobre protección de datos, la designación de los responsables de seguridad no exonera de responsabilidad al responsable del tratamiento o encargado del tratamiento.<br/><br/>
+          <br/><strong>4. Auditoría.</strong><br/><br/>
+          Las bases de datos que contengan datos personales, objeto de tratamiento por <strong><%= @portafolio.razon_social rescue nil %></strong> , clasificadas con nivel de seguridad sensible o privado, se han de someter, a una auditoria cada año, esta puede ser una auditoría interna o externa que verifique el cumplimiento de las medidas de seguridad contenidas en este manual.<br/><br/>
+          Serán objeto de auditoría tanto los sistemas de información como las instalaciones de almacenamiento y tratamiento de datos.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, realizará una auditoría extraordinaria siempre que se realicen modificaciones sustanciales en el sistema de información que puedan afectar al cumplimiento de las medidas de seguridad, con el fin de verificar la adaptación, adecuación y eficacia de estas.<br/><br/>
+          Las auditorías concluirán con un informe de auditoría que contendrá:<br/><br/>
+          <ul>
+            <li>El dictamen sobre la adecuación de las medidas y controles a la normativa sobre protección de datos.</li>
+            <li>La identificación de las deficiencias encontradas y la sugerencia de medidas correctoras o complementarias necesarias.</li>
+            <li>La descripción de los datos, hechos y observaciones en que se basen los dictámenes y las recomendaciones propuestas.</li>
+          </ul><br/>
+          El responsable de seguridad que corresponda estudiará el informe y trasladará las conclusiones al responsable del tratamiento para que implemente las medidas correctoras. Los informes de auditoría serán adjuntados a este manual y quedarán a disposición de la Autoridad de Control.<br/><br/>
+          
+          <br/><strong>5. Medidas de seguridad para bases de datos no automatizadas.</strong><br/><br/>
+          <br/><strong>5.1 Archivo de documentos.</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, fija los criterios y procedimientos de actuación que se deben utilizar para el archivo de documentos que contengan datos personales conforme a la Ley. Los criterios de archivo garantizan la conservación, localización y consulta de los documentos y hacen posible los derechos de consulta y reclamo de los Titulares. Estos criterios y procedimientos se recogen en el numeral 12 de este manual.<br/><br/>
+          Se recomienda que los documentos sean archivados considerando, entre otros, criterios como el grado de utilización de los usuarios con acceso autorizado a los mismos, la actualidad de su gestión y/o tratamiento y la diferenciación entre bases de datos históricas y de administración o gestión de la institución.<br/><br/>
+          Los dispositivos de almacenamiento de documentos deben disponer de llaves u otros mecanismos que dificulte su apertura, excepto cuando las características físicas de éstos lo impidan, en cuyo caso <strong><%= @portafolio.razon_social rescue nil %></strong>, adoptará las medidas necesarias para impedir el acceso de personas no autorizadas.<br/><br/>
+          Los dispositivos se identifican y describen en el numeral 12 del presente manual.<br/><br/>
+          Cuando los documentos que contienen datos personales se encuentren en proceso de revisión o tramitación y, por tanto, fuera de los dispositivos de almacenamiento, ya sea antes o después de su archivo, la persona que se encuentre a cargo de estos debe custodiarlos e impedir en todo caso que personas no autorizadas puedan acceder a ellos.<br/><br/>
+          Los dispositivos de almacenamiento que contengan documentos con datos personales clasificados con nivel de seguridad sensible deben encontrarse en áreas o locales en las que el acceso esté protegido con puertas de acceso con sistemas de apertura de llave u otros mecanismos similares. Estas áreas deben permanecer cerradas cuando no se precise el acceso a dichos documentos. Si no fuera posible cumplir con lo anterior, <strong><%= @portafolio.razon_social rescue nil %></strong>, podrá adoptar medidas alternativas debidamente motivadas que se incluirán en el presente documento.<br/><br/>
+          La descripción de las medidas de seguridad de almacenamiento de encuentran recogidas en el numeral 6-7 de este documento.<br/><br/>
+          
+          <br/><strong>6. Acceso a los documentos.</strong><br/><br/>
+          El acceso a los documentos ha de realizarse exclusivamente por el personal autorizado en el numeral 12 del manual, siguiendo los mecanismos y procedimientos definidos. Estos últimos deben identificar y conservar los accesos realizados a la documentación clasificada con nivel de seguridad sensible, tanto por usuarios autorizados como por personas no autorizadas tal y como se refleja en el numeral referido anteriormente.<br/><br/>
+          El procedimiento de acceso a los documentos que contienen datos clasificados como sensibles implica el registro de accesos a la documentación, la identidad de quien accede, el momento en que se produce el acceso y los documentos a los que se han accedido. El acceso a documentos con este tipo de datos se realiza por personal autorizado; si se realiza por personas no autorizadas deberá supervisarse por algún usuario autorizado o por el responsable de seguridad en cuestión de <strong><%= @portafolio.razon_social rescue nil %></strong>.<br/><br/>
+          
+          <br/><strong>7. Medidas de seguridad para bases de datos automatizadas.</strong><br/><br/>
+          <br/><strong>7.1 Identificación y autenticación.</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, debe instalar un sistema de seguridad informática que permita identificar y autenticar de forma correcta a los usuarios de los sistemas de información, con el fin de garantizar que solo el personal autorizado pueda acceder a las bases de datos.<br/><br/>
+          También ha de establecer un mecanismo que permita la identificación personalizada e inequívoca de todo usuario que intente acceder al sistema de información y que verifique si está autorizado. La identificación debe realizarse mediante un sistema único para cada usuario que accede a la información teniendo en cuenta el nombre de usuario, la identificación de empleado, el nombre del departamento, etc. La nomenclatura utilizada para la asignación de nombres de usuario para acceder al sistema de información y el sistema de autenticación de los usuarios se recogen en el numeral 12 de este documento.<br/><br/>
+          Cuando el sistema de autenticación esté basado en la introducción de contraseña, se ha de implantar un procedimiento de asignación, distribución y almacenamiento de contraseñas; para garantizar la integridad y confidencialidad de estas últimas, se recomiendan que tengan un mínimo de ocho caracteres y contengan mayúsculas, minúsculas, números y letras. La política de contraseñas de <strong><%= @portafolio.razon_social rescue nil %></strong> se encuentra en el numeral 12 del presente manual.<br/><br/>
+          Por otra parte, <strong><%= @portafolio.razon_social rescue nil %></strong> debe vigilar que las contraseñas se cambien de forma periódica, nunca por un tiempo superior a 365 días. El periodo de vigencia de las contraseñas se recoge en el ya referido numeral 12.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, también garantiza el almacenamiento automatizado, interno y cifrado, de las contraseñas mientras estén vigentes, y adoptará un mecanismo para limitar los intentos reiterados de accesos no autorizados, también detallado en el numeral 12 del manual.<br/><br/>
+          
+          <br/><strong>8. Entrada y salida de documentos o soportes</strong><br/><br/>
+          La entrada de documentos o soportes debe registrarse indicando el tipo de documento o soporte, la fecha y hora, el emisor, el número de documentos o soportes incluidos en el envío, el tipo de información que contienen según el nivel de seguridad, la forma de envío y la persona responsable de la recepción. La salida o envío de documentos o soportes, debidamente autorizada, ha de registrarse indicando el tipo de documento o soporte, la fecha y hora, el receptor, el número de documentos o soportes incluidos en el envío, el tipo de información que contienen según el nivel de seguridad, la forma de envío y la persona responsable del envío.<br/><br/>
+          El sistema de registro de entrada y salida debe ser anexado en el presente documento.<br/><br/>
+          Las instalaciones de <strong><%= @portafolio.razon_social rescue nil %></strong> son sede de los sistemas de información que contienen datos personales deben estar debidamente protegidos con el fin de garantizar la integridad y confidencialidad de dichos datos; así mismo, han de cumplir con las medidas de seguridad físicas correspondientes al documento o soporte donde incluyen los datos.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, tiene el deber de poner en conocimiento de su personal las obligaciones que les competen con el objetivo de proteger físicamente los documentos o soportes en los que se encuentran las bases de datos, no permitiendo su manejo, utilización o identificación por personas no autorizadas en el presente manual. Los locales e instalaciones donde se ubican las bases de datos, especificando sus características físicas y las medidas de seguridad física existentes se señalan en el numeral 12 del presente documento.<br/><br/>
+          Solamente el personal autorizado puede tener acceso a los lugares donde estén instalados los equipos que dan soporte a los sistemas de información, de acuerdo con lo dispuesto en numeral antes referido.<br/><br/>
+          
+          <br/><strong>9. Copias de respaldo y recuperación de datos.</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, ha llevado a cabo los procedimientos de actuación necesarios para realizar copias de respaldo, al menos una vez a la semana, excepto cuando no se haya producido ninguna actualización de los datos durante ese periodo. Todas las bases de datos deben tener una copia de respaldo a partir de las cuales se puedan recuperar los datos.<br/><br/>
+          De igual modo, ha establecido procedimientos para la recuperación de los datos con el objetivo de garantizar en todo momento la reconstrucción al estado en el que éstos se encontraban antes de su pérdida o destrucción. Cuando la pérdida o destrucción afecte a bases de datos parcialmente automatizadas se grabarán manualmente los datos dejando constancia de ello en este manual.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, se encargará de controlar el correcto funcionamiento y aplicación de los procedimientos de realización de copias de respaldo y recuperación de los datos cada 6 meses.<br/><br/>
+          Los procedimientos de copia y respaldo se recogen en numeral 12 de este manual.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, debe conservar una copia de respaldo de los datos y de los procedimientos de recuperación de estos en un lugar distinto a aquel en el que se encuentren los equipos donde se lleva a cabo su tratamiento. Este lugar deberá cumplir en todo caso las mismas medidas de seguridad exigidas para los datos originales.<br/><br/>
+          
+          <br/><strong>10. Registro de acceso.</strong><br/><br/>
+          De los intentos de acceso a los sistemas de información de <strong><%= @portafolio.razon_social rescue nil %></strong>, deberá guarda, como mínimo, la identificación del usuario, la fecha y hora en que se lleva a cabo, la base de datos a la que se accede, el tipo de acceso y si ese acceso ha sido autorizado o no autorizado. En caso de que el registro haya sido autorizado, se guarda la información que permita identificar el registro consultado.<br/><br/>
+          Los responsables de seguridad de las bases de datos automatizadas se encargan de controlar los mecanismos que permiten el registro de acceso, revisar con carácter mensual la información de control registrada y elaborar un informe de las revisiones realizadas y los problemas detectados. Además, deben impedir la manipulación o desactivación de los mecanismos que permiten el registro de acceso.<br/><br/>
+          Los datos que contiene el registro de acceso deben conservarse, al menos, durante dos años.<br/><br/>
+          No será necesario el registro de acceso cuando el responsable del tratamiento sea una persona natural y garantice que solamente él tiene acceso y trata los datos personales. Estas circunstancias deben hacerse constar expresamente en el presente documento.<br/><br/>
+          El acceso a datos personales a través de redes de comunicaciones, públicas o privadas, debe someterse a medidas de seguridad equivalentes al acceso local de datos personales.<br/><br/>
+          La transmisión de datos personales mediante redes públicas o inalámbricas de comunicaciones electrónicas se tiene que llevar a cabo cifrando dichos datos, o utilizando otro mecanismo similar que garantice que la información no sea inteligible ni manipulada por terceras personas.<br/><br/>
+          
+          <br/><strong>11. Funciones y obligaciones del personal</strong><br/><br/>
+          Todas las personas que intervienen en el almacenamiento, tratamiento, consulta o cualquier otra actividad relacionada con los datos personales y sistemas de información de, deben actuar de conformidad a las funciones y obligaciones recogidas en el presente apartado.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, debe informar a su personal de servicio de las medidas y normas de seguridad que compete al desarrollo de sus funciones, así como de las consecuencias de su incumplimiento, mediante cualquier medio de comunicación que garantice su recepción o difusión (correo electrónico, tablón de anuncios, etc.). De igual modo, debe poner a disposición del personal el presente manual de Políticas y Procedimientos Habeas Data para que puedan conocer la normativa de seguridad y sus obligaciones en esta materia en función del cargo que ocupan.<br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, cumple con el deber de información con su inclusión de acuerdos de confidencialidad y deber de secreto que suscriben, en su caso, los usuarios de sistemas de identificación referidos en el numeral 12 sobre bases de datos y sistemas de información, y mediante una circular informativa dirigida a los mismos.<br/><br/>
+          Las funciones y obligaciones del personal de <strong><%= @portafolio.razon_social rescue nil %></strong> se definen, con carácter general, según el tipo de actividad que desarrollan al interior de la institución, específicamente, por el contenido de este manual. La lista de usuarios y perfiles con acceso a los recursos protegidos están recogidos en el numeral 12 sobre bases de datos y sistemas de información. Con carácter general, cuando un usuario trate documentos o soportes que contiene datos personales tiene el deber de custodiarlos, así como de vigilar y controlar que personas no autorizadas no puedan tener acceso a ellos.<br/><br/>
+          El incumplimiento de las obligaciones y medidas de seguridad establecidas en el presente manual por parte del personal al servicio de <strong><%= @portafolio.razon_social rescue nil %></strong> es sancionable de acuerdo con la normativa aplicable a la relación jurídica existente entre las partes.<br/><br/>
+          Las funciones y obligaciones de los usuarios de las bases de datos personales bajo responsabilidad de <strong><%= @portafolio.razon_social rescue nil %></strong> son las siguientes:<br/><br/>
+          
+          <br/><strong>Deber de secreto: </strong>Aplica a todas las personas que, en el desarrollo de su profesión o trabajo, acceden a bases de datos personales y vincula tanto a usuarios como a prestadores de servicios contratados; en cumplimiento de este deber, los usuarios de la organización no pueden comunicar o relevar a terceras personas, datos que manejen o de los que tengan conocimiento en el desempeño o cargo de sus funciones, y deben velar por la confidencialidad e integridad de estos.<br/><br/>
+          <br/><strong>Funciones de control y autorizaciones delegadas: </strong>El responsable del tratamiento puede delegar el tratamiento de datos a terceros, para que actúe como encargado del tratamiento, mediante un contrato de transmisión de datos. Cuando se firmen contratos de transmisión de datos, estos se anexarán en el presente manual.<br/><br/>
+
+          <ul>
+            <li>Las obligaciones relacionadas con las medidas de seguridad implantadas.</li>
+            <li>Acceder a las bases de datos solamente con la debida autorización y cuando sea necesario para el ejercicio de sus funciones.</li>
+            <li>No revelar información a terceras personas ni a usuarios no autorizados. - Observar las normas de seguridad y trabajar para mejorarlas.</li>
+            <li>No realizar acciones que supongan un peligro para la seguridad de la información.</li>
+            <li>No sacar información de las instalaciones de la organización sin la debida autorización.</li>
+            <li>Uso de recursos y materiales de trabajo: Debe estar orientado al ejercicio de las funciones asignadas. No se autoriza el uso de estos recursos y materiales para fines personales o ajenos a las tareas correspondientes al puesto de trabajo. Cuando, por motivos justificados de trabajo, sea necesaria la salida de dispositivos periféricos o extraíbles, deberá comunicarse a los responsables de seguridad que podrán autorizarla y, en su caso, registrarla.</li>
+            <li>Uso de impresoras, escáneres y otros dispositivos de copia: Cuando se utilicen este tipo de dispositivos debe procederse a la recogida inmediata de las copias, evitando dejar éstas en las bandejas de estos.</li>
+            <li>Obligación de notificar incidencias: Los usuarios tienen la obligación de notificar las incidencias de las que tenga conocimiento a los responsables de seguridad, quienes se encargarán de su gestión y resolución. Algunos ejemplos de incidencias son: la caída del sistema de seguridad informática que permita el acceso a los datos personales a personas no autorizadas, el intento no autorizado de la salida de un documento o soporte, la pérfida de datos o la destrucción total o parcial de soportes, el cambio de ubicación física de bases de datos, el conocimiento por terceras personas de contraseñas, la modificación de datos por personal no autorizado, etc.</li>
+            <li>Deber de custodia de los soportes utilizados: Obliga al usuario autorizado a vigilar y controlar que personas no autorizadas accedan a la información contenida en los soportes. Los soportes que contienen bases de datos deben identificar el tipo de información que contienen mediante un sistema de etiquetado y ser inventariados. Cuando la información esté clasificada con nivel de seguridad sensible el sistema de etiquetado solo debe ser comprensible para los usuarios autorizados a acceder a dicha información.</li>
+            <li>Responsabilidad sobre los terminales de trabajo y portátiles: Cada usuario es responsable de su propio terminal de trabajo; cuando esté ausente de su puesto, debe bloquear dicho terminal (ej. protector de pantalla con contraseña) para impedir la visualización o el acceso a la información que contiene; y tiene el deber de apagar el terminal al finalizar la jornada laboral. Asimismo, los ordenadores portátiles han de estar controlados en todo momento para evitar su pérdida o sustracción.</li>
+          </ul><br/>
+          <strong>Uso limitado de Internet y correo electrónico: </strong> El envío de información por vía electrónica y el uso de Internet por parte del personal está limitado al desempeño de sus actividades al interior de <strong><%= @portafolio.razon_social rescue nil %></strong>.<br/><br/>
+          <strong>Salvaguarda y protección de contraseñas: </strong> Las contraseñas proporcionadas a los usuarios son personales e intransferibles, por lo que se prohíbe su divulgación o comunicación a personas no autorizadas. Cuando el usuario accede por primera vez con la contraseña asignada es necesario que la cambie. Cuando sea necesario restaurar la contraseña, el usuario debe comunicarlo al administrador del sistema.<br/><br/>
+          <strong>Copias de respaldo y recuperación de datos: </strong> Debe realizarse copia de seguridad de toda la información de bases de datos personales propiedad de <strong><%= @portafolio.razon_social rescue nil %></strong><br/><br/>
+          <strong>Deber de archivo y gestión de documentos y soportes: </strong> Los documentos y soportes deben de ser debidamente archivados con las medidas de seguridad establecidas en el presente capitulo.<br/><br/>
+          
+          <br/><strong>12. bases de datos y sistemas de información.</strong><br/><br/>
+          Las bases de datos almacenadas y tratadas por <strong><%= @portafolio.razon_social rescue nil %></strong> se recogen en la siguiente tabla (Tabla I), donde se indica el nivel de seguridad y el sistema de tratamiento de cada una de ellas.<br/><br/>
+          <br/><strong>Tabla I. Bases de datos y nivel de seguridad</strong><br/><br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="25" style="background: #E8E3E3;"><div align="center"><strong>BASE DE DATOS</strong></div></td>
+              <td style="background: #E8E3E3;"><div align="center"><strong>NIVEL DE SEGURIDAD</strong></div></td>
+            </tr>
+              <td height="25">&nbsp;<strong>CLIENTES</strong></td>
+              <td><div align="center">ALTO</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>EMPLEADOS</strong></td>
+              <td><div align="center">ALTO</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>PROVEEDORES</strong></td>
+              <td><div align="center">ALTO</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>VIDEO VIGILANCIA</strong></td>
+              <td><div align="center">ALTO</div></td>
+            </tr>
+          </table><br/>
+
+          La siguiente tabla (Tabla II) recoge la estructura de las bases de datos de <strong><%= @portafolio.razon_social rescue nil %></strong><br/><br/>
+          <br/><strong>Tabla II. Estructura de las Bases de datos</strong><br/>
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="25" style="background: #E8E3E3;"><div align="center"><strong>Nombre de la base de datos</strong></div></td>
+              <td style="background: #E8E3E3;"><div align="center"><strong>CLIENTES</strong></div></td>
+            </tr>
+              <td height="50%">&nbsp;<strong>Responsable del tratamiento</strong></td>
+              <td><strong><%= @portafolio.razon_social rescue nil %></strong><br/>
+                    NIT: <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %><br/>
+                    Dirección: <%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA - Teléfono: 3222278 - 3015758037<br/>
+                    Correo electrónico: juridica@asearesp.com
+              </td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Encargado de consultas y reclamos</strong></td>
+              <td><div align="center">Valentina Marín García</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Tipo de datos</strong></td>
+              <td><div align="center">Sensible</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso físico</strong></td>
+              <td><div align="center">Usuarios Autorizados</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso lógico</strong></td>
+              <td><div align="center">Usuarios y Contraseñas</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Copias de respaldo</strong></td>
+              <td><div align="center">Semanal</div></td>
+            </tr>
+          </table><br/>
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="25" style="background: #E8E3E3;"><div align="center"><strong>Nombre de la base de datos</strong></div></td>
+              <td style="background: #E8E3E3;"><div align="center"><strong>EMPLEADOS</strong></div></td>
+            </tr>
+              <td height="50%">&nbsp;<strong>Responsable del tratamiento</strong></td>
+              <td><strong><%= @portafolio.razon_social rescue nil %></strong><br/>
+                    NIT: <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %><br/>
+                    Dirección: <%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA - Teléfono: 3222278 - 3015758037<br/>
+                    Correo electrónico: juridica@asearesp.com
+              </td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Encargado de consultas y reclamos</strong></td>
+              <td><div align="center">Valentina Marín García</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Tipo de datos</strong></td>
+              <td><div align="center">Sensible</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso físico</strong></td>
+              <td><div align="center">Usuarios Autorizados</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso lógico</strong></td>
+              <td><div align="center">Usuarios y Contraseñas</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Copias de respaldo</strong></td>
+              <td><div align="center">Semanal</div></td>
+            </tr>
+          </table><br/>
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="25" style="background: #E8E3E3;"><div align="center"><strong>Nombre de la base de datos</strong></div></td>
+              <td style="background: #E8E3E3;"><div align="center"><strong>PROVEEDORES</strong></div></td>
+            </tr>
+              <td height="50%">&nbsp;<strong>Responsable del tratamiento</strong></td>
+              <td><strong><%= @portafolio.razon_social rescue nil %></strong><br/>
+                    NIT: <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %><br/>
+                    Dirección: <%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA - Teléfono: 3222278 - 3015758037<br/>
+                    Correo electrónico: juridica@asearesp.com
+              </td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Encargado de consultas y reclamos</strong></td>
+              <td><div align="center">Valentina Marín García</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Tipo de datos</strong></td>
+              <td><div align="center">Privada</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso físico</strong></td>
+              <td><div align="center">Usuarios Autorizados</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso lógico</strong></td>
+              <td><div align="center">Usuarios y Contraseñas</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Copias de respaldo</strong></td>
+              <td><div align="center">Semanal</div></td>
+            </tr>
+          </table><br/>    
+
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="25" style="background: #E8E3E3;"><div align="center"><strong>Nombre de la base de datos</strong></div></td>
+              <td style="background: #E8E3E3;"><div align="center"><strong>VIDEO VIGILANCIA</strong></div></td>
+            </tr>
+              <td height="50%">&nbsp;<strong>Responsable del tratamiento</strong></td>
+              <td><strong><%= @portafolio.razon_social rescue nil %></strong><br/>
+                    NIT: <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %><br/>
+                    Dirección: <%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA - Teléfono: 3222278 - 3015758037<br/>
+                    Correo electrónico: juridica@asearesp.com
+              </td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Encargado de consultas y reclamos</strong></td>
+              <td><div align="center">Valentina Marín García</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Tipo de datos</strong></td>
+              <td><div align="center">Sensible</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso físico</strong></td>
+              <td><div align="center">Usuarios Autorizados</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Control de acceso lógico</strong></td>
+              <td><div align="center">Usuarios y Contraseñas</div></td>
+            </tr>
+            <tr>
+              <td height="25">&nbsp;<strong>Copias de respaldo</strong></td>
+              <td><div align="center">Semanal</div></td>
+            </tr>
+          </table><br/>
+          El nombramiento de los responsables de seguridad no exonera al responsable del tratamiento o encargado del tratamiento de sus obligaciones.<br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, identifica en este manual, a los encargados del tratamiento, así como las condiciones del encargo. Cuando exista contrato de transmisión de datos, los encargados del tratamiento se identifican en el anexo sobre transmisión de datos de este documento. Los encargados del tratamiento deberán cumplir con las funciones y obligaciones relacionadas con las medidas en materia de seguridad recogidas en el presente manual.<br/>
+          
+          <br/><strong>12.1 Procedimiento de notificación, gestión y respuesta ante incidencias</strong><br/><br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, establece un procedimiento de notificación, gestión y respuesta de incidencias con el fin de garantizar la confidencialidad, disponibilidad e integridad de la información contenida en las bases de datos que están bajo su responsabilidad.<br/>
+          Todos los usuarios y responsables de procedimientos, así como cualquier persona que tenga relación con el almacenamiento, tratamiento o consulta de las bases de datos recogidas en este documento, deben conocer el procedimiento para actuar en caso de incidencia.<br/>
+          El procedimiento de notificación, gestión y respuesta ante incidencias es el siguiente:<br/>
+          Cuando una persona tenga conocimiento de una incidencia que afecte o pueda afectar la confidencialidad, disponibilidad e integridad de la información protegida de la institución deberá comunicarlo, de manera inmediata, a los responsables de seguridad, describiendo detalladamente el tipo de incidencia producida, e indicando las personas que hayan podido tener relación con la incidencia, la fecha y hora en que se ha producido, la persona que notifica la incidencia, la persona a quién se le comunica y los efectos que ha producido.<br/>
+          Una vez comunicada la incidencia ha de solicitar al responsable de seguridad correspondiente un acuse de recibo en el que conste la notificación de la incidencia con todos los requisitos enumerados anteriormente.<br/>
+          <strong><%= @portafolio.razon_social rescue nil %></strong>, crea un registro de incidencias que debe contener: el tipo de incidencia, fecha y hora de esta, persona que la notifica, persona a la que se le comunica, efectos de la incidencia y medidas correctoras cuando corresponda. Este registro es gestionado por el responsable de seguridad de la base de  datos y debe incluirse como anexo en el presente manual.<br/>
+          Asimismo, debe implementar los procedimientos para la recuperación de los datos, indicando quien ejecuta el proceso, los datos restaurados y, en su caso, los datos que han requerido ser grabados manualmente en el proceso de recuperación.<br/>
+          
+          <br/><strong>12.2 Reporte</strong><br/><br/>
+          Todos los incidentes y eventos sospechosos deben ser reportados tan pronto como sea posible a través de los canales internos establecidos por <strong><%= @portafolio.razon_social rescue nil %></strong>. Si la información sensible o confidencial es perdida, divulgada a personal no autorizado o se sospecha de alguno de estos eventos, el responsable de la información debe ser notificado de forma inmediata. Los funcionarios deben reportar a su jefe directo y/o al Oficial de Protección de Datos Personales cualquier daño o pérdida de computadores o cualquiera otro dispositivo, cuando estos contengan datos personales en poder de la Entidad. A menos que exista una solicitud de la autoridad competente debidamente razonada y justificada, ningún funcionario debe divulgar información sobre sistemas de cómputo, y redes que hayan sido afectadas por un delito informático o abuso de sistema. Para la entrega de información o datos en virtud de orden de autoridad, Oficina Asesora Jurídica deberá intervenir con el fin de prestar el asesoramiento adecuado.<br/>
+          El responsable de la información debe garantizar que se tomen acciones para investigar y diagnosticar las causas que generaron el incidente, así como también debe garantizar que todo el proceso de gestión del incidente sea debidamente documentado, apoyado con Oficina de Tecnologías e Informática.<br/>
+          
+          <br/><strong>13. CONTROL DE ACCESO Y VIDEO VIGILANCIA</strong><br/><br/>
+          Control acceso: Las áreas donde se ejecutan procesos relacionados con información confidencial o restringida deben contar con controles de acceso que sólo permitan el ingreso a los colaboradores autorizados y que permita guardar la trazabilidad de los ingresos y salidas.<br/>
+          Video Vigilancia: La Entidad cuenta con cámaras de video vigilancia que tienen como finalidad dar cumplimiento a las políticas de seguridad física, cumpliendo con los parámetros establecidos en la Guía para la Protección de Datos Personales en Sistemas de Videovigilancia, expedidos por la SIC como autoridad de control. Las imágenes deberán ser conservadas por un tiempo máximo de 90 días. En caso que la imagen respectiva sea objeto o soporte de una reclamación, queja, o cualquier proceso de tipo judicial, hasta el momento en que sea resuelto.<br/>
+          
+          <br/><strong>14. Medidas para el transporte, destrucción y reutilización de documentos y soportes.</strong><br/><br/>
+          Cuando corresponda desechar cualquier documento (original, copia o reproducción) o soporte que contenga datos personales debe procederse a su destrucción o borrado, a través de la implementación de medidas orientadas a evitar el acceso o recuperación de la información contenida en dicho documento o soporte.<br/>
+          Antes de iniciar la destrucción se realizará un acta o se llevará el registro en un libro o agenda, en dicha a notación se describirá el documento objeto de destrucción, la fecha, hora y firma de las dos personas que evidencian la destrucción.<br/>
+          Cuando se lleve a cabo el traslado físico de documentos o soportes deben adoptar las medidas necesarias para impedir el acceso indebido, la manipulación, la sustracción o la pérdida de la información. El traslado de soportes que contengan datos personales se realiza cifrando la información, o utilizando cualquier otro mecanismo que garantice que no se manipule ni se acceda a la misma.<br/>
+          Los datos contenidos en dispositivos portátiles deben estar cifrados cuando se hallen fuera de las instalaciones que están bajo control de <strong><%= @portafolio.razon_social rescue nil %></strong>. Cuando no sea posible el cifrado, se debe evitar el tratamiento de datos personales mediante este tipo de dispositivos; sin embargo, se podrá proceder al tratamiento cuando sea estrictamente necesario, adoptando para ello medidas de seguridad que tengan en cuenta los riesgos e incluyéndolas en el presente manual.<br/>
+          
+          <br/><strong>15. Infracciones y sanciones</strong><br/><br/>
+          De acuerdo con el Capítulo II de la Ley Estatutaria 1581 de 2012 de Protección de Datos, la Superintendencia de Industria y Comercio puede imponer sanciones por el incumplimiento de la normativa sobre protección de datos al responsable del tratamiento o al encargado del tratamiento. Las posibles sanciones son:<br/>
+          Multas de carácter personal e institucional hasta por el equivalente a dos mil (2.000) salarios mínimos mensuales legales vigentes al momento de la imposición de la sanción. Las multas podrán ser sucesivas mientras subsista el incumplimiento que las originó.<br/>
+          Suspensión de las actividades relacionadas con el tratamiento hasta por un término de seis (6) meses. En el acto de suspensión se indicarán los correctivos que se deberán adoptar.<br/>
+          Cierre temporal de las operaciones relacionadas con el tratamiento una vez transcurrido el término de suspensión sin que se hubieren adoptado los correctivos ordenados por la Superintendencia de Industria y Comercio.<br/>
+          
+          <br/><strong>16. Vigencia</strong><br/><br/>
+          Las bases de datos responsabilidad de la empresa <strong><%= @portafolio.razon_social rescue nil %></strong>, serán objeto de tratamiento durante el tiempo que sea razonable y necesario para la finalidad para la cual son recabados los datos. Una vez cumplida la finalidad o finalidades del tratamiento, y sin perjuicio de normas legales que dispongan lo contrario. la empresa <strong><%= @portafolio.razon_social rescue nil %></strong>, procederá a la supresión de los datos personales en su posesión salvo que exista una obligación legal o contractual que requiera su conservación. Por todo ello, el presente documento entra en vigencia el 27 de agosto de 2024.<br/>
+
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesactividades</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Tareasactividad</th>
+      <th>Dias</th>
+      <th>Estado actividad</th>
+      <th>User persona</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesactividades.each do |migracionesactividad| %>
+      <tr>
+        <td><%= migracionesactividad.user_id %></td>
+        <td><%= migracionesactividad.archivo_id %></td>
+        <td><%= migracionesactividad.estado %></td>
+        <td><%= migracionesactividad.tareasactividad_id %></td>
+        <td><%= migracionesactividad.dias %></td>
+        <td><%= migracionesactividad.estado_actividad %></td>
+        <td><%= migracionesactividad.user_persona %></td>
+        <td><%= link_to 'Show', migracionesactividad %></td>
+        <td><%= link_to 'Edit', edit_migracionesactividad_path(migracionesactividad) %></td>
+        <td><%= link_to 'Destroy', migracionesactividad, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesactividad', new_migracionesactividad_path %>

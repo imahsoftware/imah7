@@ -1,0 +1,4 @@
+$("#buscador3").html("<%= j render 'visitas/resultado', visitas: @visitas %>");
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

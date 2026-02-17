@@ -1,0 +1,16 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="18%" class="text-left">Fecha Registro</th>
+        <th class="text-left">Servicio</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosservicios">
+	    <% @contrato.contratosservicios.includes([:user]).order(servicio: :asc).each do |contratosservicio| %>
+	      <%= render 'contratosservicios/tr', contratosservicio: contratosservicio %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

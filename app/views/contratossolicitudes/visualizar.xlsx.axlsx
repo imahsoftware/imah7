@@ -1,0 +1,162 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF7DB4F4", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FFE87F07", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosiz = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+  datoscent = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :center})
+  datosder = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  fecha = wd.styles.add_style(sz: 11, font_name: "Calibri", :format_code => 'dd-mm-yyyy', :alignment => {:horizontal => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,##0.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  datosnumerosf = wd.styles.add_style(b: true, bg_color: "FF045FB4", fg_color: 'F5F6CE',:format_code => '#,###,##0.#0', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :right})
+  observacion = wd.styles.add_style(sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left, :wrap_text => true})
+  header41 = wd.styles.add_style(b: true, bg_color: "FFE16E28", fg_color: 'F5F6CE', sz: 11, font_name: "Calibri", :alignment => {:horizontal => :left})
+
+  sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc)
+
+  dato = []
+  sedes = []
+  sedes << "Item"
+  sedes << "Vlr Unitario"
+  stylos = []
+  stylos << datosiz
+  stylos << datosnumeros
+  sedesactivas.each do |a|
+    dato << "cantsede_#{a.ordensede.to_s}"
+    sedes << "Sede #{a.ordensede.to_s}"
+    stylos << datosnumeros
+  end
+  sedes << "TOTAL"
+  sedes << "VALOR TOTAL"
+  stylos << datosnumeros
+  stylos << datosnumeros
+  wd.add_worksheet(:name => "Total") do |sheet|
+    sheet.add_row ["Solicitud",@contratossolicitud.id], :style => [header41,datosiz]
+    sheet.add_row ["Nit Empresa",@contratossolicitud.contrato.empresa.nombre], :style => [header41,datosiz]
+    sheet.add_row ["Fecha Solicitud",@contratossolicitud.created_at.strftime("%Y-%m-%d %X").to_s], :style => [header41,datosiz]
+    sheet.add_row ["Solicitante",@contratossolicitud.user.nombre], :style => [header41,datosiz]
+    sheet.add_row ["Periodo",@contratossolicitud.periodo], :style => [header41,datosiz]
+
+    sheet.merge_cells("B1:M1")
+    sheet.merge_cells("B2:M2")
+    sheet.merge_cells("B3:M3")
+    sheet.merge_cells("B4:M4")
+    sheet.merge_cells("B5:M5")
+
+    sheet.add_row []
+    array2 = ['A','C','O']
+    array2.each do |arr|
+      dato = ""
+      tit = ""
+      if arr.to_s == 'A'
+        dato = " contratosinsumo_id is not null and precio_unitario > 0 "
+        tit = "Insumos"
+      elsif arr.to_s == 'C'
+        dato = " contratosotro_id is not null and precio_unitario > 0"
+        tit = "Otros servicios"
+      elsif arr.to_s == 'O'
+        dato = " id = -1 "
+        contratossolotros = @contratossolicitud.contratossolotros.order("id asc")
+        tit = "Insumos General"
+      end
+      contratossoldetalle = @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order("id asc")
+      if contratossoldetalle.count.to_i > 0
+        total = 0
+        sheet.add_row []
+        sheet.add_row sedes, :style => title
+        contratossoldetalle.each do |c|
+          nominsumo = c.nombreinsumo_by_etapa(arr.to_s) rescue nil
+          detalles = []
+          detalles << nominsumo
+          detalles << c.precio_unitario
+          canttotal = 0
+          sedesactivas.each do |a|
+            detalles << eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+            canttotal = canttotal + eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+          end
+          detalles << canttotal
+          detalles << (canttotal * c.precio_unitario)
+          total = total + (canttotal * c.precio_unitario)
+          sheet.add_row detalles, :style => stylos
+        end
+        saldos2 = []
+        saldos2 << ""
+        saldos2 << ""
+        sedesactivas.each do |a|
+          saldos2 << ""
+        end
+        saldos2 << ""
+        saldos2 << total
+        sheet.add_row saldos2, :style => datosnumerosf
+      end
+    end
+  end
+
+  sedesactivas.each do |a|
+    wd.add_worksheet(:name => "Sede "+a.ordensede.to_s) do |sheet|
+      sheet.add_row ["Solicitud",@contratossolicitud.id], :style => [header41,datosiz]
+      sheet.add_row ["Nit Empresa",@contrato.empresa.nombre], :style => [header41,datosiz]
+      sheet.add_row ["Fecha Solicitud",@contratossolicitud.created_at.strftime("%Y-%m-%d %X").to_s], :style => [header41,datosiz]
+      sheet.add_row ["Solicitante",@contratossolicitud.user.nombre], :style => [header41,datosiz]
+      sheet.add_row ["Periodo",@contratossolicitud.periodo], :style => [header41,datosiz]
+
+      sheet.merge_cells("B1:D1")
+      sheet.merge_cells("B2:D2")
+      sheet.merge_cells("B3:D3")
+      sheet.merge_cells("B4:D4")
+      sheet.merge_cells("B5:D5")
+
+      sheet.add_row []
+      array = ['A','C','O']
+      array.each do |arr|
+        dato = ""
+        tit = ""
+        if arr.to_s == 'A'
+          dato = " contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+          tit = "Insumos"
+        elsif arr.to_s == 'C'
+          dato = " contratosotro_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+          tit = "Otros servicios"
+        elsif arr.to_s == 'O'
+          dato = " id = -1 "
+          contratossolotros = @contratossolicitud.contratossolotros.where(["cantsede_#{a.ordensede.to_s} > 0"]).order("id desc")
+          tit = "Insumos General"
+        end
+        contratossoldetalle = @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order("id desc")
+        if contratossoldetalle.count.to_i > 0
+          total = 0
+          sheet.add_row ["#{tit} - #{a.nombre rescue nil}"], :style => [header4]
+          sheet.add_row []
+          sheet.add_row ["Item","Cant.","Vlr Unitario","Total"], :style => [title,title,title,title]
+          contratossoldetalle.each do |c|
+            cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+            total = total + (c.precio_unitario*cant) rescue 0
+            nominsumo = c.nombreinsumo_by_etapa(arr.to_s) rescue nil
+            vlr = c.precio_unitario*cant rescue 0
+            sheet.add_row [nominsumo,cant,c.precio_unitario,vlr], :style => [datosiz,datosnumeros,datosnumeros,datosnumeros]
+          end
+          sheet.add_row ["TOTAL","","",total], :style => [title,title,title,datosnumerosf]
+        end
+        sheet.add_row []
+        if arr.to_s == 'O' and contratossolotros.count.to_i > 0
+          total = 0
+          sheet.add_row []
+          sheet.add_row ["#{tit} - #{a.nombre rescue nil}"], :style => [title]
+          sheet.add_row []
+          sheet.add_row ["Item","Cant.","Vlr Unitario","Total"], :style => [title,title,title,title]
+          contratossolotros.each do |c|
+            cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+            total = total + (c.precio_unitario*cant) rescue 0
+            nominsumo = c.insumo.insumodetalle rescue nil
+            vlr = c.precio_unitario*cant rescue 0
+            sheet.add_row [nominsumo,cant,c.precio_unitario,vlr], :style => [datosiz,datosnumeros,datosnumeros,datosnumeros]
+          end
+          sheet.add_row ["TOTAL","","",total], :style => [title,title,title,datosnumerosf]
+        end
+      end
+    end
+  end
+end

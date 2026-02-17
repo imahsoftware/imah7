@@ -1,0 +1,76 @@
+<div class="box box-danger">
+  <div class="box-header">
+    <legend>
+      <%= link_to soportes_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+        <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+      <% end %>
+      Información de Soporte
+      <% unless @soporte.new_record? %>
+        <% if is_auth_c('finalizar_soporte') and @soporte.estado == 'PENDIENTE' %>
+          <div class="pull-right">
+            <%= link_to finalizar_soportes_path(id: @soporte.id), data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Finalización" do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-check"></i> Finalizar</button>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </legend>
+  </div>
+  <%= simple_form_for(@soporte) do |f| %>
+    <% unless !@soporte.new_record? %>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+            <%= f.input :tipo, as: :select, collection: select_tipo_soporte, input_html: { class: 'select2' } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+            <%= f.input :observacion, as: :text, input_html: {rows: 4, onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase'}, label: "Observación" %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+            <%= f.input :docsoporte, as: :file, label: 'Archivo a cargar' %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="box-body">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th class="text-center text-table" width="10%">ID</th>
+            <th class="text-left text-table" width="15%">Fecha</th>
+            <th class="text-left text-table" width="20%">Tipo</th>
+            <th class="text-center text-table" width="15%">Estado</th>
+            <th class="text-left text-table">Observación</th>
+          </tr>
+          </thead>
+          <tr>
+            <td class="text-table text-center"><%= @soporte.id %></td>
+            <td class="text-table"><%= @soporte.created_at.strftime("%Y-%m-%d %X") %><br/>
+              <%= @soporte.user.nombre rescue nil %></td>
+            <td class="text-table"><%= @soporte.tipo %></td>
+            <td class="text-table text-center"><%= @soporte.estado %></td>
+            <td class="text-table"><%= @soporte.observacion %>
+              <% if @soporte.docsoporte_file_name.present? %><br/>
+                <%= link_to @soporte.docsoporte.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-cloud-download text-danger"></i> <%= @soporte.docsoporte_file_name rescue nil %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    <% end %>
+    <% unless !@soporte.new_record? %>
+      <div class="box-footer">
+        <div class="box-tools pull-right">
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        </div><!-- /.box-tools -->
+      </div>
+    <% end %>
+  <% end %>
+  <% unless @soporte.new_record? %>
+    <%= render 'soportesnotas/soportesnotas' %>
+  <% end %>
+</div>

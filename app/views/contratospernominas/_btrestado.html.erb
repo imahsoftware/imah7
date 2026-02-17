@@ -1,0 +1,6 @@
+<strong><small class="text-<%= a.estado.to_s == 'CONSOLIDADO' ? 'red' : 'blue' %>"><%= a.estado rescue nil %></small></strong>
+<% if a.estado.to_s == 'CONSOLIDADO' and @autorizaciondesconsolidarnomina %>
+  <%= link_to cambioestado_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, estado: "PENDIENTE"), data: { toggle: 'tooltip', confirm: "Seguro que desea REVERSAR el proceso consolidado?" }, title: 'Reversar', remote: true do %>
+    <i class="fa fa-unlock"></i>
+  <% end %>
+<% end %>

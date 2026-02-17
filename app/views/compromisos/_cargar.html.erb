@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @parcargosdoc.descripcion rescue nil %></h4>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <%= simple_form_for @contratosperimagen, :url => create2_contratosperimagenes_path, :method => :post, remote: true do |f| %>
+        <%= hidden_field_tag :contratosperfecha_id, params[:contratosperfecha_id], value: @contratosperfecha.id %>
+        <%= hidden_field_tag :compromiso_id, params[:compromiso_id], value: @compromiso.id %>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <%= f.input :personasimagen, as: :file, label: 'Archivo a cargar' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <%= f.input :observacion_documento, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: "Observación" %>
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          <div class="col-md-6">
+            <% if @contratosperimagen.new_record? %>
+              <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperimagen_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+            <% else %>
+              <%= link_to "#{t :cancelar}", contratospersona_contratosperimagen_path(@contratospersona, @contratosperimagen), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+            <% end %>
+          </div>
+          <div class="col-md-6">
+            <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+          </div>
+        </div>
+      <% end %>
+      <br/>
+      <br/>
+    </div>
+  </div>
+</div>

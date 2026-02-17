@@ -1,0 +1,100 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a href="#buscador" data-toggle="tab" aria-expanded="true"><i class="fa fa-binoculars"></i> Buscador</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="buscador">
+          <div class="box-header">
+            <div class="row">
+              <div class="col-md-11">
+                <legend>Proceso de Verificación</legend>
+              </div>
+              <div class="col-md-1">
+                <% if !Veriservicio.where("estado_proceso = 'PENDIENTE' and user_id = #{is_admin}").present? %>
+                  <%= link_to new_veriservicio_path, data: { toggle: 'tooltip' }, title: 'Crear Servicio' do %>
+                    <button class="btn btn-info"><strong>Nuevo</strong></button>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div><!-- /.box-header -->
+          <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+            <div class="box-body">
+              <div class="col-lg-7">
+                <%= label_tag :contrato_id, 'Contrato' %><br/>
+                <%= select_tag 'ubicacion[contrato_id]', options_for_select(Objeto.find_by_sql("select distinct v.contrato_id, concat(c.nro_contrato,' - ',e.nombre) as descripcion
+                from  veriservicios v, contratos c, empresas e
+                where v.contrato_id = c.id
+                AND   c.empresa_id = e.id").collect { |p| [p.descripcion, p.contrato_id] }), prompt: 'Contrato', data: { width: '100%', }, class: 'form-control select2' %>
+              </div>
+              <div class="col-lg-2">
+                <%= label_tag :estado_proceso, 'Estado' %><br/>
+                <%= select_tag 'ubicacion[estado_proceso]', options_for_select(select_estado_veriservicios), prompt: 'Estado', data: { width: '100%', }, class: 'form-control select2' %>
+              </div>
+              <div class="form-group">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <div class="box-header with-border">
+            <% if @veriservicios.count.to_i > 0 %>
+              <div class="box-body">
+                <div class="box-header with-border">
+                  <legend>Resultado de la busqueda (<%= @veriservicios.count rescue 0 %>)</legend>
+                </div><!-- /.box-header -->
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="5%"></th>
+                      <th width="5%" class="text-center">ID</th>
+                      <th width="25%" class="text-left">Contrato</th>
+                      <th width="15%" class="text-center">Fecha</th>
+                      <th width="10%" class="text-center">Estado</th>
+                      <th class="text-justify">Objetivo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @veriservicios.order(created_at: :desc).each do |veriservicio| %>
+                      <tr id="veriservicio_<%= veriservicio.id %>">
+                        <td class="text-center">
+                          <%= link_to edit_veriservicio_path(veriservicio, etapa: 'A'), class: 'edit_veriservicio_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                        </td>
+                        <td class="text-center"><%= veriservicio.id rescue nil %></td>
+                        <td class="text-left">
+                          <%= veriservicio.contrato.empresa.identnombre rescue nil %><%= veriservicio.contrato.nro_contrato rescue nil %>
+                        </td>
+                        <td class="text-center"><%= veriservicio.fecha rescue nil %></td>
+                        <td class="text-center">
+                          <div style="margin-top: 10px;">
+                            <%= veriservicio.estado_color rescue nil %>
+                          </div>
+                        </td>
+                        <td class="text-justify"><%= veriservicio.objetivo rescue nil %></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @veriservicios, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+                </div><!-- /.box-tools -->
+              </div>
+            <% else %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              </div>
+            <% end %>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>

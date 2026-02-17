@@ -1,0 +1,24 @@
+$("#contratosperprocitacion_form").collapse("hide");
+
+$("#contratosperprocitacion_form").empty();
+
+<% if @active_record.present? %>
+	$("#contratosperprocitacion_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratosperprocitacion: @active_record %>");
+<% end %>
+
+$("#contratosperprocitacion_<%= @contratosperprocitacion.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#contratosperprocitacion_<%= @contratosperprocitacion.id %>").addClass("active_contratosperprocitacion");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+
+
+
+$('.uppercaseInput').keyup(function () {
+    $(this).val($(this).val().toUpperCase());
+});

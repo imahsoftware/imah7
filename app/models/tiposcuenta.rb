@@ -1,0 +1,2 @@
+class Tiposcuenta < ApplicationRecord
+end

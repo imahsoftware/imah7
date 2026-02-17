@@ -1,0 +1,78 @@
+<%= simple_form_for(@proveedor) do |f| %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <legend>
+          <%= link_to proveedores_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-danger" aria-hidden="true"></i>
+          <% end %>
+        Información Básica del Proveedor
+      </legend>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :tiposdocumento_id, collection: Tiposdocumento.order(:descripcion).collect {|p| [ p.descripcion, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :identificacion, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+          <%= f.input :digito, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+          <%= f.input :nombre_proveedor, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <%= f.input :nombre_camara, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :telefono, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :celular, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+          <%= f.input :email, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :direccion, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :municipio_id, collection: Municipio.order(:autobuscar).collect {|p| [ p.autobuscar, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :nro_cuenta, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :entidad, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :tipo_cuenta, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+          <%= f.input :pertenece_cuenta, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+          <%= f.input :identificacion_cuenta, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %>
+        </div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>

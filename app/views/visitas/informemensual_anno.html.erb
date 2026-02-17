@@ -1,0 +1,82 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <%
+
+  %>
+  <br/>
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <% @contratosperusers.each do |contratosperuser|
+
+          @user = User.find(contratosperuser.user_id)
+
+          portafolio = Portafolio.find(@user.portafolio_id)
+          @logo_firma = portafolio.logo_firma
+          @logo = portafolio.logo_empresa_assets
+          @nombre_firma = portafolio.nombre_rep.to_s
+          @nombre_empresa = portafolio.razon_social.to_s
+          @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+
+          @contratosperfecha = Contratosperfecha.where("estado = 'ACTIVO' and (fecha_fin is null or fecha_fin > now()) and contratospersona_id = (select id from contratospersonas where identificacion = '#{@user.identificacion}')").first rescue nil
+          if @contratosperfecha.present?
+            @contratospersona = @contratosperfecha.contratospersona
+          else
+            @contratospersona = Contratospersona.find_by_identificacion(@user.identificacion)
+            @contratosperfecha = Contratosperfecha.where("contratospersona_id = #{@contratospersona.id}").last rescue nil
+          end
+
+          @visitas = Visita.select(:id, :user_id, :descripcion, :created_at, :finalizacion, :latitude, :longitude, :direccion, :contrato_id).where("DATE_FORMAT(finalizacion, '%m-%Y') = '#{@mes}' AND user_id = #{@user.id} and contrato_id in (select id from contratos where empresa_id = #{@empresa.id})").order("id asc")
+          @visitasCount = Visita.where("DATE_FORMAT(finalizacion, '%m-%Y') = '#{@mes}' AND user_id = #{@user.id} and contrato_id in (select id from contratos where empresa_id = #{@empresa.id})") rescue 0
+          @contratosvigentes = Contratosperfecha.where("DATE_FORMAT(fecha_inicio, '%m-%Y') = '#{@mes}' and contratospersona_id in (select contratospersona_id from contratosperusers where user_id = #{@user.id} and contrato_id in (select id from contratos where empresa_id = #{@empresa.id}))")
+          @contratosterminados = Contratosperfecha.where("DATE_FORMAT(fecha_fin, '%m-%Y') = '#{@mes}' and contratospersona_id in (select contratospersona_id from contratosperusers where user_id = #{@user.id} and contrato_id in (select id from contratos where empresa_id = #{@empresa.id}))")
+          @contratoscapacitaciones = Contratoscapapersona.where("DATE_FORMAT(fecha_finalizacion, '%m-%Y') = '#{@mes}' and contratoscapacitacion_id IN (SELECT id FROM contratoscapacitaciones WHERE user_supervisor = #{@user.id})")
+          @evaluaciones = Evaluacionescontrato.where("user_id = #{@user.id} and DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and evaluacion_id in (select id from evaluaciones where tipo = 'EVALUACION DESEMPENO') and contratosperfecha_id in (select id from contratosperfechas where contrato_id in (select id from contratos where empresa_id = #{@empresa.id}))")
+
+          @retiros = Solicitudesretiro.joins(:contrato, :contratospersona, :contratosgrupo)
+                                      .select("contratospersonas.autobuscar, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                       contratos.nro_contrato, contratos.id idcontrato,
+                                                       contratosgrupos.descripcion, contratosgrupos.termino,
+                                                       (select nombre from users where id = solicitudesretiros.user_id) usernombre,
+                                                       (select nombre from users where id = solicitudesretiros.user_aprobacion) useraprobanombre,
+                                                       (case when solicitudesretiros.user_aprobacion is null then 'PENDIENTE'
+                                                            when (solicitudesretiros.consecutivo is not null and solicitudesretiros.estado_final is null) then 'APROBADAS PARA PAGO'
+                                                            when (solicitudesretiros.consecutivo is not null and solicitudesretiros.estado_final is not null) then 'PAGADAS'
+                                                            when (solicitudesretiros.user_aprobacion is not null and solicitudesretiros.user_liquidacion is null and solicitudesretiros.consecutivo is null) then 'EN PROCESO'
+                                                            end) estadoliquidacion,
+                                                       solicitudesretiros.*")
+                                      .where("solicitudesretiros.user_id = #{@user.id} and DATE_FORMAT(fecha, '%m-%Y') = '#{@mes}' and contratos.empresa_id = #{@empresa.id}")
+                                      .order("contratospersonas.identificacion asc")
+
+          @procesos = Contratosperproceso.where("user_id = #{@user.id} and DATE_FORMAT(created_at, '%m-%Y') = '#{@mes}' and contrato_id in (select id from contratos where empresa_id = #{@empresa.id})")
+
+        %>
+          <%= render 'visitas/render_informe/encabezados/enc_visitas.pdf.erb', titulo: 'Informe Mensual de las Visitas' %>
+          <%= render 'visitas/render_informe/visitas/visita.pdf.erb' %>
+          <%= render 'visitas/render_informe/visitas/contratosinicio.pdf.erb' %>
+          <%= render 'visitas/render_informe/visitas/contratosfin.pdf.erb' %>
+          <%= render 'visitas/render_informe/capacitaciones/capacitacion.pdf.erb' %>
+          <%= render 'visitas/render_informe/evaluaciones/evaluaciones.pdf.erb' %>
+          <%= render 'visitas/render_informe/retiros/retiro.pdf.erb' %>
+          <%= render 'visitas/render_informe/procesos/procesos.pdf.erb' %>
+          <H1 class=SaltoDePagina>&nbsp;</H1>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

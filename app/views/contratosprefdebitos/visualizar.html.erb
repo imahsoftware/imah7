@@ -1,0 +1,111 @@
+<%
+
+  @logo = @contratosprefdebito.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosprefdebito.contrato.empresa.portafolio_id) rescue nil
+%>
+<div align="center">
+  <table width="780" border="0">
+    <tr valign="top">
+      <td height="700">
+        <br/>
+        <table width="100%">
+          <tr>
+            <td width="30%">
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "280x120" %>
+              </div>
+            </td>
+            <td>
+              <div align="center"><strong>
+                <h3>RECIBO DE CAJA</h3>
+                <%=portafolio.razon_social rescue nil %> NIT: <%=portafolio.identificacion rescue nil %>-<%=portafolio.digito rescue nil %></strong>
+              </div></td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="15%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Nro Contrato</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Factura SIIGO</th>
+            <th class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Cliente</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.contrato.nro_contrato rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.contratosprefactura.siigo_nro rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.contrato.empresa.identnombre rescue nil%></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="15%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Nro Recibo</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Fecha Recibo</th>
+            <th class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Entidad Pago</th>
+            <th width="40%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Elaborado por</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.id rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.fecha_pago.strftime("%d-%m-%Y") rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.tiposcuenta.entidad rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosprefdebito.user.nombre rescue nil%></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;">
+          <tr style="background: #adadad">
+            <th class="text-left" height="20" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">CONCEPTO</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">DINERO</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">OTROS</th>
+          </tr>
+          <tr>
+            <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">FACTURA DE VENTRA CREDITO PAGO</td>
+            <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico @contratosprefdebito.valor rescue nil %>&nbsp;</td>
+            <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">0,00&nbsp;&nbsp;</td>
+          </tr>
+          <% datos = @contrato.contratosretenciones.order(id: :asc)
+             datos.each do |a|
+               dato = "@contratosprefdebito.rete_"+a.tipospretencion_id.to_s
+          %>
+            <tr>
+              <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">FACTURA DE VENTRA CREDITO <%=a.tipospretencion.descripcion.to_s %></td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">0,00&nbsp;&nbsp;</td>
+              <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico eval(dato) rescue nil %>&nbsp;</td>
+            </tr>
+          <% end %>
+          <tr>
+            <td align="left" colspan="3" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="left" rowspan="3" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"></td>
+            <th align="left" height="20" style="background: #adadad; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">Total Dinero</th>
+            <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico @contratosprefdebito.valor rescue nil %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th align="left" height="20" style="background: #adadad; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">Total Otros</th>
+            <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico @contratosprefdebito.valor_retencion rescue nil %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th align="left" height="20" style="background: #adadad; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">Total General</th>
+            <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico @contratosprefdebito.totalgeneral rescue nil %>&nbsp;</td>
+          </tr>
+        </table>
+        <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y%m%d%X") rescue nil%>-<%=is_admin %></div>
+        <br/>
+
+      </td>
+    </tr>
+  </table>
+  <br/><br/>
+</div>
+<style>
+    tr {
+        page-break-inside: avoid;
+
+    }
+    table  { page-break-inside:auto }
+    thead { display:table-header-group }
+    tfoot  { display:table-footer-group }
+
+</style>
+
+
+

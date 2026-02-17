@@ -1,0 +1,61 @@
+<tr id="contratospernovedad_<%= contratospernovedad.id %>">
+  <td class="text-center">
+    <% if contratospernovedad.contratospernomina_id.to_i == 0 %>
+      <%= link_to contratospersona_contratospernovedad_path(@contratospersona, contratospernovedad), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+      <%= link_to edit_contratospersona_contratospernovedad_path(@contratospersona, contratospernovedad), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to new_contratospernovimagen_path(contratospernovedad_id: contratospernovedad.id), remote: true, data: { toggle: 'tooltip' }, title: 'Añadir Soporte Digital' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratospernovedad.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= contratospernovedad.user.username rescue nil %>
+      <br/><%= contratospernovedad.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(contratospernovedad.user_anula).username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td>
+    <div align="left" style="font-size: 11px;"><%= contratospernovedad.tiposnovedad.descripcion rescue nil %>
+      <% if contratospernovedad.registro_aportes_linea.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratospernovedad.registro_aportes_linea rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Novedad Registrada con Exito!!!
+              </span>
+        </a>
+      <% elsif contratospernovedad.errores_aportes_linea.present? %><br/>
+              <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratospernovedad.errores_aportes_linea rescue nil %>
+              </span>
+      <% end %>
+    </div>
+  </td>
+  <td class="text-center" style="font-size: 11px;"><%= contratospernovedad.fecha.strftime("%Y-%m-%d") rescue nil %></td>
+  <td class="text-center" style="font-size: 11px;"><%= contratospernovedad.nro_horas rescue nil %></td>
+  <td class="text-right" style="font-size: 11px;"><%= camponumerico contratospernovedad.valor_novedad rescue nil %></td>
+  <td class="text-justify" style="font-size: 10px;"><%= contratospernovedad.observacion rescue nil %>
+    <% if contratospernovedad.detallediasnovedad.to_s != "" %>
+      <small><br/><strong>Dias Novedad: </strong><%= contratospernovedad.detallediasnovedad rescue nil %></small>
+    <% end %>
+    <% if contratospernovedad.novedadimagen_file_name.to_s != "" %>
+      <small><br/>
+        <%= link_to contratospernovedad.novedadimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+          <i class="fa fa-cloud-download text-danger"></i> <%= contratospernovedad.novedadimagen_file_name rescue nil%></div>
+        <% end %>
+      </small>
+    <% end %>
+    <% Contratospernovimagen.where(contratospernovedad_id: contratospernovedad.id).each do |a| %>
+      <small><br/>
+        <%= link_to a.novedadimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+          <i class="fa fa-cloud-download text-danger"></i> <%= a.novedadimagen_file_name rescue nil%></div>
+        <% end %>
+      </small>
+    <% end %>
+  </td>
+</tr>
+<div class="modal fade" id="adddocumento">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="10%" class="text-center">Tipo</th>
+        <th class="text-left">Interventor</th>
+        <th width="12%" class="text-center">Fecha</th>
+        <th width="25%" class="text-left">Opciones</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosusers">
+	    <% @contrato.contratosusers.includes([:user]).order(tipo: :asc).each do |contratosuser| %>
+	      <%= render 'contratosusers/tr', contratosuser: contratosuser %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+<div class="modal fade" id="sede">
+	<div class="modal-dialog modal-dialog-responsive" role="document">
+		<div class="modal-content"></div>
+  </div>
+</div>
+
+<style>
+    th{
+        vertical-align:middle !important;
+    }
+</style>

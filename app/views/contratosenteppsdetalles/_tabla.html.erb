@@ -1,0 +1,51 @@
+<div class="table-responsive">
+  <% @usuarios = Objeto.find_by_sql("SELECT DISTINCT c.contratosperfecha_id, cp.autobuscar
+                                            FROM contratosenteppsdetalles c, contratosperfechas cf, contratospersonas cp
+                                            WHERE c.contratosentepp_id = #{@contratosentepp.id}
+                                            AND c.contratosperfecha_id = cf.id
+                                            AND cf.contratospersona_id = cp.id
+                                            ORDER BY cp.autobuscar ASC
+")
+     @usuarios.each do |c| %>
+    <legend style="font-size: 14px;"><%= c.autobuscar rescue nil %> - <code><%= @contratosentepp.contrato.empresa.identnombre rescue nil %> - <b>Nro:</b> <%= @contratosentepp.contrato.nro_contrato rescue nil %></code>
+      <%#= link_to informepdf_contratosentepps_path(id: @contratosentepp.id, contratosperfecha_id: c.contratosperfecha_id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Informe Entrega PDF' do %>
+      <!-- <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button> -->
+      <%# end %>
+
+      <% if @contratosentepp.contratosenteppsdetalles.present? and ['INICIAR FIRMA'].include?(@contratosentepp.estado) %>
+        <% if Contratosenteppsfirma.where("contratosperfecha_id = #{c.contratosperfecha_id} and contratosentepp_id = #{@contratosentepp.id} and codigo_firma is null").present? %>
+          <%= link_to otp_contratosentepps_path(id: @contratosentepp.id, contratosperfecha_id: c.contratosperfecha_id), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea firmar" } do %>
+            <span style="color: red"><i class="fa fa-pencil"></i> Firmar</span>
+          <% end %>
+          <div class="modal fade" id="otp<%= c.contratosperfecha_id rescue nil %>">
+            <div class="modal-dialog modal-dialog-responsive" role="document">
+              <div class="modal-content">
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% elsif ['FINALIZADO'].include?(@contratosentepp.estado) and Contratosenteppsfirma.where("contratosperfecha_id = #{c.contratosperfecha_id} and contratosentepp_id = #{@contratosentepp.id} and codigo_firma is not null").present? %>
+        <span style="color: #00a157"> - Firmado <i class="fa fa-check"></i> </span>
+      <% end %>
+    </legend>
+
+
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <td width="8%"></td>
+        <th class="text-left text-table">Item</th>
+        <th width="10%" class="text-right text-table">Cantidad</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_contratosenteppsdetalles">
+      <% @contratosentepp.contratosenteppsdetalles.where("contratosperfecha_id = #{c.contratosperfecha_id}").order(id: :desc).each do |contratosenteppsdetalle| %>
+        <%= render 'contratosenteppsdetalles/tr', contratosenteppsdetalle: contratosenteppsdetalle %>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+
+

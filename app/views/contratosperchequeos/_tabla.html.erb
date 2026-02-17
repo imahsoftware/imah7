@@ -1,0 +1,17 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="10%" class="text-left">Fecha</th>
+        <th width="40%" class="text-left">Nombre del centro de trabajo</th>
+        <th width="40%" class="text-center">Nombre de la empresa o persona contratista</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosperchequeos">
+	    <% @contratospersona.contratosperchequeos.order(id: :desc).each do |contratosperchequeo| %>
+	      <%= render 'contratosperchequeos/tr', contratosperchequeo: contratosperchequeo %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

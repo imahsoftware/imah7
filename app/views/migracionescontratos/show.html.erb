@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionescontrato.user %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionescontrato.archivo %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionescontrato.estado %>
+</p>
+
+<p>
+  <strong>Identificacion:</strong>
+  <%= @migracionescontrato.identificacion %>
+</p>
+
+<p>
+  <strong>Contratoscargo:</strong>
+  <%= @migracionescontrato.contratoscargo_id %>
+</p>
+
+<p>
+  <strong>Contratosgrupo:</strong>
+  <%= @migracionescontrato.contratosgrupo_id %>
+</p>
+
+<p>
+  <strong>Fecha inicio:</strong>
+  <%= @migracionescontrato.fecha_inicio %>
+</p>
+
+<%= link_to 'Edit', edit_migracionescontrato_path(@migracionescontrato) %> |
+<%= link_to 'Back', migracionescontratos_path %>

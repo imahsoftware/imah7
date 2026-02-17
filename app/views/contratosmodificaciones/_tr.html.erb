@@ -1,0 +1,19 @@
+<tr id="contratosmodificacion_<%= contratosmodificacion.id %>">
+  <td class="text-center">
+    <%= link_to edit_contrato_contratosmodificacion_path(@contrato, contratosmodificacion), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%# if is_auth_e("contratosmodificacion")%>
+      <%= link_to contrato_contratosmodificacion_path(@contrato, contratosmodificacion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosmodificacion.user_nombre.html_safe rescue nil %><%= contratosmodificacion.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosmodificacion.tipo_modificacion rescue nil %></td>
+  <td align="right"><%= camponumerico contratosmodificacion.valor rescue nil %></td>
+  <td align="center"><%= contratosmodificacion.fecha_fin rescue nil %></td>
+  <td align="justify"><%= contratosmodificacion.observacion rescue nil %></td>
+</tr>
+
+

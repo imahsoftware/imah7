@@ -1,0 +1,36 @@
+
+<td><strong><%= fe.tiposevaluacion.descripcion rescue nil %></strong>
+  <small><br/><%= fe.tiposevaluacion.detalle_esp rescue nil %></small></td>
+<% if clase == 'SERVICIO' %>
+  <% if clase == 'SERVICIO' and fe.tiposevaluacion.descripcion.to_s == 'BRIGADAS'  %>
+    <td><div align="center">SI <%= f.radio_button("calificacion", fe.tiposevaluacion.valor1) %></div></td>
+    <td><div align="center">NO  <%= f.radio_button("calificacion", fe.tiposevaluacion.valor2) %></div></td>
+  <% else  %>
+    <td><div align="center"><%= f.radio_button("calificacion", fe.tiposevaluacion.valor1) %></div></td>
+    <td><div align="center"><%= f.radio_button("calificacion", fe.tiposevaluacion.valor2) %></div></td>
+  <% end  %>
+  <td><%= f.text_area(:observaciones, :cols => 80, :rows => 4,
+                      :onChange=> "javascript:this.value=this.value.toUpperCase();", :onFocus => "this.style.border='1px solid #f00'",
+                      :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%);") %>
+      <% if fe.calificacion.to_s == 'NO REALIZADA' and fe.observaciones.to_s == "" %>
+          <br/><span class="label label-danger">** No puede estar vacio.</span>
+      <% end %>
+  </td>
+  <% if valida %>
+    <td><div align="center"><%= f.check_box :novedad,{},'SI','NO'%></div></td>
+  <% end %>
+<% elsif clase == 'PERSONAL' %>
+  <td><div align="center"><%= image_tag 'serio.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposevaluacion.valor1) %></div></td>
+  <td><div align="center"><%= image_tag 'alegre.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposevaluacion.valor2) %></div></td>
+  <td><div align="center"><%= image_tag 'triste.png', class: 'user-image', size: '60x60' %>
+    <%= f.radio_button("calificacion", fe.tiposevaluacion.valor3) %></div></td>
+  <td><%= f.text_area(:observaciones, :cols => 50, :rows => 4,
+                      :onChange=> "javascript:this.value=this.value.toUpperCase();", :onFocus => "this.style.border='1px solid #f00'",
+                      :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%);") %>
+        <% if fe.calificacion.to_i == '20' and fe.observaciones.to_s == "" %>
+          <br/><span class="label label-danger">** No puede estar vacio.</span>
+        <% end %>
+  </td>
+<% end %>

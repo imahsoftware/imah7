@@ -1,0 +1,26 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @contratospersona.contratosperalertas.count == 1 %>
+	$("#contratosperalertas").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_contratosperalertas").prepend("<%= j render 'tr', contratosperalerta: @contratosperalerta %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#contratosperalerta_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);

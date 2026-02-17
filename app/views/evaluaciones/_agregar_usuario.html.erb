@@ -1,0 +1,35 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Evaluación: <%= @evaluacion.tema.capitalize rescue nil %></h4>
+  </div>
+  <div class="modal-body">
+    <%= simple_form_for([@evaluacion, @evaluacionescontrato], remote: true) do |f| %>
+      <div class="bs-callout">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <% if is_sygma %>
+              <%= f.input :user_responsable, collection: User.where(["tipoconsulta not in ('CANDIDATO','RECTOR') AND geintac is null and activo = 'S' and contratospersona_id in (select contratospersona_id from contratosperusers)"]).order(:nombre).collect { |p| [p.nombrecompleto, p.id] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true %>
+            <% else %>
+              <%= f.input :user_responsable, collection: User.where(["tipoconsulta not in ('CANDIDATO','RECTOR') AND geintac is null and activo = 'S' and contratospersona_id in (select contratospersona_id from contratosperusers where user_id = #{is_admin})"]).order(:nombre).collect { |p| [p.nombrecompleto, p.id] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true %>
+            <% end %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <% if @evaluacionescontrato.new_record? %>
+              <%= link_to "Cancelar", cancelar_evaluacionescontratos_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+            <% else %>
+              <%= link_to "Cancelar", evaluacion_evaluacionescontrato_path(@evaluacion, @evaluacionescontrato), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+            <% end %>
+          </div>
+          <div class="col-md-6">
+            <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right" %>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+</div>

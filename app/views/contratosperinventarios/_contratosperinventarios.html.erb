@@ -1,0 +1,22 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Inventario</strong></h3>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('contratosperinventario') %>
+    <% if Contratosperinventario.where("estado = 'PENDIENTE' and contratospersona_id = #{@contratospersona.id}").blank? %>
+      <%= link_to new_contratospersona_contratosperinventario_path(contratospersona_id: @contratospersona.id, contratosperfecha_id: @contratosperfecha.id), id: 'new_contratosperinventario_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span>Crear Inventario</span>
+      <% end %>
+    <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosperinventarios">
+    <% if @contratospersona.contratosperinventarios.present? %>
+      <%= render 'contratosperinventarios/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>

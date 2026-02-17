@@ -1,0 +1,9 @@
+<tr id="iparametrosformato_<%= iparametrosformato.id %>">
+  <td class="text-center">
+    <%= link_to iparametrosformato, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="text-center"><%= iparametrosformato.orden %></td>
+  <td><%= iparametrosformato.formato.nombre rescue nil %></td>
+</tr>

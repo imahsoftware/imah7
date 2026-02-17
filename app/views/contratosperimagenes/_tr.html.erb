@@ -1,0 +1,19 @@
+<tr id="contratosperimagen_<%= contratosperimagen.id %>">
+  <td class="text-center">
+    <% if is_auth_a("contratosperimagen")%>
+      <%= link_to contratospersona_contratosperimagen_path(@contratospersona, contratosperimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("contratosperimagen")%>
+      <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <button class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info">
+      <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperimagen.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+    </button>
+  </td>
+  <td align="left"><%= contratosperimagen.descripcion rescue nil %></td>
+  <td align="left"><%= contratosperimagen.personasimagen_file_name rescue nil %></td>
+</tr>

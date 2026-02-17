@@ -1,0 +1,43 @@
+wd = xlsx_package.workbook
+wd.styles do |style|
+  title = wd.styles.add_style(b: true, bg_color: "FF045FB4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header = wd.styles.add_style(b: true, bg_color: "FF2498E4",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header1 = wd.styles.add_style(b: true, bg_color: "FF00BA36",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header2 = wd.styles.add_style(b: true, bg_color: "FF5EFF33",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header3 = wd.styles.add_style(b: true, bg_color: "FF417932",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  header4 = wd.styles.add_style(b: true, bg_color: "FF018126",fg_color: 'F5F6CE',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosiz = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :left, :vertical => :center})
+  datoscent = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :center, :vertical => :center})
+  datosder = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  fechas = wd.styles.add_style(sz: 11,font_name: "Calibri", :format_code => 'dd-mm-yyyy',:alignment=>{:horizontal => :center, :vertical => :center})
+  datosnumeros = wd.styles.add_style(:format_code => '#,###,###0.#0',sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  porcentaje = wd.styles.add_style(:num_fmt => Axlsx::NUM_FMT_PERCENT,sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :right, :vertical => :center})
+  observacion = wd.styles.add_style(sz: 11,font_name: "Calibri",:alignment=>{:horizontal => :left,:wrap_text => true})
+  fecha_min = wd.styles.add_style(sz: 11,font_name: "Calibri", :format_code => 'dd-mm-yyyy HH:MM:SS',:alignment=>{:horizontal => :center, :vertical => :center})
+
+  wd.add_worksheet(:name => "Registros")  do |sheet|
+      estilo = [fechas,datosiz,datosiz,datosiz,datosiz,datoscent,datoscent,datoscent]
+      tipos = [nil,nil,nil,nil,nil,nil,nil,nil,nil]
+      sheet.add_row ["Fecha registro",
+                     "Usuario registro",
+                     "Identificación",
+                     "Nombre",
+                     "Barrio",
+                     "Telefono",
+                     "Clase",
+                     "Temperatura"], :style=> [header,header,header,header,header,header,header,header,header]
+      for p in @entradas
+        barrio = p.barrio.detalle rescue nil
+        sheet.add_row [p.created_at.strftime('%Y-%m-%d %X'),
+                       p.user.username,
+                       p.identificacion,
+                       p.nombre,
+                       barrio,
+                       p.celular,
+                       p.clase,
+                       p.temperatura], :types => tipos, :style => estilo
+      end
+    end
+end 
+
+

@@ -1,0 +1,20 @@
+<tr id="contratosperprodoc_<%= contratosperprodoc.id %>">
+  <td class="text-center">
+    <% if @contratosperproceso.estado.to_s != 'FINALIZADO' %>
+      <%= link_to edit_contratosperproceso_contratosperprodoc_path(@contratosperproceso, contratosperprodoc), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosperproceso_contratosperprodoc_path(@contratosperproceso, contratosperprodoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperprodoc.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/><%= contratosperprodoc.user.nombre rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperprodoc.tipo rescue nil %></td>
+  <td align="left" class="text-table">
+    <%= link_to contratosperprodoc.docproceso.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <i class="fa fa-cloud-download text-danger"></i> <%= contratosperprodoc.docproceso_file_name rescue nil %>
+    <% end %>
+  </td>
+
+</tr>

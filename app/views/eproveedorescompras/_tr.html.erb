@@ -1,0 +1,102 @@
+<tr id="eproveedorescompra_<%= eproveedorescompra.id %>">
+  <td rowspan="2" class="text-center">
+    <% if eproveedorescompra.egresoId.to_s == "" %>
+        <%= link_to edit_eproveedor_eproveedorescompra_path(@eproveedor, eproveedorescompra), remote: true, class: 'edit_eproveedorsmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+        <% end %>
+        <%= link_to eproveedor_eproveedorescompra_path(@eproveedor, eproveedorescompra), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+           <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+    <% else
+         egresoId = eproveedorescompra.egresoId rescue 0
+    %>
+      <%= link_to veregreso_egresos_path(id: egresoId, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Egreso' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+      <% if eproveedorescompra.nro_adquisicion.to_i > 0 %>
+        <%= link_to equivalente_eproveedorescompras_path(id: eproveedorescompra.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Documento Equivalente' do %>
+          <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+        <% end %>
+      <% else %>
+        <%= link_to vercausacion_eproveedorescompras_path(id: eproveedorescompra.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver Causacion' do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+        <% end %>
+      <% end %>
+    <% end %>
+    <%= link_to new_eproveedorescimagen_path(eproveedorescompra_id: eproveedorescompra.id), remote: true, data: {toggle: 'tooltip'}, title: 'Añadir Soporte Digital' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+    <% end %>
+    <% if eproveedorescompra.existetemcompra.to_s == 'X'
+         claseee = 'alert-danger'
+       else
+         claseee = ''
+       end
+    %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= eproveedorescompra.user_nombre.html_safe rescue nil %><%= eproveedorescompra.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td rowspan="2" class="<%=claseee %>" align="center" style="font-size:11px;"><%= eproveedorescompra.fecha %></td>
+  <td rowspan="2" class="<%=claseee %>" align="center" style="font-size:11px;"><%= eproveedorescompra.nro_factura %>
+    <% if eproveedorescompra.existetem.to_s == "X" and eproveedorescompra.estado.to_s == 'PENDIENTE' and eproveedorescompra.existetemcompra.to_s == "" %>
+      <br/>
+      <%= link_to adicionar_eproveedorescompras_path(id: eproveedorescompra.id), data: {toggle: 'tooltip'}, title: 'Agregar a la causación temporal' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-plus-square"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" style="font-size:11px;"><strong><%= eproveedorescompra.portafolio.nombre rescue nil %></strong></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_descuento %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_iva %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.valor_retencion %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.total %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico eproveedorescompra.saldo %></td>
+  <td align="center" style="font-size:10px;"><strong><%if eproveedorescompra.estado.to_s == 'CAUSADA' %><small class="text-red"><%= eproveedorescompra.estado rescue nil%></small><%else %><small class="text-blue"><%= eproveedorescompra.estado rescue nil%></small><%end %></strong></td>
+</tr>
+  <tr>
+    <td colspan="8" align="left">
+      <% if eproveedorescompra.valorretencion.to_i > 0 %>
+        <div id="abrir<%= eproveedorescompra.id %>" class="pull-left">
+          <%= link_to show_detalle_eproveedorescompras_path(eproveedorescompra_id: eproveedorescompra.id, ruta: 'ABRIR'), remote: true do %>
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+            Ver detalle de retenciones ($<%= camponumerico eproveedorescompra.valorretencion rescue nil%>)
+          <% end %>
+        </div>
+        <div id="cerrar<%= eproveedorescompra.id %>" class="pull-left hide">
+          <%= link_to show_detalle_eproveedorescompras_path(eproveedorescompra_id: eproveedorescompra.id, ruta: 'CERRAR'), remote: true do %>
+            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+            Ver detalle de retenciones ($<%= camponumerico eproveedorescompra.valorretencion rescue nil%>)
+          <% end %>
+        </div>
+        <div id="trdetalle<%= eproveedorescompra.id %>" style="width: 100%"></div>
+      <% else %>
+        <small>Observaciones: <%= eproveedorescompra.observacion rescue nil %></small>
+      <% end %>
+
+      </div>
+      <% if eproveedorescompra.existeimagen.to_s == 'X' %><br/>
+        <a href="javascript:void(0);" onclick="SINO('demoimg_<%=eproveedorescompra.id%>')">
+          <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:#ff0000;" data-original-title="Pulsa aqui para ver recaudos"></i>Ver soportes digitales </a>
+        <div id="demoimg_<%=eproveedorescompra.id rescue nil %>" style="display:none;">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead class="thcolor">
+            <tr>
+              <th class="text-left" style="font-size:10px;">Documento</th>
+            </tr>
+            </thead>
+          <% eproveedorescompra.eproveedorescimagenes.each do |a| %>
+              <tr>
+                <td align="left" style="font-size:10px;"><%= link_to a.compraimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <i class="fa fa-cloud-download text-danger"></i> <%=a.compraimagen_file_name %>
+                    <% end %></td>
+              </tr>
+          <%end %>
+          </table>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+<div class="modal fade" id="adddocumento">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

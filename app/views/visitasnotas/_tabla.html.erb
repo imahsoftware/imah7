@@ -1,0 +1,19 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="20%" class="text-left text-table">Fecha</th>
+        <th class="text-left text-table">Nota</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_visitasnotas">
+	    <% @visita.visitasnotas.order(id: :desc).each do |visitasnota| %>
+	      <%= render 'visitasnotas/tr', visitasnota: visitasnota %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

@@ -1,0 +1,7 @@
+<% if @valida %>
+$("#otp2<%= @contratosperprocitacion.id %>").modal("hide");
+$("#firmado_check3<%= @contratosperprocitacion.id %>").html(" <div><em> <b>Firmado Citación No Atendida:</b> <i class='fa fa-check text-success'></i> - <b>Fecha: </b><%= @contratosperprocitacion.codigo_fecha.strftime('%Y-%m-%d %X') rescue nil %> - <b>Usuario: </b><%= User.find(@contratosperprocitacion.user_firma).nombre rescue nil %></em></div>");
+$("#remove_boton3<%= @contratosperprocitacion.id %>").remove();
+<% else %>
+$("#mensaje2<%= @contratosperprocitacion.id %>").replaceWith("<div class='row' id='mensaje2'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2' style='text-align: center;width: 100%;margin-bottom: 30px;color: red;font-weight: 600;font-size: 20px;'>CODIGO NO VALIDO</div></div>");
+<% end %>

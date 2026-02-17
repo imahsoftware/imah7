@@ -1,0 +1,28 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+$("#contratosproyectodelete_<%= @contratosproyecto.id %>").hide();
+
+<% if @contratosproyecto.contratosprosedes.count.to_i == 1 %>
+	$("#contratosprosedes<%= @contratosproyecto.id %>").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_contratosprosedes<%= @contratosproyecto.id %>").prepend("<%= j render 'tr', contratosprosede: @contratosprosede %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#contratosprosede_form<%= @contratosproyecto.id %>").hide();
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);

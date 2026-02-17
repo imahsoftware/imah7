@@ -1,0 +1,56 @@
+<tr id="contratosperfecha_<%= contratosperfecha.id %>">
+  <td class="text-center">
+      <% if contratosperfecha.registro_aportes_linea.blank? %>
+        <%= link_to crear_aporte_contratosperfechas_path(id: contratosperfecha.id, masivo: 'SI'), data: { toggle: 'tooltip' }, title: 'Clic para crear en aportes en linea' do %>
+          <button class="btn btn-xs btn-success"><i class="fa fa-h-square"></i></button>
+        <% end %>
+      <% end %>
+  </td>
+  <td align="left" style="font-size:10px;">
+    <strong><%= contratosperfecha.identnombre rescue nil %></strong>
+    <br/><strong>Empresa : </strong><%= contratosperfecha.contrato.empresa.identnombre rescue nil %>
+    <br/><strong>Tipo de Contrato : </strong><%= contratosperfecha.tipo_contrato rescue nil %>
+    <br/><strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %> -
+    <strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+    <br/><strong>Grupo de nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %> <small>(<%= contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+    <% if contratosperfecha.portraslado.to_s == 'SI' %><div class="text-red" style='font-size: 10px;'><strong>->> Por traslado!!</strong></div><% end %>
+    <% if contratosperfecha.laboro.to_s == 'NO' %><div style="color:red;"><small>* Este empleado NUNCA LABORO</small></div><% end %>
+      <% if contratosperfecha.registro_aportes_linea.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_linea rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se encuentra Registrado con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.errores_aportes_linea.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.errores_aportes_linea rescue nil %>
+              </span>
+      <% end %>
+      <% if contratosperfecha.registro_aportes_retiro.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_retiro rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se encuentra Retirado con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.error_aportes_retiro.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.error_aportes_retiro rescue nil %>
+              </span>
+      <% end %>
+      <% if contratosperfecha.registro_aportes_ingreso.present? %><br/>
+        <a data-toggle="tooltip" title="" href="" data-original-title="<%= contratosperfecha.registro_aportes_ingreso rescue nil %>">
+              <span class="badge bg-green" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> Se Ingreso con Exito!!!
+              </span>
+        </a>
+      <% elsif contratosperfecha.error_aportes_ingreso.present? %><br/>
+        <span class="badge bg-red" style="font-size: 9px;">
+                <%= image_tag("logo_aportes.png", style: "width: 30px; border-radius: 5px;") %> <%= contratosperfecha.error_aportes_ingreso rescue nil %>
+              </span>
+      <% end %>
+  </td>
+  <td align="center" style="font-size:10px;"><%= contratosperfecha.fecha_inicio rescue nil %></td>
+  <td align="center" style="font-size:10px;"><%= contratosperfecha.fecha_fin rescue nil %></td>
+  <td align="right" style="font-size:10px;"><%= camponumerico contratosperfecha.salariofinal rescue nil %></td>
+  <td align="center" style="font-size:10px;"><%= contratosperfecha.estado rescue nil %></td>
+</tr>

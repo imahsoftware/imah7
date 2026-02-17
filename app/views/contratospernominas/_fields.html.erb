@@ -1,0 +1,12 @@
+<td width="40%"><small><%= f.contratospersona.identificacion rescue nil %></small></td>
+<td><%= f.text_field :dias, {:class => "camposnumeros", :size => 8, :onFocus => "this.style.border='1px solid #f00'",
+                                                  :onBlur => "this.style.border='1px solid #bbb';", :style => "font-size: 11px; font-family: Tahoma; text-align: right;"} %></td>
+<td><%= f.text_field :bonificacion, {:class => "camposnumeros", :size => 8, :onFocus => "this.style.border='1px solid #f00'",
+                                         :onBlur => "this.style.border='1px solid #bbb';", :style => "font-size: 11px; font-family: Tahoma; text-align: right;"} %></td>
+
+<style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+</style>

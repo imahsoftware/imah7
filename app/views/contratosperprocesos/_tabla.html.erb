@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <td width="15%"></td>
+      <th class="text-left text-table" width="15%">Clase de proceso</th>
+      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+      <th class="text-left text-table">Detalle</th>
+      <th class="text-center text-table" width="10%">Estado</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_contratosperprocesos">
+    <% @contratospersona.contratosperprocesos.where("contratosperfecha_id = #{@contratospersona.idperfecha} and estado != 'NO PROCEDE'").order(id: :desc).each do |contratosperproceso| %>
+      <%= render 'contratosperprocesos/tr', contratosperproceso: contratosperproceso %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

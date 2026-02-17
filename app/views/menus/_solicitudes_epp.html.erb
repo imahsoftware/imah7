@@ -1,0 +1,147 @@
+<% usr = current_user
+   estados = ['PENDIENTE', 'ENVIADO', 'APROBADO', 'RECHAZADO', 'DESPACHADO', 'ENTREGADO', 'CONTROL EMPRESAS']
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.subetapa.to_s == p
+              clase = "active"
+              text = "text-red"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_contratossolepps_path(subetapa: p, etapa: 'ADMINISTRATIVO') do %>
+              <div class="<%= text %>"><i class="fa fa-adn"></i> <%= p.capitalize %> </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if usr.subetapa.to_s == 'CONTROL EMPRESAS' %>
+          <%= render 'contratosentepps/control_empresa' %>
+        <% else %>
+          <%
+            cont = 0
+            clase = ""
+            estados.each do |e|
+              if usr.subetapa.to_s == e
+                datossol = Contratossolepp.select("DATE_FORMAT(created_at, '%Y-%m') periodo, count(9) cantidad").where(estado: e).group("periodo").distinct.order("periodo desc")
+                if datossol.present?
+          %>
+                <div class="right">
+                  <%= link_to informe_datas_path(infgrupo_id: 96, portafolio_id: e, format: :xlsx), data: { toggle: 'tooltip' }, title: "#{e}" do %>
+                    <button class="btn btn-xs btn-primary"><i class="fa fa-file-excel-o"></i> Generar Informe
+                    </button>
+                  <% end %>
+                </div>
+                <br/>
+
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th class="text-left">Periodos solicitudes EPP</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% datossol.each do |pe| %>
+                    <tr>
+                      <td class="text-left" style="font-size:11px;">
+                        <div id="abrir<%= pe.periodo %>" class="pull-left">
+                          <%= link_to show_detalles_epp_menus_path(periodo: pe.periodo, estado: e, ruta: 'ABRIR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            Periodo <%= pe.periodo %> (<%= pe.cantidad rescue 0 rescue nil %>)
+                          <% end %>
+                        </div>
+                        <div id="cerrar<%= pe.periodo %>" class="pull-left hide">
+                          <%= link_to show_detalles_epp_menus_path(periodo: pe.periodo, estado: e, ruta: 'CERRAR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            Periodo <%= pe.periodo %> (<%= pe.cantidad rescue 0 rescue nil %>)
+                          <% end %>
+                        </div>
+                        <div id="contratossolepp<%= pe.periodo %>" style="width: 100%"></div>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <%= render 'layouts/procesos/alert_message' %>
+              <% end %>
+            <% end %>
+            <% if usr.subetapa.to_s == 'SOL_BUSCADOR' %>
+              <div class="box-body">
+                <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+                  <%= hidden_field_tag :infgrupo_id, 63 %>
+                  <legend>Informe Solicitudes por Contrato y Periodo</legend>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <tr>
+                      <td>
+                        <div class="form-group inline">
+                          <div class="row" style="margin-bottom: 5px">
+                            <div class="col-md-3">
+                              <label>Seleccione el Año : </label><br/>
+                              <%= select_tag 'ubicacion[anno47]', options_for_select(select_anno4), { class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}" } %>
+                            </div>
+                            <div class="col-md-3">
+                              <label>Seleccione el Mes: </label><br/>
+                              <%= select_tag 'ubicacion[mes47]', options_for_select(select_mes), { class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}" } %>
+                            </div>
+                            <div class="col-md-6">
+                              <label>Contrato</label><br/>
+                              <%= select_tag 'ubicacion[contratoid]', options_for_select(select_contratossol.collect { |p| [p.datos, p.id] }), prompt: "#{t :seleccionar}", data: { width: '80%' }, class: 'form-control select2 inline' %>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td width="5%">
+                        <div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div>
+                      </td>
+                    </tr>
+                  </table>
+                <% end %>
+                <legend>Informe Solicitudes por Periodo</legend>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="10%" class="text-center">Opciones</th>
+                    <th width="90%" class="text-left">Periodo</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody">
+                  <% @solicitudes.each do |p| %>
+                    <tr>
+                      <td class="text-center" style="font-size:12px;">
+                        <%= link_to informe_datas_path(infgrupo_id: 23, portafolio_id: p.periodo, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar' do %>
+                          <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                        <% end %>
+                        <%= link_to insumosinforme_contratossolicitudes_path(annomes: p.periodo, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Insumos por proveedor ' do %>
+                          <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button>
+                        <% end %>
+                      </td>
+                      <td class="text-left" style="font-size:12px;"><%= p.periodo rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="firma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

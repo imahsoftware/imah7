@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  parcargo: one
+  user: one
+  obligatorio: MyString
+  observacion: MyString
+  estado: MyString
+
+two:
+  parcargo: two
+  user: two
+  obligatorio: MyString
+  observacion: MyString
+  estado: MyString

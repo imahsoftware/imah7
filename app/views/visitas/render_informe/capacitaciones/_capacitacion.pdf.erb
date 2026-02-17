@@ -1,0 +1,43 @@
+<%
+  if @capacitacionesfotos.present?
+%>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, se realizan algunas actividades de formación y capacitación en cumplimiento con
+    el Plan de formación Anual del Sistema de Gestión de Seguridad y Salud en el trabajo o con los requerimientos
+    específicos establecidos en el pliego de condiciones o a solicitud del cliente. En total se relizaron <b>&nbsp;(<%= @capacitacionesfotos.count rescue 0 %>)&nbsp;</b> capacitacion, acontinuacion se presenta la informacion.
+  </div><br/>
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <% @capacitacionesfotos.each do |capacitacion| %>
+      <tr>
+        <th width="60%" class="encabezado_tabla alineacion_center">Datos de la Capacitacion</th>
+        <th class="encabezado_tabla">Indicador</th>
+      </tr>
+      <tr>
+        <td style="border:1px solid #CCCCCC;font-size: 12px; font-family: Tahoma;" class="alineacion_izq">
+          <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <th width="20%" class="encabezado_tabla"><div align="left"><strong>Fecha Creacion</strong></div></th>
+              <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><%= capacitacion.created_at.strftime("%d/%m/%Y") rescue nil %></td>
+            </tr>
+            <tr>
+              <th class="encabezado_tabla"><div align="left"><strong>Tema</strong></div></th>
+              <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><div align="justify"><%= capacitacion.temas rescue nil %></div></td>
+            </tr>
+            <tr>
+              <th class="encabezado_tabla"><div align="left"><strong>Objetivo</strong></div></th>
+              <td style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma; padding: 3px;"><div align="justify"><%= capacitacion.objetivo rescue nil %></div></td>
+            </tr>
+          </table>
+        </td>
+        <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;" class="alineacion_center">
+          <% graph_image_url = Graph.where("tabla = 'INFORME_GENERAL' and id_registro = ?", capacitacion.id).first&.graphimage&.url(:original) %>
+          <img src="https://appasearesp.com/<%= graph_image_url %>" alt="" style="width: 230px; height: 180px;">
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizo ninguna Capacitación.
+  </div><br/>
+<% end %>

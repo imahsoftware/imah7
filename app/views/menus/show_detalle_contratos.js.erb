@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_contratos<%= @contrato.id %><%= @contratoparams %>").html('<%= j render "menus/abrir_detalle_contratos" %>');
+$("#abrir_contratos<%= @contrato.id %><%= @contratoparams %>").addClass("hide");
+$("#cerrar_contratos<%= @contrato.id %><%= @contratoparams %>").removeClass("hide");
+$("#tr_show_contratos<%= @contrato.id %><%= @contratoparams %>").removeClass("hidden");
+<% else %>
+$("#abrir_contratos<%= @contrato.id %><%= @contratoparams %>").removeClass("hide");
+$("#cerrar_contratos<%= @contrato.id %><%= @contratoparams %>").addClass("hide");
+$("#abrir_detalle_contratos<%= @contrato.id %><%= @contratoparams %>").html(null);
+$("#tr_show_contratos<%= @contrato.id %><%= @contratoparams %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  archivo: one
+  estado: MyString
+  identificacion: MyString
+  talla_pantalon: MyString
+  cant_pantalon: MyString
+  talla_camisa: MyString
+  cant_camisa: MyString
+  talla_zapatos: MyString
+  cant_zapatos: MyString
+  zapatos: MyString
+  guantes: MyString
+  tapabocas: MyString
+  monogafas: MyString
+  casco: MyString
+
+two:
+  user: two
+  archivo: two
+  estado: MyString
+  identificacion: MyString
+  talla_pantalon: MyString
+  cant_pantalon: MyString
+  talla_camisa: MyString
+  cant_camisa: MyString
+  talla_zapatos: MyString
+  cant_zapatos: MyString
+  zapatos: MyString
+  guantes: MyString
+  tapabocas: MyString
+  monogafas: MyString
+  casco: MyString

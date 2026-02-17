@@ -1,0 +1,28 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead>
+	    <tr class="thcolor">
+        <td width="8%"><div align="center"></div></td>
+        <td>Novedad</td>
+        <td width="10%" class="text-center">Fecha</td>
+        <td width="8%" class="text-center">Nro Horas</td>
+        <td width="10%" class="text-center">Valor</td>
+        <td width="30%" class="text-left">Observacion</td>
+	    </tr>
+	  </thead>
+	  <tbody id="tbody_contratospernovedades">
+      <% @vcAutoCon = is_auth_c('empleadosconsulta')
+         sqlDatos = ""
+				 if @vcAutoCon
+           sqlDatos = "contratosperfecha_id = #{@contratospersona.idperfecha} and fecha is not null"
+         else
+           sqlDatos = "contratosperfecha_id = #{@contratospersona.idperfecha} and fecha >= (select DATE_ADD(inicio,INTERVAL - #{30} DAY) from periodosliquidaciones where termino = '#{@contratospersona.datogrupotermino.to_s}' and estado = 'P'
+           							and (CASE WHEN DATE_FORMAT(CURDATE(),'%d') = '31' THEN DATE_ADD(CURDATE(),INTERVAL - 1 DAY) ELSE CURDATE() END) between inicio and fin)"
+         end
+      %>
+      <% @contratospersona.contratospernovedades.where(sqlDatos).order("fecha desc").each do |contratospernovedad| %>
+	      <%= render 'contratospernovedades/tr', contratospernovedad: contratospernovedad %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

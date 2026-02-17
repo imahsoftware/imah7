@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Migracion:</strong>
+  <%= @archivo.migracion %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @archivo.user %>
+</p>
+
+<p>
+  <strong>Documentos:</strong>
+  <%= @archivo.documentos %>
+</p>
+
+<%= link_to 'Edit', edit_archivo_path(@archivo) %> |
+<%= link_to 'Back', archivos_path %>

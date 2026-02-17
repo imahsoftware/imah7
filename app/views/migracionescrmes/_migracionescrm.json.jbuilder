@@ -1,0 +1,2 @@
+json.extract! migracionescrm, :id, :user_id, :consecutivo, :persona_id, :detalle, :checksum, :fecha_modificacion, :primer, :site, :autor, :nombre, :oportunidad, :tipo_oportunidad, :estudiante, :identificacion, :telefono, :correo, :enrollment, :sub_enrollment, :carrera, :tipo_carrera, :modalidad, :origen_carga, :periodo, :sub_periodo, :fecha_creacion, :estado, :created_at, :updated_at
+json.url migracionescrm_url(migracionescrm, format: :json)

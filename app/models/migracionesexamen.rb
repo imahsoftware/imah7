@@ -1,0 +1,2 @@
+class Migracionesexamen < ApplicationRecord
+end

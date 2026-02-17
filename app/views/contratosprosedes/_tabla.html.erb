@@ -1,0 +1,15 @@
+<div class="table-responsive" style="margin-top: 10px;">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead>
+	    <tr class="thcolor">
+				<th width="10%"></th>
+	      <th>Sede</th>
+	    </tr>
+	  </thead>
+	  <tbody id="tbody_contratosprosedes<%= @contratosproyecto.id %>">
+	    <% @contratosproyecto.contratosprosedes.each do |contratosprosede| %>
+	      <%= render 'contratosprosedes/tr', contratosprosede: contratosprosede %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

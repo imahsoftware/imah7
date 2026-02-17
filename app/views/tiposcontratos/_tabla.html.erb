@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposcontrato') %>
+          <th width="10%"></th>
+        <% end %>
+        <th width="10%">ID</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposcontratos">
+      <% @tiposcontratos.each do |tiposcontrato| %>
+        <%= render 'tiposcontratos/tr', tiposcontrato: tiposcontrato %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

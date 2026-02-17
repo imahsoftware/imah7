@@ -1,0 +1,123 @@
+<%
+  sedesactivas = Objeto.find_by_sql("SELECT 'salario' campo, 'Salario' titulo FROM DUAL UNION
+SELECT 'dias' campo, 'Dias' titulo FROM DUAL UNION
+SELECT 'nov_devengo' campo, 'Nov. Devengado' titulo FROM DUAL UNION
+SELECT 'nov_deduccion' campo, 'Nov. Deduccion' titulo FROM DUAL UNION
+SELECT 'otros_devengo' campo, 'Otros Devengos' titulo FROM DUAL UNION
+SELECT 'otros_deduccion' campo, 'Otras Deducciones' titulo FROM DUAL UNION
+SELECT 'subtotal' campo, 'Subtotal' titulo FROM DUAL UNION
+SELECT 'salud' campo, 'Salud' titulo FROM DUAL UNION
+SELECT 'pension' campo, 'Pension' titulo FROM DUAL UNION
+SELECT 'auxilio' campo, 'Auxilio' titulo FROM DUAL UNION
+SELECT 'total' campo, 'Total' titulo FROM DUAL")
+%>
+
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <%= link_to contratospernominas_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %>
+          Prenomina <%= @contrato.empresa.identnombre rescue nil %> (<%=@periodosliquidacion.descripcion rescue nil %>)
+        </legend>
+      </div>
+    </div>
+  </div>
+</div>
+<legend>Nomina</legend>
+  <div class="box ">
+    <div class="box-body">
+      <%= form_tag '/contratospernominas/update_individual', method: 'put' do %>
+        <div class="grid-container">
+          <div class="grid">
+            <div class="grid-col grid-col--fixed-left" style=" min-width: 260px;">
+              <div class="grid-item grid-item--header" style=" min-height: 20px;max-height: 150px; min-width: 260px; background: #394959; color: white; font-size: 10px; text-align: center; display: flex; align-items: center; justify-content: center;"><p><b>ITEM</b></p></div>
+              <% for contratospernomina in @contratospernominas %>
+              <div class="grid-item-producto"><p style="font-size: 10px; padding: 5px;"><%=contratospernomina.autobuscar rescue nil%></p></div>
+              <% end %>
+            </div>
+            <% sedesactivas.each do |a| %>
+              <div class="grid-col">
+                <div class="grid-item grid-item--header" style=" min-height: 20px;max-height: 150px;padding: 6px; background: #394959; color: white;  text-align: center; display: flex; align-items: center; justify-content: center;">
+                  <b style="font-size: 1rem;"><%= a.titulo rescue nil %></b></div>
+                <% for contratospernomina in @contratospernominas %>
+                  <%= fields_for "contratospernominas[]", contratospernomina do |f| %>
+                    <% datocampo = ":" + a.campo.to_s %>
+                    <div class="grid-item-producto" style="min-width: 0px !important; display: flex; align-items: center; justify-content: center;"><%= f.text_field eval(datocampo), {:class => "camposnumeros", :size => 15, :onFocus => "this.style.border='1px solid #f00'", :onBlur => "this.style.border='1px solid #bbb';", :style => "border: 1px solid rgb(214 214 214 / 79%); font-size: 11px; font-family: Tahoma; text-align: center; width: 90px;height: 20px;border-radius: 2px;"} %></div>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="box-tools pull-right">
+          <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+
+
+
+  <style>
+
+      .grid-container {
+          display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+          overflow: auto;
+          height: 500px;
+          width: 100%;
+      }
+
+      .grid {
+          display: flex;
+          flex-wrap: nowrap;
+      }
+
+      .grid-col {
+          width: 150px;
+          min-width: 150px;
+      }
+
+      .grid-item--header {
+          height: 100px;
+          min-height: 100px;
+          position: sticky;
+          position: -webkit-sticky;
+          background: white;
+          top: 0;
+      }
+
+      .grid-col--fixed-left {
+          position: sticky;
+          left: 0;
+          z-index: 9998;
+          background: white;
+      }
+
+      .grid-col--fixed-right {
+          position: sticky;
+          right: 0;
+          z-index: 9998;
+          background: white;
+      }
+
+      .grid-item {
+          height: 50px;
+          border: 1px solid #EAEAEA;
+      }
+
+      .grid-item-producto {
+          height: 50px;
+          border: 1px solid #EAEAEA;
+          min-width: 260px;
+      }
+
+      p {
+          font-size: 10px;
+      }
+  </style>
+
+  <script src="http://ie7-js.googlecode.com/svn/version/2.0(beta3)/IE8.js"></script>

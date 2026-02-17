@@ -1,0 +1,5 @@
+$("#buscador8<%= @contrato.id %><%= @p %>").html("<%= j render 'menus/resultado_salud', contrato: @contrato, contratosprefechassalud: eval("@contratosprefechassalud#{@contrato.id}#{@p.downcase}") , p: @p, variable: eval("@#{@variable}") %>");
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});
+

@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h3 class="modal-title">Tomar Foto
+  </h3>
+  <div class="pull-left">
+    <small><%= @contratosperinvdetalle.item rescue nil %></small>
+  </div>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Cámara</h3>
+        </div>
+        <div class="box-body">
+          <div>
+            <video id="video" width="100%" height="480" autoplay></video>
+            <button id="snap" class="btn btn-primary">
+              <i class="fa fa-camera"></i> Tomar Foto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Resultado</h3>
+        </div>
+
+        <div class="text-center">
+          <canvas id="canvas"  style="width: 100%; height: 450px;"></canvas>
+          <%= form_for @image, url: '/save_image', method: :post, html: { id: 'image-form' } do |form| %>
+            <%= form.hidden_field :descripcion, id: 'image-title' %>
+            <%= form.hidden_field :contratosperinvdetalle_id, value: @contratosperinvdetalle.id %>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var snap = document.getElementById('snap');
+    var titleInput = document.getElementById('image-title');
+
+    navigator.mediaDevices.getUserMedia({video: true})
+        .then(function (stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    snap.addEventListener('click', function () {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        var image_data = canvas.toDataURL('image/png');
+        $("#tomar_foto").html("<%= j render "contratosperinvdetalles/mensaje_foto" %>");
+        var form_data = new FormData(document.getElementById('image-form'));
+        form_data.append('image[image_data]', image_data.split(',')[1]);
+        $.ajax({
+            type: 'POST',
+            url: 'captura_web',
+            data: form_data,
+            processData: false,
+            contentType: false
+        });
+    });
+</script>
+
+
+<!-- <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%#= t :cancelar %></button> -->
+

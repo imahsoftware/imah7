@@ -1,0 +1,9 @@
+<% if @contratosprefechasdocfirma_todo.present? %>
+$("#resultado_docfirma_todo<%= @p.downcase %>").html("<%= j render 'menus/resultado_docfirma_todo'%>");
+$(function () {
+    $('.pagination a').attr('data-remote', 'true')
+});
+
+<% else %>
+$("#resultado_docfirma_todo<%= @p.downcase %>").html("");
+<% end %>

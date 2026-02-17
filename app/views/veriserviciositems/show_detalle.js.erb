@@ -1,0 +1,14 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_item<%= @veriserviciositem.id %>").html('<%= j render "veriserviciositems/abrir_detalle_item" %>');
+$("#abrir_item<%= @veriserviciositem.id %>").addClass("hide");
+$("#cerrar_item<%= @veriserviciositem.id %>").removeClass("hide");
+$("#tr_show_item<%= @veriserviciositem.id %>").removeClass("hidden");
+<% else %>
+$("#abrir_item<%= @veriserviciositem.id %>").removeClass("hide");
+$("#cerrar_item<%= @veriserviciositem.id %>").addClass("hide");
+$("#abrir_detalle_item<%= @veriserviciositem.id %>").html(null);
+$("#tr_show_item<%= @veriserviciositem.id %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

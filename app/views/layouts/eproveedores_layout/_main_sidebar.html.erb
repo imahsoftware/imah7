@@ -1,0 +1,51 @@
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <%= image_tag 'logo_inicio_asear.png', class: 'user-image', size: '230x100' %>
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <li>
+        <%= link_to eproveedores_path, style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-arrow-left text-success"></i> Regresar
+        <% end %>
+      </li>
+      <li class="header"><%=t :menu%></li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "A", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "A", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Datos básicos</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "B", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "B", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Causacion</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "C", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "C", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Egresos por causación</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "D", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "D", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Egresos Directos</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "E", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "E", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Egresos</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "G", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "G", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Notas Credito</span>
+        <% end %>
+      </li>
+      <li class="<%= active_class(edit_eproveedor_path(etapa: "M", id: @eproveedor.id)) %>">
+        <%= link_to edit_eproveedor_path(etapa: "M", id: @eproveedor.id), style: "padding: 7px 0px 7px 15px;" do %>
+          <i class="fa fa-adn"></i> <span>Digital</span>
+        <% end %>
+      </li>
+    </ul>
+    <!-- /.sidebar-menu -->
+  </section>
+  <!-- /.sidebar -->
+</aside>

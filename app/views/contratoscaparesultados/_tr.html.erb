@@ -1,0 +1,12 @@
+<tr id="contratoscaparesultado_<%= contratoscaparesultado.id %>">
+  <td class="text-center">
+    <%= link_to capacitacion_contratoscaparesultado_path(contratoscaparesultado.capacitacion, contratoscaparesultado), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td align="left"><%= contratoscaparesultado.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+  <td align="justify"><%= contratoscaparesultado.contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+</tr>
+
+
+

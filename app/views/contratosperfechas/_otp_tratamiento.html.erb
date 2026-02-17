@@ -1,0 +1,55 @@
+<div id="inicioOTP2">
+  <%
+      @usr = current_user
+      if ruta == 'MODULO_CONTRATO'
+        @usr = contratosperfecha.contratospersona
+      end
+    contratosperfecha = Contratosperfecha.where("contratospersona_id = (select id from contratospersonas where identificacion = '#{@usr.identificacion}') and sol_firma_digital = 'SI'").first
+    #contratosperfecha = Contratosperfecha.where("contratospersona_id = (select id from contratospersonas where identificacion = '1047964149') and sol_firma_digital = 'SI'").first
+    isadmin = is_admin
+    # 2021-10-02 FFA - Si se hacen modificaciones se debe alterar tambien contratosgrupos/contratomasive.pdf...
+    contratospersona = contratosperfecha.contratospersona
+    @logo = contratosperfecha.contrato.empresa.logo.to_s
+    aplicaesp = contratosperfecha.contratoscargo.aplica_especial.to_s
+    pgh = Parametro.find(4) # Firma Gestion Humana
+    portafolio = Portafolio.find(contratosperfecha.contrato.empresa.portafolio_id)
+    @logo = portafolio.logo_empresa
+
+    if contratosperfecha.present? %>
+
+    <div class="box-body">
+      <div class="<%= ruta == 'MODULO_CONTRATO' ? '' : "container" %>">
+        <div class="alert alert-warning" align="justify">
+          <h4>Hola, <%= contratosperfecha.contratospersona.nombre_completo.upcase rescue nil %></h4>
+          <p>Toda tu información de contrato se relaciona a continuacion, para continuar da clic en iniciar proceso de firma</p>
+        </div>
+        <%= render 'contratosperfechas/otp_contrato', contratosperfecha: contratosperfecha, contratospersona: contratospersona, portafolio: portafolio, aplicaesp: aplicaesp, pgh: pgh, isadmin: isadmin %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 text-center">
+        <%= link_to generar_otp1_contratosperfechas_path(id: contratosperfecha.id, contratospersona_id: contratosperfecha.contratospersona_id, ruta: ruta), method: :post, remote: true, data: { toggle: 'tooltip', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" } do %>
+          <button type="button" class="btn btn-danger"><i class="fa fa-sort-numeric-asc"></i> Iniciar Firma del Contrato
+          </button>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"></div>
+    </div>
+  <% end %>
+</div>
+
+<div class="row" id="otp1"></div>
+
+
+
+<script type="text/javascript" charset="utf-8">
+    const onConfirmRefresh = function (event) {
+        event.preventDefault();
+        return event.returnValue = "Are you sure you want to leave the page?";
+    }
+
+    window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+</script>
+

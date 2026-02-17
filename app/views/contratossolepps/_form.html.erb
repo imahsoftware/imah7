@@ -1,0 +1,48 @@
+<%= simple_form_for( @contratossolepp, remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-10">
+        <% if is_sygma %>
+          <%= f.input :contrato_id, collection: select_contratos.collect { |p| [p.datos.to_s, p.id] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true, label: 'Contrato' %>
+        <% else %>
+          <%= f.input :contrato_id, collection: Objeto.find_by_sql("SELECT DISTINCT p.contrato_id
+                                                                    FROM contratosperfechas p, contratosperusers u
+                                                                    WHERE p.estado = 'ACTIVO'
+                                                                    AND   p.contratospersona_id = u.contratospersona_id
+                                                                    AND   u.user_id = #{is_admin}").collect { |p| [detalle_contrato(p.contrato_id), p.contrato_id] }, input_html: { class: 'select2', style: "width: 100%" }, as: :select, include_blank: true, label: 'Contrato' %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :requiere, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Requiere" %></div>
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratossolepp.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#formulariosllave_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratossolepp_path(@contratossolepp), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

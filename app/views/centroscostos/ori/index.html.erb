@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Centroscostos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Codigo</th>
+      <th>Descripcion</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @centroscostos.each do |centroscosto| %>
+      <tr>
+        <td><%= centroscosto.codigo %></td>
+        <td><%= centroscosto.descripcion %></td>
+        <td><%= centroscosto.user %></td>
+        <td><%= link_to 'Show', centroscosto %></td>
+        <td><%= link_to 'Edit', edit_centroscosto_path(centroscosto) %></td>
+        <td><%= link_to 'Destroy', centroscosto, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Centroscosto', new_centroscosto_path %>

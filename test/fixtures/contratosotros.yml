@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  descripcion: MyString
+  user: one
+  cantidad_mensual: 1
+  precio_unitario: 9.99
+  descuento: 9.99
+  precio_condescuento: 9.99
+  total: 9.99
+  user_act: 1
+
+two:
+  contrato: two
+  descripcion: MyString
+  user: two
+  cantidad_mensual: 1
+  precio_unitario: 9.99
+  descuento: 9.99
+  precio_condescuento: 9.99
+  total: 9.99
+  user_act: 1

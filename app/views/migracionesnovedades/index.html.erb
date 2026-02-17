@@ -1,0 +1,103 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesnovedades</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Contrato</th>
+      <th>Periodosliquidacion</th>
+      <th>Contratospersona</th>
+      <th>Contratosgrupo</th>
+      <th>Identificacion</th>
+      <th>Nov 1</th>
+      <th>Nov 2</th>
+      <th>Nov 3</th>
+      <th>Nov 4</th>
+      <th>Nov 5</th>
+      <th>Nov 6</th>
+      <th>Nov 7</th>
+      <th>Nov 8</th>
+      <th>Nov 9</th>
+      <th>Nov 10</th>
+      <th>Nov 11</th>
+      <th>Nov 12</th>
+      <th>Nov 14</th>
+      <th>Nov 16</th>
+      <th>Nov 18</th>
+      <th>Nov 19</th>
+      <th>Nov 22</th>
+      <th>Nov 40</th>
+      <th>Nov 41</th>
+      <th>Nov 42</th>
+      <th>Nov 43</th>
+      <th>Nov 44</th>
+      <th>Nov 46</th>
+      <th>Nov 47</th>
+      <th>Nov 49</th>
+      <th>Nov 50</th>
+      <th>Nov 53</th>
+      <th>Nov 55</th>
+      <th>Nov 56</th>
+      <th>Nov 57</th>
+      <th>Observacion</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesnovedades.each do |migracionesnovedad| %>
+      <tr>
+        <td><%= migracionesnovedad.user %></td>
+        <td><%= migracionesnovedad.archivo %></td>
+        <td><%= migracionesnovedad.estado %></td>
+        <td><%= migracionesnovedad.contrato_id %></td>
+        <td><%= migracionesnovedad.periodosliquidacion_id %></td>
+        <td><%= migracionesnovedad.contratospersona_id %></td>
+        <td><%= migracionesnovedad.contratosgrupo_id %></td>
+        <td><%= migracionesnovedad.identificacion %></td>
+        <td><%= migracionesnovedad.nov_1 %></td>
+        <td><%= migracionesnovedad.nov_2 %></td>
+        <td><%= migracionesnovedad.nov_3 %></td>
+        <td><%= migracionesnovedad.nov_4 %></td>
+        <td><%= migracionesnovedad.nov_5 %></td>
+        <td><%= migracionesnovedad.nov_6 %></td>
+        <td><%= migracionesnovedad.nov_7 %></td>
+        <td><%= migracionesnovedad.nov_8 %></td>
+        <td><%= migracionesnovedad.nov_9 %></td>
+        <td><%= migracionesnovedad.nov_10 %></td>
+        <td><%= migracionesnovedad.nov_11 %></td>
+        <td><%= migracionesnovedad.nov_12 %></td>
+        <td><%= migracionesnovedad.nov_14 %></td>
+        <td><%= migracionesnovedad.nov_16 %></td>
+        <td><%= migracionesnovedad.nov_18 %></td>
+        <td><%= migracionesnovedad.nov_19 %></td>
+        <td><%= migracionesnovedad.nov_22 %></td>
+        <td><%= migracionesnovedad.nov_40 %></td>
+        <td><%= migracionesnovedad.nov_41 %></td>
+        <td><%= migracionesnovedad.nov_42 %></td>
+        <td><%= migracionesnovedad.nov_43 %></td>
+        <td><%= migracionesnovedad.nov_44 %></td>
+        <td><%= migracionesnovedad.nov_46 %></td>
+        <td><%= migracionesnovedad.nov_47 %></td>
+        <td><%= migracionesnovedad.nov_49 %></td>
+        <td><%= migracionesnovedad.nov_50 %></td>
+        <td><%= migracionesnovedad.nov_53 %></td>
+        <td><%= migracionesnovedad.nov_55 %></td>
+        <td><%= migracionesnovedad.nov_56 %></td>
+        <td><%= migracionesnovedad.nov_57 %></td>
+        <td><%= migracionesnovedad.observacion %></td>
+        <td><%= link_to 'Show', migracionesnovedad %></td>
+        <td><%= link_to 'Edit', edit_migracionesnovedad_path(migracionesnovedad) %></td>
+        <td><%= link_to 'Destroy', migracionesnovedad, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesnovedad', new_migracionesnovedad_path %>

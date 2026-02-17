@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratossecusers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratosseccion</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratossecusers.each do |contratossecuser| %>
+      <tr>
+        <td><%= contratossecuser.contratosseccion %></td>
+        <td><%= contratossecuser.user %></td>
+        <td><%= link_to 'Show', contratossecuser %></td>
+        <td><%= link_to 'Edit', edit_contratossecuser_path(contratossecuser) %></td>
+        <td><%= link_to 'Destroy', contratossecuser, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratossecuser', new_contratossecuser_path %>

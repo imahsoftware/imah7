@@ -1,0 +1,63 @@
+<%= simple_form_for([@solicitudesretiro], remote: true) do |f| %>
+  <%= f.hidden_field :contrato_id %>
+  <%= f.hidden_field :contratosgrupo_id %>
+  <%= f.hidden_field :contratospersona_id %>
+  <%= f.hidden_field :contratosperfecha_id %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title">
+      <strong><%= @solicitudesretiro.new_record? ? 'Agregar' : 'Editar' %> solicitud de Retiro</strong></h3>
+  </div>
+  <% if Solicitudesretiro.where(contratosperfecha_id: @solicitudesretiro.contratosperfecha_id).exists? %>
+    <div class="modal-body">
+      <div class="alert alert-danger">
+        <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>Ya hay una solicitud de retiro para este contrato
+      </div>
+    </div>
+    <% if is_auth_c("autorizacionnomina") %>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: 'Fecha último dia laborado' %></div>
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :justificacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: 'Justificación solicitud de retiro' %></div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"><%= f.input :documento_retiro, as: :file, label: "Documento digital" %>
+            <p class="help-block">Formatos permitido: PDF</p>
+          </div>
+        </div>
+        <% if @solicitudesretiro.documento_retiro_file_name.present? %>
+          <div class="row">
+            <div class="col-md-6">
+              <b>Documento: </b>
+              <%= link_to @solicitudesretiro.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download text-danger"></i> <%= @solicitudesretiro.documento_retiro_file_name rescue nil %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+        <div class="box-tools pull-right">
+          <%= f.button :submit, 'Aceptar', data: { confirm: '¿Esta seguro?'},  class: 'btn btn-flat btn-primary' %>
+        </div><!-- /.box-tools -->
+      </div><!-- box-footer -->
+    <% end %>
+  <% else %>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true }, label: 'Fecha último dia laborado' %></div>
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :justificacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: 'Justificación solicitud de retiro' %></div>
+      </div>
+      <div class="row">
+        <div class="col-md-6"><%= f.input :documento_retiro, as: :file, label: "Documento digital" %></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+      <div class="box-tools pull-right">
+        <%= f.button :submit, 'Aceptar', data: { confirm: '¿Esta seguro?'}, class: 'btn btn-flat btn-primary' %>
+      </div><!-- /.box-tools -->
+    </div><!-- box-footer -->
+  <% end %>
+<% end %>

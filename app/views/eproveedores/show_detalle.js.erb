@@ -1,0 +1,13 @@
+<% if @ruta == 'ABRIR' %>
+$("#egresosdetalle<%= @consecutivo %>").html('<%= j render "egresosdetalle", egreso: @datos  %>');
+$("#abrir<%= @consecutivo %>").addClass("hide");
+$("#cerrar<%= @consecutivo %>").removeClass("hide");
+<% else %>
+$("#abrir<%= @consecutivo %>").removeClass("hide");
+$("#cerrar<%= @consecutivo %>").addClass("hide");
+$("#egresosdetalle<%= @consecutivo %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

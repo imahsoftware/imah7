@@ -1,0 +1,29 @@
+<tr id="visitasdoc_<%= visitasdoc.id %>">
+  <td class="text-center">
+    <%= link_to visita_visitasdoc_path(@visita, visitasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+    <% if visitasdoc.visita.finalizacion.blank? %>
+      <% if ['ANTES', 'DESPUES'].exclude?(visitasdoc.tipo) %>
+        <%= link_to visita_visitasdoc_path(@visita, visitasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+      <% if ['ANTES', 'DESPUES'].include?(visitasdoc.tipo) and is_auth_c('vistaedicion') %>
+        <%= link_to visita_visitasdoc_path(@visita, visitasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= visitasdoc.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= visitasdoc.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table">
+    <%= visitasdoc.tipo_descripcion rescue nil %>
+  </td>
+  <td align="left" class="text-table">
+    <%= link_to visitasdoc.docvisita.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <i class="fa fa-cloud-download"></i> <%= visitasdoc.docvisita_file_name rescue nil %>
+    <% end %>
+  </td>
+</tr>

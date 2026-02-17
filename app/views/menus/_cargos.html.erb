@@ -1,0 +1,113 @@
+<legend style="margin-top: -19px;">DashBoard Contratación
+  <%= link_to informe_datas_path(infgrupo_id: 86, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Completo" do %>
+    <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i></button>
+  <% end %>
+  <div style="font-size:8px;">Ult. Fecha de Validacion: <%=Parametro.find(8).valor.to_s rescue nil %></div></legend>
+<div class="box box-danger">
+  <div class="box-body">
+    <% Portafolio.order("id asc").each do |port|
+      cargos = Objeto.find_by_sql("SELECT DISTINCT e.`autobuscar`, c.nro_contrato, e.portafolio_id, c.fecha_inicio,
+                                          (CASE WHEN c.fechamasmodi IS NOT NULL THEN c.fechamasmodi ELSE c.`fecha_fin` END) fchfinal,
+                                          c.id contrato_id, count(9) cantidadcargos
+                                    FROM   contratoscargos cc, contratos c, empresas e
+                                    WHERE  ifnull(cc.cantidad,0) > 0
+                                    and    cc.disponibles > 0
+                                    AND    cc.`contrato_id` = c.`id`
+                                    AND    c.`empresa_id` = e.id
+                                    and    e.portafolio_id = #{port.id}
+                                    AND    c.estado = 'EN EJECUCION'
+                                    and    c.activo_vacantes = 'SI'
+                                    group by e.`autobuscar`, c.nro_contrato, e.portafolio_id, c.fecha_inicio, c.id")
+    %>
+      <% if cargos.present? %>
+        <legend><%=port.razon_social rescue nil %></legend>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="30%" class="text-left">Cliente</th>
+            <th class="text-left">Detalle</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% cargos.each do |p|
+            detallescargos = Objeto.find_by_sql("SELECT cc.perfil, cc.salario, cc.cantidad, cc.asignados, cc.disponibles, cc.id contratoscargo_id, cc.contrato_id,
+                                                       (SELECT DISTINCT 'X' FROM contratoscargospersonas WHERE contratoscargo_id = cc.id) existepersona,
+                                                       cc.detalle_perfil,
+                                                       (SELECT DISTINCT 'X' FROM contratoscargosdetalles WHERE contratoscargo_id = cc.id) existedetalle
+                                                FROM   contratoscargos cc
+                                                WHERE  cc.contrato_id = #{p.contrato_id}
+                                                and    cc.disponibles > 0
+                                                and    cc.activo_vacantes = 'SI'
+                                                order by cc.disponibles desc ")
+          %>
+            <tr>
+              <td class="text-left" style="font-size:10px;">
+                <%= p.autobuscar rescue nil%>
+                <br/><%= link_to edit_contrato_path(id: p.contrato_id, etapa: 'A'), data: {toggle: 'tooltip'}, title: 'Ir al contrato' do %>
+                  <i class="fa fa-list-alt"></i>
+                <% end %> <strong>Nro Contrato: </strong> <%= p.nro_contrato rescue nil%>
+                <br/><strong>Fecha fin contrato: </strong> <%=p.fchfinal.strftime("%Y-%m-%d") rescue nil %>
+              </td>
+              <td class="text-left" style="font-size:10px;">
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="8%" class="text-center" style="font-size:11px;"></th>
+                    <th class="text-left" style="font-size:11px;">Perfil</th>
+                    <th width="5%" class="text-center" style="font-size:11px;">Cant.</th>
+                    <th width="5%" class="text-center" style="font-size:11px;">Asig.</th>
+                    <th width="5%" class="text-center" style="font-size:11px;">Disp.</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% detallescargos.each do |p| %>
+                    <tr>
+                      <td class="text-center" style="font-size:11px;">
+                        <%= link_to cargospersona_contratoscargos_path(id: p.contratoscargo_id), data: {toggle: 'tooltip'}, title: 'Personas', remote: true do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-file-text-o"></i></button>
+                        <% end %>
+                        <%= link_to cargosdetalle_contratoscargos_path(id: p.contratoscargo_id), data: {toggle: 'tooltip'}, title: 'Notas', remote: true do %>
+                          <button class="btn btn-xs btn-danger"><i class="fa fa-file-text-o"></i></button>
+                        <% end %>
+                      </td>
+                      <td class="text-justify" style="font-size:10px;">
+                        <% if p.existepersona.to_s == 'X' %>
+                          <i class="fa fa-adn text-info" title="Tiene personas asociadas..."></i>
+                        <% end %>
+                        <% if p.existedetalle.to_s == 'X' %>
+                          <div align="justify" style="font-size:10px;"  class="text-red">
+                            <%= p.perfil rescue nil%>
+                            <% Contratoscargosdetalle.where(contratoscargo_id: p.contratoscargo_id).order("id desc").each do |a| %>
+                              <i class="fa fa-adn text-red" title="Notas..."></i> Nota: <%= a.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= a.user.username rescue nil %>: <%= a.nota rescue nil %>
+                            <% end %>
+                          </div>
+                        <% else %>
+                          <%= p.perfil rescue nil%>
+                        <% end %>
+                        <% if p.detalle_perfil.to_s == "" %>
+                          <div align="justify" style="font-size:8px;">Sin Info del perfil</div>
+                        <% else %>
+                          <div style="font-size:8px;"><strong>Perfil: </strong><%=p.detalle_perfil.to_s%></div>
+                        <%end %>
+
+                      </td>
+                      <td class="text-center" style="font-size:11px;"><%= p.cantidad rescue nil%></td>
+                      <td class="text-center" style="font-size:11px;"><%= p.asignados rescue nil%></td>
+                      <td class="text-center" style="font-size:11px;"><%= p.disponibles rescue nil%></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <br/>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="modal fade" id="cargosnota"><div class="modal-dialog" style='width: 90%;'><div class="modal-content" style='width: 90%;'></div></div></div>
+<div class="modal fade" id="cargosdetalle"><div class="modal-dialog" style='width: 90%;'><div class="modal-content" style='width: 90%;'></div></div></div>
+<div class="modal fade" id="cargospersona"><div class="modal-dialog" style='width: 90%;'><div class="modal-content" style='width: 90%;'></div></div></div>

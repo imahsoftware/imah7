@@ -1,0 +1,28 @@
+<%
+  @contratosvigentes = Contratosperfecha.where("DATE_FORMAT(fecha_inicio, '%m-%Y') = '#{@mes}' and contrato_id = #{@contrato.id}")
+  if @contratosvigentes.present?
+%>
+    <div class="parrafo">
+       Durante el periodo <b><%= @mes rescue nil %></b>, se realizó la contratación de un total de <b>&nbsp;(<%= @contratosvigentes.count rescue 0 %>)&nbsp;</b> personas, a continuación se relacionan dichas personas.
+    </div><br/>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="12%" class="encabezado_tabla alineacion_izq">Identificacion</th>
+        <th width="30%" class="encabezado_tabla alineacion_izq">Nombre</th>
+        <th width="10%" class="encabezado_tabla alineacion_center">Fecha Inicio</th>
+        <th class="encabezado_tabla alineacion_izq">Cargo</th>
+      </tr>
+      <% @contratosvigentes.each do |contratosvigente| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratosvigente.contratospersona.identificacion rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= contratosvigente.contratospersona.nombre_completo rescue nil %></td>
+          <td class="alineacion_center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= contratosvigente.fecha_inicio.strftime("%d/%m/%Y") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= contratosvigente.contratoscargo.perfil rescue nil %></td>
+        </tr>
+      <% end %>
+    </table><br/>
+<% else %>
+    <div class="parrafo">
+      Durante el periodo <b><%= @mes rescue nil %></b>, NO se realizó contratación de nuevo personal.
+    </div><br/>
+<% end %>

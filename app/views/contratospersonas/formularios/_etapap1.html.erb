@@ -1,0 +1,302 @@
+<%
+  is_auth_a_contratospersona = is_auth_a('contratospersona')
+  is_auth_a_controluserempleado = is_auth_a('controluserempleado')
+%>
+<%= simple_form_for(@contratospersona) do |f| %>
+  <%= hidden_field_tag :etapap, params[:etapap], value: '1' %>
+  <%= hidden_field_tag :etapa, params[:etapa], value: 'A' %>
+  <%#= f.hidden_field :contrato_id %>
+  <script>
+      window.onload = function () {
+          var myInput = document.getElementById('bloquear');
+          myInput.onpaste = function (e) {
+              e.preventDefault();
+              alert("esta acción está prohibida");
+          }
+
+          myInput.oncopy = function (e) {
+              e.preventDefault();
+              alert("esta acción está prohibida");
+          }
+      }
+
+      function justNumbers(e) {
+          var keynum = window.event ? window.event.keyCode : e.which;
+          if ((keynum == 8) || (keynum == 46))
+              return true;
+
+          return /\d/.test(String.fromCharCode(keynum));
+      }
+
+      function justLetters(e) {
+          var key = e.keyCode || e.which,
+              tecla = String.fromCharCode(key).toLowerCase(),
+              letras = "abcdefghijklmnñopqrstuvwxyz"
+
+          if (letras.indexOf(tecla) == -1) {
+              return false;
+          }
+      }
+
+      function habcampo() {
+
+      }
+
+      $("#ide").keyup(function () {
+          var ta = $("#ide");
+          letras = ta.val().replace('//g', "");
+          ta.val(letras);
+      });
+
+  </script>
+  <% unless @contratospersona.new_record? %>
+    <% if @contratospersona.errores_aportes_linea.present? %>
+      <div id="error_aportes_en_linea" style="width: 100%; height: 60px; background-color: #FCD5D5; border-radius: 10px; padding: 10px; margin-bottom: 10px;">
+        <b><i class="fa fa-warning"></i> Error al crear el empleado en Aportes en Linea!</b>
+        <p><%= @contratospersona.errores_aportes_linea rescue nil %></p>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="box-header">
+    <legend>Información Empleado
+      <% unless @contratospersona.new_record?
+           user = User.where(contratospersona_id: @contratospersona.id).first
+      %>
+        <div class="pull-right">
+          <% if @contratospersona.registro_aportes_linea.present? %>
+            <a data-toggle="tooltip" title="" href="" data-original-title="<%= @contratospersona.registro_aportes_linea rescue nil %>">
+              <span class="badge bg-green">
+                <%= image_tag("logo_aportes.png", style: "width: 60px; border-radius: 5px;") %> Se encuentra Registrado con Exito!!!
+              </span>
+            </a>
+          <% elsif @contratospersona.errores_aportes_linea.present? %>
+            <a data-toggle="tooltip" title="" href="" data-original-title="<%= @contratospersona.errores_aportes_linea rescue nil %>">
+              <span class="badge bg-green">
+                <%= image_tag("logo_aportes.png", style: "width: 60px; border-radius: 5px;") %> Se presento un error al registrarse
+              </span>
+            </a>
+          <% end %>
+        </div>
+        <div class="pull-right">
+          <% if user.present? and is_auth_a_controluserempleado %>
+            <% if user.activo == 'S' %>
+              <%= link_to controluser_contratospersonas_path(id: user.id, control: 'inactivaruser', ctid: @contratospersona.id), data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Inactivar usuario' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-circle"></i></button>
+              <% end %>
+            <% else %>
+              <%= link_to controluser_contratospersonas_path(id: user.id, control: 'activaruser', ctid: @contratospersona.id), data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Activar usuario' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-circle"></i></button>
+              <% end %>
+            <% end %>
+            <% if user.unlock_token %>
+              <%= link_to controluser_contratospersonas_path(id: user.id, control: 'desbloquearusuario', ctid: @contratospersona.id), data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Desbloquear' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-unlock"></i></button>
+              <% end %>
+            <% end %>
+            <%= link_to controluser_contratospersonas_path(id: user.id, control: 'restableceyenvia', ctid: @contratospersona.id), data: { toggle: 'tooltip', confirm: '¿Esta seguro?' }, title: 'Restablece clave y Desbloquea' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-unlock"></i></button>
+            <% end %>
+          <% end %>
+
+          <%= link_to hojavida_contratospersonas_path(id: @contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Hoja de Vida' do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i> Hoja de Vida</button>
+          <% end %>
+          <%= link_to inventario_items_contratospersonas_path(id: @contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Inventario' do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i> Inventario</button>
+          <% end %>
+        </div>
+      <% end %>
+
+    </legend>
+  </div>
+  <div class="modal fade" id="visitas<%= @contratospersona.id %>">
+    <div class="modal-dialog modal-dialog-responsive" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :tipo_identificacion, collection: Iparametro.where(campo: 'tipo_identificacion').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :identificacion, id: "ide", input_html: { onkeypress: "return justNumbers(event);", maxlength: 15 } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_expedicion, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :municipio_lugar_expedicion, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Lugar expedición" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombres, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :apellidos, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Primer apellido" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :apellido_segundo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Segundo apellido" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :genero, collection: Iparametro.where(campo: 'genero').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Genero" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_nacimiento, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :municipio_lugar_nacimiento, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :direccion, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :municipio_ciudad, collection: Municipio.where("iddian_alegra is not null").order(:autobuscar).collect { |p| [p.autobuscar, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Ciudad de la dirección" %></div>
+    </div>
+    <div class="row">
+      <div class="text-red col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :dirc1, as: :select, collection: Iparametro.where(campo: 'nomenclatura').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2 clean' }, label: 'Ejemplo Direccion: Calle' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc2, id: "dirc2", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', maxlength: 3 }, label: '10' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc3, id: "dirc3", input_html: { onkeypress: "return justLetters(event);", onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 3 }, label: 'A' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc4, as: :select, collection: Iparametro.where(campo: 'nomenclaturaletra').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, label: 'SUR', input_html: { class: 'select2 clean' } %></div>
+      <div align="center" class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1">#</div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc5, id: "dirc5", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', :maxlength => 3 }, label: '11' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc6, id: "dirc6", input_html: { onkeypress: "return justLetters(event);", onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 3 }, label: 'A' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc7, as: :select, collection: Iparametro.where(campo: 'nomenclaturaletra').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, label: 'SUR', input_html: { class: 'select2 clean' } %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :dirc8, id: "dirc8", input_html: { onkeypress: "return justNumbers(event);", class: 'input_uppercase clean', :maxlength => 3 }, label: '12' %></div>
+      <div class="text-red col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :dirc9, input_html: { onChange: 'javascript:this.value=this.value.toUpperCase();', class: 'input_uppercase clean', :maxlength => 300 }, label: 'Urban., Bloque 1, Apto 806' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :telefono, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :movil, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :correo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :estrato, collection: Iparametro.where(campo: 'estrato').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado_civil, collection: Iparametro.where(campo: 'estado_civil').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :nivel_educacion, collection: Iparametro.where(campo: 'nivel_educacion').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :numero_hijos, as: :integer %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :requiere_carnet, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Carnet ASEAR?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :requiere_carnet_cliente, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Carnet Cliente?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-red"><%= f.input :pensionado, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-red"><%= f.input :subsidiado, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' } %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :resolucion_pension, label: "Resolución Pension" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_resolucion, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_pension, label: "Tipo de Pension" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :banco, collection: Iparametro.where(campo: 'banco').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :tipo_cuenta, collection: Iparametro.where(campo: 'tipo_cuenta').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cuenta_bancolombia, label: "Nro Cuenta bancaria" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :consignar, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4"><%= f.input :eps, collection: Iparametro.where("campo = 'eps' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :fondo_pension, collection: Iparametro.where("campo = 'fondo_pension' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :caja_compensacion, collection: Iparametro.where("campo = 'caja_compensacion' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :arl, collection: Iparametro.where("campo = 'arl' and codigo_aportes is not null").order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :puesto_nuevo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :personas_acargo, as: :integer, label: "Nro Personas a Cargo?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :contacto_nombre, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Contacto en caso de emergencia" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :contacto_telefono, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Teléfono contacto" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 text-red"><%= f.input :situacion_especial, collection: Iparametro.where(campo: 'situacion_especial').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 text-red"><%= f.input :victimas, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Registrado en unidad de victimas?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :datos_entrega, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: 'Datos para la entrega de la dotación' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :incluye_prima, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Incluye Prima?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-3"><%= f.input :perimagenes, as: :file, label: 'Fotografia' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :centro_aporte_linea, as: :select, collection: select_codigocentro, input_html: { data: { width: '100%' }, class: 'select2' }, label: "AportesEnLinea (Riesgo ARL)" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :identificacion_ss, label: "Identificación SeguridadSocial", input_html: { maxlength: 15 } %></div>
+    </div>
+  </div>
+  <div class="box-header">
+    <legend>Dotación</legend>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <% unless @contratospersona.new_record? %>
+          <%#= f.input :talla_pantalon, collection: Iparametro.where(campo: select_tipo_genero(@contratospersona.genero)).order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          <%= f.input :talla_pantalon, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+        <% else %>
+          <% if @contratospersona.genero == 'MASCULINO' %>
+            <%= f.input :talla_pantalon, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_pantalon, collection: Iparametro.where(campo: 'pantalon_hombre').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          <% elsif @contratospersona.genero == 'FEMENINO' %>
+            <%= f.input :talla_pantalon, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_pantalon, collection: Iparametro.where(campo: 'pantalon_mujer').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          <% else %>
+            <%= f.input :talla_pantalon, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_pantalon, collection: Iparametro.where(campo: 'XXX').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cant_pantalon, as: :integer, label: "Cant. Pantalon", placeholder: 'Cant.' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <% unless @contratospersona.new_record? %>
+          <%= f.input :talla_camisa, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+          <%#= f.input :talla_camisa, collection: Iparametro.where(campo: select_tipo_genero_camisa(@contratospersona.genero)).order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+        <% else %>
+          <% if @contratospersona.genero == 'MASCULINO' %>
+            <%= f.input :talla_camisa, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_camisa, collection: Iparametro.where(campo: 'camisa_hombre').order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          <% elsif @contratospersona.genero == 'FEMENINO' %>
+            <%= f.input :talla_camisa, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_camisa, collection: Iparametro.where(campo: 'camisa_mujer').order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true %>
+          <% else %>
+            <%= f.input :talla_camisa, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+            <%#= f.input :talla_camisa, collection: Iparametro.where(campo: 'XXX2').order("descripcion asc").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cant_camisa, as: :integer, label: "Cant. Camisa", placeholder: 'Cant.' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :talla_zapatos, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }%>
+        <%#= f.input :talla_zapatos, collection: Iparametro.where(campo: 'talla_zapatos').order("CAST(descripcion AS UNSIGNED) ASC").collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Talla Zapatos" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cant_zapatos, as: :integer, label: "Cant. Zapatos", placeholder: 'Cant.' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :zapatos, as: :select, collection: select_zapatos, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo Zapatos" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :guantes, as: :integer, label: "Cant. Guantes", placeholder: 'Cant. Guantes' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tapabocas, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();", placeholder: 'Cant. Tapabocas' }, label: "Cant. Tapabocas" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :monogafas, as: :integer, label: "Cant. Monogafas", placeholder: 'Cant. Monogafas' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :casco, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Casco?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :elemento_especial, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Elemento Especial?" %></div>
+    </div>
+  </div>
+
+  <div class="box-header">
+    <legend>Anexo perfil sociodemografico</legend>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :orientacion_sexual, as: :select, collection: select_orientacion_sexual, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Orientación sexual" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_religion, as: :select, collection: select_tipo_religion, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de religión" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-4"><%= f.input :tipo_etnia, as: :select, collection: select_tipo_etnia, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de etnia" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :madre_cabeza, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Madre o padre cabeza de hogar" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo_vivienda, as: :select, collection: select_tipo_vivienda, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Tipo de vivienda" %></div>
+    </div>
+  </div>
+
+  <div class="box-header">
+    <legend>Control de Seguridad</legend>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :identificacion2, id: "bloquear", input_html: { onkeypress: "return justNumbers(event);", maxlength: 15 } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :fecha_nacimiento2, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+    </div>
+  </div>
+  <div class="box-header">
+    <legend>Anexo Datos Practica Laboral</legend>
+  </div>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-6"><%= f.input :prac_tutor, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Tutor designado e Identificación" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-6"><%= f.input :prac_universidad, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Institución Educativa - Razón social y NIT" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-6"><%= f.input :prac_replegal, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Institución Educativa - Representante legal e identificación" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-6"><%= f.input :prac_monitor, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Monitor designado e identificación" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :prac_jornada, as: :select, collection: select_jornada, input_html: { data: { width: '100%' }, class: 'select2' }, label: "Jornada del Practicante"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :prac_nrohoras, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Nro de Horas Semana" %></div>
+    </div>
+  </div>
+  <div class="box-footer">
+    <div class="box-tools pull-left"><strong>ID Persona: <%= @contratospersona.id rescue nil %></strong>
+    </div>
+    <% if is_auth_a_contratospersona %>
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div><!-- /.box-tools -->
+    <% end %>
+  </div>
+<% end %>

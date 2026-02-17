@@ -1,0 +1,5 @@
+<% if @valida %>
+$("#otp<%= @contratosperdotacion.id %>").modal("hide");
+<% else %>
+$("#mensaje<%= @contratosperdotacion.id %>").replaceWith("<div class='row' id='mensaje'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2' style='text-align: center;width: 100%;margin-bottom: 30px;color: red;font-weight: 600;font-size: 20px;'>CODIGO NO VALIDO</div></div>");
+<% end %>

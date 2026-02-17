@@ -1,0 +1,31 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="10%" class="text-center">Fecha</th>
+        <th width="20%" class="text-left" style="font-size:10px;">Compañia</th>
+        <th class="text-center">Concepto</th>
+        <th width="12%" class="text-center">Forma de Pago</th>
+        <th width="12%" class="text-right">Valor</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_eproveedorestemegresos">
+     <% @eproveedor.eproveedorestemegresos.where(estado: nil).order(id: :desc).each do |eproveedorestemegreso| %>
+       <%= render 'eproveedorestemegresos/tr', eproveedorestemegreso: eproveedorestemegreso %>
+     <% end %>
+	  </tbody>
+    <thead class="thcolor">
+    <tr>
+      <th class="alert-danger text-center" colspan="5"></th>
+      <th class="alert-danger text-right"> <%= camponumerico @eproveedor.eproveedorestemegresos.where(estado: nil).sum("total") rescue 0 %></th>
+    </tr>
+    </thead>
+	</table>
+
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%#= will_paginate @eproveedorestemegresos, :param_name => 'eproveedorestemegresos' , renderer: BootstrapPagination::Rails %>
+</div>
+
+

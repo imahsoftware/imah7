@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @visitascompromiso.compromiso rescue nil %></h4>
+</div>
+<div class="modal-body">
+  <%= simple_form_for @visitasdoc, :url => create2_visitasdocs_path, :method => :post, remote: true do |f| %>
+    <%= hidden_field_tag :visita, params[:visita], value: @visita.id %>
+    <%= hidden_field_tag :id, params[:id], value: @visitascompromiso.id %>
+    <div class="bs-callout">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :tipo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :docvisita, as: :file, label: 'Archivo a cargar' %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <% if @visitasdoc.new_record? %>
+            <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#visitasdoc_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+          <% else %>
+            <%= link_to "#{t :cancelar}", visita_visitasdoc_path(@visita, @visitasdoc), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+          <% end %>
+        </div>
+        <div class="col-md-6">
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<br/>

@@ -1,0 +1,16 @@
+<tr id="contratosprefretencion_<%= contratosprefretencion.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosprefretencion")%>
+    <%= link_to edit_contratosprefactura_contratosprefretencion_path(@contratosprefactura, contratosprefretencion), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contratosprefactura_contratosprefretencion_path(@contratosprefactura, contratosprefretencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosprefretencion.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosprefretencion.contratosretencion.nomretencion  rescue nil %></td>
+  <td align="right"><%= camponumerico contratosprefretencion.porcentaje  rescue nil %></td>
+  <td align="right"><%= camponumerico contratosprefretencion.valor_retencion  rescue nil %></td>
+</tr>

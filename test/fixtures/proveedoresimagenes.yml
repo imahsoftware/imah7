@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  proveedor: one
+  user: one
+  tiposimagen: one
+  prodocumentos: 
+
+two:
+  proveedor: two
+  user: two
+  tiposimagen: two
+  prodocumentos: 

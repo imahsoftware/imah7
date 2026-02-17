@@ -1,0 +1,47 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosnodos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contrato</th>
+      <th>User</th>
+      <th>Contratossede</th>
+      <th>User act</th>
+      <th>Estado</th>
+      <th>Nombre</th>
+      <th>Clase aseo</th>
+      <th>Clase aseo2</th>
+      <th>Clase aseo3</th>
+      <th>Clase aseo4</th>
+      <th>Clase aseo5</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosnodos.each do |contratosnodo| %>
+      <tr>
+        <td><%= contratosnodo.contrato %></td>
+        <td><%= contratosnodo.user %></td>
+        <td><%= contratosnodo.contratossede %></td>
+        <td><%= contratosnodo.user_act %></td>
+        <td><%= contratosnodo.estado %></td>
+        <td><%= contratosnodo.nombre %></td>
+        <td><%= contratosnodo.clase_aseo %></td>
+        <td><%= contratosnodo.clase_aseo2 %></td>
+        <td><%= contratosnodo.clase_aseo3 %></td>
+        <td><%= contratosnodo.clase_aseo4 %></td>
+        <td><%= contratosnodo.clase_aseo5 %></td>
+        <td><%= link_to 'Show', contratosnodo %></td>
+        <td><%= link_to 'Edit', edit_contratosnodo_path(contratosnodo) %></td>
+        <td><%= link_to 'Destroy', contratosnodo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosnodo', new_contratosnodo_path %>

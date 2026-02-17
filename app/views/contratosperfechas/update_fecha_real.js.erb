@@ -1,0 +1,16 @@
+$("#fcha_real<%= @contratosperfecha.id %>").remove();
+
+$("#boton_evaluar<%= @contratosperfecha.id %><%= @contratosperfecha.contratospersona_id %>").remove();
+$("#mostrar_boton_evalua<%= @contratosperfecha.id %><%= @contratosperfecha.contratospersona_id %>").html("<%= j render "contratosperfechas/boton_evalua", contratosperfecha: @contratosperfecha %>");
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});

@@ -1,0 +1,20 @@
+<%= simple_form_for([@contrato, @contratosservicio], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :servicio, collection: Iparametro.where(campo: 'contratosservicios').order(:descripcion).collect { |p| [p.descripcion, p.descripcion] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Servicios" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosservicio.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosservicio_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosservicio_path(@contrato, @contratosservicio), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

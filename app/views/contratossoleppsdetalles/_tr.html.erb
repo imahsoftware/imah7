@@ -1,0 +1,45 @@
+<tr id="contratossoleppsdetalle_<%= contratossoleppsdetalle.id %>">
+<td class="text-center">
+  <% if ['PENDIENTE', 'RECHAZADO'].include?(@contratossolepp.estado) %>
+    <%= link_to edit_contratossolepp_contratossoleppsdetalle_path(@contratossolepp, contratossoleppsdetalle), remote: true, class: 'edit_contratossoleppsdetalle_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to contratossolepp_contratossoleppsdetalle_path(@contratossolepp, contratossoleppsdetalle), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  <% end %>
+  <button class="btn btn-xs btn-info">
+    <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Creación: <%= contratossoleppsdetalle.created_at.strftime("%Y-%m-%d %X") rescue nil %></div>"><i class="fa fa-child" aria-hidden="true"></i></span>
+  </button>
+</td>
+<td align="left" class="text-table"><%= contratossoleppsdetalle.item rescue nil %></td>
+<td align="right" class="text-table"><%= camponumerico contratossoleppsdetalle.cantidad rescue nil %></td>
+<% if is_auth_a("contratossoleppsdetalle_admin") %>
+  <% if @contratossolepp.estado == 'ENVIADO' %>
+    <td align="right" class="text-table">
+      <%= form_for contratossoleppsdetalle, remote: true do |f| %>
+        <%= f.number_field :cant_aprobada, class: 'form-control', id: "cant_aprobada_#{contratossoleppsdetalle.id}", data: { detalle_id: contratossoleppsdetalle.id } %>
+      <% end %>
+    </td>
+  <% else %>
+    <td align="right" class="text-table"><%= camponumerico contratossoleppsdetalle.cant_aprobada rescue nil %></td>
+  <% end %>
+<% end %>
+<% if is_auth_a("contratossoleppsdetalle_admin") %>
+  <td align="left" class="text-table">
+    <% if is_auth_a("contratossoleppsdetalle_admin") %>
+      <% if @contratossolepp.estado == 'ENVIADO' %>
+        <%= form_for contratossoleppsdetalle, remote: true do |f| %>
+          <%= f.text_area :observacion, class: 'form-control2', id: "observacion_#{contratossoleppsdetalle.id}" %>
+        <% end %>
+      <% else %>
+        <%= contratossoleppsdetalle.observacion.upcase rescue nil %>
+      <% end %>
+    <% else %>
+      <%= contratossoleppsdetalle.observacion.upcase rescue nil %>
+    <% end %>
+  </td>
+<% else %>
+  <td align="left" class="text-table"><%= contratossoleppsdetalle.observacion.upcase rescue nil %></td>
+<% end %>
+</tr>

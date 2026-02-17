@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Personastemporales</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contrata</th>
+      <th>User</th>
+      <th>Tipo identificacion</th>
+      <th>Identificacion</th>
+      <th>Nombres</th>
+      <th>Apellidos</th>
+      <th>Telefono</th>
+      <th>Movil</th>
+      <th>Cargo</th>
+      <th>User asignado</th>
+      <th>Autobuscar</th>
+      <th>Nombre completo</th>
+      <th>Tipo usuario</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @personastemporales.each do |personastemporal| %>
+      <tr>
+        <td><%= personastemporal.contrata %></td>
+        <td><%= personastemporal.user %></td>
+        <td><%= personastemporal.tipo_identificacion %></td>
+        <td><%= personastemporal.identificacion %></td>
+        <td><%= personastemporal.nombres %></td>
+        <td><%= personastemporal.apellidos %></td>
+        <td><%= personastemporal.telefono %></td>
+        <td><%= personastemporal.movil %></td>
+        <td><%= personastemporal.cargo %></td>
+        <td><%= personastemporal.user_asignado %></td>
+        <td><%= personastemporal.autobuscar %></td>
+        <td><%= personastemporal.nombre_completo %></td>
+        <td><%= personastemporal.tipo_usuario %></td>
+        <td><%= link_to 'Show', personastemporal %></td>
+        <td><%= link_to 'Edit', edit_personastemporal_path(personastemporal) %></td>
+        <td><%= link_to 'Destroy', personastemporal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Personastemporal', new_personastemporal_path %>

@@ -1,0 +1,58 @@
+<div class="table-responsive">
+  <% if contratosperfechas.present? %><br/>
+    <div class="box-body no-padding" style="background-color: #ffffff;">
+      <table class="table table-condensed table-bordered table-striped table-responsive">
+        <tbody>
+        <tr class="thcolor">
+          <th class="text-left">Contrato</th>
+          <th width="12%" class="text-center">Fecha Inicio</th>
+          <th width="12%" class="text-center">Fecha Fin</th>
+          <th width="10%" class="text-right">Salario</th>
+          <th width="10%" class="text-center">Estado</th>
+        </tr>
+        <%  contratosperfechas.each do |contratosperfecha| %>
+          <tr id="contratosperfecha_<%= contratosperfecha.id %>">
+            <td align="left"><small><%= contratosperfecha.contrato.empresa.identnombre rescue nil %>
+              <br/><strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %> -
+              <strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+              <br/><strong>Grupo de nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %>
+              <small>(<%= contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+            </small>
+              <br/>
+              <%= link_to cartam_contratosperfechas_path(id: contratosperfecha.contratospersona_id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Laboral Completa en PDF' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-cloud-download"></i> Carta Laboral</button>
+              <% end %>
+              <% if contratosperfecha.idliquidacion.to_i > 0 %>
+                <%= link_to liquidacion_contratosperliquidaciones_path(id: contratosperfecha.idliquidacion, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+                  <button class="btn btn-xs btn-info"><i class="fa fa-cloud-download"></i> Liquidacion</button>
+                <% end %>
+              <% end %>
+              <%= link_to tirilla_masive_contratospernominas_path(contratosperfecha_id: contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirillas consolidadas' do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-cloud-download"></i> Tirillas consolidadas</button>
+              <% end %>
+              <%  contratosperimagen = Contratosperimagen.where("contratosperfecha_id = #{contratosperfecha.id} and personasimagen_file_name LIKE '%Contrato_Digital%'").first
+                 if contratosperimagen.present?
+              %>
+                  <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i> Contrato</button>
+                  <% end %>
+              <% end %>
+            </td>
+            <td align="center"><%= contratosperfecha.fecha_inicio rescue nil %></td>
+            <td align="center"><%= contratosperfecha.fecha_fin rescue nil %></td>
+            <td align="right"><%= camponumerico contratosperfecha.salariofinal rescue nil %></td>
+            <td align="center"><%= contratosperfecha.estado rescue nil %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <script>
+        $(function () {
+            $('.pagination a').attr('data-remote', 'true')
+        });
+    </script>
+  <% else %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4>No hay resultados de la consulta</div>
+  <% end %>
+</div>

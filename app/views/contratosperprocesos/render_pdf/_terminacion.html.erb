@@ -1,0 +1,86 @@
+<% base_url = Rails.env.production? ? 'https://appasearesp.com' : 'http://localhost:3000' %>
+<div align="center">
+  <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="35%" rowspan="3"><%= image_tag "#{@logo}", size: "280x120" %></td>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b><%= @porta.razon_social rescue nil %></b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b>PROCESO DE RECURSO HUMANO</b></td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+              <b>PROCESO DISCIPLINARIO</b></td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                <br/>
+                Medellin, <%= namedate(@contratosperprosancion.created_at) rescue nil %>
+                <br/><br/><br/><br/>
+                Señor(a)<br/>
+                <b><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %></b><br/>
+                <b><%= camponumerico2 @contratosperproceso.contratospersona.identificacion rescue nil %></b><br/>
+                <b><%= @contratosperproceso.contratospersona.direccion rescue nil %></b><br/>
+                <b><%= @contratosperproceso.contratospersona.correo rescue nil %></b><br/>
+                <b><%= @porta.razon_social rescue nil %></b><br/>
+                <br/><br/>
+                <strong>ASUNTO:</strong> TERMINACION DE CONTRATO LABORAL CON JUSTA CAUSA
+                <br/><br/>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                  Me permito informarle a través de la presente que, en virtud de evidenciar que el trabajador en mención, incumplió en el Articulo 55 causal
+                  <b>(<%= @contratosperprosancion.reglamento rescue nil %>) Se aplica la sanción <%= @contratosperprosancion.sancion rescue nil %></b>, teniendo asi una falta grave como justa causa de acuerdo al CAPITULO XIX
+                  JUSTAS CAUSAS DE TERMINACIÓN UNILATERAL DEL CONTRATO DE TRABAJO del Reglamento interno de Trabajo, se da por terminado el contrato entre el señor(a) <b><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %></b> y <strong><%=@nombre_empresa rescue nil %></strong>.
+                  <br/><br/>
+                  Atentamente;
+                </div>
+                <br/><br/>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px 0px 0px 0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                  <tr>
+                    <td width="49%" height="30" ALIGN="center"><strong>REPRESENTANTE LEGAL</strong></td>
+                    <td>&nbsp;</td>
+                    <td width="49%" height="30" ALIGN="center"><strong>EMPLEADO</strong></td>
+                  </tr>
+                  <tr>
+                    <td height="50">
+                      <% if @contratosperprosancion.codigo_firma.present? %>
+                        <br/>
+                        <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                      <%else %>
+                        <br/><br/><br/>
+                      <%end %>
+                      <br/><%= @nombre_firma rescue nil %><br/>
+                      Representante Legal<br/>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>
+                      <% if @contratosperprosancion.codigo_firma_empleado.present? %>
+                        <strong><%= @contratosperproceso.contratospersona.nombre_completo rescue nil %><br/>
+                          C.C <%= camponumerico @contratosperproceso.contratospersona.identificacion rescue nil %><br/></strong>
+                        <b>FIRMA DIGITAL:</b> <%= @contratosperprosancion.codigo_firma_empleado %><br/>
+                        <b>FECHA FIRMA:</b> <%= @contratosperprosancion.codigo_fecha_empleado.strftime("%d-%m-%Y %X") rescue nil %><br/>
+                        <small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                      <% else %>
+                        <br/>_________________________________________<br/>
+                        <%= @contratosperproceso.contratospersona.nombre_completo rescue nil %>
+                        <br/>C.C <%= camponumerico @contratosperproceso.contratospersona.identificacion rescue nil %>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

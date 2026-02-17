@@ -1,0 +1,13 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_docfirma<%= @contratosperfecha.id %><%= @estado %>").html('<%= j render "abrir_detalle_docfirma", contratosperfechasdocs: @contratosperfechasdocs, contratosperfecha: @contratosperfecha  %>');
+$("#abrir<%= @contratosperfecha.id %><%= @estado %>").addClass("hide");
+$("#cerrar<%= @contratosperfecha.id %><%= @estado %>").removeClass("hide");
+<% else %>
+$("#abrir<%= @contratosperfecha.id %><%= @estado %>").removeClass("hide");
+$("#cerrar<%= @contratosperfecha.id %><%= @estado %>").addClass("hide");
+$("#abrir_detalle_docfirma<%= @contratosperfecha.id %><%= @estado %>").html(null);
+<% end %>
+
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

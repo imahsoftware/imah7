@@ -1,0 +1,35 @@
+<tr id="contratosuser_<%= contratosuser.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosuser")%>
+    <%= link_to edit_contrato_contratosuser_path(@contrato, contratosuser), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contrato_contratosuser_path(@contrato, contratosuser), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+
+    <%= link_to sede_contratosusers_path(contrato_id: @contrato.id, user_interventor: contratosuser.user_interventor), data: { toggle: 'tooltip' }, title: 'Sedes', remote: true do %>
+      <button class="btn btn-xs btn-info"><i class="fa fa-home"></i></button>
+    <% end %>
+
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosuser.user_nombre.html_safe rescue nil %><%= contratosuser.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="center"><small><%= contratosuser.tipo rescue nil %></small></td>
+  <td align="justify">
+    <% if contratosuser.user_interventor
+         usr = User.find(contratosuser.user_interventor)
+    %>
+        <span data-toggle="tooltip" onclick="copiarAlPortapapeles('idprograma_<%= usr.identificacion rescue 0 %>')" data-original-title="<%= usr.identificacion rescue nil %>">
+          <p id="idprograma_<%= usr.identificacion rescue 0 %>" class="hidden"><%= usr.identificacion rescue 0 %></p><i class="fa fa-users" ></i></span> <%= usr.nombrecompleto rescue nil %>
+    <% end  %>
+  </td>
+  <td align="left"><strong>I:</strong> <%= contratosuser.fecha_inicio.strftime("%Y-%m-%d") rescue nil %><br/><strong>F:</strong> <%= contratosuser.fecha_fin.strftime("%Y-%m-%d") rescue nil %></td>
+  <td align="left">
+    <small>Multiples Solicitudes? <strong><%= contratosuser.multiples_solicitudes rescue nil %></strong> -
+    Marca entrega en Sitio? <strong><%= contratosuser.marca_entrega_sitio rescue nil %></strong><br/>
+    Valida prefactura? <strong><%= contratosuser.prefactura rescue nil %></strong> -
+      Novedades Nomina? <strong><%= contratosuser.prenomina rescue nil %></strong></small>
+  </td>
+  </td>
+</tr>

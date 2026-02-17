@@ -1,0 +1,39 @@
+<%= simple_form_for([@contratospersona, @contratosperproceso], remote: true) do |f| %>
+  <div class="box-body">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <%= f.input :clase,
+                    collection: Iparametro.where(campo: 'clase_proceso').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] },
+                    input_html: { class: 'select2' },
+                    as: :select,
+                    include_blank: true,
+                    label: 'Clase de proceso',
+                    disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :fecha, as: :string, input_html: { class: 'datetimepicker', data: { date_options: { format: 'YYYY-MM-DD HH:mm:ss', ignoreReadonly: true } }, readonly: true }, label: 'Fecha de los hechos', disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :detalle, as: :text, input_html: { rows: 3, class: "uppercaseInput" }, label: "Detalle de los Hechos", disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :observacion_empleado, as: :text, input_html: { rows: 3, class: "uppercaseInput" }, label: "Detalle del Empleado", disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :apertura, input_html: { rows: 3, class: "uppercaseInput" }, label: "Apertura del Proceso", disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :user_testigo1, collection: User.where(["(tipoconsulta not in ('CANDIDATO','RECTOR') or id = 1) and activo = 'S' and contratospersona_id is not null"]).order(:nombre).collect { |p| [p.nombrecompleto, p.id] }, input_html: { class: 'select2 clean' }, as: :select, include_blank: true, label: "Testigo 1", disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :user_testigo2, collection: User.where(["(tipoconsulta not in ('CANDIDATO','RECTOR') or id = 1) and activo = 'S' and contratospersona_id is not null"]).order(:nombre).collect { |p| [p.nombrecompleto, p.id] }, input_html: { class: 'select2 clean' }, as: :select, include_blank: true, label: "Testigo 2", disabled: @contratosperproceso.present? && @contratosperproceso.codigo_firma_supervisor.present? %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperproceso.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperproceso_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperproceso_path(@contratospersona, @contratosperproceso), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>
+

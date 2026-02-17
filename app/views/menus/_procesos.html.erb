@@ -1,0 +1,345 @@
+<legend style="margin-top: -19px;">DashBoard Procesos Juridicos</legend>
+<%
+  estados = ["PENDIENTE", "EN PROCESO", "FINALIZADO", "NO PROCEDE"]
+  usr = User.find(is_admin)
+%>
+<div class="box-body">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <% Iparametro.where(campo: 'clase_proceso').order(:descripcion).each do |p| %>
+            <li class="<%= @etapaproceso == p.descripcion.gsub(' ', '_') ? 'active' : "" %>">
+              <%= link_to menus_path(etapa_proceso: p.descripcion.gsub(' ', '_'), clase: p.descripcion) do %>
+                <i class="fa fa-balance-scale"></i> <%= p.descripcion %>
+                (<%= Contratosperproceso.where(clase: p.descripcion).count rescue 0 %>)
+              <% end %>
+            </li>
+          <% end %>
+          <li class="<%= @etapaproceso == 'CITACION' ? 'active' : "" %>">
+            <%= link_to menus_path(etapa_proceso: 'CITACION', clase: 'CITACION') do %>
+              <i class="fa fa-cube"></i> CITACION
+            <% end %>
+          </li>
+          <li class="<%= @etapaproceso == 'EVALUACION_PERIODO' ? 'active' : "" %>">
+            <%= link_to menus_path(etapa_proceso: 'EVALUACION_PERIODO', clase: 'EVALUACION_PERIODO') do %>
+              <i class="fa fa-cube"></i> EVALUACIÓN PERIODO DE PRUEBAS
+            <% end %>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <% Iparametro.where(campo: 'clase_proceso').order(:descripcion).each do |q| %>
+            <% if @etapaproceso == q.descripcion.gsub(' ', '_') %>
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <%
+                    estados.each do |p|
+                      if usr.subetapa.to_s == p
+                        clase = "active"
+                      else
+                        clase = ""
+                      end
+                  %>
+                    <li class="<%= clase %>">
+                        <%= link_to etapars_contratosperprocesos_path(subetapa: p, clase: q.descripcion) do %>
+                        <i class="fa fa-rocket"></i>&nbsp<%= p %>
+                        (<%= Contratosperproceso.where(clase: q.descripcion, estado: p.to_s).count rescue 0 %>)
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+                    <% if @contratosperprocesos.where(estado: usr.subetapa.to_s).present? %>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <thead class="thcolor">
+                        <tr>
+                          <th class="text-center text-table" width="7%"></th>
+                          <th class="text-center text-table" width="5%">ID</th>
+                          <th class="text-left text-table" width="35%">Empleado / Contrato</th>
+                          <th class="text-left text-table">Detalle</th>
+                        </tr>
+                        </thead>
+                        <% @contratosperprocesos.where(estado: usr.subetapa.to_s).each do |contratosperproceso|
+                          contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                                               .select("contratos.nro_contrato, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                                          contratosgrupos.descripcion, contratosgrupos.termino, contratoscargos.perfil, contratoscargos.salario salariocargo,
+                                                                          (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                                          (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                                          (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) nombrepersona,
+                                                                          (select nombre from users where id =#{contratosperproceso.user_id}) userpronombre,
+                                                                          (select concat('Fecha Citación: ',fecha,'<br/>Lugar: ',lugar,'<br/>Abogado(a): ',(select nombre from users where id = contratosperprocitaciones.user_id)) from contratosperprocitaciones where contratosperproceso_id =#{contratosperproceso.id} and estado = 'PENDIENTE' limit 1) citacion_detalle,
+                                                                           contratosperfechas.*")
+                                                               .where(["contratosperfechas.id = #{contratosperproceso.contratosperfecha_id}"]).first
+                        %>
+                          <tr id="contratosperproceso_<%= contratosperproceso.id %>">
+                            <td class="text-center">
+                              <%= link_to general_contratosperprocesos_path(id: contratosperproceso.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+                                <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                              <% end %>
+                              <%= link_to editproceso_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: contratosperproceso.contratospersona.id, etapa: '1'), data: { toggle: 'tooltip' }, title: "Ingresar al proceso" do %>
+                                <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                              <% end %>
+                            </td>
+                            <td class="text-center"><%= contratosperproceso.id rescue nil %></td>
+                            <td class="text-left text-table">
+                              <%= link_to edit_contratospersona_path(id: contratosperproceso.contratospersona.id, etapa: 'F'), data: { toggle: 'tooltip' }, title: "Ir al Contrto" do %>
+                                <i class="fa fa-child text-blue"></i>
+                              <% end %>
+                              <b><%= contratosperfecha.nombrepersona rescue nil %></b>
+                              <br/><%= contratosperfecha.identnombre rescue nil %>
+                              <br/><strong>Nro Contrato : </strong><%= contratosperfecha.nro_contrato rescue nil %>
+                              <br/><strong>Cargo : </strong><%= contratosperfecha.perfil rescue nil %>
+                              <% if is_auth_e('versalarioenempleado') %>
+                                ( <%= camponumerico contratosperfecha.salariocargo.to_i rescue nil %>)
+                              <% end %>
+                              <br/><strong>Grupo Nomina : </strong><%= contratosperfecha.descripcion rescue nil %>
+                              <small>(<%= contratosperfecha.termino rescue nil %>)</small>
+                              <% if contratosperfecha.seccionnombre.present? %>
+                                <br/><strong>Sección : </strong><%= contratosperfecha.seccionnombre rescue nil %>
+                                -<%= contratosperfecha.autobuscar_municipios rescue nil %>
+                              <% end %>
+                            </td>
+                            <td align="justify" class="text-table">
+                              <strong>Creacion: </strong><%= contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                              <br/><strong>Fecha de los
+                              Hechos: </strong><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %>
+                              <br/><strong>Creado por : </strong><%= contratosperfecha.userpronombre rescue nil %> -
+                              <strong>Cel:</strong> <%= contratosperproceso.mostrar_movil rescue nil %>
+                              <small><br/><strong>DETALLE: </strong><%= contratosperproceso.detalle.upcase rescue nil %>
+                              </small>
+                              <% if contratosperfecha.citacion_detalle.present? %>
+                                <br/><br/><small class="text-red"><%= contratosperfecha.citacion_detalle.html_safe rescue nil %></small>
+                              <% end %>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    <% else %>
+                      <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> <%= t :atencion_msj %> este mes!!!</div>
+                    <% end %>
+                    <legend><small>Periodos Anteriores:</small></legend>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <% datos = Contratosperproceso.select("date_format(contratosperprocesos.created_at,'%Y-%m') periodo, count(9) cant")
+                                                    .where(["date_format(contratosperprocesos.created_at,'%%Y-%%m') != date_format(now(),'%%Y-%%m')
+                                                              and contratosperprocesos.estado = '#{usr.subetapa.to_s}' and clase = '#{q.descripcion}'"])
+                                                    .group(["date_format(contratosperprocesos.created_at,'%Y-%m')"])
+                                                    .order("date_format(contratosperprocesos.created_at,'%Y-%m') desc")
+                         datos.each do |p| %>
+                        <tr>
+                          <td class="text-table text-left">
+                            <div id="abrir_proceso<%=p.periodo%>_<%=q.descripcion.gsub(' ','_').to_s%>_<%=usr.subetapa.gsub(' ','_').to_s%>" class="pull-left">
+                              <%= link_to showinfo_contratosperprocesos_path(ruta: 'ABRIR', periodo: p.periodo, estado: usr.subetapa.to_s, clase: q.descripcion.to_s), style: "color: black;", remote: true do %>
+                                <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver la informacion"></i>
+                                <i class="fa fa-arrow-circle-down text-success"></i> <%=p.periodo rescue nil %> (<%=p.cant rescue nil %>)
+                              <% end %>
+                            </div>
+                            <div id="cerrar_proceso<%= p.periodo %>_<%=q.descripcion.gsub(' ','_').to_s%>_<%=usr.subetapa.gsub(' ','_').to_s%>" class="pull-left hide">
+                              <%= link_to showinfo_contratosperprocesos_path(ruta: 'CERRAR', periodo: p.periodo, estado: usr.subetapa.to_s, clase: q.descripcion.to_s), style: "color: black;", remote: true do %>
+                                <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para cerrar la informacion"></i>
+                                <i class="fa fa-star text-red"></i> <%=p.periodo rescue nil %> (<%=p.cant rescue nil %>)
+                              <% end %>
+                            </div>
+                            <div id="abrir_detalle_proceso<%= p.periodo %>_<%=q.descripcion.gsub(' ','_').to_s%>_<%=usr.subetapa.gsub(' ','_').to_s%>"></div>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+          <% if @etapaproceso == 'CITACION'
+               @contratosperprocesoscitacion = Contratosperprocitacion.joins(:contratosperproceso)
+                                                                      .select("contratosperprocitaciones.fecha, contratosperprocitaciones.user_id user_cita, contratosperprocesos.* ")
+                                                                      .where("contratosperprocesos.estado != 'FINALIZADO'
+                                                                  and contratosperprocitaciones.estado = 'PENDIENTE'").order("1")
+          %>
+            <% if @contratosperprocesoscitacion.present? %>
+              <table class="table table-bordered table-condensed table-striped">
+                <thead class="thcolor">
+                <tr>
+                  <th class="text-center text-table" width="7%"></th>
+                  <th class="text-center text-table" width="5%">ID</th>
+                  <th class="text-left text-table" width="35%">Empleado / Contrato</th>
+                  <th class="text-left text-table">Detalle</th>
+                </tr>
+                </thead>
+                <% @contratosperprocesoscitacion.each do |contratosperproceso|
+                  contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                                       .select("contratos.nro_contrato, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                                          contratosgrupos.descripcion, contratosgrupos.termino, contratoscargos.perfil, contratoscargos.salario salariocargo,
+                                                                          (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                                          (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                                          (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) nombrepersona,
+                                                                          (select nombre from users where id = #{contratosperproceso.user_id}) userpronombre,
+                                                                          (select celular from users where id = #{contratosperproceso.user_id}) movil,
+                                                                          (select concat('Fecha Citación: ',fecha,'<br/>Lugar: ',lugar) from contratosperprocitaciones where contratosperproceso_id =#{contratosperproceso.id} and estado = 'PENDIENTE' limit 1) citacion_detalle,
+                                                                           contratosperfechas.*")
+                                                       .where(["contratosperfechas.id = #{contratosperproceso.contratosperfecha_id}"]).first
+                %>
+                  <tr id="contratosperproceso_<%= contratosperproceso.id %>">
+                    <td class="text-center">
+                      <%= link_to general_contratosperprocesos_path(id: contratosperproceso.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Formato' do %>
+                        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                      <%= link_to editproceso_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: contratosperproceso.contratospersona.id, etapa: '1'), data: { toggle: 'tooltip' }, title: "Ingresar al proceso" do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                      <% end %>
+                    </td>
+                    <td class="text-center"><%= contratosperproceso.id rescue nil %></td>
+                    <td class="text-left text-table">
+                      <%= link_to edit_contratospersona_path(id: contratosperproceso.contratospersona.id, etapa: 'F'), data: { toggle: 'tooltip' }, title: "Ir al Contrto" do %>
+                        <i class="fa fa-child text-blue"></i>
+                      <% end %>
+                      <b><%= contratosperfecha.nombrepersona rescue nil %></b>
+                      <br/><%= contratosperfecha.identnombre rescue nil %>
+                      <br/><strong>Nro Contrato : </strong><%= contratosperfecha.nro_contrato rescue nil %>
+                      <br/><strong>Cargo : </strong><%= contratosperfecha.perfil rescue nil %>
+                      <% if is_auth_e('versalarioenempleado') %>
+                        ( <%= camponumerico contratosperfecha.salariocargo.to_i rescue nil %>)
+                      <% end %>
+                      <br/><strong>Grupo Nomina : </strong><%= contratosperfecha.descripcion rescue nil %>
+                      <small>(<%= contratosperfecha.termino rescue nil %>)</small>
+                      <% if contratosperfecha.seccionnombre.present? %>
+                        <br/><strong>Sección : </strong><%= contratosperfecha.seccionnombre rescue nil %>
+                        -<%= contratosperfecha.autobuscar_municipios rescue nil %>
+                      <% end %>
+                    </td>
+                    <td align="justify" class="text-table">
+                      <div class="text-red"><strong><%= contratosperproceso.clase rescue nil %></strong></div>
+                      <strong>Fecha de los
+                        Hechos: </strong><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %>
+                      <br/><strong>Creado por : </strong><%= contratosperfecha.userpronombre rescue nil %> -
+                      <strong>Cel:</strong> <%= contratosperfecha.movil rescue nil %>
+                      <small><br/><strong>DETALLE: </strong><%= contratosperproceso.detalle.upcase rescue nil %></small>
+                      <% if contratosperfecha.citacion_detalle.present? %>
+                        <br/><br/><small class="text-red"><%= contratosperfecha.citacion_detalle.html_safe rescue nil %>
+                      <br/>Abogado(a): <%= User.find(contratosperproceso.user_cita).nombre rescue nil %>
+                    </small>
+                      <% end %>
+
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            <% else %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+            <% end %>
+          <% end %>
+          <% if @etapaproceso == 'EVALUACION_PERIODO' %>
+            <div class="row">
+              <div class="col-md-12">
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="nav-tabs-custom">
+                      <ul class="nav nav-tabs">
+                        <li class="<%= @etapa_prueba == 'P' ? 'active' : "" %>">
+                          <%= link_to menus_path(etapa_proceso: 'EVALUACION_PERIODO', clase: 'EVALUACION_PERIODO', etapa_prueba: 'P') do %>
+                            <i class="fa fa-rocket"></i> PENDIENTE
+                          <% end %>
+                        </li>
+                        <li class="<%= @etapa_prueba == 'A' ? 'active' : "" %>">
+                          <%= link_to menus_path(etapa_proceso: 'EVALUACION_PERIODO', clase: 'EVALUACION_PERIODO', etapa_prueba: 'A') do %>
+                            <i class="fa fa-rocket"></i> RETIROS APROBADOS
+                          <% end %>
+                        </li>
+                        <li class="<%= @etapa_prueba == 'N' ? 'active' : "" %>">
+                          <%= link_to menus_path(etapa_proceso: 'EVALUACION_PERIODO', clase: 'EVALUACION_PERIODO', etapa_prueba: 'N') do %>
+                            <i class="fa fa-rocket"></i> NO APLICA
+                          <% end %>
+                        </li>
+                      </ul>
+                      <div class="tab-content">
+                        <% if ['P','A','N'].include?(@etapa_prueba) %>
+                          <% if @datos.present? %>
+                            <table class="table table-bordered table-condensed table-striped">
+                              <tr class="thcolor">
+                                <th class="text-table" width="8%"></th>
+                                <th class="text-table" width="18%">Fecha Evaluación</th>
+                                <th class="text-table">Empleado</th>
+                                <th class="text-table text-center" width=8%">Calificacion</th>
+                                <th class="text-table text-center" width="13%">Estado</th>
+                              </tr>
+
+                              <% @datos.order("id asc").each do |evaluacionescontrato|
+                                contratosperfecha = Contratosperfecha.where("estado = 'ACTIVO' and (fecha_fin is null or fecha_fin > now()) and contratospersona_id in (select contratospersona_id from users where id = #{evaluacionescontrato.user_responsable})").first rescue nil
+                                contratosperfecha_id = contratosperfecha.id rescue nil
+                              %>
+                                <tr>
+                                  <td class="text-center text-table-10" style="padding: 7px;">
+                                    <div class="btn-group" id="botones<%= evaluacionescontrato.id %>">
+                                      <button type="button" class="btn btn-success dropdown-toggle btn-xs" data-toggle="dropdown">
+                                        Opciones <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                          <%= link_to evaluacion_pdf_evaluacionescontratos_path(evaluacion_id: evaluacionescontrato.evaluacion_id, usuario: evaluacionescontrato.id.to_s, contratosperfecha_id: contratosperfecha_id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' } do %>
+                                            <i class="fa fa-file-pdf-o"></i> Evaluación PDF
+                                          <% end %>
+                                        </li>
+                                        <li>
+                                          <%= link_to actividades_pdf_evaluacionesejecuciones_path(evaluacionescontrato_id: evaluacionescontrato.id, user_id: evaluacionescontrato.user_responsable, evaluacion_id: evaluacionescontrato.evaluacion_id, format: :pdf), data: { toggle: 'tooltip' }, onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                            <i class="fa fa-file-pdf-o"></i> Evaluaciones
+                                          <% end %>
+                                        </li>
+                                        <% if @etapa_prueba.to_s == 'P' %>
+                                          <li>
+                                            <%= link_to otppp_evaluacionescontratos_path(id: evaluacionescontrato.id), data: { confirm: 'Houston! Estas Seguro?, este proceso no tiene reversion...' }, remote: true do %>
+                                              <i class="fa fa-arrow-right"></i> Aprobar Retiro
+                                            <% end %>
+                                          </li>
+                                          <li>
+                                            <%= link_to estado_juridico_evaluacionescontratos_path( estado: 'NO APLICA', evaluacionescontrato_id: evaluacionescontrato.id), data: { confirm: 'Estas Seguro?' }, remote: true do %>
+                                              <i class="fa fa-arrow-right"></i> No Aplica Retiro
+                                            <% end %>
+                                          </li>
+                                        <% end %>
+                                      </ul>
+                                    </div>
+
+                                  </td>
+                                  <td class="text-left text-table-10" style="padding: 7px;">
+                                    <%= link_to abrir_evaluacion_evaluaciones_path(evaluacion_id: evaluacionescontrato.evaluacion_id, ruta: 'ABRIR', usuario: evaluacionescontrato.id.to_s, contratosperfecha_id: contratosperfecha_id), remote: true, style: 'color: black; ' do %>
+                                      <%= evaluacionescontrato.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+                                      <br/> <%= evaluacionescontrato.user.nombre rescue nil %>
+                                    <% end %>
+                                  </td>
+                                  <%= render 'menus/td_pruebas', evaluacionescontrato: evaluacionescontrato, contratosperfecha_id: contratosperfecha_id, contratosperfecha: contratosperfecha %>
+                                </tr>
+                                <tr id="tr_show<%= evaluacionescontrato.id.to_s %>_<%= evaluacionescontrato.evaluacion_id.to_s %>" class="hidden">
+                                  <td colspan="5">
+                                    <div id="abrir_detalle<%= evaluacionescontrato.id.to_s %>_<%= evaluacionescontrato.evaluacion_id.to_s %>"></div>
+                                  </td>
+                                </tr>
+
+                                <div class="modal fade" id="otppp<%= evaluacionescontrato.id rescue nil %>">
+                                  <div class="modal-dialog" style="width: 900px;">
+                                    <div class="modal-content">
+                                    </div>
+                                  </div>
+                                </div>
+                              <% end %>
+                            </table>
+                          <% else %>
+                            <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,17 @@
+<tr id="contratosperuser_<%= contratosperuser.id %>">
+  <td class="text-center">
+    <% if is_auth_a("contratosperuser")%>
+      <%= link_to edit_contratospersona_contratosperuser_path(@contratospersona, contratosperuser), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end%>
+    <% if is_auth_e("contratosperuser")%>
+      <%= link_to contratospersona_contratosperuser_path(@contratospersona, contratosperuser), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%=contratosperuser.user.nombrecompletosuper rescue nil %></td>
+  <td align="center"><%= contratosperuser.fecha_inicio rescue nil %></td>
+  <td align="center"><%= contratosperuser.fecha_fin rescue nil %></td>
+</tr>

@@ -1,0 +1,2 @@
+module CentroscostosHelper
+end

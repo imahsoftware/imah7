@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  iparametro: one
+  formato: one
+  orden: 1
+
+two:
+  iparametro: two
+  formato: two
+  orden: 1

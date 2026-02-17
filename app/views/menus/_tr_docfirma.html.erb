@@ -1,0 +1,46 @@
+<tr id="docfirma_tr<%= contratosperfecha.id %><%= p.downcase %>">
+  <td align="center" class="text-table"></td>
+  <td align="left" class="text-table">
+    <%= link_to edit_contratospersona_path(id: contratosperfecha.contratospersona.id, etapa: 'F'), title: "Ir al Contrto" do %>
+      <i class="fa fa-child text-blue"></i>
+    <% end %><small><%= contratosperfecha.contratospersona.autobuscar rescue nil %></small>
+  </td>
+  <td align="left" class="text-table">
+    <small>
+      <%= contratosperfecha.contrato.empresa.identnombre rescue nil %> -
+      <strong>Nro Contrato : </strong><%= contratosperfecha.contrato.nro_contrato rescue nil %>
+      <br/><strong>Cargo : </strong><%= contratosperfecha.contratoscargo.perfil rescue nil %>
+      <br/><strong>Grupo Nomina : </strong><%= contratosperfecha.contratosgrupo.descripcion rescue nil %>
+      <% if contratosperfecha.contratosseccion_id.present? %>
+        <br/><strong>Sección : </strong><%= contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+      <% end %>
+      <br/><strong>Dirección : </strong><%= contratosperfecha.contratospersona.direcciontelefono rescue nil %>
+      <br/><strong>Ciudad:</strong> <%= contratosperfecha.contrato.municipio.autobuscar rescue nil %>
+    </small>
+  </td>
+  <td align="left" class="text-table">Inicio: <%= contratosperfecha.fecha_inicio rescue nil %> <br/> Fin: <%= contratosperfecha.fecha_fin rescue nil %></td>
+  <td align="center" class="text-table">
+    <% if p.to_s == 'FIRMADO' %>
+      <% doc = Controlfirma.where("id_registro = #{contratosperfecha.id} and controlador = 'contratosperfechas' and fecha_firma is not null").map(&:tipo_documento)%>
+      <%=doc %>
+    <% elsif p.to_s == 'PENDIENTE' %>
+      <% Controlfirma.where("id_registro = #{contratosperfecha.id} and controlador = 'contratosperfechas'
+                             and fecha_firma is null").each do |a| %>
+         <%=a.tipo_documento %>
+         <%= link_to levantar_firma_controlfirmas_path(id: a.id), remote: true, data: { toggle: 'tooltip' }, title: 'Levantar Firma documento' do %>
+          <i class="fa fa-key text-red"></i>
+         <% end %><br/>
+      <% end %>
+    <% elsif p.to_s == 'CONTRATO' %>
+      CONTRATO .. <%=contratosperfecha.sol_firma_fecha.strftime("%Y-%m-%d") rescue nil %><br/>
+      <%= link_to levantar_firma_contratosperfechas_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' }, title: 'Levantar Firma contrato' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-key"></i></button>
+      <% end %>
+      <%= link_to levantarinactivos_firma_contratosperfechas_path(id: contratosperfecha.id), remote: true, data: { toggle: 'tooltip' }, title: 'Levantar Firma todos los inactivos' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-taxi"></i></button>
+      <% end %>
+
+    <% end %>
+      </td>
+</tr>
+

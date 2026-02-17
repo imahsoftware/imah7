@@ -1,0 +1,17 @@
+<tr id="contratossoleppsdoc_<%= contratossoleppsdoc.id %>">
+  <td class="text-center">
+    <%= link_to contratossolepp_contratossoleppsdoc_path(@contratossolepp, contratossoleppsdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratossoleppsdoc.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratossoleppsdoc.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table">
+    <%= contratossoleppsdoc.descripcion rescue nil %>
+  </td>
+  <td align="left" class="text-table">
+    <%= link_to contratossoleppsdoc.docepps.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <i class="fa fa-cloud-download"></i> <%= contratossoleppsdoc.docepps_file_name rescue nil %>
+    <% end %>
+  </td>
+</tr>

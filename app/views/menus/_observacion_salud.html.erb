@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Observación <%= @tipo %> -
+    <small><%= @contratosperfecha.contratospersona.autobuscar rescue nil %></small>
+  </h4>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box-body">
+        <div class="flash_messages"></div>
+        <%= simple_form_for([@contratospersona, @contratospernota], remote: true) do |f| %>
+          <%= hidden_field_tag :contratosperfecha_id, params[:contratosperfecha_id], value: @contratosperfecha.id %>
+          <%= hidden_field_tag :tipo_afiliacion, params[:tipo_afiliacion], value: @tipo %>
+          <div class="bs-callout">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { id: "datepicker#{@tipo}#{@contratosperfecha.id}", data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+              <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :observacion, as: :text, :input_html => { :onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Observación" %></div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
+                <%= f.button :submit, "#{t :guardar}", id: "save#{@contratosperfecha.id}#{@estado}#{@tipo}", class: "btn btn-danger pull-right" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" charset="utf-8">
+    $('#datepicker<%= @tipo %><%= @contratosperfecha.id %>').datepicker({
+        dayNamesMin: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb"],
+        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        dateFormat: "yy-mm-dd",
+        yearRange: '2000:2027',
+        changeMonth: true,
+        changeYear: true,
+    });
+    $('#save<%= @contratosperfecha.id %><%= @estado %><%= @tipo %>').click(function () {
+        $('#observacion_salud<%= @contratosperfecha.id %><%= @estado %><%= @tipo %>').modal('hide');
+    });
+</script>

@@ -1,0 +1,43 @@
+<%
+  isadmin = is_admin
+  # 2021-10-02 FFA - Si se hacen modificaciones se debe alterar tambien contratosgrupos/contratomasive.pdf...
+  @contratosperfecha = Contratosperfecha.find(@contratospervacacion.contratosperfecha_id)
+  contratospersona = @contratosperfecha.contratospersona
+  logo = @contratosperfecha.contrato.empresa.logo
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+
+=begin
+  if logo.to_s == 'logo_inicio_asear.png'
+    portafolio = Portafolio.find(1)
+  elsif logo.to_s == 'microcinco.jpg'
+    portafolio = Portafolio.find(2)
+  elsif logo.to_s == 'construmater.jpg'
+    portafolio = Portafolio.find(3)
+  elsif logo.to_s == 'aseartemporal.jpg'
+    portafolio = Portafolio.find(5)
+  elsif logo.to_s == 'progescol.jpg'
+    portafolio = Portafolio.find(6)
+  elsif logo.to_s == 'julian.jpg'
+    portafolio = Portafolio.find(4)
+  end
+=end
+  #if @contratospervacacion.estado == 'APROBADA'
+%>
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<div align="center">
+  <table width="80%">
+    <tr>
+      <td height="50px"><div align="left"><%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %></div></td>
+    </tr>
+    <tr>
+      <td>
+        <%= render "contratospervacaciones/carta", contratospersona: contratospersona, logo: logo, portafolio: portafolio, isadmin: isadmin %>
+      </td>
+    </tr>
+  </table>
+</div>
+<% #end %>
+
+
+
+

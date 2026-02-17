@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperfecha_id: 1
+  fecha: 2022-04-20
+  estado: MyString
+  contratospervacacion_id: 1
+
+two:
+  contratosperfecha_id: 1
+  fecha: 2022-04-20
+  estado: MyString
+  contratospervacacion_id: 1

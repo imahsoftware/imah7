@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  tipo_producto: MyString
+  descripcion: MyString
+  porcentaje: 9.99
+
+two:
+  contrato: two
+  user: two
+  tipo_producto: MyString
+  descripcion: MyString
+  porcentaje: 9.99

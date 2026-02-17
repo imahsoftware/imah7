@@ -1,0 +1,131 @@
+<style type="text/css">H1.SaltoDePagina {
+    PAGE-BREAK-AFTER: always
+}</style>
+<div align="center">
+  <%
+    portafolio = Portafolio.find(@user.portafolio_id)
+    @logo_firma = portafolio.logo_firma
+    @logo = portafolio.logo_empresa_assets
+    @nombre_firma = portafolio.nombre_rep.to_s
+    @nombre_empresa = portafolio.razon_social.to_s
+    @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+  %>
+  <br/>
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center">
+                <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+              </div>
+            </td>
+            <td style="font-size: 18px; font-family: Tahoma;">
+              <div align="center">
+                <b>Informe Seguimiento</b>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" width="80%">
+              <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+                    <strong>TEMA </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @evaluacion.tema rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+                    <strong>OBJETIVO </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @evaluacion.objetivo rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+                    <strong>FECHA LIMITE </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @evaluacion.fecha_limite rescue nil %></td>
+                </tr>
+                <tr>
+                  <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+                    <strong>ESTADO </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @evaluacion.estado rescue nil %></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr>
+            <th style="font-size: 12px; font-family: Tahoma;">
+              <div align="left">INFORMACIÓN DE LAS VISITAS</div>
+            </th>
+          </tr>
+        </table>
+        <hr>
+        <% if @evaluacionesejecuciones.present? %>
+          <% @evaluacionesejecuciones.each do |ev| %>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+
+              <tr>
+                <td width="100%" style="background: #E8E3E3; padding: 5px; font-size: 14px; font-family: Tahoma;" colspan="5">
+                  <div align="left"><strong>Evaluado: </strong><%= ev.nombresuser rescue nil %> - (<%= ev.emailuser rescue nil %> - <%= ev.celularuser rescue nil %>)
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th width="40%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">Actividad</th>
+                <th width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">Clase</th>
+                <th width="10%" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">Estado</th>
+                <th style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma; text-align: left">Resultado</th>
+              </tr>
+              <% Evaluacionesejecucion.joins(:evaluacionesdetalle)
+                                      .select("evaluacionesejecuciones.*, evaluacionesdetalles.actividad evaluacionesdetalles_actividad,
+                                           evaluacionesdetalles.observacion evaluacionesdetalles_observacion,
+                                           evaluacionesdetalles.requieredoc evaluacionesdetalles_requieredoc,
+                                           evaluacionesdetalles.clase evaluacionesdetalles_clase,
+                                           (case when evaluacionesejecuciones.estado = '1' then 'CUMPLE'
+                                                when evaluacionesejecuciones.estado = '1.0' then 'NO APLICA'
+                                                when evaluacionesejecuciones.estado = '0.5' then 'PARCIALMENTE'
+                                                when evaluacionesejecuciones.estado = '0' then 'NO CUMPLE'
+                                                else 'PENDIENTE' end) estado_prueba,
+                                           (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                           (select distinct 'X' from evaluacionesejecucionesdocs where evaluacionesejecucion_id = evaluacionesejecuciones.id) tienedoc")
+                                      .where("evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                         and evaluacionesejecuciones.evaluacionescontrato_id in (select id from evaluacionescontratos where user_responsable = #{ev.user_responsable_id})").each do |p| %>
+                <tr>
+                  <td align="justify" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">
+                    <%= p.evaluacionesdetalles_actividad %>
+                    <div>
+                      <% if p.fecha_marca.present? %>
+                        <b><i class="fa fa-user"></i> Usuario:</b> <%= p.nombresusermarca rescue nil %><br/>
+                        <b><i class="fa fa-calendar"></i>
+                          Fecha:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+                      <% end %>
+                    </div>
+                    <% if p.evaluacionesdetalles_requieredoc.to_s == 'SI' %>
+                      <br/><strong style="color: red">Debe subir soporte digital</strong>
+                    <% end %>
+                  </td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center;"><%= p.evaluacionesdetalles_clase rescue nil %></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: center"><%=p.estado_prueba rescue nil %></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px; text-align: left"><%= p.resultado rescue nil %></td>
+                </tr>
+              <% end %>
+            </table>
+            <br/>
+          <% end %>
+        <% else %>
+          <div align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px;">No hay
+            informacion
+          </div>
+        <% end %>
+
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
+

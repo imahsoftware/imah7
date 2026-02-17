@@ -1,0 +1,91 @@
+<legend style="margin-top: -19px;">DashBoard Seguridad Social</legend>
+<% usr = @usr %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          ["PENDIENTE","INTERMEDIO","AFILIADO"].each do |p|
+            if usr.etapa.to_s == "SAL_#{p}"
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: "SAL_#{p}") do %>
+              <i class="fa fa-adn"></i> <%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          ["PENDIENTE","INTERMEDIO","AFILIADO"].each do |p|
+            if usr.etapa.to_s == "SAL_#{p}"
+        %>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="row" style="margin-top: -10px;">
+                    <div class="col-md-4">
+                      <%= form_tag searchsalud_todo_menus_path(estado: p), remote: true, method: :get do %>
+                        <div class="form-group input-group" style="padding-bottom: 10px;">
+                          <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                          <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Identificación, Nombre o Apellido' %>
+                          <span class="input-group-btn">
+                              <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              <% end %>
+                            </span>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="col-md-8 text-right">
+                      <% if p == 'PENDIENTE' %>
+                        <%= link_to informe_datas_path(infgrupo_id: 72, portafolio_id: 'PENDIENTE', format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Seguridad Social" do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+                          </button>
+                        <% end %>
+                      <% elsif p == 'INTERMEDIO' %>
+                        <%= link_to informe_datas_path(infgrupo_id: 72, portafolio_id: 'INTERMEDIO', format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Seguridad Social" do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+                          </button>
+                        <% end %>
+                      <% else %>
+                        <%= link_to informe_datas_path(infgrupo_id: 73, portafolio_id: 'AFILIADO', format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Seguridad Social" do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+                          </button>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div id="resultado_salud_todo<%= p.downcase %>"></div>
+                </div>
+                <br/><br/>
+                <% if @contratosprefechassalud.present? %>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="3%"></th>
+                      <th class="text-left">Contratos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @contratosprefechassalud.select("contrato_id").distinct.each do |c| %>
+                      <%= render 'menus/tr_salud_todo', c: c, p: p %>
+                    <% end %>
+                    </tbody>
+                  </table>
+                  <div class="box-tools pull-right">
+                    <%= will_paginate @contratosprefechassalud.select("contrato_id").distinct, :param_name => "sal_#{p.downcase.to_s}", remote: true, renderer: BootstrapPagination::Rails %>
+                  </div><!-- /.box-tools -->
+                <% end %>
+              </div>
+            </div>
+            </div>
+          <% end %>
+        <% end %>
+        </div>
+  </div>
+</div>

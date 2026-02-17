@@ -1,0 +1,19 @@
+<tr id="tiposmevaluacion_<%= tiposmevaluacion.id %>">
+  <% if is_auth_c('tiposmevaluacion') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposmevaluacion_path(tiposmevaluacion), class: 'edit_tiposmevaluacion_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposmevaluacion, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td width="10%"><%= tiposmevaluacion.tipo %></td>
+  <td><%= tiposmevaluacion.descripcion %></td>
+  <td><%= tiposmevaluacion.detalle %></td>
+  <td width="10%"><%= tiposmevaluacion.valor1 %></td>
+  <td width="10%"><%= tiposmevaluacion.valor2 %></td>
+  <td width="10%"><%= tiposmevaluacion.valor3 %></td>
+  <td width="10%"><%= tiposmevaluacion.clase %></td>
+</tr>

@@ -1,0 +1,221 @@
+<%
+  base_url = Rails.env.production? ? 'https://appasearesp.com' : 'http://localhost:3000'
+  objetid = object rescue nil
+  if objetid.present?
+    @contratosperproceso = Contratosperproceso.find(objetid)
+  end
+  # Atencion.. Cuando se hagan cambios en este proceso.. repicarlos a general_pdf.html
+  # Atencion.. Cuando se hagan cambios en este proceso.. repicarlos a general_pdf.html
+  # Atencion.. Cuando se hagan cambios en este proceso.. repicarlos a general_pdf.html
+  # Atencion.. Cuando se hagan cambios en este proceso.. repicarlos a general_pdf.html
+
+  contratospersona = @contratosperproceso.contratosperfecha.contratospersona
+  portafolio = Portafolio.find(@contratosperproceso.contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+
+  contratosperfecha = Contratosperfecha.joins(:contrato, :contratosgrupo, :contratoscargo)
+                                       .select("contratos.nro_contrato, (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                                      contratosgrupos.descripcion, contratosgrupos.termino, contratoscargos.perfil, contratoscargos.salario salariocargo,
+                                                      (select descripcion from contratossecciones where id = contratosperfechas.contratosseccion_id) seccionnombre,
+                                                      (select autobuscar from municipios where id = (select municipio_id from contratossecciones where id = contratosperfechas.contratosseccion_id)) autobuscar_municipios,
+                                                       contratosperfechas.*")
+                                       .where(["contratosperfechas.id = #{@contratosperproceso.contratosperfecha_id}"]).first
+
+%>
+<div align="center">
+  <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+    <thead>
+    <tr>
+      <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" rowspan="2" width="25%"><%= image_tag "#{@logo}", size: "280x120" %></td>
+      <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" rowspan="2">
+        <b><%= @contratosperproceso.clase %></b></td>
+      <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="15%">
+        <b>Versión 3</b></td>
+      <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="15%">
+        <b>01/01/21</b></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="25%">
+        <b>ASE-F0-GH-001</b></td>
+    </tr>
+    </thead>
+  </table>
+  <br/>
+
+  <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="40%" height="30" style="background: #E8E3E3;"><strong>NOMBRE DEL EMPLEADOR : </strong></td>
+      <td>&nbsp;<%= portafolio.razon_social rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>DOMICILIO DEL EMPLEADOR: </strong></td>
+      <td>&nbsp;<%= portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>IDENTIFICACION DEL EMPLEADOR: </strong></td>
+      <td>&nbsp;<%= portafolio.identificacion rescue nil %>-<%= portafolio.digito rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>NOMBRE DEL TRABAJADOR: </strong></td>
+      <td>&nbsp;<%= contratospersona.nombre_completo rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>DIRECCION DEL TRABAJADOR: </strong></td>
+      <td>&nbsp;<%= contratospersona.direccion rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>CORREO ELECTRONICO TRABAJADOR: </strong></td>
+      <td>&nbsp;<%= contratospersona.correo rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>IDENTIFICACION DEL TRABAJADOR: </strong></td>
+      <td>&nbsp;<%= camponumerico2(contratospersona.identificacion) rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>CENTRO DE TRABAJO: </strong></td>
+      <td>&nbsp;<%= contratosperfecha.descripcion rescue nil %>
+        <small>(<%= contratosperfecha.termino rescue nil %>)</small></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>PUESTO DE TRABAJO: </strong></td>
+      <td>&nbsp;<%= contratosperfecha.perfil rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>FECHA ELABORACION: </strong></td>
+      <td>&nbsp;<%= @contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+    </tr>
+    <tr>
+      <td height="30" style="background: #E8E3E3;"><strong>ELABORADO POR: </strong></td>
+      <td>&nbsp;<%= @contratosperproceso.user.nombre rescue nil %></td>
+    </tr>
+  </table>
+  <br/>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 13px; font-family: Verdana, Geneva, sans-serif;">
+    <tr>
+      <td width="40%" height="30"><strong>FECHA Y HORA DE LOS HECHOS: </strong></td>
+      <td>&nbsp;<%= @contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+    </tr>
+    <tr valign="top">
+      <td height="30"><strong>DESCRIPCION DE LOS HECHOS: </strong></td>
+      <td>
+        <div align="justify"><%= @contratosperproceso.detalle rescue nil %></div>
+      </td>
+    </tr>
+    <% if @contratosperproceso.observacion_empleado.present? %>
+      <tr valign="top">
+        <td height="30"><strong>DESCRIPCION DEL EMPLEADO: </strong></td>
+        <td>
+          <div align="justify"><%= @contratosperproceso.observacion_empleado rescue nil %></div>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="45%"><br/><br/></td>
+        <td>&nbsp;</td>
+        <td width="45%"><br/><br/>
+          <% if @contratosperproceso.niega != 'SI' %>
+            <% if @contratosperproceso.firma_usuario_doc_file_name.present? %>
+              <% if @contratosperproceso.firma_usuario_doc_file_name.present? %>
+                <img src="<%= base_url + @contratosperproceso.firma_usuario_doc.url(:thumb) %>" width="170" height="70"/><br/>
+              <% end %>
+            <% end %>
+            __________________________________
+          <% end %>
+        </td>
+      </tr>
+      <tr valign="top">
+        <td style="font-size: 14px; font-family: Tahoma;">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td height="50" style="background: #E8E3E3; padding: 10px;">
+                <% if @contratosperproceso.codigo_firma_supervisor.present? %>
+                  <strong><%= @contratosperproceso.user.nombre rescue nil rescue nil %><br/>
+                    <%= @porta.razon_social rescue nil %><br/></strong>
+                  <b>FIRMA DIGITAL:</b> <%= @contratosperproceso.codigo_firma_supervisor %><br/>
+                  <b>FECHA
+                    FIRMA:</b> <%= @contratosperproceso.fecha_firma_supervisor.strftime("%d-%m-%Y %X") rescue nil %>
+                  <br/>
+                  <small>* Este documento fue generado con firma electrónica y cuenta con plena validez
+                    jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario
+                    2364/12</small>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td>&nbsp;</td>
+        <td style="font-size: 14px; font-family: Tahoma;">
+          <% if @contratosperproceso.niega != 'SI' %>
+            <b>FIRMA DEL EMPLEADO(A)</b>
+            <br/><b><%= @contratosperproceso.contratospersona.nombre_completo %></b>
+            <br/><b>C.C.</b> <%= @contratosperproceso.contratospersona.identificacion rescue nil %>
+            <br/><b>FECHA
+          FIRMA:</b> <%= @contratosperproceso.firma_usuario_doc_updated_at.strftime("%d-%m-%Y %X") rescue nil %>
+          <% else %>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+              <tr>
+                <td height="50" style="background: #E8E3E3; padding: 10px;">
+                  <strong><%= @contratosperproceso.contratospersona.nombre_completo %><br/></strong>
+                  <b>C.C.</b> <%= @contratosperproceso.contratospersona.identificacion rescue nil %><br/>
+                  <b>NOTA:</b> EL USUARIO SE NIEGA A FIRMAR<br/>
+                  <b>FECHA :</b> <%= @contratosperproceso.fecha_niega.strftime("%d-%m-%Y %X") rescue nil %>
+                </td>
+              </tr>
+            </table>
+          <% end %>
+        </td>
+      </tr>
+    </table>
+    <br/><br/>
+    <% if @contratosperproceso.user_testigo1.present? || @contratosperproceso.user_testigo2.present? %>
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr valign="top">
+          <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.present? %>
+            <td width="45%" height="80"><br/><br/>
+              <% if @contratosperproceso.firma_testigo1_doc_file_name.present? %>
+                <img src="<%= base_url + @contratosperproceso.firma_testigo1_doc.url(:thumb) %>" width="170" height="70"/><br/>
+              <% end %>
+              __________________________________
+            </td>
+          <% end %>
+          <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.present? %>
+            <td>&nbsp;</td>
+            <td width="45%" height="80"><br/><br/>
+              <% if @contratosperproceso.firma_testigo2_doc_file_name.present? %>
+                <img src="<%= base_url + @contratosperproceso.firma_testigo2_doc.url(:thumb) %>" width="170" height="70"/><br/>
+              <% end %>
+              __________________________________
+            </td>
+          <% end %>
+        </tr>
+        <tr valign="top">
+          <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.present? %>
+            <td style="font-size: 14px; font-family: Tahoma;"><b>FIRMA TESTIGO</b>
+              <br/><b><%= User.find(@contratosperproceso.user_testigo1).nombre rescue nil %></b>
+              <br/><b>C.C.</b> <%= User.find(@contratosperproceso.user_testigo1).identificacion rescue nil %>
+              <br/><b>FECHA
+              FIRMA:</b> <%= @contratosperproceso.firma_testigo1_doc_updated_at.strftime("%d-%m-%Y %X") rescue nil %>
+            </td>
+          <% end %>
+          <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.present? %>
+            <td>&nbsp;</td>
+            <td style="font-size: 14px; font-family: Tahoma;"><b>FIRMA TESTIGO</b>
+              <br/><b><%= User.find(@contratosperproceso.user_testigo2).nombre rescue nil %></b>
+              <br/><b>C.C.</b> <%= User.find(@contratosperproceso.user_testigo2).identificacion rescue nil %>
+              <br/><b>FECHA
+              FIRMA:</b> <%= @contratosperproceso.firma_testigo2_doc_updated_at.strftime("%d-%m-%Y %X") rescue nil %>
+            </td>
+          <% end %>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  parcargosdoc_id: 1
+  user_compromiso: 1
+  fecha_entrega: 2024-06-26
+  observacion: MyString
+  fecha_real_compromiso: 2024-06-26
+  user_marca: 1
+  estado: MyString
+
+two:
+  parcargosdoc_id: 1
+  user_compromiso: 1
+  fecha_entrega: 2024-06-26
+  observacion: MyString
+  fecha_real_compromiso: 2024-06-26
+  user_marca: 1
+  estado: MyString

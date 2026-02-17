@@ -1,0 +1,41 @@
+<%= simple_form_for @encuesta do |f| %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <legend>
+        <%= link_to encuestas_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %>
+        Información de la encuesta
+      </legend>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+          <%= f.input :descripcion, input_html: { class: "uppercaseInput" }, label: "Nombre de la Encuesta" %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>
+<% unless @encuesta.new_record? %>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#fa-icons" data-toggle="tab"><i class="fa fa-question"></i> Preguntas</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="fa-icons">
+            <%= render "encuestapreguntas/encuestapreguntas" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

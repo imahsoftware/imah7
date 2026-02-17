@@ -1,0 +1,230 @@
+<%
+
+  if ruta == 'X'
+    @evaluacionescontrato_id = evaluacionescontrato_id
+    @user = User.find(user_id)
+    @evaluacion = Evaluacion.find(evaluacion_id)
+    @logo = @user.portafolio.logoportafolio.to_s
+    @evaluacionesejecuciones = Evaluacionesejecucion.joins(:evaluacionescontrato, :evaluacionesdetalle)
+                                                    .select("evaluacionescontratos.user_responsable user_responsable_id,
+                                                            (select ltrim(rtrim(nombre)) from users where id = evaluacionescontratos.user_responsable) nombresuser,
+                                                            (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                                            (select email from users where id = evaluacionescontratos.user_responsable) emailuser, evaluacionesejecuciones.*")
+                                                    .where("evaluacionesejecuciones.evaluacion_id = ? and evaluacionescontratos.user_responsable = ?", @evaluacion.id, @user.id)
+                                                    .order('evaluacionesdetalles.clase asc')
+    if @evaluacion.tipo == 'EVALUACION PERIODO PRUEBA'
+      @resultados = Objeto.find_by_sql("SELECT
+                                        u.nombre,
+                                        ed.clase,
+                                        COUNT(ev.id) AS cnt_items,
+                                        COUNT(ee.id) AS cnt_evaluada,
+                                        (COUNT(ee.id) * 100 / COUNT(ev.id)) AS resultado
+                                    FROM evaluacionescontratos ec
+                                    LEFT JOIN evaluacionesejecuciones ev ON ev.evaluacionescontrato_id = ec.id
+                                    LEFT JOIN evaluacionesdetalles ed ON ed.evaluacion_id = ec.evaluacion_id AND ed.id = ev.evaluacionesdetalle_id
+                                    LEFT JOIN users u ON u.id = ec.user_responsable
+                                    LEFT JOIN evaluacionesejecuciones ee ON ee.evaluacionescontrato_id = ec.id AND ee.evaluacionesdetalle_id = ed.id AND IFNULL(ee.estado, '0') IN ('1', '2','3','4')
+                                    WHERE ec.evaluacion_id = #{@evaluacion.id}
+                                    AND ec.user_responsable = #{@user.id}
+                                    GROUP BY u.nombre,ed.clase, ec.user_responsable
+                                    ORDER BY 1, 2 DESC;")
+    else
+      @resultados = Objeto.find_by_sql("SELECT
+                                        CASE
+                                            WHEN evaluacionesejecuciones.estado = '' THEN 'Pendiente'
+                                            WHEN evaluacionesejecuciones.estado = '1' THEN 'Cumple'
+                                            WHEN evaluacionesejecuciones.estado = '1.0' THEN 'No Aplica'
+                                            WHEN evaluacionesejecuciones.estado = '0.5' THEN 'Parcialmente'
+                                            WHEN evaluacionesejecuciones.estado = '0' THEN 'No Cumple'
+                                        END AS clase,
+                                        COUNT(evaluacionesejecuciones.estado) AS cnt_evaluada
+                                    FROM `evaluacionesejecuciones`
+                                    INNER JOIN `evaluacionescontratos` ON `evaluacionescontratos`.`id` = `evaluacionesejecuciones`.`evaluacionescontrato_id`
+                                    INNER JOIN `evaluacionesdetalles` ON `evaluacionesdetalles`.`id` = `evaluacionesejecuciones`.`evaluacionesdetalle_id`
+                                    WHERE evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                    AND   evaluacionescontratos.user_responsable = #{@user.id}
+                                    GROUP BY evaluacionesejecuciones.estado")
+    end
+    g = Gruff::Pie.new
+    g.title = "Resultado"
+    g.theme = {
+      :colors => %w(orange purple green white red),
+      :marker_color => 'blue',
+      :background_colors => %w(white white)
+    }
+
+    @resultados.each do |p|
+      g.data p.clase.to_s, p.cnt_evaluada.to_i
+    end
+
+    # Guardar el gráfico en un archivo temporal
+    temp_file = Tempfile.new([@evaluacionescontrato_id, '.png'])
+    g.write(temp_file.path)
+
+    # Buscar y eliminar el registro de la tabla Graph
+    Graph.where(tabla: 'EVALUACIONESCONTRATOS', id_registro: @evaluacionescontrato_id).destroy_all
+
+    # Crear un nuevo objeto Graph y adjuntar la imagen
+    @graph = Graph.new
+    @graph.tabla = 'EVALUACIONESCONTRATOS'
+    @graph.id_registro = @evaluacionescontrato_id
+    @graph.graphimage = temp_file
+    @graph.save
+
+    # Eliminar el archivo temporal
+    temp_file.close
+    temp_file.unlink
+  end
+%>
+<div align="center">
+  <br/>
+  <table width="850" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <table width="100%">
+          <tr>
+            <th colspan="2" style="font-size: 18px; font-family: Tahoma;">
+              <div align="center">EVALUACIONES EN CURSO</div>
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <div align="center">
+                <% if ruta == 'X' %>
+                  <img src="https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png" alt="" width="230" height="100">
+              <% else %>
+                  <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+                <% end %>
+              </div>
+            </td>
+            <td width="80%">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <td width="30%" style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>EMPLEADO
+                    : </strong></td>
+                  <td width="70%" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>CARGO
+                    : </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>EVALUACIÓN
+                    : </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @evaluacion.tema rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>OBJETIVO
+                    : </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @evaluacion.objetivo rescue nil %></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br/>
+
+
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" id="sample">
+          <tr>
+            <td>
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr style="background: #adadad">
+                  <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: center;" width="30%">Clase</th>
+                  <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: center;">Cantidad
+                    Items
+                  </th>
+                  <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: center;">Cantidad
+                    Evaluada
+                  </th>
+                  <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: center;">Avance</th>
+                </tr>
+                <% @resultados.each do |p| %>
+                  <tr>
+                    <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: center;"><%= p.clase rescue nil %></td>
+                    <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: center;"><%= p.cnt_items rescue nil %></td>
+                    <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: center;"><%= p.cnt_evaluada rescue nil %></td>
+                    <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: center;"><%= p.resultado.to_i rescue nil %>
+                      %
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            </td>
+            <td width="2%"></td>
+            <td width="35%" style="text-align: center">
+              <% graph_image_url = Graph.where("tabla = 'EVALUACIONESCONTRATOS' and id_registro = ?", @evaluacionescontrato_id).first&.graphimage&.url(:original) %>
+              <img src="https://appasearesp.com/<%= graph_image_url %>" alt="" style="width: 230px; height: 180px;">
+            </td>
+          </tr>
+        </table>
+
+        <br/><br/>
+
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <td width="20%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 6px;">
+              <div align="center"><strong>CLASE</strong></div>
+            </td>
+            <td width="35%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 6px;">
+              <div align="center"><strong>ACTIVIDAD</strong></div>
+            </td>
+            <td width="12%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 6px;">
+              <div align="center"><strong>ESTADO</strong></div>
+            </td>
+            <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 6px;">
+              <div align="center"><strong>OBSERVACION</strong></div>
+            </td>
+          </tr>
+          <% @evaluacionesejecuciones.each do |p| %>
+            <tr>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 6px;">
+                <div align="center"><%= p.evaluacionesdetalle.clase rescue nil %></div>
+              </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 6px;">
+                <div align="left"><%= p.evaluacionesdetalle.actividad rescue nil %>
+                  <% if p.fecha_marca.present? %>
+                    <br/><small><b>Fecha Evaluacion:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+                  <br/><b>Usuario:</b> <%= p.nombresusermarca rescue nil %>
+                </small>
+                  <% end %>
+                </div>
+              </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 6px;">
+                <div align="center">
+                  <% if @evaluacion.tipo == 'EVALUACION PERIODO PRUEBA' %>
+                    <%= p.calcula_estado_prueba rescue nil %>
+                  <% else %>
+                    <%= p.calcula_estado rescue nil %>
+                  <% end %>
+                  </div>
+              </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 6px;">
+                <div align="left"><%= p.resultado rescue nil %></div>
+              </td>
+          <% end %>
+          </tr>
+        </table>
+        <br/>
+
+        <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= Time.now.strftime("%Y-%m-%d %X") rescue nil %>
+          -<%= is_admin %></div>
+      </td>
+    </tr>
+  </table>
+</div>
+<style>
+    .stiloprint {
+        border-collapse: collapse;
+        border: 1px solid #CCCCCC;
+        font-size: 8px;
+        font-family: Tahoma;
+        line-height: 150%;
+        padding: 5px;
+    }
+</style>
+
+
+

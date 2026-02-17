@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  user: one
+  fecha: 2023-03-20
+  observacion: MyString
+  estado: MyString
+
+two:
+  contratospersona: two
+  user: two
+  fecha: 2023-03-20
+  observacion: MyString
+  estado: MyString

@@ -1,0 +1,11 @@
+<tr id="contratoscaractividad_<%=contratoscaractividad.id %>">
+  <td class="text-center">
+    <%= link_to edit_contratoscargo_contratoscaractividad_path(@contratoscargo, contratoscaractividad), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to contratoscargo_contratoscaractividad_path(@contratoscargo, contratoscaractividad), remote: true, method: :delete, data: {confirm: "#{t :elimina_confirma}", toggle: 'tooltip'}, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td class="text-justify" style="font-size: 10px;"><%= contratoscaractividad.actividad rescue nil %></td>
+</tr>

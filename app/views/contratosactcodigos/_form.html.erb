@@ -1,0 +1,30 @@
+<%= simple_form_for @contratosactcodigo, :method => :post, remote: true do |f| %>
+  <%= hidden_field_tag :user_id, params[:user_id], value: params[:user_id] %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratosactcodigo.new_record? ? 'Agregar' : 'Editar' %> Validación</strong></h3>
+  </div>
+  <div class="modal-body">
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th width="20%" class="thcolor" style='font-size: 11px;'>Usuario</th>
+        <td class="text-left" style='font-size: 11px;'><%=@contratosactcodigo.user.nombre rescue nil %></td>
+      </tr>
+    </table>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :sap_codigo, label: "Codigo SAP" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :sap_clasificacion, as: :select, collection: select_act_calificacion, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Clasificación"%></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <%= f.input :sap_nota, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: 'Observacion' %>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div>
+<% end %>

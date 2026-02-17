@@ -1,0 +1,6 @@
+<strong><small class="text-<%= params[:estado].to_s == 'CONSOLIDADO' ? 'red' : 'blue' %>"><%= params[:estado] rescue nil %></small></strong>
+<% if params[:estado].to_s == 'CONSOLIDADO' and is_auth_c("autorizacionnomina") %>
+  <%= link_to cambioestado_contratospernominas_path(periodosliquidacion_id: params[:periodosliquidacion_id], contrato_id: params[:contrato_id], contratosgrupo_id: params[:contratosgrupo_id], estado: "PENDIENTE"), data: { toggle: 'tooltip', confirm: "Seguro que desea REVERSAR el proceso consolidado?" }, title: 'Reversar', remote: true do %>
+    <i class="fa fa-unlock"></i>
+  <% end %>
+<% end %>

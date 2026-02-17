@@ -1,0 +1,181 @@
+<style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+<table width="100%">
+  <tr>
+    <td>
+      <table width="100%" border="0">
+        <tr>
+          <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+            <div align="center">
+              <strong>
+                <div style="font-size: 18px; font-family: Tahoma;">VINCULACIÓN FORMATIVA DEL CONVENIO DE PRACTICA LABORAL</div>
+              </strong>
+            </div>
+          </td>
+          <td width="30%">
+            <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td colspan="2" height="25" style="background: #E8E3E3;"><strong>DATOS DEL ESCENARIO DE PRACTICA</strong></td>
+        </tr>
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>RAZÓN SOCIAL Y NIT: </strong></td>
+          <td>&nbsp;<%= @portafolio.razon_social rescue nil %> - <%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>REPRESENTANTE LEGAL E IDENTIFICACIÓN: </strong></td>
+          <td>&nbsp;<%= @nombre_firma rescue nil %> -  C.C. <%=@identificacion %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>TUTOR DESIGNADO E IDENTIFICACIÓN: </strong></td>
+          <td>&nbsp;<%= @contratospersona.prac_tutor rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>AUXILIO DE PRACTICA: </strong></td>
+          <td>&nbsp;<%= camponumerico(@contratosperfecha.contratoscargo.salario) rescue nil %> + <%= camponumerico(Parametro.find(5).valor) rescue nil %> DE AUXILIO DE TRANSPORTE</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>FECHA DE INICIO DE LA PRACTICA LABORAL: </strong></td>
+          <td>&nbsp;<%= namedate(@contratosperfecha.fecha_inicio) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>FECHA DE TERMINACIÓN DE LA PRACTICA LABORAL: </strong></td>
+          <td>&nbsp;<%= namedate(@contratosperfecha.fecha_fin) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>LUGAR DE EJECUCIÓN DE LA PRACTICA LABORAL: </strong></td>
+          <td>&nbsp;CARRERA 51C # 12B SUR 66 MEDELLÍN - ANTIOQUIA</td>
+        </tr>
+      </table>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td colspan="2" height="25" style="background: #E8E3E3;"><strong>DATOS DEL ESTUDIANTE EN PRACTICA</strong></td>
+        </tr>
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>NOMBRE Y APELLIDOS: </strong></td>
+          <td>&nbsp;<%= @contratospersona.nombre_completo rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>IDENTIFICACIÓN: </strong></td>
+          <td>&nbsp;<%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>FECHA DE NACIMIENTO: </strong></td>
+            <td>&nbsp;<%= namedate(@contratospersona.fecha_nacimiento) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>PROGRAMA ACADÉMICO: </strong></td>
+          <td>&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+        </tr>
+      </table>
+
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td colspan="2" height="25" style="background: #E8E3E3;"><strong>DATOS DE LA INSTITUCIÓN EDUCATIVA</strong></td>
+        </tr>
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>RAZÓN SOCIAL Y NIT: </strong></td>
+          <td>&nbsp;<%= @contratospersona.prac_universidad rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>REPRESENTANTE LEGAL E IDENTIFICACIÓN: </strong></td>
+          <td>&nbsp;<%=@contratospersona.prac_replegal rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>MONITOR DESIGNADO E IDENTIFICACIÓN: </strong></td>
+            <td>&nbsp;<%= @contratospersona.prac_monitor rescue nil %></td>
+        </tr>
+      </table>
+      <br/>
+      <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+        De conformidad con lo dispuesto en el artículo 13 de la Ley 1780 de 2016 estable lo siguiente en relación con las prácticas laborales: <em>El Gobierno Nacional, a través del Ministerio del Trabajo y el Departamento Administrativo de la Función Pública, desarrollará y reglamentará una política que incentive, fomente y coordine los programas de jóvenes talentos, orientados a que jóvenes sin experiencia puedan realizar prácticas laborales, judicatura y relación docencia de servicio en el área de la salud, en las entidades públicas, las cuales contarán como experiencia para el acceso al servicio público.<br/><br/>
+        <strong>PARÁGRAFO 2o.</strong></br> Para el proceso de desarrollo y reglamentación se contará con un plazo de seis (6) meses, contados a partir de la expedición de la presente ley.</em><br/><br/>
+        Que adicionalmente el articulo 15 de la mencionada Ley 1780 de 2016 dispone que <em>“La práctica laboral es una actividad formativa desarrollada por un estudiante de programas de formación complementaria ofrecidos por las escuelas normales superiores y educación superior de pregrado, durante un tiempo determinado, en un ambiente laboral real, con supervisión y sobre asuntos relacionados con su área de estudio o desempeño y su tipo de formación; para el cumplimiento de un requisito para culminar sus estudios u obtener un título que lo acreditará para el desempeño laboral. Por tratarse de una actividad formativa, la práctica laboral no constituye relación de trabajo”.</em><br/><br/>
+        Que el artículo 2.2.4.2.3.4 del Decreto No. 1072 de 2015, Único Reglamento del Sector Trabajo, establece en relación con la afiliación y pago de aportes al Sistema General de Riesgos Laborales de estudiantes lo siguiente:<br/><br/>
+        <ul>
+          <li><em>“La afiliación y pago de aportes al Sistema General de Riesgos  Laborales de los estudiantes de que trata el articulo 2° del presente decreto, procederá de la siguiente manera: (…) d) La entidad, empresa o entidad estatal o privada donde se realice la práctica, , para el caso de la educación superior y de los programas de formación laboral en la educación para el trabajo v el desarrollo humano, sin perjuicio de los acuerdos entre la institución de educación y la entidad, empresa o entidad estatal o privada donde se realice la práctica, sobre quién asumirá la afiliación y el pago de los aportes al Sistema General de Riesgos Laborales y la coordinación de las actividades de promoción y prevención en seguridad y salud en el trabajo. La afiliación de los estudiantes de que trata el presente decreto deberá efectuarse como mínimo un (1) día antes del inicio de la práctica o actividad correspondiente, y deberá realizarse ante la Administradora de Riesgos Laborales en la cual la entidad, empresa o institución obligada a afiliar a los estudiantes, tenga afiliados a sus trabajadores. En ningún caso, las obligaciones de afiliación y pago al Sistema General de Riesgos Laborales podrán trasladarse al estudiante. Parágrafo 1°. Para la afiliación al Sistema General de Riesgos Laborales, los estudiantes deberán estar previamente afiliados al Sistema General de Seguridad Social en Salud en cualquiera de sus regímenes, o a un régimen exceptuado o especial en salud. (…)”</em></li>
+        </ul><br/>
+        Que el artículo 4 de la Resolución No. 3546 del 3 de agosto de 2018, por la cual el Ministerio del Trabajo reguló las prácticas laborales en los sectores privado y público para los programas de formación complementaria ofrecidos por las escuelas normales superiores y educación superior de pregrado, modificada por la Resolución No. 0623 del 3 de marzo de 2020, establece como características de las prácticas laborales las siguientes:<br/><br/>
+        <ol id="1">
+          <li><em>Carácter formativo: La práctica laboral es una actividad pedagógica adelantada por un estudiante, para desarrollar competencias básicas, transversales y laborales en escenarios de trabajo real, que lo preparan para su desempeño autónomo en el mercado laboral. Por lo tanto, no constituye relación de trabajo y las actividades que este desarrolla, deben versar sobre los asuntos establecidos por el programa académico o formativo respectivo y en armonía a las necesidades del escenario de práctica laboral.</em></li>
+          <li><em>Relación tripartita: En las practicas laborales participan el estudiante, el escenario de practica y la Institución Educativa.</em></li>
+          <li><em>Con auxilio o gratuitas: Los estudiantes en prácticas laborales, en caso de así pactarlo con su escenario de práctica, podrán recibir un auxilio de práctica que corresponda al menos con el cien por ciento (100%) de la citra del salario mínimo mensual legal vigente, en caso de que la práctica se realice a tiempo completo. Para las prácticas de tiempo parcial, el auxilio de práctica deberá ser proporcional al horario de la actividad formativa y atendiendo los límites señalados por este numeral. El auxilio se destina a apoyar al practicante en el desarrollo de su actividad formativa y en ningún caso constituye salario.</em></li>
+          <li><em>Supervisión: Tanto la Institución Educativa, como el escenario de práctica, deberán realizar acompañamiento y seguimiento al desarrollo de la práctica laboral.</em></li>
+        </ol><br/>
+        El cual se regirá por las siguientes clausulas: <br/><br/>
+        <strong>CLÁUSULAS</strong><br/><br/>
+        <strong>PRIMERA: Objeto del contrato.</strong> Por medio del presente contrato, EL ESTUDIANTE se compromete a realizar prácticas profesionales en el ESCENARIO DE PRACTICA, dentro del área de Proyectos de ingeniería, conforme a los lineamientos establecidos por la institución educativa a la que pertenece y de acuerdo con los objetivos y actividades definidas por el ESCENARIO DE PRACTICA.<br/><br/>
+        <strong>SEGUNDA: Duración de la práctica.</strong> La duración de las prácticas será de 6 meses, comenzando el día <%= namedate(@contratosperfecha.fecha_inicio) rescue nil %> y finalizando el día <%= namedate(@contratosperfecha.fecha_fin) rescue nil %> salvo que las partes acuerden una modificación por escrito.<br/><br/>
+        <strong>TERCERA: Horario de trabajo.</strong> EL ESTUDIANTE realizará sus prácticas en el horario de <%= @contratospersona.prac_jornada rescue nil %>, con una duración semanal de <%= @contratospersona.prac_nrohoras rescue nil %>. Este horario puede ser modificado con el consentimiento de ambas partes.<br/><br/>
+        <strong>CUARTA: Actividades a desarrollar.</strong> EL ESTUDIANTE se compromete a realizar las actividades relacionadas con su formación académica y el área asignada, las cuales serán previamente establecidas por el ESCENARIO DE PRACTICA, y se ajustarán a los lineamientos establecidos por la institución educativa. Las actividades estarán orientadas a la formación práctica y profesional del estudiante.<br/><br/>
+        <strong>QUINTA: Supervisión.</strong> El ESCENARIO DE PRACTICA designará a un supervisor encargado de coordinar las actividades de EL ESTUDIANTE, quien deberá asegurarse de que las prácticas se desarrollen conforme a los objetivos y lineamientos establecidos.<br/><br/>
+        <strong>SEXTA: Remuneración.</strong> De conformidad con la legislación colombiana, las prácticas profesionales no generarán un contrato laboral y, por lo tanto, no implican una remuneración salarial. Sin embargo, el ESCENARIO DE PRACTICA podrá otorgar una ayuda económica de <%= numero_a_palabras(@contratosperfecha.contratoscargo.salario) rescue nil %> (<%= camponumerico(@contratosperfecha.contratoscargo.salario) rescue nil %>) + <%= numero_a_palabras(Parametro.find(5).valor) rescue nil %> (<%= camponumerico(Parametro.find(5).valor) rescue nil %>) que constituyen Auxilio De Transporte, mensuales a EL ESTUDIANTE, para cubrir gastos relacionados con la práctica, tales como transporte y alimentación, si así lo considera conveniente.<br/><br/>
+        <strong>SÉPTIMA: Seguridad social.</strong> El ESCENARIO DE PRACTICA no estará obligada a afiliar a EL ESTUDIANTE al sistema de seguridad social (salud, pensión), ya que las prácticas no constituyen una relación laboral.<br/><br/>
+        <strong>OCTAVA: Confidencialidad.</strong> EL ESTUDIANTE se compromete a mantener la confidencialidad de toda la información relacionada con los procesos, proyectos y actividades del ESCENARIO DE PRACTICA a los cuales tenga acceso durante el desarrollo de las prácticas profesionales. Esta obligación continuará aún después de la finalización del presente contrato.<br/><br/>
+        <strong>NOVENA: Propiedad intelectual.</strong> Cualquier creación, invención o trabajo desarrollado por EL ESTUDIANTE durante el periodo de la práctica será propiedad del ESCENARIO DE PRACTICA, salvo acuerdo contrario por escrito entre las partes.<br/><br/>
+        <strong>DECIMA: Terminación del contrato.</strong> El presente contrato podrá terminarse en cualquiera de los siguientes casos:<br/>
+        <ol id="1">
+          <li>Por vencimiento del plazo acordado sin necesidad de preaviso.</li>
+          <li>Por acuerdo mutuo entre las partes.</li>
+          <li>Por incumplimiento de las obligaciones de cualquiera de las partes.</li>
+          <li>Por causas imputables al estudiante, tales como baja del programa académico, no cumplir con los requisitos establecidos por la institución educativa, entre otros.</li>
+        </ol><br/> 
+        <strong>UNDECIMA: Disposiciones generales.</strong> Este contrato se regirá por las disposiciones de la Ley 1780 de 2016, Decreto No. 1072 de 2015, Resolución No. 3546 del 3 de agosto de 2018 modificada por la Resolución No. 0623 del 3 de marzo de 2020, y las demás normas aplicables.<br/><br/>
+        <br/>
+        Se firma por las partes, en la ciudad de Medellín, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>.
+        <br/><br/><br/>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="40%" height="30" ALIGN="center"><strong>EL ESCENARIO DE PRACTICA</strong></td>
+            <td>&nbsp;</td>
+            <td width="55%" height="30" ALIGN="center"><strong>ESTUDIANTE EN PRACTICA</strong></td>
+          </tr>
+          <tr>
+            <td height="50">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+              <%else %>
+                <br/><br/><br/>
+              <%end %>
+              <br/><%= @nombre_firma rescue nil %><br/>
+              <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/>
+              <%= @portafolio.telefono_empresa rescue nil %>
+            </td>
+            <td >&nbsp</td>
+            <td height="50" style="background: #E8E3E3;">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <div style="font-size: 9px;">
+                  <%= @contratospersona.nombre_completo rescue nil %><br/>
+                  <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                  <b>Firma Digital:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                  <b>Fecha Firma:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                  <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                  <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                  <%= @contratospersona.correo rescue nil %><br/>
+                  * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                  conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                </div>
+              <% else %>
+                <br/><br/><br/><br/>
+                <%= @contratospersona.nombre_completo rescue nil %><br/>
+                <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                <%= @contratospersona.correo rescue nil %><br/>
+            <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+

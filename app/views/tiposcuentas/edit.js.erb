@@ -1,0 +1,17 @@
+$("#tiposcuenta_form").collapse("hide");
+
+$("#tiposcuenta_form").empty();
+
+<% if @active_record.present? %>
+	$("#tiposcuenta_<%= @active_record.id %>").replaceWith("<%= j render 'tr', tiposcuenta: @active_record %>");
+<% end %>
+
+$("#tiposcuenta_<%= @tiposcuenta.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#tiposcuenta_<%= @tiposcuenta.id %>").addClass("active_tiposcuenta");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

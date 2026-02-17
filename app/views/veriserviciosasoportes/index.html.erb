@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Veriserviciosasoportes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Veriserviciosagenda</th>
+      <th>User</th>
+      <th>Descripcion</th>
+      <th>Verisoporte</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @veriserviciosasoportes.each do |veriserviciosasoporte| %>
+      <tr>
+        <td><%= veriserviciosasoporte.veriserviciosagenda %></td>
+        <td><%= veriserviciosasoporte.user %></td>
+        <td><%= veriserviciosasoporte.descripcion %></td>
+        <td><%= veriserviciosasoporte.verisoporte %></td>
+        <td><%= link_to 'Show', veriserviciosasoporte %></td>
+        <td><%= link_to 'Edit', edit_veriserviciosasoporte_path(veriserviciosasoporte) %></td>
+        <td><%= link_to 'Destroy', veriserviciosasoporte, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Veriserviciosasoporte', new_veriserviciosasoporte_path %>

@@ -1,0 +1,28 @@
+<%= simple_form_for([@eproveedor, @eproveedorescredito], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"><%= f.input :eproveedorescompra_id, collection: Eproveedorescompra.where(["eproveedor_id =  #{@eproveedor.id} and saldo > 0"]).order(:nro_factura).collect { |p| [p.detallecausacion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Causación" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3"><%= f.input :consecutivo, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" }, label: "Número NC" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4">
+        <%= f.input :observaciones, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @eproveedorescredito.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#eproveedorescredito_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", eproveedor_eproveedorescredito_path(@eproveedor, @eproveedorescredito), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

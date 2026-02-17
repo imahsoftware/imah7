@@ -1,0 +1,82 @@
+<%
+  ruta = ""
+  ruta = object if object.present? rescue nil
+  if ruta == "FIRMA"
+    isadmin = object1 if object1.present? == true
+    contratosperfecha = object2 if object2.present? == true
+    @contratosperfecha = Contratosperfecha.find(contratosperfecha)
+  else
+    isadmin = is_admin
+  end
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  aplicaesp = @contratosperfecha.contratoscargo.aplica_especial.to_s
+  pgh = Parametro.find(4) # Firma Gestion Humana
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @logo = portafolio.logo_empresa_assets
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="right"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+          <br/>
+          Medellin, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>
+          <br/><br/><br/><br/><br/>
+          Señores<br/>
+          <% if @contratosperfecha.tipo_contrato.to_s == 'OBRA O LABOR - GOBERNACION' %>
+            <strong><%= @contratosperfecha.contrato.empresa.nombre rescue nil %>
+              - <%= @contratosperfecha.contratosseccion.descripcion rescue nil %></strong><br/>
+            <strong><%= @contratosperfecha.contratosseccion.muni rescue nil %></strong><br/>
+          <% else %>
+            <strong><%= @contratosperfecha.contrato.empresa.nombre rescue nil %></strong><br/>
+          <% end %>
+          <br/><br/><br/><br/>
+          <strong>ASUNTO:</strong> Carta de presentación
+          <br/><br/><br/><br/>
+          <% if @contratosperfecha.tipo_contrato.to_s == 'OBRA O LABOR - GOBERNACION' %>
+            Por medio de la presente <strong><%= portafolio.razon_social rescue nil %></strong> informa de la/el
+            señor(a) <strong><%= contratospersona.nombre_completo rescue nil %></strong> , identificado con cedula de
+            ciudadanía N° <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong> Labora para nuestra
+            empresa y es quien prestara los servicios a partir de la fecha que dice en el contrato como <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong> en dicho lugar. Su carnet se
+            encuentra en trámite y le será entregado en el menor tiempo posible.
+          <% else %>
+            Por medio de la presente <strong><%= portafolio.razon_social rescue nil %></strong> informa de la/el
+            señor(a) <strong><%= contratospersona.nombre_completo rescue nil %></strong> , identificado con cedula de
+            ciudadanía N° <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong> Labora para nuestra
+            empresa y es quien prestara los servicios como <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong> en dicho lugar de la fecha.
+            Su carnet se encuentra en trámite y le será entregado en el menor tiempo posible.
+          <% end %>
+          <br/><br/><br/><br/><br/>
+          Cordialmente,
+          <br/><br/><br/><br/>
+          <table width="100%">
+            <tr>
+              <td>
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><%= @nombre_firma rescue nil %><br/>
+                Representante Legal<br/>
+                <%= @nombre_empresa rescue nil %></strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

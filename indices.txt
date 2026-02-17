@@ -1,0 +1,37 @@
+CREATE INDEX IDX_10106 ON capacitacionevaluaciones (capacitacion_id);
+CREATE INDEX IDX_10107 ON capacitacionevaopciones (capacitacionevaluacion_id);
+CREATE INDEX IDX_10108 ON capacitaciondocs (capacitacion_id);
+CREATE INDEX IDX_10109 ON contratoscaparesultados (capacitacion_id);
+CREATE INDEX IDX_10110 ON contratoscaparesultados (capacitacionevaluacion_id);
+CREATE INDEX IDX_10111 ON contratoscaparesultados (contrato_id);
+CREATE INDEX IDX_10112 ON contratoscaparesultados (contratoscapapersona_id);
+CREATE INDEX IDX_10113 ON contratoscaparesultados (contratosperfecha_id);
+
+CREATE INDEX IDX_10114 ON contratoscapapersonas (contrato_id);
+CREATE INDEX IDX_10115 ON contratoscapapersonas (capacitacion_id);
+
+CREATE INDEX IDX_10116 ON parametros (id,valor);
+
+CREATE INDEX IDX_10117 ON contratosperprocesos (firma_usuario,contratospersona_id);
+CREATE INDEX IDX_10118 ON contratospernovedades (dato);
+CREATE INDEX IDX_10119 ON contratospagos (portafolio_id);
+
+CREATE INDEX IDX_10120 ON contratosperlimagenes (contratosperliquidacion_id);
+
+CREATE INDEX IDX_10121 ON users (email);
+
+CREATE INDEX IDX_10122 ON compromisos (contratospersona_id);
+CREATE INDEX IDX_10123 ON users (personasformulario_id);
+CREATE INDEX IDX_10124 ON compromisos (personasformulario_id);
+CREATE INDEX IDX_10125 ON tmp_contratospermasd3 (dato);
+CREATE INDEX IDX_10126 ON tabla (dato);
+CREATE INDEX IDX_10127 ON tabla (dato);
+CREATE INDEX IDX_10128 ON tabla (dato);
+CREATE INDEX IDX_10129 ON personasformulariosdocs (personasformulario_id);
+CREATE INDEX IDX_10130 ON personasformulariosexamenes (personasformulario_id);
+
+CREATE INDEX IDX_10132 ON planeshsimula (valor,plazo,nro_cuota);
+CREATE INDEX IDX_10132 ON tabla (dato);
+CREATE INDEX IDX_10132 ON tabla (dato);
+CREATE INDEX IDX_10132 ON tabla (dato);
+CREATE INDEX IDX_10132 ON tabla (dato);

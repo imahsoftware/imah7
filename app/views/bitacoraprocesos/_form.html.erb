@@ -1,0 +1,57 @@
+<%= form_for(bitacoraproceso) do |f| %>
+  <% if bitacoraproceso.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(bitacoraproceso.errors.count, "error") %> prohibited this bitacoraproceso from being saved:</h2>
+
+      <ul>
+      <% bitacoraproceso.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :codigo %>
+    <%= f.text_field :codigo %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.number_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :proceso %>
+    <%= f.text_field :proceso %>
+  </div>
+
+  <div class="field">
+    <%= f.label :codigo_recibido %>
+    <%= f.text_field :codigo_recibido %>
+  </div>
+
+  <div class="field">
+    <%= f.label :fecha_firma %>
+    <%= f.date_select :fecha_firma %>
+  </div>
+
+  <div class="field">
+    <%= f.label :codigo_firma %>
+    <%= f.text_field :codigo_firma %>
+  </div>
+
+  <div class="field">
+    <%= f.label :id_tabla %>
+    <%= f.text_field :id_tabla %>
+  </div>
+
+  <div class="field">
+    <%= f.label :controlador_tabla %>
+    <%= f.text_field :controlador_tabla %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

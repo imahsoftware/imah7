@@ -1,0 +1,16 @@
+<% if ['ABOGADO','TESTIGO1', 'TESTIGO2','USUARIO'].include?(@tipo) %>
+$("#menu_firma<%= @contratosperproceso.id %>").addClass("hide");
+<% end %>
+<% if @tipo == 'ABOGADO' %>
+$("#abogado<%= @contratosperproceso.id %>").html("<%= j render 'contratosperprocesos/firmas/abogado', contratosperproceso: @contratosperproceso %>");
+$("#abogado<%= @contratosperproceso.id %>").removeClass("hide");
+<% elsif @tipo == 'TESTIGO1' %>
+$("#testigo1<%= @contratosperproceso.id %>").html("<%= j render 'contratosperprocesos/firmas/testigo1', contratosperproceso: @contratosperproceso %>");
+$("#testigo1<%= @contratosperproceso.id %>").removeClass("hide");
+<% elsif @tipo == 'TESTIGO2' %>
+$("#testigo2<%= @contratosperproceso.id %>").html("<%= j render 'contratosperprocesos/firmas/testigo2', contratosperproceso: @contratosperproceso %>");
+$("#testigo2<%= @contratosperproceso.id %>").removeClass("hide");
+<% elsif @tipo == 'USUARIO' %>
+$("#usuario<%= @contratosperproceso.id %>").html("<%= j render 'contratosperprocesos/firmas/usuario', contratosperproceso: @contratosperproceso %>");
+$("#usuario<%= @contratosperproceso.id %>").removeClass("hide");
+<% end %>

@@ -1,0 +1,24 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposnovedad') %>
+          <th width="5%"></th>
+        <% end %>
+        <th width="5%" class="text-center">ID</th>
+        <th>Descripción</th>
+        <th width="10%" class="text-center">Tipo</th>
+        <th width="8%" class="text-center">Estado</th>
+        <th width="8%" class="text-center">Porcentaje</th>
+        <th width="8%" class="text-center">Dias por horas</th>
+        <th width="10%" class="text-center">Inc Vacaciones?</th>
+        <th width="10%" class="text-center">AportesEnLinea</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposnovedades">
+      <% @tiposnovedades.each do |tiposnovedad| %>
+        <%= render 'tiposnovedades/tr', tiposnovedad: tiposnovedad %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

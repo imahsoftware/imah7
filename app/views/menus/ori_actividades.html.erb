@@ -1,0 +1,99 @@
+<legend style="margin-top: -19px;">Hola, <%= @usr.nombre rescue nil %>
+  <%= link_to ver_contratosactividades_path(user_id: @usr.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Ver actividades" do %>
+    <button class="btn btn-xs btn-warning"><i class="fa fa-cog"></i> Ver actividades <%= @usr.clase_aseo rescue nil %> hoy</button>
+  <% end %>
+  <% if Contratosactcodigo.exists?(["user_id = #{@usr.id} and date_format(created_at,'%%Y-%%m-%%d') = date_format(now(),'%%Y-%%m-%%d')"]) == false %>
+    <%= link_to new_contratosactcodigo_path(user_id: @usr.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Validación" do %>
+      <button class="btn btn-xs btn-info"><i class="fa fa-user-secret">&nbsp;Validación</i></button>
+    <% end %>
+  <% end %>
+  <%= link_to logout_path, data: { confirm: '¿Esta seguro ' + "#{@usr.nombre}" + ' que quiere desconectarse?' } do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-sign-in"> <b>Salir</b></i></button>
+  <% end %>
+</legend>
+<div class="row">
+  <div class="col-md-12">
+    <div class="box-body">
+      <% @contratosedes.each do |p|
+           contratosacts = Contratosactividad.where(contrato_id: p.contrato_id, clase: 'ASEO FUERTE', contratossede_id: p.id, dia_semana: @dayofweek)
+           contratosactividades = Contratosactividad.where(["contrato_id = #{@usr.contrato_id} and clase = 'ASEO NORMAL' and tipo = '#{@usr.clase_aseo}' and (contratossede_id is null or contratossede_id = #{p.id})"])
+      %>
+          <div id="solicitudes_<%=p.id%>" class="box box-danger collapsed-box">
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-md-12">
+                  <span class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa famenu-plus"></i><h3 class="box-title"> &nbsp;<%= p.nombre_consulta rescue nil%></h3>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="box-body">
+              <table class="table table-bordered table-striped">
+                <tr>
+                  <th width="50%" class="thcolor text-center">ACTIVIDADES DE ASEO NORMAL (<%=contratosactividades.count.to_i rescue 0 %>)</th>
+                  <th width="2%" class="text-left">&nbsp;</th>
+                  <th width="48%" class="thcolor text-center">ACTIVIDADES DE ASEO FUERTE (<%=contratosacts.count.to_i rescue 0 %>)</th>
+                </tr>
+                <tr>
+                  <td class="text-left">
+                    <% if contratosactividades.count.to_i > 0 %>
+                      <% contratosactividades.each do |a| %>
+                        <div class="text-danger">
+                          <%= link_to new_contratosactejecucion_path(contratosactividad_id: a.id, contratossede_id: p.id, act: '0101010'), data: {toggle: 'tooltip', confirm: "Seguro que desea marcar la realizacion de la actividad - #{a.detalle.to_s}?"} do %>
+                            <i class="fa fa-check-square text-red"></i>
+                          <% end %>
+                          <%= link_to new2_contratosactejecuciones_path(contratosactividad_id: a.id, contratossede_id: p.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Observacion" do %>
+                            <i class="fa fa-comments-o text-blue"></i>
+                          <% end %>
+                          <%=a.detalle rescue nil %>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+                    <% end %>
+                  </td>
+                  <th class="text-left">&nbsp;</th>
+                  <td class="text-left">
+                    <% if contratosacts.count.to_i > 0 %>
+                      <% contratosacts.each do |f| %>
+                        <div class="text-danger">
+                          <%= link_to new_contratosactejecucion_path(contratosactividad_id: f.id, contratossede_id: p.id, act: '0101010'), data: {toggle: 'tooltip', confirm: "Seguro que desea marcar la realizacion de la actividad - #{f.detalle.to_s}?"} do %>
+                            <i class="fa fa-check-square text-red"></i>
+                          <% end %>
+                          <%= link_to new2_contratosactejecuciones_path(contratosactividad_id: f.id, contratossede_id: p.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Observacion" do %>
+                            <i class="fa fa-comments-o text-blue"></i>
+                          <% end %>
+                          <%=f.detalle rescue nil %>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div class="alert alert-danger"><strong><%=t :atencion%></strong> <%=t :atencion_msj%></div>
+                    <% end %>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ver">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="observacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="creacion">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

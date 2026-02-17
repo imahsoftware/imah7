@@ -1,0 +1,11 @@
+<% if @capacitacion.capacitaciondocs.present? %>
+	$("#capacitaciondocs").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_capacitaciondocs").prepend("<%= j render 'tr', capacitaciondoc: @capacitaciondoc %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#capacitaciondoc_form").collapse("hide");

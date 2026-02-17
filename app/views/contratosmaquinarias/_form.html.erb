@@ -1,0 +1,33 @@
+<%= simple_form_for([@contrato, @contratosmaquinaria], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+        <% if @contratosmaquinaria.new_record? %>
+          <%= f.input :insumo_id, collection: Insumo.where(tipo: 'ELEMENTOS, EQUIPOS Y MAQUINARIA', clase: @contrato.claseinsumos.to_s).order(:bien_servicio).collect {|p| [ p.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        <% else %>
+          <%= f.input :insumo_id, collection: Insumo.where(tipo: 'ELEMENTOS, EQUIPOS Y MAQUINARIA', clase: @contrato.claseinsumos.to_s).order(:bien_servicio).collect {|p| [ p.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true%>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cantidad_mensual, as: :moneda, label: "Cantidad"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :precio_unitario, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :descuento, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :precio_condescuento, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :total, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosmaquinaria.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosmaquinaria_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosmaquinaria_path(@contrato, @contratosmaquinaria), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

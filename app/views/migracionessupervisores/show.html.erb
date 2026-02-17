@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @migracionessupervisor.user %>
+</p>
+
+<p>
+  <strong>Archivo:</strong>
+  <%= @migracionessupervisor.archivo %>
+</p>
+
+<p>
+  <strong>Estado:</strong>
+  <%= @migracionessupervisor.estado %>
+</p>
+
+<p>
+  <strong>Identificacion:</strong>
+  <%= @migracionessupervisor.identificacion %>
+</p>
+
+<p>
+  <strong>Userasig:</strong>
+  <%= @migracionessupervisor.userasig_id %>
+</p>
+
+<%= link_to 'Edit', edit_migracionessupervisor_path(@migracionessupervisor) %> |
+<%= link_to 'Back', migracionessupervisores_path %>

@@ -1,0 +1,13 @@
+<% if @resultado == 'NO' and @contratosperactob.observacion.present? %>
+$("#si<%= @contratosperactob.id %>").remove();
+$("#no<%= @contratosperactob.id %>").remove();
+$("#resultado<%= @contratosperactob.id %>").html("<div align='center'><div style='width: 70px; height: 20px; border-color: <%= @contratosperactob.resultado_color %>; background: <%= @contratosperactob.resultado_color %>; color: white; border-radius: 3px; text-align: center'><%= @resultado %></div></div>");
+<% elsif @resultado == 'SI' %>
+$("#si<%= @contratosperactob.id %>").remove();
+$("#no<%= @contratosperactob.id %>").remove();
+$("#resultado<%= @contratosperactob.id %>").html("<div align='center'><div style='width: 70px; height: 20px; border-color: <%= @contratosperactob.resultado_color %>; background: <%= @contratosperactob.resultado_color %>; color: white; border-radius: 3px; text-align: center'><%= @resultado %></div></div>");
+<% elsif @resultado == 'NO' and @contratosperactob.observacion.blank? %>
+$("#mensaje_error<%= @contratosperactob.id %>").html("<div align='left'><div style='font-size: 10px; color: red;'>Se debe de agregar una observación</div></div> ");
+<% end %>
+
+

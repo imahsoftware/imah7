@@ -1,0 +1,23 @@
+<%= simple_form_for([@contratosprefactura, @contratosprefretencion], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+        <%= f.input :contratosretencion_id, collection: Contratosretencion.where(["contrato_id = #{@contratosprefactura.contrato_id}"]).order("id desc").collect {|p| [ p.nomretencion, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Retención"%>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :porcentaje, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosprefretencion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosprefretencion_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosprefactura_contratosprefretencion_path(@contratosprefactura, @contratosprefretencion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

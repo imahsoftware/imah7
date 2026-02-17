@@ -1,0 +1,40 @@
+<tr id="contratossoleppsatencion_<%= contratossoleppsatencion.id %>">
+  <td class="text-center">
+
+    <% if contratossoleppsatencion.codigo_firma.blank? %>
+      <%# if is_auth_e("contratossoleppsatencion")%>
+      <%= link_to edit_contratossolepp_contratossoleppsatencion_path(@contratossolepp, contratossoleppsatencion), remote: true, class: 'edit_contratossoleppsatencion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratossolepp_contratossoleppsatencion_path(@contratossolepp, contratossoleppsatencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+
+      <%= link_to otp_contratossoleppsatenciones_path(id: contratossoleppsatencion.id), remote: true, data: { toggle: 'tooltip' }, title: 'Firmar Contratossolepp' do %>
+        <button class="btn btn-xs btn-success"><i class="fa fa-paint-brush"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratossoleppsatencion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratossoleppsatencion.user.nombre rescue nil %></small></td>
+  <td align="left" class="text-table"><%= contratossoleppsatencion.nombre rescue nil %>
+    <% if contratossoleppsatencion.codigo_firma.present? %>
+      <div>
+        <em>
+          <b>Firmado:</b> <i class="fa fa-check text-success"></i> -
+          <b>Fecha: </b><%= contratossoleppsatencion.codigo_fecha.strftime("%Y-%m-%d %X") rescue nil %>
+        </em>
+      </div>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratossoleppsatencion.identificacion rescue nil %></td>
+  <td align="left" class="text-table"><%= contratossoleppsatencion.cargo rescue nil %></td>
+  <td align="left" class="text-table"><%= contratossoleppsatencion.celular rescue nil %></td>
+</tr>
+
+<div class="modal fade" id="otp<%= contratossoleppsatencion.id rescue nil %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

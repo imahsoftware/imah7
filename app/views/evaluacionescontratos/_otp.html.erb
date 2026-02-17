@@ -1,0 +1,22 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title"><small>FIRMA : <%= @evaluacionescontrato.nombre_empleado rescue nil %></small></h4>
+  </div>
+  <div class="box-body" style="margin-right: 10px;">
+    <%= form_tag captura_otp_evaluacionescontratos_path(evaluacion_id: @evaluacion.id, user_responsable: @user_responsable, evaluacionescontrato_id: @evaluacionescontrato.id, contratosperfecha_id: @contratosperfecha.id), remote: true, method: :post, class: 'form-inline' do %>
+      <%= render 'menus/input_otp' %>
+      <div class="row" id="mensaje<%= @evaluacionescontrato.id %>">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+          <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+            Verificar Codigo
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

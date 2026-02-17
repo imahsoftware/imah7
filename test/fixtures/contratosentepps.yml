@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  contratosperfecha: one
+  contratospersona: one
+  codigo_otp_env: 1
+  codigo_otp_rec: 1
+  codigo_otp_fecha: 2024-02-18 06:21:23
+  codigo_otp_firma: MyString
+  estado: MyString
+
+two:
+  contrato: two
+  user: two
+  contratosperfecha: two
+  contratospersona: two
+  codigo_otp_env: 1
+  codigo_otp_rec: 1
+  codigo_otp_fecha: 2024-02-18 06:21:23
+  codigo_otp_firma: MyString
+  estado: MyString

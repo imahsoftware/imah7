@@ -1,0 +1,14 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="application/vnd.ms-excel" charset="UTF-8"/>
+  <%= wicked_pdf_javascript_include_tag "number_pages" %>
+  <link rel=stylesheet type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+</head>
+<body onload='number_pages'>
+  <%= wicked_pdf_image_tag ("sistemcobro.png"), size: "1024x80" %>
+  <div id="content">
+    <%= yield %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<%
+  is_auth_c_solicitudesespecial = is_auth_c('solicitudesespecial')
+%>
+<div class="box-body">
+  <div class="row">
+    <div class="col-md-11">
+      <legend>Solicitudes</legend>
+    </div>
+    <div class="col-md-1">
+      <% if @contrato.contratosinsumos.exists? == true or @contrato.contratosmaquinarias.exists? == true or @contrato.contratosotros.exists? == true %>
+        <%= link_to new_contratossolicitud_path(contrato_id: @contrato.id), data: {toggle: 'tooltip', confirm: "Seguro que desea crear una Solicitud?"}, title: 'Crear' do %>
+          <button class="btn btn-info"><strong>Nuevo</strong></button>
+        <% end %>
+      <% else %>
+      NO hay datos!!
+      <% end %>
+    </div>
+  </div>
+  <% if @contratossolicitudes.exists? %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th width="15%" class="text-center"></th>
+              <th width="10%" class="text-center">Consecutivo</th>
+              <th class="text-left" style="font-size:12px;">Solicitante</th>
+              <th width="15%" class="text-center">Fecha</th>
+              <th width="10%" class="text-center">Periodo</th>
+              <th width="10%" class="text-center">Estado</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <% @contratossolicitudes.includes([:user]).each do |p| %>
+              <tr>
+                <td class="text-center" style="font-size:12px;">
+                  <%= link_to edit_contratossolicitud_path(id: p.id, etapa: 'A'), class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                  <% end %>
+                  <% if p.estado.to_s == 'PENDIENTE' %>
+                    <%= link_to p, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                    <% end %>
+                  <% elsif is_auth_c_solicitudesespecial %>
+                      <%= link_to cambioestado_contratossolicitudes_path(id: p.id, estado: "PENDIENTE"), data: {toggle: 'tooltip', confirm: "Seguro que desea reversar esta Solicitud?"}, title: 'Reversar solicitud' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                      <% end %>
+                  <% end %>
+                  <%= link_to contratossolicitud_path(id: p.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver solicitud ' do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i></button>
+                  <% end %>
+                  <%= link_to visualizar_contratossolicitudes_path(id: p.id, format: :pdf), data: {toggle: 'tooltip'}, title: 'Solicitud por Sedes ' do %>
+                    <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                  <% end %>
+                  <%= link_to visualizar_contratossolicitudes_path(id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Solicitud por Sedes en Excel' do %>
+                    <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                  <% end %>
+                  <%= link_to informe_datas_path(infgrupo_id: 18, portafolio_id: p.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar' do %>
+                    <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                  <%end %>
+                </td>
+                <td class="text-center" style="font-size:12px;"><%= p.id rescue nil%></td>
+                <td class="text-left" style="font-size:12px;"><%= p.user.nombre rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= p.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= p.periodo rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= p.estado rescue nil%></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-danger">
+      <strong><%=t :atencion%></strong> <%=t :atencion_msj%>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,16 @@
+<tr id="personasimagen_<%= personasimagen.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("personasimagen")%>
+      <%= link_to persona_personasimagen_path(@persona, personasimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+
+    <%= link_to personasimagen.documentos.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+      <button class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i></button>
+    <% end %>
+
+  </td>
+  <td align="left"><%= personasimagen.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= personasimagen.user.nombre rescue nil %></td>
+  <td align="left"><%= personasimagen.documentos_file_name rescue nil %></td>
+</tr>

@@ -1,0 +1,14 @@
+<tr id="tiposcontrato_<%= tiposcontrato.id %>">
+  <% if is_auth_c('tiposcontrato') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposcontrato_path(tiposcontrato), class: 'edit_tiposcontrato_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposcontrato, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= tiposcontrato.id %></td>
+  <td><%= tiposcontrato.descripcion %></td>
+</tr>

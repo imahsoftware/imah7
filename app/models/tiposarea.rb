@@ -1,0 +1,2 @@
+class Tiposarea < ApplicationRecord
+end

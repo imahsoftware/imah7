@@ -1,0 +1,245 @@
+<style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+<table width="100%">
+  <tr>
+    <td>
+      <table width="100%" border="0">
+        <tr>
+          <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+            <div align="center">
+              <strong>
+                <div style="font-size: 18px; font-family: Tahoma;">CONTRATO DE TRABAJO OCASIONAL POR OBRA O LABOR DETERMINADA</div>
+              </strong>
+            </div>
+          </td>
+          <td width="30%">
+            <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>Empleador(a): </strong></td>
+          <td>&nbsp;<%= @portafolio.razon_social rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>NIT o identificación: </strong></td>
+          <td>&nbsp;<%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Dirección y ciudad: </strong></td>
+          <td>&nbsp;<%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Teléfono de contacto: </strong></td>
+          <td>&nbsp;<%= @portafolio.telefono_empresa rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Trabajador(a): </strong></td>
+          <td>&nbsp;<%= @contratospersona.nombre_completo rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Tipo y número de identificación: </strong></td>
+          <td>&nbsp;<%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Dirección y ciudad: </strong></td>
+          <td>&nbsp;<%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Teléfono de contacto: </strong></td>
+          <td>&nbsp;<%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Lugar y fecha de nacimiento: </strong></td>
+            <td>&nbsp;<%=Municipio.find(@contratospersona.municipio_lugar_nacimiento).autobuscar rescue nil %> - <%= @contratospersona.fecha_nacimiento.strftime("%d-%m-%Y") rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Cargo: </strong></td>
+          <td>&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Salario: </strong></td>
+          <td>&nbsp;<%= camponumerico(@contratosperfecha.contratoscargo.salario) rescue nil %> (proporcional a los dias trabajados)</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Lugar donde desempeña sus labores: </strong></td>
+          <td>&nbsp;Contrato Nº <%= @contratosperfecha.contrato.nro_contrato rescue nil %> - <%= @contratosperfecha.contratosgrupo.descripcion rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Fecha de inicio:</strong></td>
+          <td>&nbsp;<%= @contratosperfecha.fecha_inicio rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Duracion:</strong></td>
+          <td>&nbsp;Medellín – Antioquia</td>
+        </tr>
+        
+      </table>
+      <br/>
+      <div align="justify" style="font-size: 14px; font-family: Verdana, Geneva, sans-serif;">
+        <strong>CLÁUSULAS</strong><br/><br/>
+        <strong>PRIMERA. OBJETO DEL CONTRATO</strong><br/>
+        El presente contrato se celebra por duración de obra o labor determinada.<br/>
+        La labor contratada consiste exclusivamente en la prestación de servicios como Operario(a) de Aseo y Cafetería, desarrollando las funciones propias de dicho cargo y en el lugar de trabajo que <strong><%= @portafolio.razon_social rescue nil %></strong> disponga para la ejecución del servicio.<br/>
+        La obra o labor específica que la trabajadora debe cumplir corresponde a reemplazar temporalmente a la señor(a) <strong><%= @contratospersona.nombre_completo rescue nil %></strong>, en el cargo de <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong>, durante los períodos en que ésta se encuentre incapacitada médicamente.<br/>
+        Este contrato se mantendrá vigente únicamente durante los períodos de incapacidad de la trabajadora titular, y cesará automáticamente cuando finalicen dichos períodos y ésta se reincorpore a su cargo, o por cualquiera de las demás causas legalmente previstas.<br/><br/>
+        <strong>SEGUNDA. DURACIÓN</strong><br/>
+        El contrato tendrá carácter ocasional y transitorio, por tratarse de una labor determinada y de necesidad temporal, y su vigencia estará supeditada exclusivamente a los períodos de incapacidad de la trabajadora que se reemplaza. Cada vez que <strong>EL EMPLEADOR</strong> requiera a el <strong>TRABAJADORA(A)</strong>, la vinculación será válida solo por el tiempo en que subsista dicha necesidad, sin que ello genere continuidad ni derecho a estabilidad más allá de las labores efectivamente prestadas.<br/><br/>
+        <strong>TERCERA. REMUNERACIÓN</strong><br/>
+        EL EMPLEADOR pagará a el <strong>TRABAJADORA(A)</strong> el salario indicado en la tabla inicial, más el pago proporcional de prestaciones sociales y aportes a seguridad social conforme a la ley.<br/><br/>
+        <strong>CUARTA. JORNADA</strong><br/>
+        La jornada será la correspondiente al cargo de Operario de Aseo y Cafetería, en los horarios que <strong>EL EMPLEADOR</strong> indique al momento de requerir la prestación del servicio.<br/><br/>
+        <strong>QUINTA. DEMÁS CONDICIONES</strong><br/>
+        1. EL EMPLEADOR afiliarán a el <strong>TRABAJADORA(A)</strong> al Sistema de Seguridad Social Integral desde el inicio de cada período de trabajo.<br/>
+        2. El contrato terminará automáticamente cuando cesen las incapacidades de la trabajadora titular, sin necesidad de preaviso.<br/>
+        3. Por la naturaleza ocasional de este contrato, el <strong>TRABAJADORA(A)</strong> entiende que no existe obligación de llamarla en cada evento, sino únicamente cuando la necesidad lo requiera.<br/><br/>
+        <strong>SEXTA. PERÍODO DE PRUEBA</strong><br/>
+        Acuerdan las partes fijar como período de prueba los primeros dos (2) meses de labores.<br/><br/>
+        <strong>SÉPTIMA. JUSTAS CAUSAS PARA DESPEDIR</strong><br/>
+        Son justas causas para dar por terminado unilateralmente el presente contrato por cualquiera de las partes, las establecidas en los artículos 57 y siguientes, 62 y 63 del Código Sustantivo del Trabajo, así como el incumplimiento o violación a las normas establecidas en el reglamento interno de trabajo, manual de higiene, políticas de seguridad y salud en el trabajo o cualquier procedimiento interno fijado por el empleador o el cliente.<br/>
+        Además, se consideran faltas graves por parte del trabajador:<br/><br/>
+        a) Violación de obligaciones legales, contractuales o reglamentarias.<br/>
+        b) Inasistencia puntual al trabajo, sin excusa suficiente, por dos veces en un mismo mes calendario.<br/>
+        c) Ejecución de labores remuneradas al servicio de terceros sin autorización.<br/>
+        d) Revelación de secretos o datos reservados de la empresa.<br/>
+        e) Repetidas desavenencias con compañeros de trabajo.<br/>
+        f) Llegar al trabajo en estado de embriaguez o bajo efectos de sustancias psicoactivas, aun por primera vez.<br/>
+        g) Abandono del sitio de trabajo sin permiso de superiores.<br/>
+        h) Inasistencia a una jornada completa de trabajo o más, sin excusa suficiente.<br/><br/>
+        Parágrafo – Prohibición especial: Están prohibidas las relaciones sentimentales al interior de la Empresa entre compañeros de trabajo, superiores o subordinados.<br/><br/>
+        <strong>OCTAVA. LIQUIDACIÓN</strong><br/>
+        Las partes convienen en fijar un plazo de treinta (30) días hábiles contados a partir de la fecha de terminación del contrato, dentro del cual el empleador podrá reconocer y pagar los salarios y prestaciones a que haya lugar, sin que por ello incurra en mora ni quede obligado a indemnización a la que se refiere el Artículo 65 del C.S.T.<br/><br/>
+        <strong>NOVENA. NOTIFICACIONES</strong><br/>
+        Para todos los efectos relacionados con el presente contrato, se tendrán como direcciones oficiales la residencia y correo electrónico indicados por el trabajador en el cuadro inicial. Es obligación del trabajador actualizar dicha información en caso de cambio.<br/><br/>
+        <strong>DÉCIMA. PROTECCIÓN DE DATOS</strong><br/>
+        En cumplimiento de la Ley 1581 de 2012 y el Decreto 1074 de 2015, el trabajador autoriza la incorporación de sus datos personales en las bases de datos del empleador, los cuales serán tratados conforme a las finalidades señaladas en las políticas de protección de datos de la empresa, pudiendo ejercer sus derechos a través del correo electrónico: asearesp@gmail.com.<br/><br/>
+        <strong>DÉCIMA PRIMERA. LEGISLACIÓN APLICABLE</strong><br/>
+        El presente contrato se regula por lo dispuesto en el Código Sustantivo del Trabajo, especialmente lo relativo a contratos ocasionales, accidentales o transitorios, y demás normas concordantes.<br/><br/>
+        <br/>
+        Se firma por las partes, en la ciudad de Medellín, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>.
+        <br/><br/><br/>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+          <tr>
+            <td width="40%" height="30" ALIGN="center"><strong>EL EMPLEADOR</strong></td>
+            <td>&nbsp;</td>
+            <td width="55%" height="30" ALIGN="center"><strong>EL TRABAJADOR</strong></td>
+          </tr>
+          <tr>
+            <td height="50">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+              <%else %>
+                <br/><br/><br/>
+              <%end %>
+              <br/><%= @nombre_firma rescue nil %><br/>
+              <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/>
+              <%= @portafolio.telefono_empresa rescue nil %>
+            </td>
+            <td >&nbsp</td>
+            <td height="50" style="background: #E8E3E3;">
+              <% if @contratosperfecha.codigo_firma.present? %>
+                <div style="font-size: 9px;">
+                  <%= @contratospersona.nombre_completo rescue nil %><br/>
+                  <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                  <b>Firma Digital:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                  <b>Fecha Firma:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                  <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                  <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                  <%= @contratospersona.correo rescue nil %><br/>
+                  * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                  conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                </div>
+              <% else %>
+                <br/><br/><br/><br/>
+                <%= @contratospersona.nombre_completo rescue nil %><br/>
+                <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                <%= @contratospersona.correo rescue nil %><br/>
+            <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+</table>
+<H1 class=SaltoDePagina>&nbsp;</H1>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <table width="100%" border="0">
+          <tr>
+            <td style="font-size: 14px; font-family: Tahoma; line-height:150%">
+              <div align="center"><strong><div style="font-size: 18px; font-family: Tahoma;">PRORROGA Y PREAVISO AL CONTRATO A TÉRMINO FIJO</div></strong></div>
+            </td>
+            <td width="30%">
+              <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 16px; font-family: Verdana, Geneva, sans-serif;">
+          <br/>
+          Entre los suscritos a saber: <b><%= @portafolio.razon_social rescue nil %></b> representada por <b><%= @nombre_firma rescue nil %></b>, mayor de edad, identificado con Cédula de Ciudadanía número <b><%=@identificacion %></b>, actuando en calidad de Representante Legal, quien de ahora en adelante se denominará <b>EL CONTRATANTE</b>, con sede en la ciudad de Medellín, por una parte; y por la otra <strong><%= @contratospersona.nombre_completo rescue nil %></strong>, mayor de edad, identificado con <b><%=@contratospersona.tipo_identificacion rescue nil %></b> N° <b><%= camponumerico2(@contratospersona.identificacion) rescue nil %></b>, que para efectos del presente contrato se denominará <b>TRABAJADOR</b>, hemos convenido en PRORROGAR el término del contrato de trabajo suscrito entre las partes hasta el <%= namedate(@contratosperfecha.fecha_fin) rescue nil %>, de esta manera el trabajador continuará prestando sus servicios hasta la fecha ya indicada.
+          <br/><br/>
+          En señal de conformidad y de común acuerdo entre las partes contratantes, Para constancia de lo anterior, se firma por las partes en la ciudad de Medellín, <%= namedate(@contratosperfecha.fecha_firma) rescue nil %>.
+          <br/><br/><br/>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+            <tr>
+              <td width="40%" height="30" ALIGN="center"><strong>EL CONTRATANTE</strong></td>
+              <td>&nbsp;</td>
+              <td width="55%" height="30" ALIGN="center"><strong>EL TRABAJADOR</strong></td>
+            </tr>
+            <tr>
+              <td height="50">
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                <%else %>
+                  <br/><br/><br/>
+                <%end %>
+                <br/><%= @nombre_firma rescue nil %><br/>
+                <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/>
+                <%= @portafolio.telefono_empresa rescue nil %>
+              </td>
+              <td >&nbsp</td>
+              <td height="50" style="background: #E8E3E3;">
+                <% if @contratosperfecha.codigo_firma.present? %>
+                  <div style="font-size: 9px;">
+                    <%= @contratospersona.nombre_completo rescue nil %><br/>
+                    <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                    <b>Firma Digital:</b> <%= @contratosperfecha.codigo_firma %><br/>
+                    <b>Fecha Firma:</b> <%= @contratosperfecha.fecha_firma %><br/>
+                    <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                    <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                    <%= @contratospersona.correo rescue nil %><br/>
+                    * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica,
+                    conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+                  </div>
+                <% else %>
+                  <br/><br/><br/><br/>
+                  <%= @contratospersona.nombre_completo rescue nil %><br/>
+                  <%=@contratospersona.tipo_identificacion rescue nil %> - <%= camponumerico2(@contratospersona.identificacion) rescue nil %><br/>
+                  <%= @contratospersona.direccion rescue nil %> - <%=Municipio.find(@contratospersona.municipio_ciudad).autobuscar rescue nil %><br/>
+                  <%= @contratospersona.telefono rescue nil %> - <%=@contratospersona.movil rescue nil %><br/>
+                  <%= @contratospersona.correo rescue nil %><br/>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+

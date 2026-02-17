@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  capacitacion: one
+  pregunta: MyString
+  capacitacion_doc: MyString
+
+two:
+  capacitacion: two
+  pregunta: MyString
+  capacitacion_doc: MyString

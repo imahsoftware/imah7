@@ -1,0 +1,28 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Entregas EPP</strong></h3>
+  <div class="box-tools pull-right">
+    <%# if is_auth_c('contratosentepp') %>
+    <% if !Contratosentepp.where("user_id = #{is_admin} and estado = 'PENDIENTE'").present? %>
+      <%= link_to new_contratosentepp_path, remote: true, class: 'btn btn-sm btn-success', id: 'new_visita_button', data: { toggle: 'tooltip' }, title: 'Agregar' do %>
+        <i class="fa fa-plus-square"> </i> Agregar<span></span>
+      <% end %>
+    <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosentepp_form" class="collapse"></div>
+  <div id="contratosentepps">
+    <% if @contratosentepps.any? %>
+      <%= render 'contratosentepps/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><i class="icon fa fa-info"></i> <%= t :atencion %> <%= t :atencion_msj %></div>
+    <% end %>
+  </div>
+</div>
+
+
+
+
+

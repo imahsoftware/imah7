@@ -1,0 +1,96 @@
+<div align="center">
+<% valida = object1.present? ? true : false  rescue nil
+   if valida
+     @proceso = object
+     @evaluacionescontrato = Evaluacionescontrato.find(@proceso)
+   end
+   contratosperfecha = Contratosperfecha.find(@evaluacionescontrato.contratosperfecha_id)
+   contratospersona = contratosperfecha.contratospersona
+   portafolio = Portafolio.find(contratosperfecha.contrato.empresa.portafolio_id)
+   @porta = portafolio
+   @logo_firma = portafolio.logo_firma
+   @logo = portafolio.logo_empresa_assets
+   @nombre_firma = portafolio.nombre_rep.to_s
+   @nombre_empresa = portafolio.razon_social.to_s
+   @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+  <div align="center">
+    <table table width="90%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <table table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; line-height: 150%;">
+            <tr>
+              <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center" width="35%" rowspan="3"><%= image_tag "#{@logo}", size: "280x120" %></td>
+              <td style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center">
+                <b><%= @nombre_empresa rescue nil %></b></td>
+            </tr>
+            <tr>
+              <td colspan="2" style="border:1px solid #CCCCCC; font-size: 16px; font-family: Tahoma; text-align: center"><b>TERMINACIÓN PERIODO DE PRUEBA</b></td>
+            </tr>
+          </table>
+          <br/>
+          <table width="100%">
+            <tr>
+              <td>
+                <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                  <br/>
+                  Medellin, <%= namedate(Time.now) rescue nil %>
+                  <br/><br/><br/><br/>
+                  Señor(a)<br/>
+                  <b><%= @contratospersona.nombre_completo rescue nil %></b><br/>
+                  <b><%= camponumerico2 @contratospersona.identificacion rescue nil %></b><br/>
+                  <b><%= @contratospersona.direccion rescue nil %></b><br/>
+                  <b><%= @contratospersona.correo rescue nil %></b><br/>
+                  <b><%= @nombre_empresa rescue nil %></b><br/>
+                  <br/><br/>
+                  De nuestra consideración:
+                  <br/><br/>
+                  <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+                    Por medio de la presente, hacemos de su conocimiento que a partir del día de hoy, damos por extinguida la relación laboral que mantenemos con usted.
+                    El motivo de la presente decisión es por no haber superado el período de prueba expresamente pactado con usted para el cargo que se le encomendó en nuestra empresa, lo que nos autoriza a dar por terminado su contrato de trabajo sin necesidad de invocar ninguna justificación, de acuerdo a lo dispuesto por el artículo 80 del Código Sustantivo del Trabajo En consecuencia, agradecemos el tiempo que brindó a nuestra empresa y le solicitamos se sirva acercarse a las oficinas de personal con la finalidad de efectuar el cobro de su liquidación de beneficios sociales y entregar la dotación de calzado y vestuario que le fue suministrada al inicio de la relación laboral.
+                    <br/><br/>
+                    Atentamente;
+                  </div>
+                  <br/><br/>
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:0px 0px 0px 0px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+                    <tr>
+                      <td width="50%" height="30" ALIGN="center"><strong>REPRESENTANTE LEGAL</strong></td>
+                      <td>&nbsp;</td>
+                      <td width="45%" height="30" ALIGN="center"><strong>EMPLEADO</strong></td>
+                    </tr>
+                    <tr>
+                      <td height="50">
+                        <% if @evaluacionescontrato.codigo_firma_empleado.present? %>
+                          <br/>
+                          <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %>
+                        <%else %>
+                          <br/><br/><br/>
+                        <%end %>
+                        <br/><%= @nombre_firma rescue nil %><br/>
+                        Representante Legal<br/>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
+                        <% if @evaluacionescontrato.codigo_firma_empleado.present? %>
+                          <strong><%= contratospersona.nombre_completo rescue nil %><br/>
+                            C.C <%= camponumerico contratospersona.identificacion rescue nil %><br/></strong>
+                          <b>FIRMA DIGITAL:</b> <%= @evaluacionescontrato.codigo_firma_empleado %><br/>
+                          <b>FECHA FIRMA:</b> <%= @evaluacionescontrato.codigo_fecha_empleado.strftime("%d-%m-%Y %X") rescue nil %><br/>
+                          <small>* Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+                        <% else %>
+                          <br/>_________________________________________<br/>
+                          <%= contratospersona.nombre_completo rescue nil %>
+                          <br/>C.C <%= camponumerico contratospersona.identificacion rescue nil %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

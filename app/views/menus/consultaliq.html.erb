@@ -1,0 +1,33 @@
+<div style="padding: 10px; box-shadow: 5px 5px 5px #D6D6D6;">
+  <div style="font-size: 3rem"><b>Consultas Varias</b></div>
+  <div style="padding: 10px;">
+    <div class="box-header">
+      <%= form_tag search_contratoliq_menus_path, method: :post, remote: true do %>
+        <div class="row">
+          <div class="col-xs-12 col-ms-7 col-md-2 col-lg-2"></div>
+          <div class="col-xs-12 col-ms-7 col-md-3 col-lg-3"><b style="color: red;">*</b>
+            <b>Numero de Identificacion</b><br/>
+            <div class="form-group input-group" style="padding-bottom: 10px;">
+              <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
+              <%= text_field_tag :documento, params[:documento], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Nro Identificacion' %>
+            </div>
+          </div>
+          <div class="col-xs-12 col-ms-7 col-md-3 col-lg-3"><b style="color: red;">*</b>
+            <b>Fecha de Nacimiento</b><br/>
+            <div class="form-group input-group" style="padding-bottom: 10px;">
+              <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
+              <%= text_field_tag :fecha_nac, params[:fecha_nac], { class: 'datepicker form-control', style:'width: 100%', placeholder: 'Fecha de Nacimiento', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+            </div>
+          </div>
+          <div class="col-xs-12 col-ms-7 col-md-2 col-lg-2" style="padding-top: 20px;">
+            <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+              <i class="fa fa-search" aria-hidden="true"></i> Buscar
+            <% end %>
+          </div>
+          <div class="col-xs-12 col-ms-7 col-md-1 col-lg-1"></div>
+        </div>
+      <% end %>
+      <div id="buscador4"></div>
+    </div>
+  </div>
+</div>

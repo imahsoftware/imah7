@@ -1,0 +1,14 @@
+<tr id="formatosvariable_<%= formatosvariable.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("formatosvariable")%>
+    <%= link_to edit_formato_formatosvariable_path(@formato, formatosvariable), remote: true, class: 'edit_formatosvariable_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+    <%= link_to formato_formatosvariable_path(@formato, formatosvariable), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    <% end %>
+  </td>
+  <td align="center" class="text-table"><%= formatosvariable.orden rescue nil %></td>
+  <td align="left" class="text-table"><%= formatosvariable.titulo rescue nil %></td>
+  <td align="left" class="text-table"><%= formatosvariable.variable.descripcion_variable rescue nil %></td>
+</tr>

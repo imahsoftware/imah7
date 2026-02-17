@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratossolepp: one
+  user: one
+  nombre: MyString
+  identificacion: MyString
+  cargo: MyString
+  celular: MyString
+  email: MyString
+  codigo_env: MyString
+  codigo_rec: MyString
+  codigo_fecha: 2024-03-19 22:47:21
+  codigo_firma: MyString
+
+two:
+  contratossolepp: two
+  user: two
+  nombre: MyString
+  identificacion: MyString
+  cargo: MyString
+  celular: MyString
+  email: MyString
+  codigo_env: MyString
+  codigo_rec: MyString
+  codigo_fecha: 2024-03-19 22:47:21
+  codigo_firma: MyString

@@ -1,0 +1,41 @@
+<%= simple_form_for([@contrato, @contratoscargo], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :perfil, :input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: 'Perfil o cargo' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :cantidad %></div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :cant_add, label: "Adición" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :salario, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :sesion, :input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: 'Sesión' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :riesgo, as: :select, collection: select_riesgo, input_html: { class: 'select2' }, label: "Nivel Riesgo"  %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><%= f.input :aplica_especial, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Aplica clausula especial"  %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-8">
+        <%= f.input :detalle_perfil, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :activo_vacantes, as: :select, collection: select_sino, input_html: { class: 'select2' },label: "Activo para vacantes?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :aplica_especialtes, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Aplica clausula tesoreros"  %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+        <%= f.input :funciones, as: :text, input_html: {rows: 4, class: 'wysihtml5 clean' } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tiene_epp, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Tiene EPP?"  %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratoscargo.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratoscargo_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratoscargo_path(@contrato, @contratoscargo), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

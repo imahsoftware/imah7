@@ -1,0 +1,82 @@
+<legend style="margin-top: -19px;">Procesos EPP</legend>
+<%
+  estados = []
+  usr = current_user
+  @query.each do |cargue|
+    estados << cargue[0]
+  end
+  datosepp = Contratospersona.find_by_sql("SELECT * FROM tmpepp_val_detalle WHERE user_id = #{usr.id}") rescue nil
+  if datosepp.present?
+%>
+    <br/><legend style="margin-top: -19px;">Hola que tal !!!! <%=usr.nombre rescue nil %></legend>
+    <div class="alert alert-danger">Tienes (<%=Contratospersona.find_by_sql("SELECT count(9) cant FROM tmpepp_val_detalle WHERE user_id = #{usr.id}")[0].cant rescue 0%>) personas que tienen mas de 90 dias sin entrega de EPP, yo se que no lo sabias.. pero el APP si lo sabe... Asi que a trabajar pues!</div>
+    <div class="box box-danger">
+      <div class="box-body">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th class="text-left">Empresa</th>
+            <th width="40%" class="text-left">Colaborador</th>
+            <th width="20%" class="text-center">Fecha Ult. Entrega</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% datosepp.each do |a| %>
+              <tr>
+                <td class="text-left" style="font-size:10px;"><%=a.empresa rescue nil %></td>
+                <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+                <td class="text-center" style="font-size:10px;"><%=a.createdat.strftime("%Y-%m-%d") rescue nil %></td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+<% end %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_contratossolepps_path(etapa: p) do %>
+              <i class="fa fa-adn"></i>&nbsp;<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% cont = 0
+           clase = ""
+
+           @query.each do |c|
+             e = c[0].to_s
+             if usr.etapa.to_s == e
+
+        %>
+            <div class="tab-pane active" id="<%= e %>">
+              <div class="box-body">
+                <% if e.to_s == 'ADMINISTRATIVO' %>
+                  <%= render "menus/solicitudes_epp" %>
+                <% elsif e.to_s == 'SOLICITUDES' %>
+                  <%= render 'contratossolepps/index' %>
+                <% elsif e.to_s == 'ENTREGAS' %>
+                  <%= render 'contratosentepps/index' %>
+                <% elsif e.to_s == 'ENTREGAS ADMINISTRATIVAS' %>
+                  <%= render 'contratosentepps/entregas_administrativas', etapa: e %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<tr id="centroscosto_<%= centroscosto.id %>">
+  <% if is_auth_c('centroscosto') %>
+  	<td class="text-center">
+      <%= link_to edit_centroscosto_path(centroscosto), class: 'edit_centroscosto_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to centroscosto, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= centroscosto.id %></td>
+  <td><%= centroscosto.codigo %></td>
+  <td><%= centroscosto.descripcion %></td>
+</tr>

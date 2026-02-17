@@ -1,0 +1,154 @@
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<%  isadmin = @isadmin
+    @solicitudesretiros.each do |s|
+      @contratosperliquidacion = Contratosperliquidacion.find(s.contratosperliquidacion_id)
+      @contratosperliqnovedades = Contratosperliqnovedad.where(contratosperliquidacion_id: s.contratosperliquidacion_id)
+      @logo = Contratosperfecha.find(@contratosperliquidacion.contratosperfecha_id).contrato.empresa.logo.to_s
+  %>
+  <div align="center">
+    <br/>
+    <table width="760" border="0" cellspacing="0" cellpadding="1">
+      <tr>
+        <td valign="center">
+          <table width="100%">
+            <tr>
+              <td>
+                <div align="center">
+                  <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+                </div>
+              </td>
+              <th style="font-size: 18px; font-family: Tahoma;"><div align="center">LIQUIDACION DE EMPLEADO</div><br/>
+                <div align="center" style="font-size: 10px; font-family: Tahoma;"><%=@contratosperliquidacion.contratosperfecha.contrato.empresa.identnombre rescue nil%></div></th>
+            </tr>
+            <tr>
+              <td colspan="2" width="80%">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                  <tr>
+                    <td width="35%" style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>EMPLEADO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.contratospersona.autobuscar rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>LUGAR Y FECHA DE LIQUIDACIÓN : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;MEDELLÍN, <%=Time.now.strftime("%Y-%m-%d") rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>ULTIMO CARGO DESEMPEÑADO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.contratoscargo.perfil rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>GRUPO DE NOMINA : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.contratosgrupo.descripcion rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>FECHA DE INGRESO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.fecha_inicio rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>FECHA DE RETIRO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.fecha_fin rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>SALARIO BASICO : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= camponumerico @contratosperliquidacion.salario_cargo rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>TOTAL DIAS LABORADOS : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= camponumerico2 @contratosperliquidacion.dias rescue nil%></td>
+                  </tr>
+                  <tr>
+                    <td style="background: #adadad; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>NRO CUENTA : </strong></td>
+                    <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%=@contratosperliquidacion.contratosperfecha.contratospersona.banco rescue nil%> - <%=@contratosperliquidacion.contratosperfecha.contratospersona.cuenta_bancolombia rescue nil%></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+            <tr style="background: #adadad">
+              <td width="48%" height="20" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><strong>CONCEPTO</strong></td>
+              <td width="8%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>DIAS</strong></div></td>
+              <td width="22%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>DEVENGADO</strong></div></td>
+              <td width="22%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="center"><strong>DEDUCCIONES</strong></div></td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">CESANTIAS </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico @contratosperliquidacion.dias_cesantias rescue nil %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.cesantias rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">INTERESES A LAS CESANTIAS </td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico @contratosperliquidacion.dias_intcesantias rescue nil %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.int_cesantias rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">VACACIONES</td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico @contratosperliquidacion.dias_vacaciones rescue nil %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.vacaciones rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <tr>
+              <td  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">PRIMA</td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico @contratosperliquidacion.dias_prima rescue nil %></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.prima rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico 0 rescue nil%></div></td>
+            </tr>
+            <% @contratosperliqnovedades.each do |pn| %>
+              <tr>
+                <td style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><%=pn.tiposnovedad.descripcion rescue nil%></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="center"><%=camponumerico pn.numero rescue nil%></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico pn.valor_novedad_dev rescue nil%></div></td>
+                <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico pn.valor_novedad_ded rescue nil%></div></td>
+              </tr>
+            <% end %>
+            <tr style="background: #adadad">
+              <td colspan="2" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;"><div align="right"><strong>SUBTOTALES :&nbsp;&nbsp;</strong></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.totaldev rescue nil%></div></td>
+              <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><%=camponumerico @contratosperliquidacion.totalded rescue nil%></div></td>
+            </tr>
+            <tr style="background: #adadad">
+              <td height="20" colspan="2" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><strong>TOTAL A PAGAR :&nbsp;&nbsp;</strong></div></td>
+              <td colspan="2" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><div align="right"><strong><%=camponumerico @contratosperliquidacion.total rescue nil%>&nbsp;</strong></div></td>
+            </tr>
+          </table>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">
+            Las partes, en común acuerdo, declaran estar a PAZ Y SALVO por todo concepto emanado de la relación laboral, la cual dan por terminada a partir de la fecha de retiro que se indica en el encabezado del presente contrato.<br/>
+            <% if @contratosperliquidacion.contratosperfecha.fecha_inicio.to_date < '2021-07-01'.to_date %>
+              <strong>De acuerdo al cambio de sistema esta liquidación es calculada desde el 01-07-2021</strong>
+            <% end %>
+          </div>
+          <br/>
+          <table width="100%">
+            <tr valign="top">
+              <th><div align="justify" style="font-size: 10px; font-family: Tahoma;">OBSERVACIONES:</div></th>
+            </tr>
+            <tr valign="top">
+              <td width="85%"><div align="justify" style="font-size: 8px; font-family: Tahoma;">
+                <% @contratosperliqnovedades.each do |pn|%>
+                  - <strong><%=pn.tiposnovedad.descripcion rescue nil%> : </strong> <%=pn.observacion rescue nil %><br/>
+                <% end %></div>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="40%"><br/><br/><br/>__________________________________</td>
+              <td>&nbsp;</td>
+              <td width="40%"><br/><br/><br/>__________________________________</td>
+            </tr>
+            <tr>
+              <td style="font-size: 11px; font-family: Tahoma;">EMPLEADO</td>
+              <td>&nbsp;</td>
+              <td style="font-size: 11px; font-family: Tahoma;">REPRESENTANTE LEGAL</td>
+            </tr>
+          </table>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%=Time.now.strftime("%Y-%m-%d %X") rescue nil%> - <%=User.find(isadmin).nombre %></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <H1 class=SaltoDePagina>&nbsp;</H1>
+<% end %>
+

@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="15%"></td>
+        <th width="35%" class="text-left">Bien o Servicio</th>
+        <th width="35%" class="text-left">Bien o Servicio Homologado</th>
+        <th width="5%" class="text-center">Cant</th>
+        <th width="8%" class="text-right">Total</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosinsumos">
+      <%
+        @is_auth_e_contratosinsumo1 = is_auth_e("contratosinsumo1")
+        @is_auth_e_contratosinsumo = is_auth_e("contratosinsumo")
+        @insumos.includes([:insumo,:user]).each do |contratosinsumo| %>
+	      <%= render 'contratosinsumos/tr', contratosinsumo: contratosinsumo %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+<div class="modal fade" id="adddocumento">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="fichatecnica">
+  <div class="modal-dialog modal-dialog-responsive" style="width: 80%" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%= will_paginate @insumos, :param_name => 'insumo' , renderer: BootstrapPagination::Rails %>
+</div>

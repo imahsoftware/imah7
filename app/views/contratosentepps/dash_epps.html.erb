@@ -1,0 +1,101 @@
+<head>
+  <script type="text/javascript">
+      $(function () {
+          var chart;
+          $(document).ready(function () {
+              chart = new Highcharts.Chart({
+                  chart: {
+                      renderTo: 'container',
+                      type: 'spline'
+                  },
+                  title: {
+                      text: 'Epps Mensual por días'
+                  },
+                  xAxis: {
+                      categories: [<%=@meses.html_safe %>]
+                  },
+                  yAxis: {
+                      min: 0,
+                      title: {
+                          text: ' Millones'
+                      },
+                      plotLines: [{
+                          value: 0,
+                          width: 1,
+                          color: '#ffffff'
+                      }]
+                  },
+                  tooltip: {
+                      shared: true,
+                      crosshairs: true
+                  },
+
+                  plotOptions: {
+                      spline: {
+                          lineWidth: 4,
+                          states: {
+                              hover: {
+                                  lineWidth: 5
+                              }
+                          },
+                          marker: {
+                              enabled: false
+                          }
+                      }
+                  },
+                  legend: {
+                      layout: 'vertical',
+                      align: 'right',
+                      verticalAlign: 'middle'
+                  },
+                  credits: {
+                      enabled: false
+                  },
+                  series: [
+                      <%
+
+                        ing = 0
+                        estado = true
+                        @fechasshow2.each do |f|
+                          fch1 = f.mes.to_s + '-' + f.anno.to_s
+                          vlr = []
+                          vlrHoy = 0
+                          diaFinish = 0
+                          dt = 0
+
+                        Dashepp.select("dia, SUM(total) AS valor_recaudo_acum")
+                        .where("CONCAT(mes, '-', anno) = '#{fch1.to_s}'")
+                        .group(:dia, :mes, :anno)
+                        .order("CAST(dia AS UNSIGNED) , mes, anno").each do |d|
+                            vlr << d.valor_recaudo_acum.to_i
+                            vlrHoy = d.valor_recaudo_acum.to_i
+                            diaFinish = d.dia.to_i
+                          end
+                          dt = 31 - diaFinish
+                          i = 0
+                          if dt > 0
+                            while i < dt
+                              vlr << vlrHoy.to_i
+                              i = i + 1
+                            end
+                          end
+                          ing = ing + 1
+                          if ing >= 10
+                            estado = false
+                          end
+
+                      %>
+                      {
+                          name: '<%=fch1.to_s %>',
+                          data: <%=vlr%>,
+                          visible: <%=estado%>
+                      }, <% end %>]
+              });
+          });
+
+      });
+  </script>
+</head>
+<body>
+<div id="container" style="min-width: 280px; height: 370px; margin: 0 auto"></div>
+</body>

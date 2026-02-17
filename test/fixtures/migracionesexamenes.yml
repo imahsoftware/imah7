@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  personasformulario_id: 1
+  user_id: 1
+  archivo_id: 1
+  descripcion: MyString
+  direccion: MyString
+  recomendaciones: MyString
+  fecha: 2023-02-18
+  hora: MyString
+  estado: MyString
+  observacion_eps: MyString
+  estado_cargue: MyString
+  error: MyString
+
+two:
+  personasformulario_id: 1
+  user_id: 1
+  archivo_id: 1
+  descripcion: MyString
+  direccion: MyString
+  recomendaciones: MyString
+  fecha: 2023-02-18
+  hora: MyString
+  estado: MyString
+  observacion_eps: MyString
+  estado_cargue: MyString
+  error: MyString

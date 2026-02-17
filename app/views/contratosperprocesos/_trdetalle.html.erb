@@ -1,0 +1,26 @@
+<tr id="contratosperproceso_<%= contratosperproceso.id %>">
+  <td class="text-center">
+    <%= link_to editproceso_contratosperprocesos_path(id: contratosperproceso.id, contratospersona_id: contratosperproceso.contratospersona.id, etapa: '1'), data: { toggle: 'tooltip' }, title: "Ingresar al proceso" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+
+  </td>
+  <td align="center" class="text-table"><%= contratosperproceso.id rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperproceso.clase rescue nil %></td>
+  <td align="center" class="text-table"><%= contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+  <td align="justify" class="text-table"><%= contratosperproceso.detalle rescue nil %>
+    <br/><br/><%= contratosperfecha.identnombre rescue nil %> -
+    <strong>Nro Contrato : </strong><%= contratosperfecha.nro_contrato rescue nil %>
+    <br/><strong>Cargo : </strong><%= contratosperfecha.perfil rescue nil %>
+    <% if is_auth_e('versalarioenempleado') %>
+      ( <%= camponumerico contratosperfecha.salariocargo.to_i rescue nil %>)
+    <% end %>
+    - <strong>Grupo Nomina : </strong><%= contratosperfecha.descripcion rescue nil %>
+    <small>(<%= contratosperfecha.termino rescue nil %>)</small>
+    <% if contratosperfecha.seccionnombre.present? %>
+      - <strong>Sección : </strong><%= contratosperfecha.seccionnombre rescue nil %>
+      -<%= contratosperfecha.autobuscar_municipios rescue nil %>
+    <% end %>
+  </td>
+  <td align="center" class="text-table"><%= contratosperproceso.estado rescue nil %></td>
+</tr>

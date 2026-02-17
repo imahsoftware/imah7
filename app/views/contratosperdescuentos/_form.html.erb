@@ -1,0 +1,23 @@
+<%= simple_form_for([@contratospersona, @contratosperdescuento], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :termino_descuento, as: :select, collection: select_terminodescuento, input_html: { class: 'select2' }, label: "Aplicación" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo, as: :select, collection: select_debcre, input_html: { class: 'select2' } %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperdescuento.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperdescuento_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperdescuento_path(@contratospersona, @contratosperdescuento), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

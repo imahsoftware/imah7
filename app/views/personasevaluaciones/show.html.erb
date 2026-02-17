@@ -1,0 +1,76 @@
+<div class="box box-primary">
+    <table class="table table-striped table-responsive">
+      <tbody>
+      <tr>
+        <td class="thcolor" width="20%">Identificación:</td>
+        <td><%= @personasevaluacion.persona.identificacion rescue nil %></td>
+      </tr>
+      <tr>
+        <td class="thcolor">Nombre:</td>
+        <td><%= @personasevaluacion.persona.nombre.upcase rescue nil%></td>
+      </tr>
+      <tr>
+        <td class="thcolor">Fecha Evaluación:</td>
+        <td><%= @personasevaluacion.created_at.strftime("%Y-%m-%d") rescue nil%></td>
+      </tr>
+      <% if @personasevaluacion.persona.centrodetrabajo %>
+      <tr>
+        <td class="thcolor">Centro de Trabajo</td>
+        <td><%= @personasevaluacion.persona.centrodetrabajo rescue nil%></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-header">
+      <legend>
+        <div align="center">
+          AUTOEVALUACIÓN DE SÍNTOMAS DE COVID-19 - <strong><%= @personasevaluacion.persona.nombreportafolio rescue nil %></strong><br/>
+          <small>Evalúa el estado de tu salud diariamente antes de acudir a tu jornada laboral</small>
+        </div>
+      </legend>
+    </div><!-- /.box-header -->
+    <table class="table table-striped table-responsive">
+      <thead>
+      <th colspan="2"><div align="left">¿Qué síntomas tienes? Responde las siguientes preguntas guías en la evaluación</div></th>
+      </thead>
+      <tbody>
+      <tr>
+        <td width="80%">1. ¿Tienes sensación de falta de aire de inicio brusco (en ausencia de cualquier otra patología que justifique este síntoma)?</td>
+        <td width="20%"><%=@personasevaluacion.eva_1 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>2. ¿Tienes fiebre de difícil control por más de 3 días? (+ 37,8°C)</td>
+        <td><%=@personasevaluacion.eva_2 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>3. ¿Tienes tos seca y persistente?</td>
+        <td><%=@personasevaluacion.eva_3 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>4. ¿Tienes sensación de fatiga o cansancio muscular?</td>
+        <td><%=@personasevaluacion.eva_4 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>5. ¿Tienes secreciones nasales?</td>
+        <td><%=@personasevaluacion.eva_5 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>6. ¿Tienes dolor de garganta o dolor de cabeza?</td>
+        <td><%=@personasevaluacion.eva_6 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>7. ¿Tienes pérdida del olfato y/o el gusto?</td>
+        <td><%=@personasevaluacion.eva_7 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>8. ¿Tienes sensación de malestar general?</td>
+        <td><%=@personasevaluacion.eva_8 rescue nil %></td>
+      </tr>
+      <tr>
+        <td>9. ¿Tienes trastornos gástricos o intestinales (náuseas, vómito, diarrea)</td>
+        <td><%=@personasevaluacion.eva_9 rescue nil %></td>
+      </tr>
+      </tbody>
+    </table>
+</div>
+

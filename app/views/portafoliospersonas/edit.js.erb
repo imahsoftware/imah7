@@ -1,0 +1,18 @@
+$("#portafoliospersona_form").collapse("hide");
+
+$("#portafoliospersona_form").empty();
+
+<% if @active_record.present? %>
+	$("#portafoliospersona_<%= @active_record.id %>").replaceWith("<%= j render 'tr', portafoliospersona: @active_record %>");
+<% end %>
+
+$("#portafoliospersona_<%= @portafoliospersona.id %>").html("<td colspan='7'><%= j render 'form' %></td>");
+
+$("#portafoliospersona_<%= @portafoliospersona.id %>").addClass("active_portafoliospersona");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();

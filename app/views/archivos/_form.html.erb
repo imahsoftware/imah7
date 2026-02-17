@@ -1,0 +1,13 @@
+<%= simple_form_for(@archivo) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :migracion %>
+    <%= f.association :user %>
+    <%= f.input :documentos %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

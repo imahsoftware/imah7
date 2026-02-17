@@ -1,0 +1,2 @@
+module TiposimagenesHelper
+end

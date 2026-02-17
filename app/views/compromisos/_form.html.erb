@@ -1,0 +1,23 @@
+<%= simple_form_for([@personasformulario, @compromiso], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @compromiso.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#compromiso_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", visita_compromiso_path(@visita, @compromiso), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

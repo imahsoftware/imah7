@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratospervacaciones</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratospersona</th>
+      <th>Contratosperfecha</th>
+      <th>User</th>
+      <th>Fecha inicio</th>
+      <th>Dias disfrute</th>
+      <th>Dias pago</th>
+      <th>Fecha fin</th>
+      <th>Valor disfrute</th>
+      <th>Valor salud</th>
+      <th>Valor pension</th>
+      <th>Valor pago</th>
+      <th>Valor total</th>
+      <th>Estado</th>
+      <th>User aprueba</th>
+      <th>User paga</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratospervacaciones.each do |contratospervacacion| %>
+      <tr>
+        <td><%= contratospervacacion.contratospersona %></td>
+        <td><%= contratospervacacion.contratosperfecha %></td>
+        <td><%= contratospervacacion.user %></td>
+        <td><%= contratospervacacion.fecha_inicio %></td>
+        <td><%= contratospervacacion.dias_disfrute %></td>
+        <td><%= contratospervacacion.dias_pago %></td>
+        <td><%= contratospervacacion.fecha_fin %></td>
+        <td><%= contratospervacacion.valor_disfrute %></td>
+        <td><%= contratospervacacion.valor_salud %></td>
+        <td><%= contratospervacacion.valor_pension %></td>
+        <td><%= contratospervacacion.valor_pago %></td>
+        <td><%= contratospervacacion.valor_total %></td>
+        <td><%= contratospervacacion.estado %></td>
+        <td><%= contratospervacacion.user_aprueba %></td>
+        <td><%= contratospervacacion.user_paga %></td>
+        <td><%= link_to 'Show', contratospervacacion %></td>
+        <td><%= link_to 'Edit', edit_contratospervacacion_path(contratospervacacion) %></td>
+        <td><%= link_to 'Destroy', contratospervacacion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratospervacacion', new_contratospervacacion_path %>

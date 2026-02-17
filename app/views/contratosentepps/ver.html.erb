@@ -1,0 +1,132 @@
+<style type="text/css">H1.SaltoDePagina { PAGE-BREAK-AFTER: always}</style>
+<div align="center">
+  <table width="700" border="0">
+    <tr valign="top">
+      <td>
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center">
+                <%= image_tag 'logo_inicio_asear.png', class: 'user-image', size: '230x100' %>
+              </div>
+            </td>
+            <td width="80%">
+              <div align="left">
+                <h5><strong>SOLICITUD NRO. <%= @contratosentepp.id rescue nil %></strong>
+                  <br/><small><%= @contrato.empresa.identificacion rescue nil %>
+                  - <%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %><br/>Nro
+                  Contrato: <%= @contrato.nro_contrato rescue nil %></small></h5>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="20%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Fecha
+              Solicitud
+            </th>
+            <th width="40%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Solicitante</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Estado</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosentepp.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosentepp.user.nombre rescue nil %></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratosentepp.estado rescue nil %>
+              <% if @contratosentepp.estado.to_s == 'DESPACHADO' and @contratosentepp.fecha_despacho.to_s != "" %>
+                <br/><small><strong>Fecha: <%= @contratosentepp.fecha_despacho.strftime("%Y-%m-%d") rescue nil %></strong></small>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+        <br/><br/>
+        <% @clasificaciones = Objeto.find_by_sql("SELECT DISTINCT i.clasificacion, COUNT(9) AS cantidad
+																						FROM iparametros i, contratosenteppsdetalles cd
+																						WHERE cd.contratosentepp_id = #{@contratosentepp.id}
+																						AND   i.descripcion = cd.item
+																						GROUP BY i.clasificacion
+																						ORDER BY i.descripcion ASC")
+           @clasificaciones.each do |c| %>
+
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size: 10px; font-family: Tahoma;">
+            <tr>
+              <td><%= c.clasificacion rescue nil %> (<%= c.cantidad rescue 0 %>)</td>
+            </tr>
+          </table>
+          <hr style=" margin-top: 5px;margin-bottom: 5px;">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;">
+            <tr style="background: #adadad">
+              <th style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px">Item</th>
+              <th width="10%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px; text-align: right">Cantidad</th>
+              <th width="40%" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; padding: 3px">Observación</th>
+            </tr>
+            <tbody>
+            <% @contratosentepp.contratosenteppsdetalles.where("item in (select descripcion from iparametros where clasificacion = '#{c.clasificacion}')").order(id: :desc).each do |contratosenteppsdetalle| %>
+              <tr id="contratosenteppsdetalle_<%= contratosenteppsdetalle.id %>">
+                <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= contratosenteppsdetalle.item rescue nil %></td>
+                <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= camponumerico contratosenteppsdetalle.cantidad rescue nil %></td>
+                <td align="left" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px"><%= contratosenteppsdetalle.observacion.upcase rescue nil %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <br/>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>
+<% if @contratosentepp.contratosenteppsfirmas.where("codigo_firma is not null").present? %>
+  <% @contratosentepp.contratosenteppsfirmas.where("codigo_firma is not null").each do |a| %>
+    <H1 class=SaltoDePagina>&nbsp;</H1>
+    <%= render 'informepdf', contratosenteppsfirma_id: a.id %>
+  <% end %>
+<% end %>
+<br/><br/><br/>
+<style>
+    tr {
+        page-break-inside: avoid;
+
+    }
+
+    table {
+        page-break-inside: auto
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-footer-group
+    }
+
+    .form-control {
+        width: 100% !important;
+        height: 26px !important;
+        padding: 10px 12px !important;
+        font-size: 11px !important;
+    }
+
+    .form-control2 {
+        text-align: left;
+        display: block;
+        width: 100%;
+        height: 64px;
+        padding: 6px 12px;
+        font-size: 11px !important;
+        line-height: 1.428571429;
+        color: #555555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    }
+</style>
+
+

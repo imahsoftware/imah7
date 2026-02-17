@@ -1,0 +1,28 @@
+$(".alert_flash").fadeOut(300, function() {
+	$(this).remove();
+});
+
+<% if @contratoscargo.contratoscaractividades.count == 1 %>
+	$("#contratoscaractividades").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_contratoscaractividades").prepend("<%= j render 'tr', contratoscaractividad: @contratoscaractividad %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+
+$("#contratoscaractividad_form").collapse("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(300, function() {
+		$(this).remove();
+	});
+}, 5000);
+
+

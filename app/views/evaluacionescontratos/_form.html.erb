@@ -1,0 +1,21 @@
+<%= simple_form_for([@evaluacion, @evaluacionescontrato], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :user_responsable, collection: User.where(["tipoconsulta not in ('CANDIDATO','RECTOR') AND geintac is null and activo = 'S'"]).order(:nombre).collect { |p| [p.nombrecompleto, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @evaluacionescontrato.new_record? %>
+          <%= link_to "Cancelar", cancelar_evaluacionescontratos_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", evaluacion_evaluacionescontrato_path(@evaluacion, @evaluacionescontrato), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+
+<% end %>
+

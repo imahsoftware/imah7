@@ -1,0 +1,52 @@
+<% permiso = is_admin == @tareasactividad.user_persona ? true : false %>
+<% if permiso.present? %>
+  <div class="btn-group" id="botones<%= @tareasactividad.id %>">
+    <button type="button" class="btn btn-<%= @tareasactividad.boton_estado %> btn-xs" data-toggle="tooltip" title="Fecha Creación: <%= @tareasactividad.created_at %>"><i class="fa fa-info"></i></button>
+    <button type="button" class="btn btn-<%= @tareasactividad.boton_estado %> dropdown-toggle  btn-xs" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <% if @tareasactividad.estado.to_s == '0' %>
+        <li>
+          <!-- finalizar -->
+          <%= link_to finalizar_tareasactividades_path(id: @tareasactividad.id, estado: '1', user_persona: @iparametro.id), remote: true do %>
+            <i class="fa fa-check"></i> Pasar a Finalización
+          <% end %>
+        </li>
+        <!-- en proceso -->
+        <li>
+          <%= link_to finalizar_tareasactividades_path(id: @tareasactividad.id, estado: '0.5', user_persona: @iparametro.id), remote: true do %>
+            <i class="fa fa-wrench"></i> Para a En proceso
+          <% end %>
+        </li>
+      <% end %>
+      <% if @tareasactividad.estado.to_s == '0.5' %>
+        <li>
+          <!-- pendiente -->
+          <%= link_to finalizar_tareasactividades_path(id: @tareasactividad.id, estado: '0', user_persona: @iparametro.id), remote: true do %>
+            <i class="fa fa-recycle"></i> Pasar a Pendiente
+          <% end %>
+        </li>
+        <li>
+          <!-- finalizar -->
+          <%= link_to finalizar_tareasactividades_path(id: @tareasactividad.id, estado: '1', user_persona: @iparametro.id), remote: true do %>
+            <i class="fa fa-check"></i> Pasar a Finalizar
+          <% end %>
+        </li>
+      <% end %>
+      <li>
+        <%= link_to cargar_tareas_path(id: @tareasactividad.id), remote: true do %>
+          <i class="fa fa-file-pdf-o"></i> Agregar documentos
+        <% end %>
+      </li>
+
+    </ul>
+  </div>
+<% end %>
+
+
+<script type="text/javascript" charset="utf-8">
+    $(".tooltip").tooltip("hide");
+    $('[data-toggle="tooltip"]').tooltip();
+</script>

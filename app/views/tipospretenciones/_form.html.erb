@@ -1,0 +1,32 @@
+<%= simple_form_for @tipospretencion, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase, as: :select, collection: select_clase, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Clase"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :descripcion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :base, as: :moneda, label: "Base mínima en pesos  ≥"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :porcentaje, as: :moneda, label: "Porcentaje"%></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :regimen_comun, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Regimen comun"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :gran_contribuyente, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Gran contribuyente"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :regime_simplificado, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Regimen simplificado"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :declarante, as: :select, collection: select_sino, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Declarante"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Estado"%></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @tipospretencion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#tipospretencion_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", tipospretencion_path(@tipospretencion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

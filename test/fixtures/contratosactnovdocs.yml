@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosactnovedad: one
+  user: one
+  descripcion: MyString
+  novedad: 
+
+two:
+  contratosactnovedad: two
+  user: two
+  descripcion: MyString
+  novedad: 

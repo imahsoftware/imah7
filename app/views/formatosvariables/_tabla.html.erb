@@ -1,0 +1,20 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+				<th width="5%" class="text-center text-table">Orden</th>
+				<th class="text-left text-table">Titulo</th>
+        <th class="text-left text-table">Variable</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_formatosvariables">
+	    <% @formato.formatosvariables.order(id: :desc).each do |formatosvariable| %>
+	      <%= render 'formatosvariables/tr', formatosvariable: formatosvariable %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

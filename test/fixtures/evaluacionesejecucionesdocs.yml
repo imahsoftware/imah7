@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  evaluacionesejecucion: one
+  user: one
+  tipo: MyString
+  docevaluacion: 
+
+two:
+  evaluacionesejecucion: two
+  user: two
+  tipo: MyString
+  docevaluacion: 

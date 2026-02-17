@@ -1,0 +1,30 @@
+<%= simple_form_for([@parcargo, @parcargosdoc], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :descripcion, input_html: { class: "form-control uppercaseInput" } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :obligatorio, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :soloimagen, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Solo imagen?" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= f.input :observacion, as: :text, :input_html => { class: "uppercaseInput" , :rows => 5 } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @parcargosdoc.new_record? %>
+          <%= link_to "Cancelar", cancelar_parcargosdocs_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", parcargo_parcargosdoc_path(@parcargo, @parcargosdoc), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right"%>
+      </div>
+    </div>
+  </div>
+<% end %>
+

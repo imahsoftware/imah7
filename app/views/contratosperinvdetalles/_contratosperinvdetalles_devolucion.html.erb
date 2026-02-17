@@ -1,0 +1,129 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Detalles</strong></h3>
+  <div class="box-tools pull-right">
+    <% if @contratosperinventario.codigo_crea_firma.blank? and @contratosperinventario.codigo_firma.blank? and @contratosperinventario.contratosperinvatenciones.where("codigo_firma is not null").blank? %>
+      <%= link_to new_contratosperinventario_contratosperinvdetalle_path(@contratosperinventario), id: 'new_contratosperinvdetalle_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+      <% end %>
+    <% end %>
+    <%# end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratosperinvdetalle_form" class="collapse"></div>
+  <div id="contratosperinvdetalles">
+    <% if @contratosperinventario.contratosperinvdetalles.present? %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <tr>
+            <td width="10%"></td>
+            <th width="30%" class="text-left text-table">Item</th>
+            <th width="12%" class="text-center text-table">Estado</th>
+            <th class="text-left text-table">Observación</th>
+          </tr>
+          </thead>
+          <tbody id="tbody_contratosperinvdetalles">
+          <% @contratosperinventario.contratosperinvdetalles.where("consecutivo_acta = #{@consecutivo}").order(id: :desc).each do |contratosperinvdetalle| %>
+            <tr id="contratosperinvdetalle_<%= contratosperinvdetalle.id %>">
+              <td class="text-center">
+                <% if contratosperinvdetalle.contratosperinventario.estado == 'FIRMADO' and contratosperinvdetalle.observacion_devolucion.blank? %>
+                  <%= link_to marcar_contratosperinvdetalles_path(id: contratosperinvdetalle.id, consecutivo: @consecutivo), remote: true, data: { toggle: 'tooltip' }, title: "Devolución" do %>
+                    <button class="btn btn-xs btn-success"><i class="fa fa-check-circle-o"></i></button>
+                  <% end %>
+                <% end %>
+              </td>
+              <td align="left" class="text-table">
+                <%= contratosperinvdetalle.item rescue nil %><br/>
+                <b>Placa:</b> <%= contratosperinvdetalle.nro_placa rescue nil %>
+                <% if contratosperinvdetalle.contratosperdetallesdocs.present? %><br/>
+                  <div id="abrir_documentos<%= contratosperinvdetalle.id %>" class="pull-left">
+                    <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'ABRIR'), remote: true do %>
+                      <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                      Ver Documentos
+                    <% end %>
+                  </div>
+                  <div id="cerrar_documentos<%= contratosperinvdetalle.id %>" class="pull-left hide">
+                    <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'CERRAR'), remote: true do %>
+                      <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                      Cerrar Documentos
+                    <% end %>
+                  </div>
+                  <div id="abrir_detalle<%= contratosperinvdetalle.id %>" style="width: 100%"></div>
+                <% end %>
+              </td>
+              <td align="center" class="text-table"><%= contratosperinvdetalle.estado_item rescue nil %></td>
+              <td align="left" class="text-table"><%= contratosperinvdetalle.observaciones rescue nil %>
+                <% if contratosperinvdetalle.observacion_devolucion.present? %>
+                  <div style="color: red; font-size: 10px;">
+                    <b>Observación Devolución:</b> <%= contratosperinvdetalle.observacion_devolucion rescue nil %>
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+
+            <div class="modal fade" id="marcar<%= contratosperinvdetalle.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content">
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <% if Contratosperinvacta.where("contratosperinventario_id = #{@contratosperinventario.id} and estado = 'PENDIENTE'").present? %>
+            <% @contratosperinventario.contratosperinvdetalles.where("consecutivo_acta is null").order(id: :desc).each do |contratosperinvdetalle| %>
+              <tr id="contratosperinvdetalle_<%= contratosperinvdetalle.id %>">
+                <td class="text-center">
+                  <% if contratosperinvdetalle.contratosperinventario.estado == 'FIRMADO' and contratosperinvdetalle.observacion_devolucion.blank? %>
+                    <%= link_to marcar_contratosperinvdetalles_path(id: contratosperinvdetalle.id, consecutivo: @consecutivo), remote: true, data: { toggle: 'tooltip' }, title: "Devolución" do %>
+                      <button class="btn btn-xs btn-success"><i class="fa fa-check-circle-o"></i></button>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td align="left" class="text-table">
+                  <%= contratosperinvdetalle.item rescue nil %><br/>
+                  <b>Placa:</b> <%= contratosperinvdetalle.nro_placa rescue nil %>
+                  <% if contratosperinvdetalle.contratosperdetallesdocs.present? %><br/>
+                    <div id="abrir_documentos<%= contratosperinvdetalle.id %>" class="pull-left">
+                      <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'ABRIR'), remote: true do %>
+                        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                        Ver Documentos
+                      <% end %>
+                    </div>
+                    <div id="cerrar_documentos<%= contratosperinvdetalle.id %>" class="pull-left hide">
+                      <%= link_to show_detalle_contratosperinvdetalles_path(id: contratosperinvdetalle.id, ruta: 'CERRAR'), remote: true do %>
+                        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                        Cerrar Documentos
+                      <% end %>
+                    </div>
+                    <div id="abrir_detalle<%= contratosperinvdetalle.id %>" style="width: 100%"></div>
+                  <% end %>
+                </td>
+                <td align="center" class="text-table"><%= contratosperinvdetalle.estado_item rescue nil %></td>
+                <td align="left" class="text-table"><%= contratosperinvdetalle.observaciones rescue nil %>
+                  <% if contratosperinvdetalle.observacion_devolucion.present? %>
+                    <div style="color: red; font-size: 10px;">
+                      <b>Observación Devolución:</b> <%= contratosperinvdetalle.observacion_devolucion rescue nil %>
+                    </div>
+                  <% end %>
+                </td>
+              </tr>
+
+              <div class="modal fade" id="marcar<%= contratosperinvdetalle.id %>">
+                <div class="modal-dialog modal-dialog-responsive" role="document">
+                  <div class="modal-content">
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+      </div>
+    <% end %>
+  </div>
+</div>

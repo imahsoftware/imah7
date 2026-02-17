@@ -1,0 +1,6 @@
+$('#botones<%= @tareasactividad.id %>').html("<%= j render 'tareasactividades/botones' %>");
+$('#estado_js<%= @tareasactividad.id %>').html("<div id='estado_js<%= @tareasactividad.id %>'><%= @tareasactividad.estado_descripcion %></div>");
+$('#color<%= @tareasactividad.id %>').html("<div id='color<%= @tareasactividad.id %>'><img src='/assets/<%= @tareasactividad.estado_color %>' alt='Estado' width='20' height='20'></div>");
+
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();

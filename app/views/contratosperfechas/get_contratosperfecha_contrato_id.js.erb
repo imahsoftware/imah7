@@ -1,0 +1,27 @@
+<% if @contratoscargos.present? %>
+  $('#contratosperfecha_contratoscargo_id').empty();
+  $('#contratosperfecha_contratoscargo_id').append('<option selected>Seleccione</option>');
+<% @contratoscargos.each do |contratoscargo| %>
+  $('#contratosperfecha_contratoscargo_id').append('<option value="<%= contratoscargo.id %>"><%= contratoscargo.desc_contrato %></option>');
+<% end %>
+  $('#contratosperfecha_contratoscargo_id').prop('disabled', false);
+<% else %>
+  $('#contratosperfecha_contratoscargo_id').empty();
+  $('#contratosperfecha_contratoscargo_id').append('<option selected>Seleccione</option>');
+  $('#contratosperfecha_contratoscargo_id').prop('disabled', true);
+<% end %>
+
+<% if @contratosgrupos.present? %>
+  $('#contratosperfecha_contratosgrupo_id').empty();
+  $('#contratosperfecha_contratosseccion_id').empty();
+  $('#contratosperfecha_contratosgrupo_id').append('<option selected>Seleccione</option>');
+<% @contratosgrupos.each do |contratosgrupo| %>
+  $('#contratosperfecha_contratosgrupo_id').append('<option value="<%= contratosgrupo.id %>"><%= contratosgrupo.descripcion %></option>');
+<% end %>
+  $('#contratosperfecha_contratosgrupo_id').prop('disabled', false);
+<% else %>
+  $('#contratosperfecha_contratosgrupo_id').empty();
+  $('#contratosperfecha_contratosseccion_id').empty();
+  $('#contratosperfecha_contratosgrupo_id').append('<option selected>Seleccione</option>');
+  $('#contratosperfecha_contratosgrupo_id').prop('disabled', true);
+<% end %>

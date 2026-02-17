@@ -1,0 +1,54 @@
+<tr id="capacitaciondoc_<%= capacitaciondoc.id %>">
+  <td class="text-center" width="10%">
+    <% if is_auth_c('capacitacion') %>
+      <% if !Contratoscapapersona.where(capacitacion_id: @capacitacion.id).present? %>
+        <%= link_to capacitacion_capacitaciondoc_path(@capacitacion, capacitaciondoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+      <% if capacitaciondoc.estado == 'INACTIVO' %>
+        <%= link_to estado_capacitaciondocs_path(id: capacitaciondoc.id, estado: 'ACTIVO'), data: { toggle: 'tooltip' }, title: "Activar" do %>
+          <button class="btn btn-xs btn-success"><i class="fa fa-check"></i></button>
+        <% end %>
+      <% end %>
+      <% if capacitaciondoc.estado == 'ACTIVO' %>
+        <%= link_to estado_capacitaciondocs_path(id: capacitaciondoc.id, estado: 'INACTIVO'), data: { toggle: 'tooltip' }, title: "Inactivar" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-close"></i></button>
+        <% end %>
+      <% end %>
+
+      <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'VIDEO' %>
+        <%= link_to video_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Video" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-youtube-play"></i></button>
+        <% end %>
+      <% end %>
+      <% if capacitaciondoc.descripcion.present? and capacitaciondoc.tipo == 'LINK' %>
+        <%= link_to link_capacitaciondocs_path(id: capacitaciondoc.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Link" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-external-link-square"></i></button>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center text-table" width="5%"><%= capacitaciondoc.id rescue nil %></td>
+  <td class="font-size-text-tabla text-left text-table" width="5%"><%= capacitaciondoc.tipo rescue nil %></td>
+  <td class="font-size-text-tabla text-table"><%= capacitaciondoc.descripcion rescue nil %></td>
+  <td class="font-size-text-tabla text-table">
+    <% if capacitaciondoc.capacitaciondoc_file_name.present? %>
+      <%= link_to capacitaciondoc.capacitaciondoc.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <i class="fa fa-cloud-download text-danger"></i> <%= capacitaciondoc.capacitaciondoc_file_name rescue nil %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="font-size-text-tabla text-center text-table"><%= capacitaciondoc.estado rescue nil %></td>
+</tr>
+
+<div class="modal fade" id="video<%= capacitaciondoc.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+<div class="modal fade" id="link<%= capacitaciondoc.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

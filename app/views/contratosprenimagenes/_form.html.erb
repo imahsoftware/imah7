@@ -1,0 +1,22 @@
+<%= simple_form_for([@contratosprenimagen], remote: true) do |f| %>
+  <%= f.hidden_field :contrato_id %>
+  <%= f.hidden_field :contratosgrupo_id %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @contratosprenimagen.new_record? ? 'Agregar' : 'Editar' %> soporte pago</strong></h3>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.input :nominasimagen, as: :file, label: 'Archivo a cargar' %>
+        <p class="help-block">Formatos permitidos: PDF, PNG, JPG</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+<% end %>

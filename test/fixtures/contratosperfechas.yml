@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  fecha_inicio: 2021-02-21
+  fecha_fin: 2021-02-21
+  salario: 9.99
+
+two:
+  contrato: two
+  user: two
+  fecha_inicio: 2021-02-21
+  fecha_fin: 2021-02-21
+  salario: 9.99

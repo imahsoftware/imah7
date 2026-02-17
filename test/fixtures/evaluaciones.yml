@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tema: MyString
+  objetivo: MyString
+  estado: MyString
+  user: one
+
+two:
+  tema: MyString
+  objetivo: MyString
+  estado: MyString
+  user: two

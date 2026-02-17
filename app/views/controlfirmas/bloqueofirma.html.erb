@@ -1,0 +1,204 @@
+
+
+<legend style="margin-top: -19px;">Hola que tal !!!! <%=@userbloqueo.nombre rescue nil %></legend>
+<div class="alert alert-danger">Hasta que no se completen los siguientes procesos no puedes ingresar al sistema... si ya lo hicieron pulsa <%= link_to root_path do %>Aqui<% end %> para verificar nuevamente...</div>
+<% if @contratossinfirmar.present? %>
+  <div class="box box-danger">
+    <div class="box-body">
+      <legend>Contratos sin Firmar !!!! (<%=@contratossinfirmar_cantidad rescue nil %>)</legend>
+      <% if @contratossinfirmar.present? %>
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th width="25%" class="text-left">Empresa</th>
+              <th width="40%" class="text-left">Colaborador</th>
+              <th class="text-center">Movil</th>
+              <th width="20%" class="text-center">Fecha Inicio Contrato</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @contratossinfirmar.each do |a| %>
+                <tr>
+                  <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+                  <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+                  <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+                  <td class="text-center" style="font-size:10px;"><%=a.fecha_inicio rescue nil %></td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+      <% else %>
+        <div class="alert alert-success">Ufff No hay,, que bien!</div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if @docsinfirmar.present? %>
+  <div class="box box-info">
+    <div class="box-body">
+      <legend>Documentos sin Firmar !!!! (<%=@docsinfirmar_cantidad rescue nil %>)</legend>
+      <% if @docsinfirmar.present? %>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="25%" class="text-left">Empresa</th>
+            <th width="25%" class="text-left">Colaborador</th>
+            <th class="text-center">Documento Pendiente</th>
+            <th class="text-center">Movil</th>
+            <th width="20%" class="text-center">Fecha Solicitud</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @docsinfirmar.each do |a| %>
+            <tr>
+              <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+              <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.tipo_documento rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.fecha_solicitud_firma.strftime("%Y-%m-%d %X") rescue nil %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="alert alert-success">Ufff No hay,, que bien!</div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if @compromisos.present? %>
+  <div class="box box-info">
+    <div class="box-body">
+      <legend>Compromisos de Contratacion No Atendidos !!!! (Muchos!!!)
+        <% if [4998,15910,4561,10430].include?(@userbloqueo.id) %>
+          <%= link_to informe_datas_path(infgrupo_id: 102, portafolio_id: 'PENDIENTE', format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Compromisos" do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+            </button>
+          <% end %>
+        <% end %>
+      </legend>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <td width="5%" ></td>
+            <th width="20%" class="text-left">Empresa</th>
+            <th width="25%" class="text-left">Colaborador</th>
+            <th class="text-center">Documento Pendiente</th>
+            <th class="text-center">Movil</th>
+            <th width="20%" class="text-center">Fecha Solicitud</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @compromisos.each do |a| %>
+            <tr>
+              <td>
+                <% if a.imagen.to_s == 'X' %>
+                  <%= link_to ver_documentos_compromisos_path(compromiso_id: a.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos del Compromiso" do %>
+                    <button class="btn btn-xs btn-success"><i class="fa fa-file-pdf-o"></i></button>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+              <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.tipo_documento rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+              <td class="text-center" style="font-size:10px;"><%=a.fecha_solicitud_firma.strftime("%Y-%m-%d") rescue nil %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @dotacion.present? %>
+  <div class="box box-info">
+    <div class="box-body">
+      <legend>Dotación Entregada NO FIRMADA !!!! (<%=@dotacion_cantidad rescue nil %>)</legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <th width="25%" class="text-left">Empresa</th>
+          <th width="25%" class="text-left">Colaborador</th>
+          <th class="text-center">Documento Pendiente</th>
+          <th class="text-center">Movil</th>
+          <th width="20%" class="text-center">Fecha Entrega</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @dotacion.each do |a| %>
+          <tr>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.tipo_documento rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.fecha_solicitud_firma.strftime("%Y-%m-%d") rescue nil %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @dotacionsinr.present? %>
+  <div class="box box-info">
+    <div class="box-body">
+      <legend>Dotación pendiente de Recoger !!!! (<%=@dotacionsinr_cantidad rescue nil %>)</legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <th width="25%" class="text-left">Empresa</th>
+          <th width="25%" class="text-left">Colaborador</th>
+          <th class="text-center">Documento Pendiente</th>
+          <th class="text-center">Movil</th>
+          <th width="20%" class="text-center">Fecha Entrega</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @dotacionsinr.each do |a| %>
+          <tr>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.tipo_documento rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.fecha_solicitud_firma.strftime("%Y-%m-%d") rescue nil %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @capa.present? %>
+  <div class="box box-info">
+    <div class="box-body">
+      <legend>Capacitaciones No Finalizadas !!!! (<%=@capa_cantidad rescue nil %>)</legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <th width="25%" class="text-left">Empresa</th>
+          <th width="25%" class="text-left">Colaborador</th>
+          <th class="text-center">Nombre Capacitación</th>
+          <th class="text-center">Movil</th>
+          <th width="20%" class="text-center">Fecha Capacitación</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @capa.each do |a| %>
+          <tr>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre rescue nil %></td>
+            <td class="text-left" style="font-size:10px;"><%=a.nombre_completo rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.tipo_documento rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.movil rescue nil %></td>
+            <td class="text-center" style="font-size:10px;"><%=a.fecha_solicitud_firma.strftime("%Y-%m-%d") rescue nil %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

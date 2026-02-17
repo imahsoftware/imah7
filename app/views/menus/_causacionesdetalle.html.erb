@@ -1,0 +1,31 @@
+<br/><br/>
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <td width="8%"></td>
+        <th width="8%" class="text-center" style="font-size:10px;">Fecha</th>
+        <th width="8%" class="text-center" style="font-size:10px;">Nro factura</th>
+        <th width="20%" class="text-left" style="font-size:10px;">Compañia</th>
+        <th class="text-right" style="font-size:10px;">Valor</th>
+        <th class="text-right" style="font-size:10px;">Descuento</th>
+        <th class="text-right" style="font-size:10px;">Iva</th>
+        <th class="text-right" style="font-size:10px;">Retencion</th>
+        <th class="text-right" style="font-size:10px;">Total</th>
+        <th class="text-right" style="font-size:10px;">Saldo</th>
+        <th class="text-center" style="font-size:10px;">Estado</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_eproveedorescompras">
+      <% datos.each do |eproveedorescompra| %>
+        <%= render 'eproveedorescompras/tr2', eproveedorescompra: eproveedorescompra %>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-footer clearfix">
+      <div class="box-tools pull-right">
+        <%= will_paginate datos, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+      </div><!-- /.box-tools -->
+    </div><!-- box-footer -->
+  </div>
+<br/>

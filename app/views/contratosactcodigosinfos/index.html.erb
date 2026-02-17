@@ -1,0 +1,97 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosactcodigosinfos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratossede</th>
+      <th>Nodo</th>
+      <th>User</th>
+      <th>Fecha</th>
+      <th>Rsteva 1</th>
+      <th>Rsteva 2</th>
+      <th>Rsteva 3</th>
+      <th>Rsteva 4</th>
+      <th>Rsteva 5</th>
+      <th>Rsteva 6</th>
+      <th>Rsteva 7</th>
+      <th>Rsteva 8</th>
+      <th>Rsteva 9</th>
+      <th>Rsteva 10</th>
+      <th>Rsteva 11</th>
+      <th>Rsteva 12</th>
+      <th>Rsteva 13</th>
+      <th>Rsteva 14</th>
+      <th>Rsteva 15</th>
+      <th>Rsteva 16</th>
+      <th>Rsteva 17</th>
+      <th>Rsteva 18</th>
+      <th>Rsteva 19</th>
+      <th>Rsteva 20</th>
+      <th>Rsteva 21</th>
+      <th>Rsteva 22</th>
+      <th>Rsteva 23</th>
+      <th>Rsteva 24</th>
+      <th>Rsteva 44</th>
+      <th>Rsteva 45</th>
+      <th>Rsteva 46</th>
+      <th>Rsteva 47</th>
+      <th>Rsteva 48</th>
+      <th>Rsteva 49</th>
+      <th>Rsteva 50</th>
+      <th>Rsteva 51</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosactcodigosinfos.each do |contratosactcodigosinfo| %>
+      <tr>
+        <td><%= contratosactcodigosinfo.contratossede %></td>
+        <td><%= contratosactcodigosinfo.nodo %></td>
+        <td><%= contratosactcodigosinfo.user %></td>
+        <td><%= contratosactcodigosinfo.fecha %></td>
+        <td><%= contratosactcodigosinfo.rsteva_1 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_2 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_3 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_4 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_5 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_6 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_7 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_8 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_9 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_10 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_11 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_12 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_13 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_14 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_15 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_16 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_17 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_18 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_19 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_20 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_21 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_22 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_23 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_24 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_44 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_45 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_46 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_47 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_48 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_49 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_50 %></td>
+        <td><%= contratosactcodigosinfo.rsteva_51 %></td>
+        <td><%= link_to 'Show', contratosactcodigosinfo %></td>
+        <td><%= link_to 'Edit', edit_contratosactcodigosinfo_path(contratosactcodigosinfo) %></td>
+        <td><%= link_to 'Destroy', contratosactcodigosinfo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosactcodigosinfo', new_contratosactcodigosinfo_path %>

@@ -1,0 +1,30 @@
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th class="text-left">Periodos</th>
+  </tr>
+  <% @periodos.each do |periodo| %>
+    <tr>
+      <td class="text-table text-left">
+        <div id="abrir<%= periodo.mes.to_s.rjust(2, '0') %><%= periodo.anno %>" class="pull-left">
+          <%= link_to periodos_anno_visitas_path(ruta: 'ABRIR', mes: periodo.mes, anno: periodo.anno), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+            <em>
+               <%= "#{Date::MONTHNAMES_ES[periodo.mes]} #{periodo.anno}" %>
+            </em>
+          <% end %>
+        </div>
+        <div id="cerrar<%= periodo.mes.to_s.rjust(2, '0') %><%= periodo.anno %>" class="pull-left hide">
+          <%= link_to periodos_anno_visitas_path(ruta: 'CERRAR', mes: periodo.mes, anno: periodo.anno), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+            <em><i class="fa fa-star text-red"></i> <%= "#{Date::MONTHNAMES_ES[periodo.mes]} #{periodo.anno}" %></em>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <tr id="tr_show<%= periodo.mes.to_s.rjust(2, '0') %><%= periodo.anno %>" class="hidden">
+      <td colspan="2">
+        <div id="abrir_detalle<%= periodo.mes.to_s.rjust(2, '0') %><%= periodo.anno %>"></div>
+      </td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,158 @@
+<%
+  is_auth_c_solicitudesprefacturaesp = true #is_auth_c('solicitudesprefacturaesp')
+%>
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <% if is_auth_c('solicitudseguimiento') %>
+            <%= link_to edit_contrato_path(id: @contrato.id, etapa: 'PR' ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% elsif is_auth_c('solicitudesprefactura') %>
+            <%= link_to root_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% else %>
+            <%= link_to edit_contrato_path(id: @contrato.id, etapa: 'PR' ), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% end %>
+          <%= @contrato.empresa.identnombre rescue nil %>
+          <%= link_to contratosprefactura_path(id: @contratosprefactura.id), data: {toggle: 'tooltip'}, class: 'popup', title: 'Ver prefactura ' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-clone"></i> Ver Prefactura</button>
+          <% end %>
+        </legend>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+              <tr class="thcolor">
+                <th width="15%" class="text-center">Nro Contrato</th>
+                <th width="10%" class="text-center">Nro Prefactura</th>
+                <th width="20%" class="text-center">Fecha creación</th>
+                <th width="10%" class="text-center">Estado Solicitud</th>
+                <th width="15%" class="text-center">Valor Total</th>
+                <th width="15%" class="text-center">Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td class="text-center" style="font-size:12px;"><%= @contratosprefactura.contrato.nro_contrato rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratosprefactura.id rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratosprefactura.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratosprefactura.estado rescue nil%></td>
+                <td class="text-center" style="font-size:12px;">
+                  <button class="btn btn-xs btn-info"><strong>$ <%= camponumerico @contratosprefactura.contratosprefdetalles.sum("total") rescue 0%></strong></button>
+                </td>
+                <td class="text-center" style="font-size:12px;">
+                  <% if @contratosprefactura.estado.to_s == 'PENDIENTE' or @contratosprefactura.estado.to_s == 'RECHAZADA'%>
+                    <div class="box-tools pull-center">
+                      <%= link_to cambioestado_contratosprefacturas_path(id: @contratosprefactura.id, estado: "ENVIADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea enviar esta prefactura?"}, title: 'Enviar' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-arrow-right fa-fw" aria-hidden="true"></i> <strong>Enviar</strong></button>
+                      <% end %>
+                      <%= link_to cambioestado_contratosprefacturas_path(id: @contratosprefactura.id, estado: "APROBADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea APROBAR esta prefactura?"}, title: 'Enviar' do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-forward" aria-hidden="true"></i> <strong>Aprobar</strong></button>
+                      <% end %>
+                    </div>
+                  <% elsif is_auth_c('solicitudesprefactura') and @contratosprefactura.estado.to_s == 'ENVIADO' %>
+                    <div class="box-tools pull-center">
+                      <%= link_to cambioestado_contratosprefacturas_path(id: @contratosprefactura.id, estado: "APROBADO"), data: {toggle: 'tooltip', confirm: "Seguro que desea APROBAR esta prefactura?"}, title: 'Enviar' do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-forward" aria-hidden="true"></i> <strong>Aprobar</strong></button>
+                      <% end %>
+                      <%= link_to cambioestado_contratosprefacturas_path(id: @contratosprefactura.id, estado: "RECHAZADA"), data: {toggle: 'tooltip', confirm: "Seguro que desea RECHAZAR esta prefactura?"}, title: 'Enviar' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-backward" aria-hidden="true"></i> <strong>Rechazar</strong></button>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+            <% if is_auth_c_solicitudesprefacturaesp == false %>
+              <thead>
+              <tr class="thcolor">
+                <th colspan="4" class="text-center">Observacion</th>
+                <th colspan="2" class="text-center">Periodo</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+              <tr>
+                <td colspan="4" class="text-justify" style="font-size:12px;"><%= @contratosprefactura.observacion rescue nil%></td>
+                <td colspan="2" class="text-justify" style="font-size:12px;"><%= @contratosprefactura.periodo rescue nil%></td>
+              </tr>
+              </tbody>
+            <% end %>
+          </table>
+          <% if is_auth_c_solicitudesprefacturaesp %>
+            <%= simple_form_for(@contratosprefactura) do |f| %>
+              <div class="box box-danger">
+                <div class="box-body">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+                      <%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 } %>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                      <%= f.input :periodo, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+                    </div>
+                    <% if @contrato.empresa.portafolio_id != 1 %>
+                      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <%= f.input :siigo_nro, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nro Factura DIAN" %>
+                      </div>
+                      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <%= f.input :siigo_fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true }, label: "Fecha DIAN" %>
+                      </div>
+                    <% end %>
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><br/>
+                      <div class="box-tools pull-right">
+                        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+                      </div><!-- /.box-tools -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <% if @contratosprefactura.etapa.to_s == "A" %>
+          <li class="active"><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "A") do %>Detalle<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "A") do %>Detalle<% end %></li>
+        <% end %>
+        <% if is_auth_c_solicitudesprefacturaesp and @contratosprefactura.etapa.to_s == "t" # para que no ingresen nuncaaa%>
+          <% if @contratosprefactura.etapa.to_s == "t" %>
+            <li class="active"><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "B") do %>Retenciones<%end %></li>
+          <% else %>
+            <li><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "B") do %>Retenciones<% end %></li>
+          <% end %>
+        <% end %>
+        <% if @contratosprefactura.etapa.to_s == "C" %>
+          <li class="active"><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "C") do %>Imagenes<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratosprefactura_path(id: @contratosprefactura.id, etapa: "C") do %>Imagenes<% end %></li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if @contratosprefactura.etapa.to_s == 'A' %>
+          <div class="tab-pane active"><%= render 'contratosprefdetalles/contratosprefdetalles' %></div>
+        <% elsif @contratosprefactura.etapa.to_s == 'B' %>
+          <div class="tab-pane active"><%= render 'contratosprefretenciones/contratosprefretenciones' %></div>
+        <% elsif @contratosprefactura.etapa.to_s == 'C' %>
+          <div class="tab-pane active"><%= render 'contratosprefimagenes/contratosprefimagenes' %></div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>

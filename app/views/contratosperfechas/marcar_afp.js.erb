@@ -1,0 +1,15 @@
+$("#afp<%= @contratosperfecha.id %>").remove();
+$("#afp_cargue<%= @contratosperfecha.id %>").html("<%= j render 'contratosperfechas/boton_afp', contratosperfecha: @contratosperfecha, p: @p %>");
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+

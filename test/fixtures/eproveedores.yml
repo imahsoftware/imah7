@@ -1,0 +1,45 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tipodoc: MyString
+  identificacion: MyString
+  digito: MyString
+  nombre: MyString
+  apellido: MyString
+  direccion: MyString
+  telefono: MyString
+  celular: MyString
+  responsable: MyString
+  clasificacion: MyString
+  autorretenedor: MyString
+  declarante: MyString
+  municipio: one
+  email: MyString
+  autorretenedor2: MyString
+  autorretenedor3: MyString
+  responsableiva: MyString
+  retefuente: MyString
+  user: one
+  etapa: MyString
+
+two:
+  tipodoc: MyString
+  identificacion: MyString
+  digito: MyString
+  nombre: MyString
+  apellido: MyString
+  direccion: MyString
+  telefono: MyString
+  celular: MyString
+  responsable: MyString
+  clasificacion: MyString
+  autorretenedor: MyString
+  declarante: MyString
+  municipio: two
+  email: MyString
+  autorretenedor2: MyString
+  autorretenedor3: MyString
+  responsableiva: MyString
+  retefuente: MyString
+  user: two
+  etapa: MyString

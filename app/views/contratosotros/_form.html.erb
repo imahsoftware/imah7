@@ -1,0 +1,33 @@
+<%= simple_form_for([@contrato, @contratosotro], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+        <% if @contratosotro.new_record? %>
+          <%= f.input :descripcion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 } %>
+        <% else %>
+          <%= f.input :descripcion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, disabled: true %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :cantidad_mensual, as: :moneda, label: "Cantidad" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :precio_unitario, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :descuento, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :precio_condescuento, as: :moneda %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :total, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosotro.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosotro_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosotro_path(@contrato, @contratosotro), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

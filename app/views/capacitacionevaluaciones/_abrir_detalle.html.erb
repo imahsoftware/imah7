@@ -1,0 +1,30 @@
+<div>
+  <table class="table table-bordered">
+    <thead>
+    <tr class="thcolor">
+      <th width="5%" class="text-table"></th>
+      <th width="30%" class="text-table">Descripcíon</th>
+      <th class="text-table text-center">Imagen</th>
+      <th width="15%" class="text-table">Respuesta</th>
+    </tr>
+    </thead>
+    <% @capacitacionevaluacion.capacitacionevaopciones.each do |capacitacionevaopcion| %>
+      <tr>
+        <td class="text-center">
+          <% if !Contratoscapapersona.where(capacitacion_id: @capacitacion.id).present? %>
+            <%= link_to capacitacionevaluacion_capacitacionevaopcion_path(id: capacitacionevaopcion.id, capacitacionevaluacion_id: capacitacionevaopcion.capacitacionevaluacion_id), method: :delete, data: { toggle: 'tooltip' }, title: "Eliminar Respuesta" do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-table"><%= capacitacionevaopcion.descripcion rescue nil %></td>
+        <td class="text-table text-center">
+          <% if capacitacionevaopcion.imagen_file_name.present? %>
+            <%= image_tag capacitacionevaopcion.imagen.url(:thumb, false) %>
+          <% end %>
+        </td>
+        <td class="text-table"><%= capacitacionevaopcion.descripcion_respuesta rescue nil %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

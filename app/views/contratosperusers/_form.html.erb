@@ -1,0 +1,28 @@
+<%= simple_form_for([@contratospersona, @contratosperuser], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <% if !@contratosperuser.new_record? %>
+          <%= f.input :user_id, collection: User.where(["id = #{@contratosperuser.user_id}"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true, label: "Usuario - Supervisor"%>
+        <% else %>
+          <%= f.input :user_id, collection: User.where(["tipoconsulta in ('SUPERVISOR','RECTOR')"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true, label: "Usuario - Supervisor"%>
+        <% end %>
+          </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperuser.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperuser_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperuser_path(@contratospersona, @contratosperuser), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

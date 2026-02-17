@@ -1,0 +1,96 @@
+<div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <% if is_auth_c('seguimientometro') %>
+            <%= link_to indexadmin_contratosactnovedades_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% else %>
+            <%= link_to contratosactnovedades_path, data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+              <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+            <% end %>
+          <% end %>
+          Novedad Nro. <%=@contratosactnovedad.id %>
+        </legend>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr class="thcolor">
+              <th width="10%" class="text-center">Fecha</th>
+              <th width="10%" class="text-center">Sede</th>
+              <th width="10%" class="text-center">Nodo</th>
+              <th class="text-left">Usuario</th>
+              <th width="15%" class="text-left">Tipo Evaluacion</th>
+              <th width="25%" class="text-left">Observacion</th>
+              <th width="10%" class="text-center">Estado</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr>
+                <td class="text-center" style="font-size:12px;"><%= @contratosactnovedad.fecha rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratosactnovedad.contratossede.nombre rescue nil%></td>
+                <td class="text-center" style="font-size:12px;"><%= @contratosactnovedad.nodo rescue nil%></td>
+                <td class="text-left" style="font-size:12px;"><%= @contratosactnovedad.user.nombre rescue nil%><br/>
+                  <em><%= @contratosactnovedad.user.email rescue nil%></em></td>
+                <td class="text-left" style="font-size:12px;"><%= @contratosactnovedad.tiposevaluacion.detalle_esp rescue nil%></td>
+                <td class="text-left" style="font-size:12px;"><%= @contratosactnovedad.observaciones rescue nil%></td>
+                <td class="text-center" style="font-size:12px;">
+                  <% if is_auth_c('seguimientometro')  and @contratosactnovedad.estado.to_s == 'EN PROCESO' %>
+                    <%= link_to cambioestado_contratosactnovedades_path(id: @contratosactnovedad.id, estado: "ATENDIDO"), data: {toggle: 'tooltip', confirm: "Seguro que desea marcar como atendido?"}, title: 'Marcar Atendido' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-chrome"></i></button>
+                    <% end %>
+                  <% end %>
+                  <%= @contratosactnovedad.estado rescue nil%></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <% if @contratosactnovedad.etapa.to_s == "A" %>
+          <li class="active"><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "A") do %>Seguimiento<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "A") do %>Seguimiento<% end %></li>
+        <% end %>
+        <% if @contratosactnovedad.etapa.to_s == "B" %>
+          <li class="active"><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "B") do %>Asignaciones<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "B") do %>Asignaciones<% end %></li>
+        <% end %>
+        <% if @contratosactnovedad.etapa.to_s == "C" %>
+          <li class="active"><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "C") do %>Digital<%end %></li>
+        <% else %>
+          <li><%= link_to edit_contratosactnovedad_path(id: @contratosactnovedad.id, etapa: "C") do %>Digital<% end %></li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if @contratosactnovedad.etapa.to_s == 'A' %>
+          <div class="tab-pane active"><%= render 'contratosactnovnotas/contratosactnovnotas' %></div>
+        <% elsif @contratosactnovedad.etapa.to_s == 'B' %>
+          <div class="tab-pane active"><%= render 'contratosactnovusers/contratosactnovusers' %></div>
+        <% elsif @contratosactnovedad.etapa.to_s == 'C' %>
+          <div class="tab-pane active"><%= render 'contratosactnovdocs/contratosactnovdocs' %></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="abrircargue">
+  <div class="modal-dialog" style="width:1000px;">
+    <div class="modal-content" style="width:1000px;">
+    </div>
+  </div>
+</div>

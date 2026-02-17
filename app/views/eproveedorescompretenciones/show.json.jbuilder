@@ -1,0 +1,1 @@
+json.partial! "eproveedorescompretenciones/eproveedorescompretencion", eproveedorescompretencion: @eproveedorescompretencion

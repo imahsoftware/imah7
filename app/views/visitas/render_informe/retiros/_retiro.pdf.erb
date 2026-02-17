@@ -1,0 +1,41 @@
+<%
+  @retiros = Solicitudesretiro.joins(:contrato, :contratospersona, :contratosgrupo)
+                              .select("contratospersonas.identificacion, contratospersonas.nombre_completo,
+                                      (select c.perfil from contratoscargos c, contratosperfechas f
+                                       where f.id = solicitudesretiros.contratosperfecha_id
+                                       and   f.contratoscargo_id = c.id) perfil,
+                                      (select f.fecha_fin from contratosperfechas f
+                                       where f.id = solicitudesretiros.contratosperfecha_id) fechafin,
+                                       solicitudesretiros.*")
+                              .where("solicitudesretiros.contrato_id = #{@contrato.id} and DATE_FORMAT(solicitudesretiros.fecha, '%m-%Y') = '#{@mes}'")
+                              .order("contratospersonas.identificacion asc")
+  if @retiros.present?
+    cantRetiros = Solicitudesretiro.joins(:contrato, :contratospersona, :contratosgrupo)
+                                   .where("solicitudesretiros.contrato_id = #{@contrato.id} and DATE_FORMAT(fecha, '%m-%Y') = '#{@mes}'")
+                                   .count rescue 0
+%>
+    <div class="parrafo">
+      Durante el periodo <b><%= @mes rescue nil %></b>, se presentaron renuncias y procesos de terminación de contrato con justa causa por un total de <b>&nbsp;(<%= cantRetiros rescue 0 %>)&nbsp;</b> personas, a continuacion se relacionan dichas personas.
+    </div><br/>
+    <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+      <tr>
+        <th width="12%" class="encabezado_tabla alineacion_izq">Identificacion</th>
+        <th width="30%" class="encabezado_tabla alineacion_izq">Nombre</th>
+        <th width="14%" class="encabezado_tabla alineacion_center">Fecha Terminacion</th>
+        <th class="encabezado_tabla alineacion_izq">Cargo</th>
+      </tr>
+      <% @retiros.each do |p| %>
+        <tr>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= p.identificacion rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"><%= p.nombre_completo rescue nil %></td>
+          <td class="alineacion_center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= p.fechafin.strftime("%d/%m/%Y") rescue nil %></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;"> <%= p.perfil rescue nil %></td>
+        </tr>
+      <% end %>
+    </table><br/>
+<% else %>
+  <div class="parrafo">
+    Durante el periodo <b><%= @mes rescue nil %></b>, NO se presentaron renuncias ni procesos de terminación de contrato con justa causa.
+  </div><br/>
+<% end %>
+

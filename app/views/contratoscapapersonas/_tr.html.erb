@@ -1,0 +1,15 @@
+<tr id="contratoscapapersona_<%= contratoscapapersona.id %>">
+  <td class="text-center">
+    <%= link_to devolver_contratoscapapersonas_path(contratoscapapersona_id: contratoscapapersona.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Devolver Capacitacion" do %>
+      <button class="btn btn-xs btn-success"><i class="fa fa-arrow-left"></i></button>
+    <% end %>
+  </td>
+  <td class="text-left text-table"><%= contratoscapapersona.autobuscar rescue nil %></td>
+  <td class="text-center text-table">
+    <%= contratoscapapersona.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+  </td>
+  <td class="text-center text-table">PENDIENTE</td>
+</tr>
+
+
+

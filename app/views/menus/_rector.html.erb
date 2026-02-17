@@ -1,0 +1,12 @@
+<div class="box-header" style="margin-top: -19px;">
+  <h3 class="box-title">
+    <strong>
+      Apreciado Sr(a) <%=@usr.nombre rescue nil %>. Bienvenido! <a href="/assets/pdfs/ManualAsearNominaRector.pdf", target="_blank", align="right", style="margin-top: -5px;" class="btn btn-xs btn-danger"><i class="fa fa-cloud-download"></i> Descargar Paso a paso</a><br/>
+      <small>
+        <% Contratossecuser.select("contratosseccion_id").distinct.where(user_id: @usr.id).each do |a|  %>
+          * <%=a.contratosseccion.descripcion rescue nil %><br/>
+        <% end %>
+      </small>
+    </strong></h3>
+</div>
+<br/>

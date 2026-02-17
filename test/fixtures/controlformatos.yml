@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  proceso: MyString
+  controlador: MyString
+  modelo: MyString
+  url: MyString
+  tipo_documento: MyString
+  estado: MyString
+
+two:
+  proceso: MyString
+  controlador: MyString
+  modelo: MyString
+  url: MyString
+  tipo_documento: MyString
+  estado: MyString

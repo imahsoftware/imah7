@@ -1,0 +1,116 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h3 class="modal-title"><strong>Firma Digital</strong></h3>
+</div>
+
+<div class="modal-body">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <td width="5%"></td>
+      <th class="text-left text-table" width="15%">Clase de proceso</th>
+      <th class="text-center text-table" width="15%">Fecha de los Hechos</th>
+      <th class="text-left text-table">Detalle</th>
+      <th class="text-center text-table" width="10%">Estado</th>
+    </tr>
+    </thead>
+    <tr id="contratosperproceso_<%= @contratosperproceso.id %>">
+      <td class="text-center">
+        <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+                    <%= @contratosperproceso.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= @contratosperproceso.user.username rescue nil %>
+                      <br/><%= @contratosperproceso.updated_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= User.find(@contratosperproceso.user_actualiza).username rescue nil %>
+                    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+      </td>
+      <td align="left" class="text-table"><%= @contratosperproceso.clase rescue nil %>
+      </td>
+      <td align="center" class="text-table"><%= @contratosperproceso.fecha.strftime("%Y-%m-%d %X") rescue nil %></td>
+      <td align="justify" class="text-table"><%= @contratosperproceso.detalle rescue nil %></td>
+      <td align="center" class="text-table"><%= @contratosperproceso.estado rescue nil %></td>
+    </tr>
+  </table>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th class="text-left text-table" width="30%">Empleado</th>
+      <th class="text-left text-table">Detalle</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_contratosperprocesos">
+    <tr id="contratospersona_<%= @contratosperproceso.contratospersona.id %>">
+      <td class="text-left" style="font-size:12px;"><%= @contratosperproceso.contratospersona.identificacion rescue nil %> <%= @contratosperproceso.contratospersona.nombre_completo rescue nil %></td>
+      <td class="text-left" style="font-size:11px;">
+        <% a = Contratosperfecha.find(@contratosperproceso.contratosperfecha_id) %>
+        <div style="display: flex;align-items: flex-end;"><%= a.contrato.empresa.identnombre rescue nil %></div>
+        <strong>Nro Contrato : </strong><%= a.contrato.nro_contrato rescue nil %> -
+        <strong>Grupo : </strong><%= a.contratosgrupo.descripcion rescue nil %>
+        <small>(<%= a.contratosgrupo.termino rescue nil %>)</small>
+        - <strong>Cargo : </strong><%= a.contratoscargo.perfil rescue nil %>
+        <% if is_auth_e('versalarioenempleado') %>(<%= camponumerico a.contratoscargo.salario rescue nil %>)
+        <% end %>
+        <% if a.contratosseccion_id.present? %> -
+          <strong>Sección : </strong><small>(<%= a.contratosseccion.descripcion rescue nil %>)</small>
+        <% end %>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="row" id="menu_firma<%= @contratosperproceso.id %>">
+    <% if @contratosperproceso.firma_usuario.blank? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="estado_firma_usuario<%= @contratosperproceso.id %>">
+        <%= link_to firmar_usuario_contratosperprocesos_path(id: @contratosperproceso.id, tipo: 'USUARIO'), remote: true do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i> Firmar Usuario</button>
+        <% end %>
+      </div>
+    <% elsif @contratosperproceso.firma_usuario.present?  %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="check_firma_usuario<%= @contratosperproceso.id %>">
+        <%= image_tag @contratosperproceso.firma_usuario_doc.url(:thumb) %><br/><div stye="text-aling: center">Usuario</div>
+      </div>
+    <% end %>
+    <% if @contratosperproceso.firma_abogado.blank? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="estado_firma_abogado<%= @contratosperproceso.id %>">
+        <%= link_to firmar_usuario_contratosperprocesos_path(id: @contratosperproceso.id, tipo: 'ABOGADO'), remote: true do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i> Firmar Supervisor</button>
+        <% end %>
+      </div>
+    <% elsif @contratosperproceso.firma_abogado.present?  %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="check_firma_abogado<%= @contratosperproceso.id %>">
+        <%= image_tag @contratosperproceso.firma_abogado_doc.url(:thumb) %><br/><div stye="text-aling: center">Supervisor</div>
+      </div>
+    <% end %>
+    <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.blank? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="estado_firma_testigo1<%= @contratosperproceso.id %>">
+        <%= link_to firmar_usuario_contratosperprocesos_path(id: @contratosperproceso.id, tipo: 'TESTIGO1'), remote: true do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i> Firmar Testigo 1</button>
+        <% end %>
+      </div>
+    <% elsif @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.present? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="check_firma_testigo1<%= @contratosperproceso.id %>">
+        <%= image_tag @contratosperproceso.firma_testigo1_doc.url(:thumb) %><br/><div stye="text-aling: center">Testigo</div>
+      </div>
+    <% end %>
+    <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.blank? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="estado_firma_testigo2<%= @contratosperproceso.id %>">
+        <%= link_to firmar_usuario_contratosperprocesos_path(id: @contratosperproceso.id, tipo: 'TESTIGO2'), remote: true do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-paint-brush"></i> Firmar Testigo 2</button>
+        <% end %>
+      </div>
+    <% elsif @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.present? %>
+      <div class="col-xs-12 col-sm-12 col-md-<%= @div %> col-lg-<%= @div %> text-center" id="check_firma_testigo2<%= @contratosperproceso.id %>">
+        <%= image_tag @contratosperproceso.firma_testigo2_doc.url(:thumb) %><br/><div stye="text-aling: center">Testigo</div>
+      </div>
+    <% end %>
+    <div id="check_firma_usuario<%= @contratosperproceso.id %>"></div>
+    <div id="check_firma_abogado<%= @contratosperproceso.id %>"></div>
+    <div id="check_firma_testigo1<%= @contratosperproceso.id %>"></div>
+    <div id="check_firma_testigo2<%= @contratosperproceso.id %>"></div>
+  </div>
+
+  <div id="usuario<%= @contratosperproceso.id %>"></div>
+  <div id="abogado<%= @contratosperproceso.id %>"></div>
+  <div id="testigo1<%= @contratosperproceso.id %>"></div>
+  <div id="testigo2<%= @contratosperproceso.id %>"></div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+</div>
+

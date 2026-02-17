@@ -1,0 +1,22 @@
+<%= simple_form_for @cuenta, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-5">
+        <%= f.input :descripcion, input_html: { class: 'clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @cuenta.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#cuenta_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", cuenta_path(@cuenta), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

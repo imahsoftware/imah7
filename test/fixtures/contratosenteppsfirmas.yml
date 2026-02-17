@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosentepp: one
+  contratosperfecha: one
+  codigo_firma: MyString
+  fecha_firma: 2024-03-22
+  codigo_env: MyString
+  codigo_rec: MyString
+
+two:
+  contratosentepp: two
+  contratosperfecha: two
+  codigo_firma: MyString
+  fecha_firma: 2024-03-22
+  codigo_env: MyString
+  codigo_rec: MyString

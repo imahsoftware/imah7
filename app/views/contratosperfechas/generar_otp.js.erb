@@ -1,0 +1,10 @@
+<% if @contratosperfecha.codigo_firma.to_s == "" %>
+$("#tratamientoOTP").html("<%= j render 'contratosperfechas/otp_tratamiento', contratosperfecha: @contratosperfecha, contratospersona: @contratospersona, ruta: @ruta %>");
+$("#inicioOTP").remove();
+<% else %>
+$(document).ready( function() {
+    url = "<%= menus_path %>"
+    $(location).attr("href", url);
+});
+<% end %>
+

@@ -1,0 +1,40 @@
+<%= simple_form_for([@contratosperproceso, @contratosperprocitacion], remote: true) do |f| %>
+  <% clase = 'hide'
+     if @contratosperprocitacion.estado == 'NO ATENDIDA'
+       clase = ''
+     end
+  %>
+  <div class="box-body" data-contratosperproceso-id="<%= @contratosperproceso.id %>">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <%= f.input :lugar, as: :text, input_html: { class: "uppercaseInput" }, label: "Lugar", disabled: params[:action] == 'edit' ? true : false %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :fecha, as: :string, input_html: { class: 'datetimepicker', value: (f.object.fecha.strftime('%d/%m/%Y %H:%M') if f.object.fecha.present?), data: { date_options: { format: 'DD/MM/YYYY HH:mm', ignoreReadonly: true } }, readonly: true }, disabled: params[:action] == 'edit' ? true : false %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, collection: Iparametro.where(campo: 'estado_citacion').order(:descripcion).collect { |p| [p.descripcion.to_s, p.descripcion.to_s] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: 'Estado' %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :art_infraccionado, as: :text, label: "Articulo Infraccionado" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :reglamento_interno, as: :text, label: "Reglamento Interno" %></div>
+    </div>
+    <div class="row <%= clase %>" id="activa_campo">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= f.input :no_comparecencia, as: :text, input_html: { data: { custom_param1: "#{@contratosperproceso.id}", custom_param2: "#{@contratosperprocitacion.id rescue nil}" } }, label: "No Comparecencia" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperprocitacion.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratosperprocitacion_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratosperproceso_contratosperprocitacion_path(@contratosperproceso, @contratosperprocitacion), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

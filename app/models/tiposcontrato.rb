@@ -1,0 +1,2 @@
+class Tiposcontrato < ApplicationRecord
+end

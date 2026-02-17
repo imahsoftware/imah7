@@ -1,0 +1,468 @@
+<%
+  periodos = Contratospervacacion.select("date_format(fecha_inicio,'%Y-%m') periodo, count(9) cantidad")
+                                 .where("estado = 'APROBADA'")
+                                 .distinct
+                                 .order("date_format(fecha_inicio,'%Y-%m') desc")
+                                 .group("date_format(fecha_inicio,'%Y-%m')")
+  @enprocesos = Contratospervacacion.joins(:contratospersona, :contrato, :contratosperfecha)
+                                    .select("contratos.nro_contrato, contratospersonas.identificacion, contratospersonas.nombre_completo,
+                                          (select descripcion from contratosgrupos where id = contratosperfechas.contratosgrupo_id) descripcion,
+                                          (select termino from contratosgrupos where id = contratosperfechas.contratosgrupo_id) termino,
+                                          (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                          (select nombre from users where id = contratospervacaciones.user_id) usernombre,
+                                          (select nombre from users where id = contratospervacaciones.user_aprueba) useraprobanombre,
+                                          contratospervacaciones.*")
+                                    .where(["contratospervacaciones.estado = 'APROBADA'"])
+                                    .order("contratospervacaciones.fecha_inicio desc")
+  usr = User.find(is_admin)
+  estados = ["Pendientes", "En proceso", "Aprobadas para pago", "Pagadas"]
+  #estados = Periodosliquidacion.select("termino estado2, concat('Nomina ',termino) estado").distinct.order("1 desc")
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.subetapa.to_s == p
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapars_contratospernominas_path(subetapa: p) do %>
+              <i class="fa fa-plane"></i>&nbsp<%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if usr.subetapa.to_s == 'Pendientes' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @pendientes.present? %>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="10%" class="text-center"></th>
+                      <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                      <th width="40%" class="text-left">Solicitud</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    <% @pendientes.each do |p| %>
+                      <tr id="evaluar<%= p.id %>">
+                        <td class="text-center" style="font-size:12px;">
+                          <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                          <%= link_to evaluar_contratospervacaciones_path(id: p.id, e: "APROBADA"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea aprobar esta solicitud de vacaciones?", toggle: 'tooltip' }, title: "Aprobar vacaciones", remote: true do %>
+                            <button class="btn btn-xs btn-info"><i class="fa fa-gear"></i></button>
+                          <% end %>
+                          <%= link_to evaluar_contratospervacaciones_path(id: p.id, e: "ELIMINAR"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea Eliminar esta solicitud de vacaciones?", toggle: 'tooltip' }, title: "Eliminar vacaciones", remote: true do %>
+                            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                          <% end %>
+                        </td>
+                        <td class="text-left" style="font-size:12px;">
+                          <strong><%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                          <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                          <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                          <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                          <small>(<%= p.termino rescue nil %>)</small>
+                        </td>
+                        <td class="text-jutify" style="font-size:10px;">
+                          <strong>Fecha inicio : </strong><%= p.fecha_inicio rescue nil %>
+                          <br/><strong>Jornada : </strong><%= p.jornada rescue nil %>
+                          <br/><strong>Dias disfrute : </strong><%= p.dias_disfrute rescue nil %>
+                          <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+
+                        </td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'En proceso' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% periodos.each do |pe| %>
+                <%
+                  if @enprocesos.where("date_format(contratospervacaciones.fecha_inicio,'%Y-%m') = '#{pe.periodo.to_s}'").present?
+                    datosenproceso = @enprocesos.where("date_format(contratospervacaciones.fecha_inicio,'%Y-%m') = '#{pe.periodo.to_s}'")
+                %>
+                  <div id="<%= pe.periodo %>" class="box box-danger collapsed-box">
+                    <div class="box-header with-border">
+                      <div class="row">
+                        <div class="col-md-12">
+                            <span class="btn btn-box-tool" data-widget="collapse">
+                              <i class="fa fa-plus"></i>
+                                <h3 class="box-title">Periodo <%= pe.periodo %> (<%= pe.cantidad rescue 0 %>)</h3>
+                            </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                      <%= link_to informe_datas_path(infgrupo_id: 44, portafolio_id: pe.periodo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Liquidaciones' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+                      <% end %>
+                      <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr class="thcolor">
+                          <th width="12%" class="text-center"></th>
+                          <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                          <th width="40%" class="text-left">Solicitud</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        <% datosenproceso.each do |p| %>
+                          <tr id="evaluar<%= p.id %>">
+                            <td class="text-center" style="font-size:12px;">
+                              <div style="display: flex; align-items: flex-end;">
+                                <div>
+                                  <%= link_to edit_contratospersona_path(p.contratospersona_id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                                  <% end %>
+                                </div>
+                                <% if @autorizacionnomina %>
+                                  <div style="margin-left: 3px;">
+                                    <%= link_to evaluar_contratospervacaciones_path(id: p.id, e: "LIQUIDADA"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea marcar como liquidada esta solicitud de vacaciones?", toggle: 'tooltip' }, title: "Aprobar Vacaciones", remote: true do %>
+                                      <button class="btn btn-xs btn-danger"><i class="fa fa-gear"></i></button>
+                                    <% end %>
+                                  </div>
+                                <% end %>
+                                <div style="margin-left: 3px;">
+                                  <%= link_to vacacion_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+                                    <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                </div>
+                                <div style="margin-left: 3px;">
+                                  <%= link_to carta_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+                                    <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                                  <% end %>
+                                </div>
+                                <% if p.firma.blank? %>
+                                  <div style="margin-left: 3px;" id="firma<%= p.id %>">
+                                    <%= link_to marcar_firma_contratospervacaciones_path(id: p.id), remote: true, title: 'Marcar Firma' do %>
+                                      <button class="btn btn-xs btn-primary"><i class="fa fa-pencil-square-o"></i>
+                                      </button>
+                                    <% end %>
+                                  </div>
+                                <% end %>
+                              </div>
+                            </td>
+                            <td class="text-left" style="font-size:12px;">
+                              <strong><%= p.identificacion rescue nil %> <%= p.nombre_completo rescue nil %></strong>
+                              <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                              <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                              <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                              <small>(<%= p.termino rescue nil %>)</small>
+                            </td>
+                            <td class="text-left" style="font-size:10px;">
+                              <strong>Fecha inicio : </strong><%= p.fecha_inicio rescue nil %>
+                              <br/><strong>Jornada : </strong><%= p.jornada rescue nil %>
+                              <br/><strong>Dias disfrute : </strong><%= p.dias_disfrute rescue nil %>
+                              <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                              <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Aprobadas para pago' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @parapago.present? %>
+                <% @parapago.each do |a|
+                  datos = Contratospervacacion.joins(:contrato, :contratospersona, :contratosperfecha)
+                                              .select("contratospersonas.autobuscar, (select autobuscar from empresas where id = contratos.empresa_id) identnombre, contratos.nro_contrato,
+                                           (select descripcion from contratosgrupos where id = contratosperfechas.contratosgrupo_id) descripcion,
+                                           (select termino from contratosgrupos where id = contratosperfechas.contratosgrupo_id) termino,
+                                                      (select nombre from users where id = contratospervacaciones.user_id) usernombre,
+                                                      (select nombre from users where id = contratospervacaciones.user_aprueba) useraprobanombre,
+                                                       contratospervacaciones.*")
+                                              .where(["contratospervacaciones.consecutivo = #{a.consecutivo} and contratospervacaciones.estado = 'LIQUIDADA'"])
+                                              .order("contratospersonas.identificacion asc")
+                  #datos = Contratospervacacion.where(["consecutivo = #{a.consecutivo} and estado_final is null"])
+                %>
+                  <div id="<%= a.consecutivo %>" class="box box-danger collapsed-box">
+                    <div class="box-header with-border">
+                      <div class="row">
+                        <div class="col-md-12">
+                              <span class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-plus"></i>
+                                  <h3 class="box-title">Pago Nro : <%= a.consecutivo %> - (Cant: <%= a.cantidad %>)</h3>
+                              </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="box-body">
+                      <%= link_to evaluar_contratospervacaciones_path(consecutivo: a.consecutivo, e: "PAGADO"), class: 'edit_contratospersona_button', data: { confirm: "Seguro que desea marcar como Pagado este lote?", toggle: 'tooltip' }, title: "Pagar Vacaciones" do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-gear"></i></button>
+                      <% end %>
+                      <%= link_to vacacion_masive_contratospervacaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones Masivas Seguimiento' do %>
+                        <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                      <%= link_to vacacionmasive_contratospervacaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones Masivas PDF' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                      <% end %>
+                      <%= link_to informe_datas_path(infgrupo_id: 45, portafolio_id: a.consecutivo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Vacaciones' do %>
+                        <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                      <% end %>
+                      <small>
+                        <% Objeto.find_by_sql("SELECT DISTINCT p.tipo_cuenta, p.banco, COUNT(p.id) cantidad
+                                                 FROM   contratospervacaciones r, contratosperfechas f, contratospersonas p
+                                                 WHERE  r.consecutivo = #{a.consecutivo}
+                                                 AND    r.contratosperfecha_id = f.id
+                                                 AND    f.contratospersona_id = p.id
+                                                 group by p.tipo_cuenta, p.banco").each do |b| %>
+                          <% if b.cantidad.to_i > 0 %>
+                            <% if ['DAVIVIENDA', 'DAVIVIENDA2'].include?(b.banco) %>
+                              <br/><%= b.banco %> - <%= b.tipo_cuenta %> : (<%= b.cantidad %> registros)
+                              <%= link_to archivoplano_contratospervacaciones_path(consecutivo: a.consecutivo, entidad: b.banco, tipocuenta: b.tipo_cuenta), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                                <i class="fa fa-download"></i>
+                              <% end %>
+                            <% else %>
+                              <br/><%= b.banco %> : (<%= b.cantidad %> registros)
+                              <%= link_to archivoplano_contratospervacaciones_path(consecutivo: a.consecutivo, entidad: b.banco), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                                <i class="fa fa-download"></i>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      </small>
+                      <br/>
+                      <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-striped">
+                          <thead>
+                          <tr class="thcolor">
+                            <th width="8%" class="text-center"></th>
+                            <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                            <th width="40%" class="text-left">Solicitud</th>
+                          </tr>
+                          </thead>
+                          <tbody id="tbody">
+                          <% datos.each do |p|
+                          %>
+                            <tr>
+                              <td class="text-center" style="font-size:12px;">
+                                <div style="display: flex; align-items: flex-end;">
+                                  <% if @autorizacionnomina %>
+                                    <div>
+                                      <%= link_to vacacion_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+                                        <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                      <% end %>
+                                      <%= link_to carta_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+                                        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                                      <% end %>
+                                    </div>
+                                  <% end %>
+                                  <% if p.firma.blank? %>
+                                    <div style="margin-left: 3px;" id="firma<%= p.id %>">
+                                      <%= link_to marcar_firma_contratospervacaciones_path(id: p.id), remote: true, title: 'Marcar Firma' do %>
+                                        <button class="btn btn-xs btn-primary"><i class="fa fa-pencil-square-o"></i>
+                                        </button>
+                                      <% end %>
+                                    </div>
+                                  <% end %>
+                                </div>
+                              </td>
+                              <td class="text-left" style="font-size:12px;">
+                                <strong><%= p.autobuscar rescue nil %></strong>
+                                <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                                <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                                <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                                <small>(<%= p.termino rescue nil %>)</small>
+                              </td>
+                              <td class="text-left" style="font-size:10px;">
+                                <strong>Fecha inicio : </strong><%= p.fecha_inicio rescue nil %>
+                                <br/><strong>Jornada : </strong><%= p.jornada rescue nil %>
+                                <br/><strong>Dias disfrute : </strong><%= p.dias_disfrute rescue nil %>
+                                <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                                <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                              </td>
+                            </tr>
+                          <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Pagadas' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <% if @pagadas.present? %>
+                <% @pagadas.each do |a|
+                  datos = Contratospervacacion.joins(:contrato, :contratospersona, :contratosperfecha)
+                                              .select("contratospersonas.autobuscar, (select autobuscar from empresas where id = contratos.empresa_id) identnombre, contratos.nro_contrato,
+                                                    (select descripcion from contratosgrupos where id = contratosperfechas.contratosgrupo_id) descripcion,
+                                                    (select termino from contratosgrupos where id = contratosperfechas.contratosgrupo_id) termino,
+                                                    (select nombre from users where id = contratospervacaciones.user_id) usernombre,
+                                                    (select nombre from users where id = contratospervacaciones.user_aprueba) useraprobanombre,
+                                                    (select distinct 'X' from contratosperlimagenes where contratosperfecha_id = contratospervacaciones.contratosperfecha_id) existeimagen,
+                                                    contratospervacaciones.*")
+                                              .where(["contratospervacaciones.consecutivo = #{a.consecutivo} and contratospervacaciones. estado = 'PAGADA'"])
+                                              .order("contratospersonas.identificacion asc")
+                %>
+                  <a href="javascript:void(0);" onclick="SINO('demopagadas_<%=a.consecutivo%>')">
+                    <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver la informacion"></i>
+                    Consecutivo de pago nro : <%= a.consecutivo %> - Cant: (<%= a.cantidad.to_i rescue 0 %>)
+                  </a>
+                  <br/>
+                  <div id="demopagadas_<%= a.consecutivo rescue nil %>" style="display:none;">
+                    <br/>
+                    <%= link_to vacacionmasive_contratospervacaciones_path(consecutivo: a.consecutivo, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones Masivas PDF' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                    <%= link_to informe_datas_path(infgrupo_id: 45, portafolio_id: a.consecutivo.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe Vacaciones' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+                    <% end %>
+                    <% if is_auth_c("autorizaaporteslinea") %>
+                      <%= link_to enviar_novedad_consecutivo_contratospernominas_path(consecutivo: a.consecutivo, tiponovedad: 'VAC'), data: { toggle: 'tooltip' }, title: 'Clic para enviar novedades' do %>
+                        <button class="btn btn-xs btn-success"><i class="fa fa-h-square"></i></button>
+                      <% end %>
+                    <% end %>
+                    <small>
+                      <% Objeto.find_by_sql("SELECT DISTINCT p.tipo_cuenta, p.banco, COUNT(p.id) cantidad
+                                                 FROM   contratospervacaciones r, contratosperfechas f, contratospersonas p
+                                                 WHERE  r.consecutivo = #{a.consecutivo}
+                                                 AND    r.contratosperfecha_id = f.id
+                                                 AND    f.contratospersona_id = p.id
+                                                 group by p.tipo_cuenta, p.banco").each do |b| %>
+                        <% if b.cantidad.to_i > 0 %>
+                          <% if ['DAVIVIENDA', 'DAVIVIENDA2'].include?(b.banco) %>
+                            <br/><%= b.banco %> - <%= b.tipo_cuenta %> : (<%= b.cantidad %> registros)
+                            <%= link_to archivoplano_contratospervacaciones_path(consecutivo: a.consecutivo, entidad: b.banco, tipocuenta: b.tipo_cuenta), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                              <i class="fa fa-download"></i>
+                            <% end %>
+                          <% else %>
+                            <br/><%= b.banco %> : (<%= b.cantidad %> registros)
+                            <%= link_to archivoplano_contratospervacaciones_path(consecutivo: a.consecutivo, entidad: b.banco), data: { toggle: 'tooltip' }, title: 'Plano' do %>
+                              <i class="fa fa-download"></i>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    </small>
+                    <br/>
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr class="thcolor">
+                          <th width="8%" class="text-center"></th>
+                          <th class="text-left" style="font-size:12px;">Identificación - Nombre</th>
+                          <th width="40%" class="text-left">Solicitud</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        <% datos.each do |p| %>
+                          <tr>
+                            <td class="text-center" style="font-size:12px;">
+                              <div style="display: flex; align-items: flex-end;">
+                                <% if @autorizacionnomina %>
+                                  <div>
+                                    <%= link_to vacacion_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+                                      <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+                                    <% end %>
+                                    <%= link_to carta_contratospervacaciones_path(id: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+                                      <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+                                    <% end %>
+                                  </div>
+                                <% end %>
+                                <div style="margin-left: 3px;">
+                                  <%= link_to new_contratosperlimagen_path(contratosperfecha_id: p.contratosperfecha_id), remote: true, data: { toggle: 'tooltip' }, title: 'Añadir Soporte Digital' do %>
+                                    <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+                                  <% end %>
+                                </div>
+                                <% if p.firma.blank? %>
+                                  <div style="margin-left: 3px;" id="firma<%= p.id %>">
+                                    <%= link_to marcar_firma_contratospervacaciones_path(id: p.id), remote: true, title: 'Marcar Firma' do %>
+                                      <button class="btn btn-xs btn-primary"><i class="fa fa-pencil-square-o"></i>
+                                      </button>
+                                    <% end %>
+                                  </div>
+                                <% end %>
+                              </div>
+                            </td>
+                            <td class="text-left" style="font-size:12px;">
+                              <strong><%= p.autobuscar rescue nil %></strong>
+                              <br/><strong>Empresa : </strong><%= p.identnombre rescue nil %>
+                              <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil %> -
+                              <strong>Grupo : </strong><%= p.descripcion rescue nil %>
+                              <small>(<%= p.termino rescue nil %>)</small>
+                              <% if p.existeimagen.to_s == 'X' %>
+                                <% Contratosperlimagen.where(contratosperfecha_id: p.contratosperfecha_id).each do |b| %>
+                                  <div style="color:red;">Soporte Pago
+                                    liquidación <%= link_to b.liquidacionesimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                      <i class="fa fa-cloud-download text-danger"></i></div>
+                                    <% end %>
+                                <% end %>
+                              <% end %>
+                            </td>
+                            <td class="text-left" style="font-size:10px;">
+                              <strong>Fecha Solicitud : </strong><%= p.fecha rescue nil %>
+                              <br/><strong>Justificacion : </strong><%= p.justificacion rescue nil %>
+                              <br/><strong>Realizada por : </strong><%= p.usernombre rescue nil %>
+                              <br/><strong>Aprobada por : </strong><%= p.useraprobanombre rescue nil %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                      <div class="modal fade" id="adddocumento">
+                        <div class="modal-dialog">
+                          <div class="modal-content"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        <% elsif usr.subetapa.to_s == 'Masivas' %>
+          <div class="tab-pane active" id="<%= usr.subetapa.to_s %>">
+            <div class="box-body">
+              <%= render 'retirosmasive' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="novedad">
+  <div class="modal-dialog" style='width: 90%;'>
+    <div class="modal-content" style='width: 90%;'></div>
+  </div>
+</div>
+<div class="modal fade" id="addsolicitud">
+  <div class="modal-dialog">
+    <div class="modal-content"></div>
+  </div>
+</div>

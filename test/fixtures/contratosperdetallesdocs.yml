@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperinvdetalle: one
+  user: one
+  descripcion: MyString
+  invdetalle_doc: MyString
+
+two:
+  contratosperinvdetalle: two
+  user: two
+  descripcion: MyString
+  invdetalle_doc: MyString

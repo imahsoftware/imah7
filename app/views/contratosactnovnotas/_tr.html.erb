@@ -1,0 +1,17 @@
+<tr id="contratosactnovnota_<%= contratosactnovnota.id %>">
+  <td class="text-center">
+    <% if @contratosactnovedad.estado.to_s == 'PENDIENTE' and is_auth_c('adminnovedadesmetro') %>
+      <%= link_to edit_contratosactnovedad_contratosactnovnota_path(@contratosactnovedad, contratosactnovnota), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosactnovedad_contratosactnovnota_path(@contratosactnovedad, contratosactnovnota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%= contratosactnovnota.created_at.strftime("%Y-%m-%d %X") rescue nil %><br/><%= contratosactnovnota.user.nombre.html_safe rescue nil %></td>
+  <td align="justify"><%= contratosactnovnota.observacion rescue nil %></td>
+</tr>
+
+
+

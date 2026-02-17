@@ -1,0 +1,34 @@
+<%= simple_form_for([@contratossolicitud, @contratossolotro], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <% if @contratossolicitud.contrato.tiposcontrato_id.to_i == 24 %>
+          <%= f.input :insumo_id, collection: Insumo.where(["tipo = 'CONSUMO' and clase = 'COLOMBIA COMPRA EFICIENTE' and id not in (select insumo_id from contratosinsumos where contrato_id = #{@contratossolicitud.contrato_id} and insumo_id is not null) and valor1 > 0"]).collect {|p| [ p.insumodetallesolicitud, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        <% else %>
+          <%= f.input :insumo_id, collection: Insumo.where(["tipo = 'CONSUMO' and clase = 'GENERAL' and estado = 'ACTIVO' and id not in (select insumo_id from contratosinsumos where contrato_id = #{@contratossolicitud.contrato_id} and insumo_id is not null) and valor_unitario > 0"]).collect {|p| [ p.insumodetallesolicitud, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+    <% sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc)
+       sedesactivas.each do |a|
+       dato = ":cantsede_"+a.ordensede.to_s
+      %>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input eval(dato), input_html: { data: { toggle: 'tooltip'}}, label: a.nombre.to_s %></div>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratossolotro.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratossolotro_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratossolicitud_contratossolotro_path(@contratossolicitud, @contratossolotro), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

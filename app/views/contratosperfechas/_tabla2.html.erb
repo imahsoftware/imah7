@@ -1,0 +1,29 @@
+<div class="table-responsive">
+  <% datos = Contratosperfecha.includes([:contrato, :contratoscargo, :contratosgrupo])
+                              .select("contratosperfechas.*, (select autobuscar from contratospersonas where id = contratosperfechas.contratospersona_id) identnombre")
+                              .where("fecha_inicio >= DATE_ADD(CURDATE(),INTERVAL -35 DAY)") %>
+  <% if datos.present? %>
+    <div id="my-posts">
+      <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+        <tr>
+          <td width="5%"></td>
+          <th class="text-left" style="font-size:10px;">Contrato</th>
+          <th width="10%" class="text-center" style="font-size:10px;">Fecha Inicio</th>
+          <th width="10%" class="text-center" style="font-size:10px;">Fecha Fin</th>
+          <th width="10%" class="text-right" style="font-size:10px;">Salario</th>
+          <th width="8%" class="text-center" style="font-size:10px;">Estado</th>
+        </tr>
+        </thead>
+        <tbody id="tbody_contratosperfechas">
+        <% datos.order(fecha_inicio: :asc).each do |contratosperfecha| %>
+          <%= render 'contratosperfechas/tr2', contratosperfecha: contratosperfecha %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+    </div>
+  <% end %>
+</div>

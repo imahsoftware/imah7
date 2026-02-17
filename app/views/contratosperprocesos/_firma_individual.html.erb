@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h3 class="modal-title"><strong>Firma Digital - <%= @contratosperproceso.clase rescue nil %></strong></h3>
+</div>
+
+<div class="modal-body">
+  <div class="row" id="menu_firma<%= @contratosperproceso.id %>">
+    <% if @tipo == 'USUARIO' %>
+      <% if @contratosperproceso.firma_usuario.blank? %>
+        <%= render 'contratosperprocesos/firmas/usuario', contratosperproceso: @contratosperproceso %>
+      <% end %>
+    <% end %>
+    <% if @tipo == 'TESTIGO1' %>
+      <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.blank? %>
+        <%= render 'contratosperprocesos/firmas/testigo1', contratosperproceso: @contratosperproceso %>
+      <% end %>
+    <% end %>
+    <% if @tipo == 'TESTIGO2' %>
+      <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.blank? %>
+        <%= render 'contratosperprocesos/firmas/testigo2', contratosperproceso: @contratosperproceso %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%= t :cancelar %></button>
+</div>
+

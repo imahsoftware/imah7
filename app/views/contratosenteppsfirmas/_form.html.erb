@@ -1,0 +1,47 @@
+<%= form_for(contratosenteppsfirma) do |f| %>
+  <% if contratosenteppsfirma.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contratosenteppsfirma.errors.count, "error") %> prohibited this contratosenteppsfirma from being saved:</h2>
+
+      <ul>
+      <% contratosenteppsfirma.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :contratosentepp_id %>
+    <%= f.text_field :contratosentepp_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :contratosperfecha_id %>
+    <%= f.text_field :contratosperfecha_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :codigo_firma %>
+    <%= f.text_field :codigo_firma %>
+  </div>
+
+  <div class="field">
+    <%= f.label :fecha_firma %>
+    <%= f.date_select :fecha_firma %>
+  </div>
+
+  <div class="field">
+    <%= f.label :codigo_env %>
+    <%= f.text_field :codigo_env %>
+  </div>
+
+  <div class="field">
+    <%= f.label :codigo_rec %>
+    <%= f.text_field :codigo_rec %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

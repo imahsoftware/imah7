@@ -1,0 +1,63 @@
+<% if @eproveedor.etapa.to_s == "A" %>
+  <%= render "form" %>
+<% else %>
+  <div class="box ">
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-12">
+          <legend>Información Proveedores</legend>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th width="5%" class="text-center">ID</th>
+                <th width="15%" class="text-left">Identificación</th>
+                <th width="30%" class="text-left">Nombre</th>
+                <th class="text-left">Direccion</th>
+                <th class="text-left">Telefono</th>
+              </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr>
+                  <td class="text-center" style="font-size:12px;"><%= @eproveedor.id rescue nil%></td>
+                  <td class="text-left" style="font-size:12px;"><%= @eproveedor.identificacion rescue nil%></td>
+                  <td class="text-left" style="font-size:12px;"><%= @eproveedor.nombre_completo rescue nil%></td>
+                  <td class="text-left" style="font-size:12px;"><%= @eproveedor.direccion rescue nil%></td>
+                  <td class="text-left" style="font-size:12px;"><%= @eproveedor.telefonos rescue nil%></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-body">
+      <% if @eproveedor.etapa.to_s == "B" %>
+        <%= render 'eproveedorescompras/eproveedorescompras' %>
+      <% elsif @eproveedor.etapa.to_s == "C" %>
+        <%= render 'eproveedorestempcompras/eproveedorestempcompras' %>
+      <% elsif @eproveedor.etapa.to_s == "D" %>
+        <%= render 'eproveedorestemegresos/eproveedorestemegresos' %>
+      <% elsif @eproveedor.etapa.to_s == "E" %>
+        <% @is_auth_e_egreso = is_auth_e("egreso") %>
+        <%= render 'egreso' %>
+      <% elsif @eproveedor.etapa.to_s == "G" %>
+        <%= render 'eproveedorescreditos/eproveedorescreditos' %>
+      <% elsif @eproveedor.etapa.to_s == "M" %>
+        <%= render 'eproveedoresimagenes/eproveedoresimagenes' %>
+    <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="modal fade" id="abrircargue">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

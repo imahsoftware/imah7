@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  nombre_obra: MyString
+  fecha: 2021-11-15
+  responsable: MyString
+  encargado_seguridad: MyString
+  n_trabajadores: MyString
+  encargado_obra: MyString
+  nombre_empresa: MyString
+  actividad: MyString
+
+two:
+  contratospersona: two
+  nombre_obra: MyString
+  fecha: 2021-11-15
+  responsable: MyString
+  encargado_seguridad: MyString
+  n_trabajadores: MyString
+  encargado_obra: MyString
+  nombre_empresa: MyString
+  actividad: MyString

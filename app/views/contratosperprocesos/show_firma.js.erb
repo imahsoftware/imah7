@@ -1,0 +1,11 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @contratosperproceso.id %>").html('<%= j render "contratosperprocesos/show_firma"  %>');
+$("#abrir<%= @contratosperproceso.id %>").addClass("hide");
+$("#cerrar<%= @contratosperproceso.id %>").removeClass("hide");
+$("#tr_show<%= @contratosperproceso.id %>").removeClass("hidden");
+<% else %>
+$("#abrir<%= @contratosperproceso.id %>").removeClass("hide");
+$("#cerrar<%= @contratosperproceso.id %>").addClass("hide");
+$("#abrir_detalle<%= @contratosperproceso.id %>").html(null);
+$("#tr_show<%= @contratosperproceso.id %>").addClass("hidden");
+<% end %>

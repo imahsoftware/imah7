@@ -1,0 +1,2 @@
+module ContratosseccionesHelper
+end

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratossede: one
+  user: one
+  sap_codigo: MyString
+  sap_clasificacion: MyString
+  sap_nota: MyString
+
+two:
+  contratossede: two
+  user: two
+  sap_codigo: MyString
+  sap_clasificacion: MyString
+  sap_nota: MyString

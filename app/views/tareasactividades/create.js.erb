@@ -1,0 +1,11 @@
+<% if @tarea.tareasactividades.present? %>
+	$("#tareasactividades").html("<%= j render 'tabla' %>");
+<% else %>
+	$("#tbody_tareasactividades").prepend("<%= j render 'tr', tareasactividad: @tareasactividad %>");
+<% end %>
+
+$(".clean").val("").trigger('change');
+$('[data-toggle="tooltip"]').tooltip();
+$( ":input" ).removeClass("is-invalid");
+$("[for='inputError']").remove();
+$("#tareasactividad_form").collapse("hide");

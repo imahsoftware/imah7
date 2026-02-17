@@ -1,0 +1,780 @@
+<%
+  isadmin = is_admin
+%>
+<section class="content-header" style="margin-top: -55px; margin-left: -12px;"><h3>Reportes</h3></section>
+<%
+  @infgrupostipos.each do |a|
+%>
+  <div class="box box-danger">
+    <div class="box-body table-responsive">
+    <legend><%=a.tipo rescue nil %></legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <th width="30%">Nombre</th>
+          <th>Parametros</th>
+          <th width="10%" class="text-center">Opciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @infgrupos.where(tipo: a.tipo.to_s).each do |i| %>
+          <% if i.id == 36 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <br/><br/>
+                      <div class="col-md-12">
+                        <label>Tipo de Novedad</label>
+                        <%= select_tag 'ubicacion[tiposnovedad]', options_for_select(select_tiposnovedades.collect {|p| [p.descripcion, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 37 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno37]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes37]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 39 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno39]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes39]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 41 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Periodo</label><br/>
+                        <%= select_tag 'ubicacion[periodosliquidacion_id]', options_from_collection_for_select(select_periodosliqvis, :id, :descripcion), prompt: '--Seleccionar--', data: { width: '100%' }, class: 'form-control select2' %>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid_41]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 27 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid_27]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 59 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno59]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes59]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 66 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno66]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Proceso</label>
+                        <%= select_tag 'ubicacion[proceso66]', options_for_select(select_procesos.collect {|p| [p.descripcion, p.descripcion]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 38 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 109 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 81 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 108 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 106 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 47 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno47]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes47]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 50 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 29 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 51 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, '51' %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno51]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 52 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 53 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno53]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes53]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 104 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno104]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 105 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno105]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 54 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 55 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno55]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes55]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 56 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Proveedor</label><br/>
+                        <%= select_tag 'ubicacion[eproveedorid]', options_for_select(select_eproveedoregresos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 57 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Proveedor</label><br/>
+                        <%= select_tag 'ubicacion[eproveedorid57]', options_for_select(select_eproveedorcausacion.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 58 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid58]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 60 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno60]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes60]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 61 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno61]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes61]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <br/><br/>
+                      <div class="col-md-12">
+                        <label>Nodo : </label>
+                        <%= select_tag 'ubicacion[sede61]', options_for_select(select_contratossedesmetro.collect {|p| [p.nombre_consulta, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 67 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 75 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-6">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno75]', options_for_select(select_anno4), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes75]', options_for_select(select_mes), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid75]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 76 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-4">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno76]', options_for_select(select_anno_certificado), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes76]', options_for_select(select_mes_certificado), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Formato</label>
+                        <%= select_tag 'ubicacion[formato76]', options_for_select(select_formato), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 77 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-4">
+                        <label>Año</label>
+                        <%= select_tag 'ubicacion[anno77]', options_for_select(select_anno_certificado), {class: 'form-control select2 inline', data: { width: '60%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Mes</label>
+                        <%= select_tag 'ubicacion[mes77]', options_for_select(select_mes_certificado), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Formato</label>
+                        <%= select_tag 'ubicacion[formato77]', options_for_select(select_formato), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-12">
+                        <label>Contrato</label><br/>
+                        <%= select_tag 'ubicacion[contratoid77]', options_for_select(select_contratos.collect {|p| [p.datos, p.id]}), prompt: "#{t :seleccionar}", data: {width: '80%'}, class: 'form-control select2 inline' %>
+                      </div>
+                    </div>
+
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 95 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-4">
+                        <label>Fecha Inicio</label>
+                        <%= text_field_tag :fchinicio95, params[:fchinicio95], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Inicio', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Fecha Fin</label>
+                        <%= text_field_tag :fchfinal95, params[:fchfinal95], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Fin', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Formato</label>
+                        <%= select_tag 'ubicacion[formato95]', options_for_select(select_formato), {class: 'form-control select2 inline', data: { width: '70%' }, prompt: "#{t :seleccionar}"} %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 101 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-4">
+                        <label>Fecha Inicio</label>
+                        <%= text_field_tag :fchinicio101, params[:fchinicio101], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Inicio', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Fecha Fin</label>
+                        <%= text_field_tag :fchfinal101, params[:fchfinal101], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Fin', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 110 %>
+            <%= form_tag informedat_datas_path(format: :xlsx), method: 'get' do %>
+              <%= hidden_field_tag :infgrupo_id, i.id.to_s %>
+              <tr>
+                <td><%=i.id %> - <%=i.nombre %></td>
+                <td>
+                  <div class="form-group inline">
+                    <div class="row" style="margin-bottom: 5px">
+                      <div class="col-md-4">
+                        <label>Fecha Inicio</label>
+                        <%= text_field_tag :fchinicio110, params[:fchinicio110], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Inicio', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Fecha Fin</label>
+                        <%= text_field_tag :fchfinal110, params[:fchfinal110], { class: 'datepicker form-control', style: 'width:150px;', placeholder: 'Fecha Fin', readonly: true, data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } } } %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td><div align="center"><%= button_tag "Generar", class: "btn btn-xs btn-danger" %></div></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if i.id == 111 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informedat_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 112 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 113 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 114 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+          <% if i.id == 115 %>
+            <tr>
+              <td><%=i.id %> - <%=i.nombre %></td>
+              <td></td>
+              <td class="text-center"><%= link_to informe_datas_path(infgrupo_id: i.id, format: :xlsx) do %>
+                  <button class="btn btn-xs btn-danger">Generar</button>
+                <% end -%>
+              </td>
+            </tr>
+          <% end %>
+
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if is_auth_a('carguedoc') %>
+  <div class="box box-danger">
+    <div class="box-body table-responsive">
+      <legend>Documentos Digitales masivos</legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <tr>
+          <td>
+            <%= link_to cargardocumentos_contratos_path(idcarpeta: '1'), data: { toggle: 'tooltip' }, title: 'Cargar Doc Carpeta 1' do %>
+              <button class="btn btn-xs btn-primary"><i class="fa fa-download"></i> Cargue de Carpeta 1</button>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+
+
+<% if is_auth_c('download') %>
+  <div class="box box-danger">
+    <div class="box-body table-responsive">
+      <legend>Descargas</legend>
+      <table class="table table-bordered table-condensed table-striped">
+        <tr>
+          <td>
+            <div align="right">
+              <IFRAME SRC=<%="/datas/download"%> WIDTH="100%" HEIGHT="200" MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER="NO" SCROLLING="YES" STYLE="border-width:0px;"></IFRAME>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+<% end %>

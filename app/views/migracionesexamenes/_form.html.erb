@@ -1,0 +1,77 @@
+<%= form_for(migracionesexamen) do |f| %>
+  <% if migracionesexamen.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(migracionesexamen.errors.count, "error") %> prohibited this migracionesexamen from being saved:</h2>
+
+      <ul>
+      <% migracionesexamen.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :personasformulario_id %>
+    <%= f.number_field :personasformulario_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.number_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :archivo_id %>
+    <%= f.number_field :archivo_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :descripcion %>
+    <%= f.text_field :descripcion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :direccion %>
+    <%= f.text_field :direccion %>
+  </div>
+
+  <div class="field">
+    <%= f.label :recomendaciones %>
+    <%= f.text_field :recomendaciones %>
+  </div>
+
+  <div class="field">
+    <%= f.label :fecha %>
+    <%= f.date_select :fecha %>
+  </div>
+
+  <div class="field">
+    <%= f.label :hora %>
+    <%= f.text_field :hora %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado %>
+    <%= f.text_field :estado %>
+  </div>
+
+  <div class="field">
+    <%= f.label :observacion_eps %>
+    <%= f.text_field :observacion_eps %>
+  </div>
+
+  <div class="field">
+    <%= f.label :estado_cargue %>
+    <%= f.text_field :estado_cargue %>
+  </div>
+
+  <div class="field">
+    <%= f.label :error %>
+    <%= f.text_field :error %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

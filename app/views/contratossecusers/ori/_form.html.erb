@@ -1,0 +1,27 @@
+<%= form_for(contratossecuser) do |f| %>
+  <% if contratossecuser.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contratossecuser.errors.count, "error") %> prohibited this contratossecuser from being saved:</h2>
+
+      <ul>
+      <% contratossecuser.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :contratosseccion_id %>
+    <%= f.text_field :contratosseccion_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

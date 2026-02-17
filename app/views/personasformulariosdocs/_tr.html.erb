@@ -1,0 +1,67 @@
+<tr id="personasformulariosdoc_<%= personasformulariosdoc.id %>">
+  <td>
+    <div style="display: flex;align-items: flex-start;text-align: center; justify-content: center;">
+      <% if is_tipoconsulta != 'CANDIDATO' %>
+        <% if @personasformulario.estado.to_s != 'APROBADO' and is_auth_c("contratacionconv") %>
+          <div>
+            <%= link_to edit_personasformulario_personasformulariosdoc_path(@personasformulario, personasformulariosdoc), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+            <% end %>
+          </div>
+          <% if personasformulariosdoc.estado.to_s == 'PENDIENTE' %>
+            <div style="margin-left: 5px;" id="mostrar<%= personasformulariosdoc.id.to_s %><%= obl %>" class="<%= personasformulariosdoc.visualizado.present? ? "" : "hidden" %>">
+              <%= link_to cambioestado_personasformulariosdocs_path(id: personasformulariosdoc.id, estado: 'APROBADO'), data: { toggle: 'tooltip' }, title: "Aprobar" do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-sign-out"></i></button>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </td>
+  <td class="text-center text-table"><%= personasformulariosdoc.estado_documento.html_safe rescue nil %>
+    <% if personasformulariosdoc.estado.to_s != 'PENDIENTE' %>
+      <button class="btn btn-xs btn-info">
+        <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Marcado por: <%= User.find(personasformulariosdoc.user_revisa).nombre rescue nil %></div>"><i class="fa fa-child" aria-hidden="true"></i></span>
+      </button>
+    <% end %>
+  </td>
+  <td class="text-left text-table">
+    <% if personasformulariosdoc.soporte_digital_file_name.present? %>
+      <%= link_to personasformulariosdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <div id="demo<%= personasformulariosdoc.id.to_s %><%= obl %>">
+          <i class="fa fa-cloud-download"></i> <%= personasformulariosdoc.soporte_digital_file_name rescue nil %> <%= personasformulariosdoc.id.to_s %>
+        </div>
+      <% end %>
+      <% if personasformulariosdoc.visualizado.blank? and is_tipoconsulta != 'CANDIDATO' %>
+        <div style="margin-top: 7px;" id="documento<%= personasformulariosdoc.id.to_s %><%= obl %>">
+          <small style="padding: 5px; font-size: 9px; background-color: #F7F577; color: red; margin-top: 5px; border-radius: 3px;">Para aprobar el documento debes de visualizar primero el documento</small>
+        </div>
+      <% end %>
+      <script type="text/javascript" charset="utf-8">
+          document.getElementById("demo<%= personasformulariosdoc.id.to_s %><%= obl %>").onclick = function () {
+              myFunction<%= personasformulariosdoc.id.to_s %><%= obl %>()
+          };
+
+          function myFunction<%= personasformulariosdoc.id.to_s %><%= obl %>() {
+              document.getElementById("mostrar<%= personasformulariosdoc.id.to_s %><%= obl %>").classList.remove("hidden");
+              $("#documento<%= personasformulariosdoc.id.to_s %><%= obl %>").remove("");
+              $.ajax({
+                  url: "/menus/marcar_visto?id=<%= personasformulariosdoc.id %>",
+                  data: function (params) {
+                      return {
+                          q: <%= personasformulariosdoc.id %>
+                      };
+                  },
+              });
+          }
+      </script>
+      <% if personasformulariosdoc.observacion.present? %>
+        <div class="text-justify text-red">
+          <small><b>Observacion: </b> <%= personasformulariosdoc.observacion rescue nil %></small>
+        </div>
+      <% end %>
+    <% end %>
+  </td>
+</tr>
+

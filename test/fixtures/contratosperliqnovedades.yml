@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratosperfecha: one
+  user: one
+  tiposnovedad: one
+  valor_novedad: 9.99
+
+two:
+  contratosperfecha: two
+  user: two
+  tiposnovedad: two
+  valor_novedad: 9.99

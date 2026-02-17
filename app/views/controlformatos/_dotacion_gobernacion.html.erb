@@ -1,0 +1,72 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @nombre_empresa = portafolio.razon_social.to_s
+  @logo = portafolio.logo_empresa_assets
+  @identificacion = camponumerico2(portafolio.identificacion_rep.to_s)
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          <br/>
+          Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>
+          <br/><br/><br/><br/>
+          SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+          C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+          OPERARIOS GOBERNACION DE ANTIOQUIA
+          <br/><br/>
+          <strong>ASUNTO:</strong> Comunicado oficial respecto al formato de dotación entregado en el mes de julio.
+          <br/><br/>
+          Cordial saludo,<br/><br/>
+          Queremos informar que debido a un error que presentó el sistema de contratación de <b><%=@nombre_empresa.to_s%></b> se genero un
+          formato de entrega de dotación que no corresponde a la realidad ya que hay que recordar que la dotación se entrega cada cuatro
+          meses como lo establece el artículo 230 del código sustantivo del trabajo Código Sustantivo del Trabajo
+          <em>“Artículo 230. Suministro de calzado y vestido de labor Todo {empleador} que habitualmente ocupe uno (1) o más trabajadores
+            permanentes, deberá suministrar cada cuatro (4) meses, en forma gratuita, un (1) par de zapatos y un (1) vestido de labor
+            al trabajador, cuya remuneración mensual sea hasta dos (2) meses el salario mínimo más alto vigente. Tiene derecho a esta
+            prestación el trabajador que en las fechas de entrega de calzado y vestido haya cumplido más de tres (3) meses
+            al servicio del empleador”</em>. Teniendo en cuenta que no ha pasado el periodo de tiempo necesario para entregar
+          segunda dotación queda sin efectos el formato firmado y se entiende que la Empresa no entregara dotación hasta que
+          por ley no corresponda sin que a partir de ello se genere algún incumplimiento contractual o trasgresión a los derechos laborales.
+          <br/><br/><br/><br/>
+          <table width="100%">
+            <tr>
+              <td width="30%"><b>EL CONTRATANTE</b></td>
+              <td><% if @controlfirma.codigo_firma.present? %><%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -8px; top: -13px; right: 10px; z-index: 0; width: 150px;') %><%end %>
+                <br/>
+                <%= @nombre_firma %><br/>
+                Representante Legal
+              </td>
+            </tr>
+          </table>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:<br/>
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

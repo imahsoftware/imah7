@@ -1,0 +1,24 @@
+<%= simple_form_for([@contratospersona, @contratospersugerencia], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :prevencion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Orientadas a la actividad de prevención de las situaciones de acoso laboral (Capacitación, divulgación)" %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10"><%= f.input :correccion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 3 }, label: "Orientadas a la actividad de corrección de situaciones de acoso laboral (Manera de hacer conocer las quejas, proceso de investigación del Comité o circunstancias similares)" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratospersugerencia.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratospersugerencia_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratospersugerencia_path(@contratospersona, @contratospersugerencia), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

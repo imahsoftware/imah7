@@ -1,0 +1,32 @@
+<%= simple_form_for([@personasformulario, @personasformulariosdoc], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <%= f.input :parcargosdoc_id, collection: Parcargosdoc.order(:descripcion).collect { |p| [p.descripcion, p.id] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true, label: "Documentos Requeridos" %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <%= f.input :estado, as: :select, collection: select_estadoexamen, input_html: { class: 'select2' }, label: "Estado", disabled: is_tipoconsulta != 'CANDIDATO' ? false : true %>
+      </div>
+    </div>
+    <% if is_tipoconsulta != 'CANDIDATO' %>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= f.input :observacion, as: :text, :input_html => { class: "uppercaseInput", :rows => 5 } %>
+        </div>
+      </div>
+    <% end %>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @personasformulariosdoc.new_record? %>
+          <%= link_to "Cancelar", cancelar_personasformulariosdocs_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", personasformulario_personasformulariosdoc_path(@personasformulario, @personasformulariosdoc), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+

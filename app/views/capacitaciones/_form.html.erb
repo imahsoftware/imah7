@@ -1,0 +1,85 @@
+
+<div class="box box-danger">
+  <div class="box-body">
+    <%= simple_form_for @capacitacion do |f| %>
+      <div class="box-header">
+        <legend>
+          <%= link_to capacitaciones_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %>
+          Información de la capacitacion
+        </legend>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <%= f.input :descripcion, input_html: { class: "uppercaseInput" }, label: "Nombre de la Capacitacion" %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+            <%= f.input :fecha_limite, as: :string, input_html: { class: 'datepicker', data: { date_options: { format: 'DD/MM/YYYY', ignoreReadonly: true } }, readonly: true } %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_aprobado, input_html: { class: "uppercaseInput" }, label: "Valor Aprobación" %></div>
+          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <%= f.input :objetivo, as: :text, input_html: {rows: 5, class: "uppercaseInput" }, label: "Objetivo" %>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <%= f.input :temas, as: :text, input_html: {rows: 5, class: "uppercaseInput" }, label: "Temas" %>
+          </div>
+        </div>
+        <div class="box-footer">
+          <div class="box-tools pull-left">ID: <%=@capacitacion.id rescue nil %> - <%= @capacitacion.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%=@capacitacion.user.nombre rescue nil %></div>
+          <% if is_auth_c('capacitacion') %>
+            <div class="box-tools pull-right">
+              <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+            </div><!-- /.box-tools -->
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <% unless @capacitacion.new_record? %>
+      <%
+        estados = ["Doc-Digitales", "Evaluaciones", "Contratos", "Contratos2"]
+        estados2 = ["1", "2", "3", "4"]
+      %>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <%
+                estados.each do |p|
+                  pos = estados.find_index(p)
+                  if @subetapa == estados2[pos]
+                    clase = "active"
+                  else
+                    clase = ""
+                  end
+              %>
+                <li class="<%= clase %>">
+                  <%= link_to edit_capacitacion_path(id: @capacitacion.id, subetapa: estados2[pos].to_s) do %>
+                    <i class="fa fa-search"></i> <span></span> <%= p.to_s %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+            <div class="tab-content">
+              <% if @subetapa == '1' %>
+                <%= render "capacitaciondocs/capacitaciondocs" %>
+              <% elsif @subetapa == '2' %>
+                <%= render "capacitacionevaluaciones/capacitacionevaluaciones" %>
+              <% elsif @subetapa == '3' %>
+                <%= render 'contratoscapacitaciones/contratoscapacitaciones' %>
+              <% elsif @subetapa == '4' %>
+                <%= render 'contratoscapacitaciones/contratoscapacitacionesd' %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+</div>
+

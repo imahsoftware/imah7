@@ -1,0 +1,31 @@
+<%= simple_form_for([@personasformulario, @personasformulariosdoc], remote: true) do |f| %>
+  <%= f.hidden_field :parcargosdoc_id, value: @parcargosdoc.id %>
+  <%= f.hidden_field :parcargo_id, value: @parcargo.id %>
+  <% parcar = Parcargosdoc.find(@parcargosdoc.id) %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+    <h3 class="modal-title"><strong><%= @personasformulariosdoc.new_record? ? 'Agregar' : 'Editar' %> documento</strong></h3>
+  </div>
+  <div class="modal-body">
+    <div class="text-red" style='font-size: 11px;'> <%=parcar.descripcion rescue nil %><br/>
+      NOTA: <%=parcar.observacion rescue nil %></div>
+    <br/>
+    <div class="row">
+      <div class="col-md-12">
+        <%= f.input :soporte_digital, as: :file, label: 'Archivo a cargar' %>
+        <% if parcar.soloimagen == 'SI' %>
+          <div class="text-red" style='font-size: 11px;'><strong>Formatos permitidos: PNG, JPG, JPGE</strong></div>
+        <% else %>
+          <p class="help-block">Formatos permitidos: PDF</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+    <div class="box-tools pull-right">
+      <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+    </div><!-- /.box-tools -->
+  </div><!-- box-footer -->
+<% end %>
+

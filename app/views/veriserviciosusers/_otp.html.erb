@@ -1,0 +1,41 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title"><small><%= @veriserviciosuser.user.nombrecompleto rescue nil %></small></h4>
+  </div>
+  <div class="box-body" style="margin-right: 10px;">
+    <div class="mensaje_firma_agenda"><i class="fa fa-info-circle"></i> Se te ha enviado un código OTP a tu correo electrónico <b>(<%= @veriserviciosuser.user.email.downcase rescue nil %>)</b> registrado y a tu número de
+      celular <b>(<%= @veriserviciosuser.user.celular.gsub(' ','').gsub('-','') rescue nil %>)</b>. Para continuar, debes ingresarlo; de lo contrario, no se podrá firmar el proceso de forma
+      digital.
+    </div>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-left text-table" width="15%">Fecha Reprogramación</th>
+        <th class="text-left text-table" width="30%">Usuario</th>
+        <th class="text-left text-table">Nota</th>
+      </tr>
+      </thead>
+      <tbody>
+      <td class="text-table"><%= @veriserviciosuser.veriserviciosagenda.fecha_reprogramacion.strftime("%Y-%m-%d") rescue nil %></td>
+      <td class="text-table"><%= @veriserviciosuser.user.nombrecompleto rescue nil %></td>
+      <td class="text-table"><%= @veriserviciosuser.veriserviciosagenda.nota rescue nil %></td>
+      </tbody>
+    </table>
+    <br/>
+    <%= form_tag captura_otp_veriserviciosusers_path(id: @veriserviciosuser.id), remote: true, method: :post, class: 'form-inline' do %>
+      <%= render 'menus/input_otp' %>
+      <div class="row" id="mensaje<%= @veriserviciosuser.id %>">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 text-center"></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+          <%= button_tag type: 'submit', :disable_with => "Validando...", class: 'btn btn-primary', style: "height: 60px; border-radius: 5px; background-color: #d73925 !important; border-color: #d73925;" do %>
+            Verificar Codigo
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

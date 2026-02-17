@@ -1,0 +1,97 @@
+<div class="bs-callout">
+  <table class="table table-striped table-responsive table-bordered">
+    <thead>
+    <tr class="thcolor">
+      <th class="text-table"></th>
+      <th width="15%" class="text-table">Creador</th>
+      <th class="text-table">Empleado</th>
+      <th width="45%" class="text-table">Contrato</th>
+      <th width="10%" class="text-table text-center">Estado</th>
+    </tr>
+    </thead>
+    <tr>
+      <td class="text-table text-center">
+        <div class="btn-group" id="botones">
+          <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+            Opciones <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <% if @contratosperinventario.contratosperinvdetalles.present?
+                 if @contratosperinventario.codigo_firma.blank? %>
+                  <li>
+                    <%= link_to otp_contratosperinventarios_path(id: @contratosperinventario.id), remote: true, class: 'edit_contrato_button', data: { toggle: 'tooltip' } do %>
+                      <div class="text-blue"><i class="fa fa-user"></i> Solicitar Firma Empleado</div>
+                    <% end %>
+                  </li>
+                <% end %>
+                <% if @contratosperinventario.codigo_crea_firma.blank? %>
+                  <li>
+                    <%= link_to otp3_contratosperinventarios_path(id: @contratosperinventario.id), remote: true, class: 'edit_contrato_button', data: { toggle: 'tooltip' } do %>
+                      <div class="text-blue"><i class="fa fa-user-secret"></i> Solicitar Firma Creador</div>
+                    <% end %>
+                  </li>
+                <% end %>
+            <% end %>
+            <li>
+              <%= link_to visualizar_contratosperinventarios_path(id: @contratosperinventario.id, format: :pdf), class: 'popup', data: { toggle: 'tooltip' } do %>
+                <div class="text-blue"><i class="fa fa-file-pdf-o"></i> Ver PDF</div>
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </td>
+      <td class="text-table text-left">
+        <%= @contratosperinventario.user.nombre %><br/>
+        <%= @contratosperinventario.created_at.strftime("%d/%m/%Y %X") rescue nil %>
+      </td>
+      <td class="text-table">
+        <%= @contratosperinventario.contratospersona.autobuscar rescue nil %>
+      </td>
+      <td class="text-table">
+        <div align="justify">
+          <strong>Nro Contrato
+            : </strong><%= @contratosperinventario.contratospersona.contrato.nro_contrato rescue nil %> -
+          <strong>Grupo
+            : </strong><%= @contratosperinventario.contratosperfecha.contratosgrupo.descripcion rescue nil %>
+          <small>(<%= @contratosperinventario.contratosperfecha.contratosgrupo.termino rescue nil %>)</small>
+          <br/><strong>Cargo
+          : </strong><%= @contratosperinventario.contratosperfecha.contratoscargo.perfil rescue nil %>
+        </div>
+      </td>
+      <td class="text-table text-center">
+        <%= @contratosperinventario.estado rescue nil %>
+      </td>
+    </tr>
+  </table>
+  <% if @contratosperinventario.codigo_firma.blank? or @contratosperinventario.codigo_crea_firma.blank? or @contratosperinventario.contratosperinvatenciones.where("codigo_firma is not null").blank? %>
+    <div class="text-red alerta-visita" align="justify">
+      <b>Pendiente por firmar: </b>
+      <% if @contratosperinventario.codigo_firma.blank? %>
+        - El empleado.
+      <% end %>
+      <% if @contratosperinventario.codigo_crea_firma.blank? %>
+         - El creador del inventario.
+      <% end %>
+      <% if @contratosperinventario.contratosperinvatenciones.where("codigo_firma is not null").blank? %>
+        - La atención.
+      <% end %>
+    </div>
+  <% end %>
+</div>
+<br/>
+
+<div class="modal fade" id="otp<%= @contratosperinventario.id rescue nil %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="otp3<%= @contratosperinventario.id rescue nil %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

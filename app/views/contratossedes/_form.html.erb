@@ -1,0 +1,40 @@
+<%= simple_form_for([@contrato, @contratossede], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :nombre, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :direccion, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :departamento, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :municipio, input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase_aseo, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Nodo 1"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase_aseo2, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Nodo 2"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase_aseo3, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Nodo 3"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase_aseo4, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Nodo 4"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase_aseo5, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Nodo 5 "%></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratossede.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratossede_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratossede_path(@contrato, @contratossede), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

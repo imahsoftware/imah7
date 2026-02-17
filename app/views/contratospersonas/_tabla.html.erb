@@ -1,0 +1,30 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="11%" class="text-center"></th>
+    <th class="text-left">Identificación - Nombres</th>
+    <th width="55%" class="text-left">Empresa</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_contratospersonas">
+  <%
+    @vcAutoCon = is_auth_c('empleadosconsulta')
+    @vcAutoConb = is_auth_c('empleadosconsultabasica')
+    @existesuper = Contratosperuser.where("user_id = ? and fecha_fin is null", is_admin).exists?
+    @vcAutoInv = is_auth_c('registroinventario')
+    @authTirilla = is_auth_c('vertirillas')
+    @contratospersonas.order(created_at: :desc).each do |contratospersona| %>
+    <%= render 'contratospersonas/tr', contratospersona: contratospersona %>
+  <% end %>
+  </tbody>
+</table>
+
+<div class="box-tools pull-right">
+  <%= will_paginate @contratospersonas, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+</div><!-- /.box-tools -->
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+</script>

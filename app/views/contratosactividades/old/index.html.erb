@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosactividades</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contrato</th>
+      <th>User</th>
+      <th>Detalle</th>
+      <th>Clase</th>
+      <th>Cantidad</th>
+      <th>Tipo</th>
+      <th>Contratossede</th>
+      <th>Dia semana</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosactividades.each do |contratosactividad| %>
+      <tr>
+        <td><%= contratosactividad.contrato %></td>
+        <td><%= contratosactividad.user %></td>
+        <td><%= contratosactividad.detalle %></td>
+        <td><%= contratosactividad.clase %></td>
+        <td><%= contratosactividad.cantidad %></td>
+        <td><%= contratosactividad.tipo %></td>
+        <td><%= contratosactividad.contratossede_id %></td>
+        <td><%= contratosactividad.dia_semana %></td>
+        <td><%= link_to 'Show', contratosactividad %></td>
+        <td><%= link_to 'Edit', edit_contratosactividad_path(contratosactividad) %></td>
+        <td><%= link_to 'Destroy', contratosactividad, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosactividad', new_contratosactividad_path %>

@@ -1,0 +1,17 @@
+$("#tiposimagen_form").collapse("hide");
+
+$("#tiposimagen_form").empty();
+
+<% if @active_record.present? %>
+	$("#tiposimagen_<%= @active_record.id %>").replaceWith("<%= j render 'tr', tiposimagen: @active_record %>");
+<% end %>
+
+$("#tiposimagen_<%= @tiposimagen.id %>").html("<td colspan='5'><%= j render 'form' %></td>");
+
+$("#tiposimagen_<%= @tiposimagen.id %>").addClass("active_tiposimagen");
+$(".datetimepicker").datetimepicker();
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();

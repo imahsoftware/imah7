@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Parcagosdocs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parcargo</th>
+      <th>User</th>
+      <th>Obligatorio</th>
+      <th>Observacion</th>
+      <th>Estado</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @parcagosdocs.each do |parcagosdoc| %>
+      <tr>
+        <td><%= parcagosdoc.parcargo %></td>
+        <td><%= parcagosdoc.user %></td>
+        <td><%= parcagosdoc.obligatorio %></td>
+        <td><%= parcagosdoc.observacion %></td>
+        <td><%= parcagosdoc.estado %></td>
+        <td><%= link_to 'Show', parcagosdoc %></td>
+        <td><%= link_to 'Edit', edit_parcagosdoc_path(parcagosdoc) %></td>
+        <td><%= link_to 'Destroy', parcagosdoc, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Parcagosdoc', new_parcagosdoc_path %>

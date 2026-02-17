@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  migracion: one
+  orden: 1
+  encabezado: MyString
+  campo: MyString
+  tipo: MyString
+
+two:
+  migracion: two
+  orden: 1
+  encabezado: MyString
+  campo: MyString
+  tipo: MyString

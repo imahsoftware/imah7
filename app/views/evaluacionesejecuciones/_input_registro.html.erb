@@ -1,0 +1,37 @@
+<div id="input_registro_data<%= p.id %>">
+  <% if p.estado.blank? %>
+    <textarea class="form-control resultado-textarea<%= p.id %>" rows="2" data-evaluacionesejecucion-id="<%= p.id %>"><%= p.resultado %></textarea>
+  <% else %>
+    <%#= p.resultado rescue nil %>
+    <textarea class="form-control resultado-textarea<%= p.id %>" rows="2" data-evaluacionesejecucion-id="<%= p.id %>"><%= p.resultado %></textarea>
+  <% end %>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var observacionTextareas = document.querySelectorAll('.resultado-textarea<%= p.id %>');
+
+        observacionTextareas.forEach(function (textarea) {
+            textarea.addEventListener('input', function () {
+                var resultado = this.value;
+                var evaluacionesejecucionId = this.getAttribute('data-evaluacionesejecucion-id');
+
+                $.ajax({
+                    url: '/evaluacionesejecuciones/update_resultado',
+                    type: 'POST',
+                    data: {
+                        id: evaluacionesejecucionId,
+                        resultado: resultado,
+                        evaluacion_id: <%= p.evaluacion_id %>
+                    },
+                    success: function (data) {
+                        console.log('Resultado actualizada:', data);
+                    },
+                    error: function (error) {
+                        console.error('Error al actualizar el resultado:', error);
+                    }
+                });
+            });
+        });
+    });
+</script>

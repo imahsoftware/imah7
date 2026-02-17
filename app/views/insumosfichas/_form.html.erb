@@ -1,0 +1,37 @@
+<%= simple_form_for([@insumo, @insumosficha], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <%= f.input :marca, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <%= f.input :referencia, input_html: { :onchange => "javascript:this.value=this.value.toUpperCase();" } %>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_version, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_vencimiento, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+        <%= f.input :estado, as: :select, collection: select_estado, input_html: { class: 'select2' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <%= f.input :docficha, as: :file, label: 'Archivo a cargar' %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @insumosficha.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#insumosficha_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", insumo_insumosficha_path(@insumo, @insumosficha), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

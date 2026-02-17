@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  capacitacionevaluacion_id: 1
+  descripcion: MyString
+  imagen: MyString
+  respuesta: 1
+
+two:
+  capacitacionevaluacion_id: 1
+  descripcion: MyString
+  imagen: MyString
+  respuesta: 1

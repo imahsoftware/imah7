@@ -1,0 +1,14 @@
+<tr id="tiposdocumento_<%= tiposdocumento.id %>">
+  <% if is_auth_c('tiposdocumento') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposdocumento_path(tiposdocumento), class: 'edit_tiposdocumento_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposdocumento, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= tiposdocumento.id %></td>
+  <td><%= tiposdocumento.descripcion %></td>
+</tr>

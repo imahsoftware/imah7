@@ -1,0 +1,71 @@
+<div class="box">
+  <div class="box-header with-border">
+    <h3 class="box-title">Control de Empresas</h3>
+
+    <div class="box-body">
+      <div class="table-responsive">
+        <div>
+          <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+            <div class="box-body">
+              <div class="form-group">
+                <%= label_tag :autobuscar, 'Nro Contrato - Objeto' %><br/>
+                <%= text_field_tag :autobuscar, params[:autobuscar],class: 'form-control',style: 'width: 100%;',autocomplete: 'off' %>
+              </div>
+              <div class="form-group">
+                <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div><br/>
+        <table class="table table-bordered table-condensed table-striped">
+          <tr class="thcolor">
+            <th width="15%" class="text-left">Nro Contrato</th>
+            <th width="10%" class="text-center">Fecha Inicio</th>
+            <th width="10%" class="text-center">Fecha Fin</th>
+            <th class="text-left">Objeto</th>
+            <th class="text-center" width="10%">Cantidad EPPS</th>
+          </tr>
+          <% @contratos.each do |contrato| %>
+            <tr>
+              <td class="text-table text-left">
+                <div id="abrir<%= contrato.contrato_id %>" class="pull-left">
+                  <%= link_to periodos_contrato_contratossolepps_path(ruta: 'ABRIR', contrato_id: contrato.contrato_id), style: "color: black;", remote: true do %>
+                    <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+                    <i class="fa fa-arrow-circle-down text-success"></i> <%= contrato.nro_contrato rescue nil %>
+                  <% end %>
+                </div>
+                <div id="cerrar<%= contrato.contrato_id %>" class="pull-left hide">
+                  <%= link_to periodos_contrato_contratossolepps_path(ruta: 'CERRAR', contrato_id: contrato.contrato_id.to_s), style: "color: black;", remote: true do %>
+                    <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+                    <i class="fa fa-star text-red"></i> <%= contrato.nro_contrato rescue nil %>
+                  <% end %>
+                </div>
+              </td>
+              <td class="text-table text-center">
+                <%= contrato.fecha_inicio rescue nil %>
+              </td>
+              <td class="text-table text-center">
+                <%= contrato.fecha_fin rescue nil %>
+              </td>
+              <td class="text-table text-justify">
+                <%= contrato.objeto rescue nil %>
+              </td>
+              <td class="text-table text-center">
+                <%= Contratossolepp.where("contrato_id = #{contrato.contrato_id}").count rescue 0 %>
+              </td>
+            </tr>
+            <tr id="tr_show<%= contrato.contrato_id %>" class="hidden">
+              <td colspan="5">
+                <div id="abrir_detalle<%= contrato.contrato_id %>"></div>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+

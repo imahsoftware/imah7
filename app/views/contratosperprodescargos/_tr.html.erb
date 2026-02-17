@@ -1,0 +1,24 @@
+<tr id="contratosperprodescargo_<%= contratosperprodescargo.id %>">
+  <td class="text-center">
+    <% if @contratosperproceso.codigo_firma_descargo.blank? %>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;" id="remove_boton_descargo_3<%= contratosperprodescargo.id %>">
+        <div>
+          <%= link_to edit_contratosperproceso_contratosperprodescargo_path(@contratosperproceso, contratosperprodescargo), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+          <% end %>
+        </div>
+        <div>
+          <%= link_to contratosperproceso_contratosperprodescargo_path(@contratosperproceso, contratosperprodescargo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>
+    <%= contratosperprodescargo.created_at.strftime("%Y-%m-%d %X") rescue nil %>- <%= contratosperprodescargo.user.username rescue nil %>
+    </div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="justify" class="text-table"><%= contratosperprodescargo.asear rescue nil %></td>
+  <td align="justify" class="text-table"><%= contratosperprodescargo.empleado rescue nil %></td>
+</tr>
+

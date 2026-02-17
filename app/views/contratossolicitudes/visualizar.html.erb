@@ -1,0 +1,140 @@
+<%
+  visualiza_iva = @contrato.visualiza_iva.to_s rescue nil
+%>
+<div align="center">
+  <table width="700" border="0">
+    <tr valign="top">
+      <td height="700">
+        <br/>
+        <table width="100%">
+          <tr>
+            <td>
+              <div align="center">
+                <%= image_tag 'logo_inicio_asear.png', class: 'user-image', size: '230x100' %>
+              </div>
+            </td>
+            <td width="80%">
+              <div align="left">
+                  <h5><strong>SOLICITUD NRO. <%= @contratossolicitud.id rescue nil%> - <%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></strong>
+                    <br/><small><%= @contrato.empresa.identificacion rescue nil %>-<%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %></small></h5>
+              </div></td>
+          </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th width="20%" height="20" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Fecha Solicitud</th>
+            <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Periodo</th>
+            <th width="40%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Solicitante</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Estado</th>
+            <th width="15%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Nro Contrato</th>
+          </tr>
+          <tr>
+            <td class="text-center" height="20" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.created_at.strftime("%Y-%m-%d %X") rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.periodo rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.user.nombre rescue nil%></td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contratossolicitud.estado rescue nil%>
+              <% if @contratossolicitud.estado.to_s == 'DESPACHADOS' and @contratossolicitud.fecha_despacho.to_s != "" %>
+                <br/><small><strong>Fecha: <%= @contratossolicitud.fecha_despacho.strftime("%Y-%m-%d") rescue nil %></strong></small>
+              <% end %>
+            </td>
+            <td class="text-center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= @contrato.nro_contrato rescue nil%></td>
+          </tr>
+        </table>
+          <% sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc) %>
+          <% sedesactivas.each do |a| %>
+            <%
+              array = ['A','C','O']
+              array.each do |arr|
+                dato = ""
+                tit = ""
+                if arr.to_s == 'A'
+                  dato = " contratosinsumo_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+                  tit = "Insumos"
+                elsif arr.to_s == 'C'
+                  dato = " contratosotro_id is not null and precio_unitario > 0 and cantidad > 0 and cantsede_#{a.ordensede.to_s} > 0 "
+                  tit = "Otros servicios"
+                elsif arr.to_s == 'O'
+                  dato = " id = -1 "
+                  contratossolotros = @contratossolicitud.contratossoldetalles.where(["cantsede_#{a.ordensede.to_s} > 0"]).order("id desc")
+                  tit = "Insumos General"
+                end
+                contratossoldetalle = @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order("id desc")
+                if contratossoldetalle.count.to_i > 0
+            %>
+                  <h5><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></h5>
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                    <tr style="background: #adadad">
+                      <th class="text-left" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Item</th>
+                      <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Cant.</th>
+                      <th width="10%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Vlr Unitario</th>
+                      <% if visualiza_iva.to_s == 'SI' %>
+                        <th width="5%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">% IVA</th>
+                        <th width="8%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Valor IVA</th>
+                        <th width="10%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Vlr Unitario + IVA</th>
+                      <% end %>
+                      <th width="15%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Total</th>
+                    </tr>
+                    <% contratossoldetalle.each do |c|
+                      cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+                    %>
+                      <tr>
+                        <td align="left" height="20" style="border:1px solid #CCCCCC;font-size: 11px; font-family: Tahoma;"><%= c.nombreinsumo_by_etapa(arr.to_s) rescue nil %></td>
+                        <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico cant rescue nil %></td>
+                        <% if visualiza_iva.to_s == 'SI' %>
+                          <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.precio_siniva rescue nil %></td>
+                          <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.porc_iva rescue nil %></td>
+                          <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.valor_iva rescue nil %></td>
+                          <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.precio_unitario rescue nil %></td>
+                        <% else %>
+                          <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.precio_unitario rescue nil %></td>
+                        <% end %>
+                        <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico (c.precio_unitario*cant) rescue nil %></td>
+                      </tr>
+                    <% end %>
+                  </table>
+              <% end %>
+              <%  if arr.to_s == 'O' and contratossolotros.count.to_i > 0 %>
+                  <h5><strong><%=tit %> (<%= a.nombre rescue nil %>)</strong></h5>
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                    <tr style="background: #adadad">
+                      <th class="text-left" height="20"  style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Item</th>
+                      <th width="10%" class="text-center" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Cant.</th>
+                      <th width="10%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Vlr Unitario</th>
+                      <th width="15%" class="text-right" style="border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">Total</th>
+                    </tr>
+                    <% contratossolotros.each do |c|
+                      cant = eval("c.cantsede_" + a.ordensede.to_s).to_f rescue 0
+                     %>
+                      <tr>
+                        <td align="left" height="20" style="border:1px solid #CCCCCC;font-size: 11px; font-family: Tahoma;">
+                          <%= c.insumo.insumodetalle rescue nil %>
+                        </td>
+                        <td align="center" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico cant rescue nil %></td>
+                        <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.precio_unitario rescue nil %></td>
+                        <td align="right" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;"><%= camponumerico c.precio_unitario*cant rescue nil %></td>
+                      </tr>
+                    <% end %>
+                  </table>
+              <% end %>
+          <% end %>
+          -- Fin Sede
+        <% end %>
+        -- Termine todas las sedes...
+      </td>
+    </tr>
+  </table>
+
+</div>
+<style>
+  tr {
+    page-break-inside: avoid;
+
+  }
+  table  { page-break-inside:auto }
+  thead { display:table-header-group }
+  tfoot  { display:table-footer-group }
+
+</style>
+
+
+

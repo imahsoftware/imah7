@@ -1,0 +1,45 @@
+<%= simple_form_for([@contrato, @contratosuser], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo, as: :select, collection: select_tipointerventor, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6"><%= f.input :user_interventor, collection: User.where(["tipoconsulta != 'PERSONA'"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_inicio, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :multiples_solicitudes, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :marca_entrega_sitio, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :marca_noreal, as: :select, collection: select_sino, input_html: { class: 'select2' } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :prefactura, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Valida Prefactura?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :prenomina, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Novedades Nomina?" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :solicitud_general, as: :select, collection: select_sino, input_html: { class: 'select2' }, label: "Solicitudes General?" %></div>
+    </div>
+    <legend>Sedes</legend>
+      <% con = 0
+         sedesactivas = @contrato.contratossedes.order(id: :asc)
+         sedesactivas.each do |a|
+           dato = ":sede"+a.ordensede.to_s
+           con = con + 1
+      %>
+          <% if con == 1 %><div class="row"><% end %>
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+              <label style="font-size: 10px; font-family: Verdana, Geneva, sans-serif;"><%=a.nombre.to_s %></label><%= f.input eval(dato), as: :radio_buttons, collection: [['SI',a.id], ['NO',0]], wrapper: :horizontal_radio_and_checkboxes,item_label_class: "radio-inline",item_wrapper_tag: false, label:false %> <br/>
+            </div>
+        <% if con == 6 %></div><% con = 0 end %>
+      <% end %>
+      <% if con != 6 %></div><% con = 0 end %>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosuser.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosuser_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosuser_path(@contrato, @contratosuser), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

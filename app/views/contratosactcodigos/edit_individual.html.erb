@@ -1,0 +1,112 @@
+<%
+  valida = true
+  if Parametro.find(3).valor.to_s == 'NO'
+    valida = false
+  end
+  cc = @contratosactcodigos.includes([:contratossede,:tiposevaluacion])[0]
+
+%>
+<legend class="alert alert-info">VERIFICACIÓN DIARIA DEL SERVICIO DE ASEO</legend>
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+        <th width="30%" class="text-center">Nodo</th>
+        <th width="35%" class="text-center">Evaluador</th>
+        <th width="35%" class="text-center">Fecha evalulacion</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="text-center"><%= cc.contratossede.nombre_consulta rescue nil %> - <strong><%= cc.nodo rescue nil %></strong></td>
+        <td class="text-center"><%= cc.user.nombre rescue nil %></td>
+        <td class="text-center"><%= cc.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <%= form_tag '/contratosactcodigos/update_individual', method: 'put' do %>
+    <div class="box-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+            <th width="25%" class="text-left">Item</th>
+            <th width="8%" class="col text-center">Realizada</th>
+            <th width="8%" class="col text-center">No Realizada</th>
+            <th class="col text-left">Observaciones</th>
+            <% if valida %>
+            <th width="8%" class="col text-center">¿Tratamiento de Novedad?</th>
+            <% end %>
+          </thead>
+          <tbody>
+          <% for contratosactcodigo in @contratosactcodigos.where(["tiposevaluacion_id in (select id from tiposevaluaciones where clase ='SERVICIO')"]) %>
+            <tr>
+              <%= fields_for "contratosactcodigos[]", contratosactcodigo do |f| %>
+                <%= render "fields",
+                           :f => f,
+                           :fe => contratosactcodigo,
+                           :ce => contratosactcodigo.contratossede,
+                           :clase => "SERVICIO",
+                           :valida => valida
+                %>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <legend><strong>¡Tu percepción es importante!</strong></legend>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <th width="40%" class="text-left">Item</th>
+          <th width="8%" class="col text-center">Bueno</th>
+          <th width="8%" class="col text-center">Regular</th>
+          <th width="8%" class="col text-center ">Malo</th>
+          <th class="col text-left">Observaciones</th>
+          </thead>
+          <tbody>
+          <% for contratosactcodigo in @contratosactcodigos.includes([:contratossede])
+                                                           .where(["tiposevaluacion_id in (select id from tiposevaluaciones where clase ='PERSONAL')"]) %>
+            <tr>
+              <%= fields_for "contratosactcodigos[]", contratosactcodigo do |f| %>
+                <%= render "fields",
+                           :f => f,
+                           :fe => contratosactcodigo,
+                           :ce => contratosactcodigo.contratossede,
+                           :clase => "PERSONAL"
+                %>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="box-footer">
+        <div class="box-tools pull-left">
+          <% if @contratosactcodigos.sum("validacion") == 0 %>
+                <%=link_to "Finalizar", actividades_menus_path(contratossedereturn: @contratosactcodigos[0].contratossede.id), :class => "btn btn-sm btn-info" %>
+          <% else %>
+              <div class="alert alert-danger"><strong>Nos interesa mejorar!</strong>
+                <br/>Por eso es importante conocer porque el servicio tiene una calificación Mala o Regular...
+                <br/>Recuerda que debes sustentar tus respuestas "NO REALIZADA"
+                <br/>Recuerda que debes diligenciar todas las preguntas</div>
+          <% end %>
+        </div>
+        <div class="box-tools pull-right">
+          <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+
+<style>
+    .my-custom-scrollbar {
+        position: relative;
+        height: 450px;
+        overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+</style>
+

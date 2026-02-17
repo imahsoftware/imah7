@@ -1,0 +1,112 @@
+<%= simple_form_for(Contratospermasiva.new, url: masivaesp_contratospermasivas_path, :method => :get) do |f| %>
+  <div class="alert alert-danger alert-dismissible" style="font-size: 10px;">
+    Hola, este proceso esta diseñado para los empleados que tienen fecha de terminacion y no tienen liquidacion generada, este proceso no reemplaza la fecha de terminacion que tenga el empleado registrada!
+  </div>
+  <div class="box-body">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <label>Contrato</label>
+          <select class="form-control select2ContratoIndexMasive select2" style="width:100%;" name="ubicacion[contrato_id]" id="ubicacion_contrato_id">
+            <option selected="selected" value="<%= f.object.contrato_id -%>">
+              <%= "#{f.object.descripcion_contrato}" -%>
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+          <label>Grupo</label>
+          <%= f.input :contratosgrupo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: false, disabled: true %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+          <label>Cargo</label>
+          <%= f.input :contratoscargo_id, as: :select, input_html: { data: { width: '100%' }, class: 'select2' }, collection: [], prompt: 'Seleccione', label: false, disabled: true %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true}, label: "Fecha inicio"  %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha_fin, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+        <div class="col-md-1">
+          <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' } do %>
+            <i class="fa fa-search" aria-hidden="true"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th width="10%" class="text-center" style="font-size:11px;"></th>
+        <th width="5%" class="text-center" style="font-size:11px;">ID</th>
+        <th class="text-left" style="font-size:11px;">Empresa - Contrato</th>
+        <th width="10%" class="text-center" style="font-size:11px;">Fecha Inicio</th>
+        <th width="10%" class="text-center" style="font-size:11px;">Fecha Fin</th>
+        <th width="20%" class="text-left" style="font-size:11px;">Observacion</th>
+        <th width="5%" class="text-center" style="font-size:11px;">Estado</th>
+        <th width="5%" class="text-center" style="font-size:11px;">Cant</th>
+      </tr>
+      </thead>
+      <tbody id="tbody">
+      <%
+        Contratospermasiva.joins(:contrato, :contratosgrupo)
+                          .select("contratos.nro_contrato, contratosgrupos.descripcion, contratosgrupos.termino,
+                                  (select perfil from contratoscargos where id = contratospermasivas.contratoscargo_id) perfil,
+                                  (select autobuscar from empresas where id = contratos.empresa_id) identnombre,
+                                  (select count(9) from contratospermasdetalles where contratospermasiva_id = contratospermasivas.id) cantpersonas,
+                                  (SELECT COUNT(DISTINCT s.consecutivo) FROM contratospermasdetalles m, contratosperfechas f, solicitudesretiros s
+                                   WHERE m.contratospermasiva_id = contratospermasivas.id AND m.contratosperfecha_id = f.id
+                                   AND f.id = s.contratosperfecha_id) cantconsecutivo,
+                                  (SELECT DISTINCT s.consecutivo FROM contratospermasdetalles m, contratosperfechas f, solicitudesretiros s
+                                   WHERE m.contratospermasiva_id = contratospermasivas.id AND m.contratosperfecha_id = f.id
+                                   AND f.id = s.contratosperfecha_id limit 1) vcconsecutivo,
+                                  contratospermasivas.*")
+                          .where("contratospermasivas.proceso = 'LIQUIDACION' and contratoscargo_id is not null")
+                          .order("contratospermasivas.id desc").each do |p| %>
+        <tr>
+          <td class="text-center" style="font-size:10px;">
+            <%= link_to edit_contratospermasiva_path(p.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+            <% end %>
+            <%= link_to informe_datas_path(infgrupo_id: 89, portafolio_id: p.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe EXCEL' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+            <% end %>
+            <% if p.estado.to_s == 'PENDIENTE' and p.estado_gen.to_s == "" %>
+              <%= link_to p, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+              <% end %>
+              <%= link_to aprobar_contratospermasivas_path(id: p.id), data: {toggle: 'tooltip', confirm: "Seguro que desea Aprobar, esto no tiene reversa....?"}, title: 'Aprobar' do %>
+                <button class="btn btn-xs btn-info"><i class="fa fa-chrome"></i></button>
+              <% end %>
+              <%= link_to liquidacionmasive_contratosperliquidaciones_path(consecutivo: p.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidaciones Masivas PDF' do %>
+                <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i></button>
+              <% end %>
+            <% end %>
+            <% if p.estado_gen.to_s != "" %><%=p.estado_gen.to_s %><% end %>
+          </td>
+          <td class="text-center" style="font-size:10px;"><%= p.id rescue nil%></td>
+          <td class="text-left" style="font-size:10px;"><%= p.identnombre rescue nil%>
+            <br/><strong>Nro Contrato : </strong><%= p.nro_contrato rescue nil%>
+            <br/><strong>Grupo : </strong><%= p.descripcion rescue nil%> <small>(<%= p.termino rescue nil%>)</small>
+            <% if p.perfil.present? %><br/><strong>Cargo : </strong><%= p.perfil rescue nil%><% end %>
+            <% if p.cantconsecutivo.to_i == 1 %><br/> --> Consecutivo: <%=p.vcconsecutivo rescue nil %>
+            <% else %><br/> --> Consecutivo:
+                <% Objeto.find_by_sql("SELECT DISTINCT s.consecutivo FROM contratospermasdetalles m, contratosperfechas f, solicitudesretiros s
+                                       WHERE m.contratospermasiva_id = #{p.id} AND m.contratosperfecha_id = f.id
+                                       AND f.id = s.contratosperfecha_id").each do |dd| %>
+                  <%=dd.consecutivo rescue nil %>,
+              <% end %>
+            <% end %>
+          </td>
+          <td class="text-center" style="font-size:10px;"><%= p.fecha_inicio rescue nil%></td>
+          <td class="text-center" style="font-size:10px;"><%= p.fecha_fin rescue nil%></td>
+          <td class="text-justify" style="font-size:10px;"><%= p.observacion rescue nil%></td>
+          <td class="text-center" style="font-size:10px;"><%= p.estado rescue nil%></td>
+          <td class="text-center" style="font-size:10px;"><%= p.cantpersonas rescue nil%></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>

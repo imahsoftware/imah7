@@ -1,0 +1,62 @@
+<tr id="contratosperembargo_<%= contratosperembargo.id %>">
+  <td class="text-center" rowspan="2">
+    <% if is_auth_a("contratosperembargo")%>
+      <%= link_to edit_contratospersona_contratosperembargo_path(@contratospersona, contratosperembargo), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if is_auth_e("contratosperembargo")%>
+      <%= link_to contratospersona_contratosperembargo_path(@contratospersona, contratosperembargo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperembargo.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="center" rowspan="2"><%= contratosperembargo.id rescue nil %></td>
+  <td align="left"><%= contratosperembargo.tiposentidad.namecomplete rescue nil %></td>
+  <td align="center"><%= contratosperembargo.tipodescuento rescue nil %></td>
+  <td align="right"><%=camponumerico contratosperembargo.valor rescue nil %></td>
+  <td align="center"><%= contratosperembargo.termino_descuento rescue nil %></td>
+  <td align="center"><%= contratosperembargo.estado rescue nil %></td>
+</tr>
+<tr>
+  <td colspan="5">
+    <% if Contratospernovedad.where(contratosperembargo_id: contratosperembargo.id).exists? %>
+      <a href="javascript:void(0);" onclick="SINO('demo_<%=contratosperembargo.id%>')">
+        <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:#ff0000;" data-original-title="Pulsa aqui para ver retenciones"></i>Ver detalle de pagos</a>
+      <div id="demo_<%=contratosperembargo.id rescue nil %>" style="display:none;"><br/>
+        <table class="table table-bordered table-condensed table-striped" width="30%">
+          <thead class="thcolor">
+          <tr>
+            <td width="5%" class="text-center">Fecha</td>
+            <th width="10%" class="text-center">Valor Novedad</th>
+          </tr>
+          </thead>
+          <% Contratospernovedad.where(["contratospersona_id = #{contratosperembargo.contratospersona_id} and contratosperembargo_id = #{contratosperembargo.id}"]).order("fecha desc").each do |a| %>
+            <tr>
+              <td align="center"><%= a.fecha rescue nil %></td>
+              <td align="center"><%= camponumerico a.valor_novedad rescue nil %></td>
+            </tr>
+          <% end %>
+        </table>
+        <% if Contratosperliqnovedad.where(contratosperembargo_id: contratosperembargo.id).exists? %>
+          <table class="table table-bordered table-condensed table-striped" width="30%">
+            <thead class="thcolor">
+            <tr>
+              <td width="5%" class="text-center">Fecha Liquidación</td>
+              <th width="10%" class="text-center">Valor Novedad</th>
+            </tr>
+            </thead>
+            <% Contratosperliqnovedad.where(["contratosperembargo_id = #{contratosperembargo.id}"]).each do |a| %>
+              <tr>
+                <td align="center"><%= a.created_at rescue nil %></td>
+                <td align="center"><%= camponumerico a.valor_novedad rescue nil %></td>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+
+  </td>
+</tr>

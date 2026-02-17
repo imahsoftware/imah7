@@ -1,0 +1,11 @@
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @fecha %>").html('<%= j render "visitascompromisos/abrir_detalle"  %>');
+$("#abrir<%= @fecha %>").addClass("hide");
+$("#cerrar<%= @fecha %>").removeClass("hide");
+$("#tr_show<%= @fecha %>").removeClass("hidden");
+<% else %>
+$("#abrir<%= @fecha %>").removeClass("hide");
+$("#cerrar<%= @fecha %>").addClass("hide");
+$("#abrir_detalle<%= @fecha %>").html(null);
+$("#tr_show<%= @fecha %>").addClass("hidden");
+<% end %>

@@ -1,0 +1,41 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Ficha Técnica del Contrato</strong></h3>
+</div>
+<div class="box-body">
+  <div class="table-responsive">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th width="20%" class="text-center text-table">Nro Contrato</th>
+        <th width="15%" class="text-center text-table">Fecha Inicio</th>
+        <th width="15%" class="text-center text-table">Fecha Fin</th>
+        <th class="text-left text-table">Objeto</th>
+      </tr>
+      </thead>
+      <tr>
+        <td width="20%" class="text-table text-center"><%= @visita.contrato.nro_contrato rescue nil %></td>
+        <td width="15%" class="text-table text-center"><%= @visita.contrato.fecha_inicio rescue nil %></td>
+        <td width="15%" class="text-table text-center"><%= @visita.contrato.fechafinal rescue nil %></td>
+        <td class="text-table"><%= @visita.contrato.objeto rescue nil %></td>
+      </tr>
+    </table>
+    <legend style="font-size: 20px;">Cargos del Contrato</legend>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-left text-table">Cargos</th>
+        <th width="15%" class="text-center text-table">Cantidad</th>
+      </tr>
+      </thead>
+      <% @visita.contrato.contratoscargos.each do |contratoscargo| %>
+        <tr>
+          <td class="text-table text-left"><%= contratoscargo.perfil rescue nil %></td>
+          <td class="text-table text-center">
+            <%= Contratosperfecha.where("contrato_id = #{@visita.contrato.id} and contratoscargo_id = #{contratoscargo.id}").count rescue 0 %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+

@@ -1,0 +1,36 @@
+<tr id="contratosperqueja_<%= contratosperqueja.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosperqueja")%>
+    <%= link_to edit_contratospersona_contratosperqueja_path(@contratospersona, contratosperqueja), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contratospersona_contratosperqueja_path(@contratospersona, contratosperqueja), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperqueja.user_nombre.html_safe rescue nil %><%= contratosperqueja.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosperqueja.fecha rescue nil %></td>
+  <td align="left"><%= contratosperqueja.queja_explica rescue nil %>
+    <% if contratosperqueja.queja_maltrato.to_s == 'SI' %>
+      <br/><strong>Maltrato laboral</strong>
+    <% end %>
+    <% if contratosperqueja.queja_persecucion.to_s == 'SI' %>
+      <br/><strong>Persecución laboral</strong>
+    <% end %>
+    <% if contratosperqueja.queja_discriminacion.to_s == 'SI' %>
+      <br/><strong>Discriminación laboral</strong>
+    <% end %>
+    <% if contratosperqueja.queja_entorpecimiento.to_s == 'SI' %>
+      <br/><strong>Entorpecimiento laboral</strong>
+    <% end %>
+    <% if contratosperqueja.queja_inequidad.to_s == 'SI' %>
+      <br/><strong>Inequidad laboral</strong>
+    <% end %>
+    <% if contratosperqueja.queja_desproteccion.to_s == 'SI' %>
+      <br/><strong>Desprotección laboral</strong>
+    <% end %>
+  </td>
+  <td align="center"><%= contratosperqueja.conciliar rescue nil %></td>
+</tr>
+

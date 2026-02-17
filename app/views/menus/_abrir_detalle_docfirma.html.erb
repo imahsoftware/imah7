@@ -1,0 +1,31 @@
+<br/>
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="5%" class="text-center" style="font-size:10px;">
+      <th width="30%" class="text-left" style="font-size:10px;">Tipo</th>
+      <th class="text-left" style="font-size:10px;">Soporte Digital</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <% contratosperfechasdocs.each do |contratosperfechasdoc| %>
+      <tr>
+        <td class="text-center" style="font-size:10px;">
+          <% if is_auth_e('eliminardocdash') %>
+            <%= link_to contratosperfecha_contratosperfechasdoc_path(contratosperfecha, contratosperfechasdoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+              <i class="fa fa-trash" class="text-red"></i>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-left" style="font-size:10px;"><%= contratosperfechasdoc.tipo rescue nil %></td>
+        <td class="text-left" style="font-size:10px;">
+          <%= link_to contratosperfechasdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+            <%= contratosperfechasdoc.descripcion rescue nil %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

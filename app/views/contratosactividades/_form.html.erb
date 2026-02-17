@@ -1,0 +1,29 @@
+<%= simple_form_for([@contrato, @contratosactividad], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7"><%= f.input :detalle, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: 'Actividad' %></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :clase, as: :select, collection: select_act_clase, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Clase - Ubicación"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :tipo, as: :select, collection: select_act_tipo, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Tipo Aseo"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :cantidad, as: :moneda %></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :contratossede_id, collection: @contrato.contratossedes.order(:nombre).collect {|p| [ p.nombre_consulta, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true, label: "Sede de la actividad"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :dia_semana, as: :select, collection: select_diassemana, input_html: { data: { width: '100%' }, class: 'select2'}, label: "Dia de la Semana"%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :turno%></div>
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2"><%= f.input :horario%></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosactividad.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosactividad_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contrato_contratosactividad_path(@contrato, @contratosactividad), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

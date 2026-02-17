@@ -1,0 +1,86 @@
+<legend style="margin-top: -19px;">DashBoard Prefacturas
+  <%= link_to informe_datas_path(infgrupo_id: 29, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Informe' do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i> Informe</button>
+  <% end %>
+</legend>
+<% usr = @usr
+   estados = Contratosprefactura.select("estado, (CASE WHEN estado = 'PENDIENTE' THEN 1 WHEN estado = 'ENVIADO' THEN 2 WHEN estado = 'APROBADO' THEN 3
+                                                  WHEN estado = 'RECHAZADA' THEN 4 END) codigo, concat('PREF_',estado) estado2, count(9) cantidad")
+                                .group("estado").distinct.order("2 asc")
+%>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado2
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: p.estado2) do %>
+              <i class="fa fa-adn"></i> <%= p.estado %> (<%= p.cantidad rescue 0 %>)
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          estados.each do |p|
+            if usr.etapa.to_s == p.estado2
+        %>
+            <div class="tab-pane active" id="<%= p.estado2 %>">
+              <div class="box-body">
+                <table class="table table-bordered table-condensed table-striped" id="dttbPrefactura">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="3%"></th>
+                    <th class="text-left">Empresa</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                    @contratosprefacturas.where(estado: p.estado)
+                                         .select("contrato_id, (select concat(e.identificacion,'-',ifnull(e.digito,''),' ',e.nombre) from empresas e, contratos c where c.id = contratosprefacturas.contrato_id and c.empresa_id = e.id) identnombre,
+                                                  (select c.nro_contrato from contratos c where c.id = contratosprefacturas.contrato_id) nrocontrato,
+                                                  count(9) cantidad")
+                                         .group("contrato_id").distinct.each do |pe|
+                  %>
+                    <tr>
+                      <td></td>
+                      <td class="text-left" style="font-size:11px;">
+                        <div id="abrir<%= pe.contrato_id %>" class="pull-left">
+                          <%= link_to show_detallef_menus_path(contrato_id: pe.contrato_id, estado: p.estado, ruta: 'ABRIR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            <%= pe.identnombre %> -- <%=pe.nrocontrato rescue nil %> : (<%= pe.cantidad %>)
+                          <% end %>
+                        </div>
+                        <div id="cerrar<%= pe.contrato_id %>" class="pull-left hide">
+                          <%= link_to show_detallef_menus_path(contrato_id: pe.contrato_id, estado: p.estado, ruta: 'CERRAR'), remote: true do %>
+                            <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                            <%= pe.identnombre %> -- <%=pe.nrocontrato rescue nil %> : (<%= pe.cantidad %>)
+                          <% end %>
+                        </div>
+                        <div id="prefacturasespdetalle<%= pe.contrato_id %>" style="width: 100%"></div>
+                      </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="firma">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

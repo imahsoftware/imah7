@@ -1,0 +1,36 @@
+<%= simple_form_for(@migracionescrm) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :user %>
+    <%= f.input :consecutivo %>
+    <%= f.association :persona %>
+    <%= f.input :detalle %>
+    <%= f.input :checksum %>
+    <%= f.input :fecha_modificacion %>
+    <%= f.input :primer %>
+    <%= f.input :site %>
+    <%= f.input :autor %>
+    <%= f.input :nombre %>
+    <%= f.input :oportunidad %>
+    <%= f.input :tipo_oportunidad %>
+    <%= f.input :estudiante %>
+    <%= f.input :identificacion %>
+    <%= f.input :telefono %>
+    <%= f.input :correo %>
+    <%= f.input :enrollment %>
+    <%= f.input :sub_enrollment %>
+    <%= f.input :carrera %>
+    <%= f.input :tipo_carrera %>
+    <%= f.input :modalidad %>
+    <%= f.input :origen_carga %>
+    <%= f.input :periodo %>
+    <%= f.input :sub_periodo %>
+    <%= f.input :fecha_creacion %>
+    <%= f.input :estado %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

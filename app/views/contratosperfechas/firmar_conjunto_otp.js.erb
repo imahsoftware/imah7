@@ -1,0 +1,5 @@
+<% if @valida %>
+$("#mensaje_conjunto<%= @contratosperfecha.id %>").replaceWith("<div class='row' id='mensaje'><div class='col-xs-12 col-sm-12 col-md-2 col-lg-2' style='text-align: center;width: 100%;margin-bottom: 30px;color: red;font-weight: 600;font-size: 20px;'>CODIGO NO VALIDO</div></div>");
+<% else %>
+$("#contrato_firmar<%= @contratosperfecha.id %>").html("<div class='modal-content'> <div class='modal-body'> <%= j render 'menus/firma_otp', contratosperfecha: @contratosperfecha, contratospersona: @contratospersona, ruta: 'MODULO_CONTRATO' %></div></div>");
+<% end %>

@@ -1,0 +1,90 @@
+<div class="table-responsive">
+  <% @clasificaciones = Objeto.find_by_sql("SELECT DISTINCT i.clasificacion
+																						FROM iparametros i, contratossoleppsdetalles cd
+																						WHERE cd.contratossolepp_id = #{@contratossolepp.id}
+																						AND   i.descripcion = cd.item
+																						ORDER BY i.descripcion ASC")
+     @clasificaciones.each do |c| %>
+    <legend style="font-size: 14px;"><%= c.clasificacion rescue nil %></legend>
+
+
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <td width="8%"></td>
+        <th class="text-left text-table">Item</th>
+        <th width="10%" class="text-right text-table">Cantidad</th>
+        <% if is_auth_a("contratossoleppsdetalle_admin") %>
+          <th width="10%" class="text-right text-table">Cnt Aprobada</th>
+          <th width="40%" class="text-left text-table">Observación</th>
+        <% else %>
+          <th width="40%" class="text-left text-table">Observación</th>
+        <% end %>
+
+      </tr>
+      </thead>
+      <tbody id="tbody_contratossoleppsdetalles">
+      <% @contratossolepp.contratossoleppsdetalles.where("item in (select descripcion from iparametros where clasificacion = '#{c.clasificacion}')").order(id: :desc).each do |contratossoleppsdetalle| %>
+        <%= render 'contratossoleppsdetalles/tr', contratossoleppsdetalle: contratossoleppsdetalle %>
+      <% end %>
+      </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('input[id^="cant_aprobada_"]').on('input', function () {
+                var detalleId = $(this).data('detalle-id');
+                var valor = $(this).val();
+                var observacion = $('#observacion_' + detalleId).val();
+                $.ajax({
+                    url: '/contratossoleppsdetalles/' + detalleId + '/update2',
+                    method: 'PATCH',
+                    data: {contratossoleppsdetalle: {cant_aprobada: valor, observacion: observacion}}
+                });
+            });
+
+            $('textarea[id^="observacion_"]').on('input', function () {
+                var detalleId = $(this).attr('id').split('_')[1];
+                var valor = $(this).val();
+                var cantAprobada = $('#cant_aprobada_' + detalleId).val();
+                $.ajax({
+                    url: '/contratossoleppsdetalles/' + detalleId + '/update2',
+                    method: 'PATCH',
+                    data: {contratossoleppsdetalle: {cant_aprobada: cantAprobada, observacion: valor}}
+                });
+            });
+        });
+    </script>
+  <% end %>
+</div>
+<style>
+    .form-control {
+        width: 100% !important;
+        height: 26px !important;
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .form-control2 {
+        text-align: left;
+        display: block;
+        width: 100%;
+        height: 64px;
+        padding: 6px 12px;
+        font-size: 12px !important;
+        line-height: 1.428571429;
+        color: #555555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    }
+</style>
+
+
+

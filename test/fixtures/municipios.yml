@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  descripcion: MyString
+  coddian_municipio: MyString
+  departamento: MyString
+  coddian_departamento: MyString
+  autobuscar: MyString
+
+two:
+  descripcion: MyString
+  coddian_municipio: MyString
+  departamento: MyString
+  coddian_departamento: MyString
+  autobuscar: MyString

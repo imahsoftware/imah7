@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  visita: one
+  user: one
+  fecha: 2023-12-09
+  estado: MyString
+  compromiso: MyString
+
+two:
+  visita: two
+  user: two
+  fecha: 2023-12-09
+  estado: MyString
+  compromiso: MyString

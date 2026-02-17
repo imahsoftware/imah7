@@ -1,0 +1,29 @@
+<%= simple_form_for(@concepto) do |f| %>
+  <div class="box box-danger">
+    <div class="box-header">
+      <h3 class="box-title">
+        <%= link_to conceptos_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-danger" aria-hidden="true"></i>
+        <% end %>
+        Información Concepto</h3>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+          <%= f.input :cuenta, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <%= f.input :descripcion, :input_html => {:onChange => "javascript:this.value=this.value.toUpperCase();"} %>
+        </div>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "Guardar", class: "btn btn-primary", data: {disable_with: "Guardar  "} %>
+      </div><!-- /.box-tools -->
+    </div>
+  </div>
+<% end %>
+<% unless @concepto.new_record? %>
+<%= render 'conceptosretenciones/conceptosretenciones' %>
+<% end %>

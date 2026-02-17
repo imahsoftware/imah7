@@ -1,0 +1,32 @@
+<%= form_for(contratossoleppscontrol) do |f| %>
+  <% if contratossoleppscontrol.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contratossoleppscontrol.errors.count, "error") %> prohibited this contratossoleppscontrol from being saved:</h2>
+
+      <ul>
+      <% contratossoleppscontrol.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :item %>
+    <%= f.text_field :item %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cantidad_aprobada %>
+    <%= f.number_field :cantidad_aprobada %>
+  </div>
+
+  <div class="field">
+    <%= f.label :cantidad_restante %>
+    <%= f.number_field :cantidad_restante %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

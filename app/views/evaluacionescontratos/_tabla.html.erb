@@ -1,0 +1,17 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="5%"></th>
+    <th class="font-size-text-tabla text-center text-table" width="5%">ID</th>
+    <th class="font-size-text-tabla text-table">Evaluado</th>
+    <th class="font-size-text-tabla text-table text-center" width="15%">Estado</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_evaluacionescontratos">
+  <% @evaluacion.evaluacionescontratos.select("(select concat(nombre,' (',email,') - (',tipoconsulta,')')
+                                                from users where id = evaluacionescontratos.user_responsable) nombrecompleto, evaluacionescontratos.*")
+                                      .order("1 asc").each do |evaluacionescontrato| %>
+    <%= render 'evaluacionescontratos/tr', evaluacionescontrato: evaluacionescontrato %>
+  <% end %>
+  </tbody>
+</table>

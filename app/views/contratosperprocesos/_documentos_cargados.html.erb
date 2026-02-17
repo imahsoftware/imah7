@@ -1,0 +1,14 @@
+<% if contratosperproceso.contratosperprodocs.where("user_id = #{is_admin}").present? %>
+  <% contratosperproceso.contratosperprodocs.where("user_id = #{is_admin}").order(id: :desc).each do |contratosperprodoc| %>
+    <div>
+      <%= link_to contratosperproceso_contratosperprodoc_path(contratosperproceso, contratosperprodoc, ruta: 'PROCESO'), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <i class="fa fa-trash text-red"></i>
+      <% end %>
+
+      <%= link_to contratosperprodoc.docproceso.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+        <%= contratosperprodoc.docproceso_file_name rescue nil %>
+        <b>(<%= contratosperprodoc.tipo rescue nil %>)</b>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

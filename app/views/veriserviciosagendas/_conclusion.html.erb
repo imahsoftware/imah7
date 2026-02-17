@@ -1,0 +1,32 @@
+<div class="modal-header" >
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @veriserviciosagenda.fecha_reprogramacion %> - <%= @veriserviciosagenda.nota rescue nil %></h4>
+</div>
+<div class="modal-body">
+  <%= simple_form_for([@veriservicio, @veriserviciosagenda], remote: true) do |f| %>
+    <%= hidden_field_tag :validacion, params[:validacion], value: @validacion %>
+    <div class="bs-callout">
+      <div class="mensaje_firma_agenda">
+        <i class="fa fa-info-circle"></i> Para poder continuar con el proceso se debe de ingresar la conclusión y el sistema habilitara el proceso de firma digital.
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <%= f.input :conclusion, as: :text, input_html: {rows: 3, class: "uppercaseInput" }, label: "Conclusión" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
+          <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <br/>
+</div>
+<br/>
+
+
+

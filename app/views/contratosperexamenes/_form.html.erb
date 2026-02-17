@@ -1,0 +1,49 @@
+<%= simple_form_for([@contratospersona, @contratosperexamen], remote: true) do |f| %>
+  <div class="bs-callout">
+    <% if is_auth_c('contratosperexamen') %>
+     <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :descripcion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Descripción del examen requerido" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :direccion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Direccion Sitio" %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :recomendaciones, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Recomendaciones" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true } %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :hora %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :estado, as: :select, collection: select_estadoexamen, input_html: { data: { width: '100%' }, class: 'select2'}%></div>
+      </div>
+    <% else %>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :descripcion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Descripción del examen requerido",disabled: true %></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :direccion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Direccion Sitio",disabled: true %></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :recomendaciones, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Recomendaciones",disabled: true %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true },disabled: true %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :hora,disabled: true %></div>
+      </div>
+    <% end %>
+    <% if @contratospersona.user_asignado.to_s == "" %>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :user_asignado, collection: User.where(["tipoconsulta != 'PERSONA' AND geintac is null"]).order(:nombre).collect {|p| [ p.nombrecompleto, p.id ] }, input_html: { class: 'select2' }, as: :select,  include_blank: true%></div>
+      </div>
+    <% end %>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :observacion_llamada, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 }, label: "Observacion LLamada" %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :contrato_fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true },label: "Fecha firma contrato"  %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :contrato_hora, label: "Hora firma contrato" %></div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratosperexamen.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratosperexamen_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratosperexamen_path(@contratospersona, @contratosperexamen), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

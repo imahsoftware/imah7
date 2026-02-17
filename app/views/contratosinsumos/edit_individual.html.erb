@@ -1,0 +1,74 @@
+  <div class="box ">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <legend>
+          <%= link_to edit_contrato_path(id: @contrato.id, etapa:'F'), data: {toggle: 'tooltip'}, title: 'Regresar' do %>
+            <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+          <% end %>
+          Información Contrato (<%= @contrato.empresa.identificacion rescue nil %>
+          -<%= @contrato.empresa.digito rescue nil %> <%= @contrato.empresa.nombre rescue nil %>)
+        </legend>
+      </div>
+    </div>
+  </div>
+</div>
+<legend>
+  Asociacion de Insumos
+</legend>
+<div class="box box-primary">
+  <%= form_tag '/contratosinsumos/update_individual', method: 'put' do %>
+    <div class="box-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead class="thcolor">
+          <th width="40%" class="text-left">Item</th>
+          <th width="60%" class="col text-left">Homologación</th>
+          </thead>
+        </table>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-bordered table-striped mb-0">
+            <tbody>
+            <% for contratosinsumo in @contratosinsumos %>
+              <tr>
+                <%= fields_for "contratosinsumos[]", contratosinsumo do |f| %>
+                  <%= render "fields",
+                             :f => f,
+                             :fe => contratosinsumo,
+                             :ce => contratosinsumo.contrato
+                  %>
+                <% end %>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-footer">
+          <div class="box-tools pull-right">
+            <%= submit_tag "Guardar", :disable_with => "Guardando...", :class => "btn btn-sm btn-danger" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+  <div class="modal fade" id="fichatecnica">
+    <div class="modal-dialog modal-dialog-responsive" style="width: 80%" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+<style>
+    .my-custom-scrollbar {
+        position: relative;
+        height: 450px;
+        overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+</style>
+

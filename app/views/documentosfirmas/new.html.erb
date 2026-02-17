@@ -1,0 +1,23 @@
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<div class="container">
+  <div class="box-header">
+    <%= simple_form_for Documentosfirma.new, :url => captura_firma_documentosfirmas_path, :method => :post, remote: true do |f| %>
+      <%= f.hidden_field :tabla, value: 'USERS' %>
+      <%= f.hidden_field :referencia_id, value: 1 %>
+      <div class="signature_pad text-center">
+        <div class="signature_pad_body">
+          <canvas width=400 height=200></canvas>
+        </div>
+        <div class="signature_pad_footer">
+          <div class="text-muted">Firma Digital</div>
+          <button type="button" class="btn btn-default signature_pad_clear">Borrar</button>
+          <%= f.button :submit, 'Guardar', class: 'btn btn-primary signature_pad_save' %>
+        </div>
+      </div>
+    <% end %>
+
+    <div align="center" id="imagen_firma" style="position: relative; bottom: 40px; border: #E6E6E6 1px solid;">
+      <%= image_tag "documentosfirmas/#{Documentosfirma.where("tabla = 'USERS'").last.signature}", size: '300x100' %>
+    </div>
+  </div>
+</div>

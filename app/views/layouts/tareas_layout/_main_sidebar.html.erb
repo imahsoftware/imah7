@@ -1,0 +1,96 @@
+<%
+  @tareas = Tarea.where(estado: 'ACTIVO').order("id desc")
+%>
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" style="overflow: hidden; white-space: normal !important;" data-widget="tree">
+      <li class="header">MENU TABLEROS</li>
+
+      <li class="treeview" style="font-size: 12px !important;">
+        <a href="#"><i class="fa fa-sticky-note"></i> <span>Activos (<%= @tareas.count.to_i rescue 0 %>)</span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+          <% if @tareas.present? %>
+            <li>
+              <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                  <input type="text" id="filter" class="form-control" placeholder="Buscar.." autocomplete="off">
+                </div>
+              </form>
+            </li>
+            <li>
+              <nav>
+                <ul class="menu" style="list-style-type: none;  margin-left: -25px;">
+                  <% @tareas.each do |tarea| %>
+                    <li class="filtro-search treeview <%= active_class(detec_tareas_path(id: tarea.id)) %>">
+                      <%= link_to detec_tareas_path(id: tarea.id), style: "padding: 3px 0px 3px 15px;" do %>
+                        <div style="font-size: 11px; padding: 3px;">
+                          <i class="fa fa-adn"></i> <span><%= tarea.tema rescue nil %></span>
+                        </div>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </nav>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+      <li class="treeview" style="font-size: 12px !important;">
+        <a href="#"><i class="fa fa-ban"></i> <span>Finalizados (<%= @tareasi.count.to_i rescue 0 %>)</span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+          <% if @tareasi.present? %>
+            <li>
+              <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                  <input type="text" id="filter2" class="form-control" placeholder="Buscar..." autocomplete="off">
+                </div>
+              </form>
+            </li>
+            <li>
+              <nav>
+                <ul class="menu" style="list-style-type: none;  margin-left: -25px;">
+                  <% @tareasi.each do |tarea| %>
+                    <li class="filtro-search2 treeview <%= active_class(detec_tareas_path(id: tarea.id)) %>">
+                      <%= link_to detec_tareas_path(id: tarea.id), style: "padding: 3px 0px 3px 15px;" do %>
+                        <div style="font-size: 11px; padding: 3px;">
+                          <i class="fa fa-adn"></i> <span><%= tarea.tema rescue nil %></span>
+                        </div>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </nav>
+            </li>
+          <% else %>
+            <li class="treeview">
+              No hay
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</aside>
+
+
+
+<style>
+    .menu {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .input-group {
+        position: relative;
+        display: contents !important;
+    }
+</style>

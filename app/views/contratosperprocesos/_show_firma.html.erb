@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-center text-table" width="25%">Firma Creador</th>
+        <th class="text-center text-table" width="25%">Firma Empleado</th>
+        <th class="text-center text-table" width="25%">Firma Testigo 1</th>
+        <th class="text-center text-table" width="25%">Firma Testigo 2</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_contratosperprocesos">
+      <td class="text-center text-table" style="padding: 10px;">
+        <% if @contratosperproceso.codigo_firma_supervisor.present? %>
+          <div align="left">
+            <%= @contratosperproceso.user.nombre rescue nil %><br/>
+            <b>C.C:</b> <%= @contratosperproceso.user.identificacion rescue nil %><br/>
+            <b>Firma:</b> <%= @contratosperproceso.codigo_firma_supervisor rescue nil %><br/>
+            <b>Fecha:</b> <%= @contratosperproceso.fecha_firma_supervisor.strftime("%Y-%m-%d %X") rescue nil %><br/>
+            <b>Codigo Recibido:</b> <%= @contratosperproceso.codigo_recibido_supervisor rescue nil %>
+          </div>
+        <% else %>
+          <b>Sin Firmar</b>
+        <% end %>
+      </td>
+      <td class="text-center text-table">
+        <% if @contratosperproceso.firma_usuario.present? %>
+          <%= image_tag @contratosperproceso.firma_usuario_doc.url(:thumb) %><br/>
+        <% else %>
+          <b>Sin Firmar</b>
+        <% end %>
+        <br/><%= @contratospersona.nombre_completo rescue nil %>
+        <br/><b>C.C:</b> <%= @contratospersona.identificacion rescue nil %>
+      </td>
+      <td class="text-center text-table">
+        <% if @contratosperproceso.user_testigo1.present? and @contratosperproceso.firma_testigo1.present? %>
+          <%= image_tag @contratosperproceso.firma_testigo1_doc.url(:thumb) %><br/>
+        <% elsif @contratosperproceso.user_testigo1.blank? %>
+          <b>No Aplica</b>
+        <% else %>
+          <b>Sin Firmar</b>
+        <% end %>
+        <% if @contratosperproceso.user_testigo1.present? %>
+          <br/><%= User.find(@contratosperproceso.user_testigo1).nombre rescue nil %>
+          <br/><b>C.C:</b> <%= User.find(@contratosperproceso.user_testigo1).identificacion rescue nil %>
+        <% end %>
+      </td>
+      <td class="text-center text-table">
+        <% if @contratosperproceso.user_testigo2.present? and @contratosperproceso.firma_testigo2.present? %>
+          <%= image_tag @contratosperproceso.firma_testigo2_doc.url(:thumb) %><br/>
+        <% elsif @contratosperproceso.user_testigo2.blank? %>
+          <b>No Aplica</b>
+        <% else %>
+          <b>Sin Firmar</b>
+        <% end %>
+        <% if @contratosperproceso.user_testigo2.present? %>
+          <br/><%= User.find(@contratosperproceso.user_testigo2).identificacion rescue nil %>
+          <br/><b>C.C: </b><%= User.find(@contratosperproceso.user_testigo2).nombre rescue nil %>
+        <% end %>
+      </td>
+      </tbody>
+    </table>
+  </div>
+</div>

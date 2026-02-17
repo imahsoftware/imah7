@@ -1,0 +1,46 @@
+<%
+  dato = @contratossolicitud.datosol.to_s
+  @clase = ""
+  if @contratossolicitud.etapa.to_s == 'A'
+    @clase = "Insumos"
+  elsif @contratossolicitud.etapa.to_s == 'B'
+    @clase = "Equipos, Maquinaria"
+  elsif @contratossolicitud.etapa.to_s == 'C'
+    @clase = "Otros servicios"
+  elsif @contratossolicitud.etapa.to_s == 'D'
+    @clase = "Otros insumos"
+  end
+  visualiza_iva = @contratossolicitud.contrato.visualiza_iva.to_s rescue nil
+%>
+<div class="box-header">
+  <h3 class="box-title"><strong>
+    <%=@clase.to_s%>
+    <% if @contratossolicitud.estado.to_s == 'PENDIENTE' and @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).exists? %>
+      <%= link_to edit_individual_contratossoldetalles_path(contratossolicitud_id: @contratossolicitud.id), class: 'edit_personasantropo_button', data: {toggle: 'tooltip'}, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-external-link"></i> Edición Avanzada...</button>
+      <% end %>
+    <% elsif is_auth_c('modificarpedido') %>
+      <%= link_to edit_individual_contratossoldetalles_path(contratossolicitud_id: @contratossolicitud.id), class: 'edit_personasantropo_button', data: {toggle: 'tooltip'}, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-external-link"></i> Edición Avanzada...</button>
+      <% end %>
+    <% end %>
+    </strong></h3>
+  <div class="box-tools pull-right">
+    <% if visualiza_iva.to_s == 'SI' and @contratossolicitud.estado.to_s == 'PENDIENTE' %>
+      <%= link_to new_contratossolicitud_contratossoldetalle_path(@contratossolicitud), id: 'new_contratossoldetalle_button', class: 'btn btn-sm btn-warning', remote: true do %>
+        <i class="fa fa-plus-square"> </i> <span><%=t :agregar%></span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <div id="contratossoldetalle_form" class="collapse"></div>
+  <div id="contratossoldetalles">
+    <% if @contratossolicitud.contratossoldetalles.where(["#{dato.to_s}"]).order("contratosinsumo_id asc").present? %>
+      <%= render 'contratossoldetalles/tabla' %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+    <% end %>
+  </div>
+</div>

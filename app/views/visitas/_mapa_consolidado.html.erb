@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @visita.user.nombre rescue nil %></h4>
+</div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<div class="modal-body">
+  <div id="map_p1" style="height: 400px; z-index: 0;"></div>
+  <script type="text/javascript" charset="utf-8">
+      document.addEventListener('DOMContentLoaded', function () {
+          var mapId3 = "map_p1";
+          var latitude = 6.17058;
+          var longitude = -75.5694;
+
+          var map3 = L.map(mapId3).setView(["6.17058", "-75.5694"], 13);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map3);
+
+          var marker = L.marker(["6.17058", "-75.5694"]).addTo(map3); // Usar las coordenadas del parámetro
+          marker.bindPopup("<b>Usuario:</b> ADMINISTRADOR - <b>Fecha:</b> 08/11/2023 01:40:06 - <b>Dirección:</b> Carrera 27, Envigado, Valle de Aburrá, Antioquia, RAP del Agua y la Montaña, 055420, Colombia - <b>Latitud:</b> 6.17058 - <b>Longitud:</b> -75.5694").openPopup();
+      });
+  </script>
+</div>
+<br/>

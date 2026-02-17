@@ -1,0 +1,26 @@
+<tr id="contratosgrupo_<%= contratosgrupo.id %>">
+  <td class="text-center">
+    <% if @is_auth_a_contratosgrupo%>
+      <%= link_to edit_contrato_contratosgrupo_path(@contrato, contratosgrupo), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if @is_auth_e_contratosgrupo and Contratosperfecha.where(contratosgrupo_id: contratosgrupo.id).exists? == false %>
+      <%= link_to contrato_contratosgrupo_path(@contrato, contratosgrupo), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to contratosmasive_contratosgrupos_path(id: contratosgrupo.id, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Contratos PDF' do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+    <% end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosgrupo.user_nombre.html_safe rescue nil %><%= contratosgrupo.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosgrupo.descripcion rescue nil %> <em><small>(Nro de personas: <%=Contratosperfecha.where(["contrato_id = #{contratosgrupo.contrato_id} and contratosgrupo_id = #{contratosgrupo.id} and (fecha_fin is null or fecha_fin >= curdate())"]).count.to_i %>)</small></em>
+        <% Contratosperfecha.select("fecha_inicio, count(9) cant").where(["contrato_id = #{contratosgrupo.contrato_id} and contratosgrupo_id = #{contratosgrupo.id} and (fecha_fin is null or fecha_fin >= curdate())"]).distinct.group("fecha_inicio").order("1 desc").each do |a| %>
+          <br/><%= link_to contratosmasive_contratosgrupos_path(id: contratosgrupo.id, fecha_inicio: a.fecha_inicio, format: :pdf), data: {toggle: 'tooltip'}, class: 'popup', title: 'Contratos por fecha de inicio en PDF' do %>
+                  <i class="fa fa-file-pdf-o"></i><% end %> <%=a.fecha_inicio %> <em><small>(<%=a.cant %>)</small></em>
+        <% end %>
+  </td>
+  <td align="left"><%= contratosgrupo.termino rescue nil %></td>
+</tr>
+

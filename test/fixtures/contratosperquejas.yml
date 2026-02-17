@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  fecha: 2021-11-14
+  queja_maltrato: MyString
+  queja_persecucion: MyString
+  queja_discriminacion: MyString
+  queja_entorpecimiento: MyString
+  queja_inequidad: MyString
+  queja_desproteccion: MyString
+  queja_explica: MyText
+  queja_pruebas: MyText
+  conciliar: MyString
+  conciliar_explique: MyText
+
+two:
+  contratospersona: two
+  fecha: 2021-11-14
+  queja_maltrato: MyString
+  queja_persecucion: MyString
+  queja_discriminacion: MyString
+  queja_entorpecimiento: MyString
+  queja_inequidad: MyString
+  queja_desproteccion: MyString
+  queja_explica: MyText
+  queja_pruebas: MyText
+  conciliar: MyString
+  conciliar_explique: MyText

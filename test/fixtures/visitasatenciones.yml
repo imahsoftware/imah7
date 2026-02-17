@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  visita: one
+  user: one
+  nombre: MyString
+  identificacion: MyString
+  cargo: MyString
+  celular: MyString
+  email: MyString
+  codigo_env: 1
+  codigo_rec: 1
+  codigo_fecha: 2023-12-30 21:01:48
+  codigo_firma: MyString
+
+two:
+  visita: two
+  user: two
+  nombre: MyString
+  identificacion: MyString
+  cargo: MyString
+  celular: MyString
+  email: MyString
+  codigo_env: 1
+  codigo_rec: 1
+  codigo_fecha: 2023-12-30 21:01:48
+  codigo_firma: MyString

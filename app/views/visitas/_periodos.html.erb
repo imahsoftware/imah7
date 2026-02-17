@@ -1,0 +1,28 @@
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th class="text-left">Supervisores</th>
+  </tr>
+  <% @visitas.each do |visita| %>
+    <tr>
+      <td class="text-table text-left">
+        <div id="abrir<%= visita.nombreuser.gsub(' ','_') %>" class="pull-left">
+          <%= link_to periodos_visitas_path(nombreuser: visita.nombreuser.gsub(' ','_'), ruta: 'ABRIR', user_id: visita.user_id.to_s), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+            <em><%= visita.nombreuser rescue nil %></em>
+          <% end %>
+        </div>
+        <div id="cerrar<%= visita.nombreuser.gsub(' ','_') %>" class="pull-left hide">
+          <%= link_to periodos_visitas_path(nombreuser: visita.nombreuser.gsub(' ','_'), ruta: 'CERRAR', user_id: visita.user_id.to_s), style: "color: black;", remote: true do %>
+            <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle de las firmas"></i>
+            <em><i class="fa fa-star text-red"></i> <%= visita.nombreuser rescue nil %></em>
+          <% end %>
+        </div>
+      </td>
+    </tr>
+    <tr id="tr_show<%= visita.nombreuser.gsub(' ','_') %>" class="hidden">
+      <td colspan="2">
+        <div id="abrir_detalle<%= visita.nombreuser.gsub(' ','_') %>"></div>
+      </td>
+    </tr>
+  <% end %>
+</table>

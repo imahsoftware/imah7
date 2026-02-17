@@ -1,0 +1,17 @@
+<tr id="tiposnovedad_<%= tiposnovedad.id %>">
+  <% if is_auth_c('tiposnovedad') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposnovedad_path(tiposnovedad), class: 'edit_tiposnovedad_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td class="text-center"><%= tiposnovedad.id rescue nil%></td>
+  <td><%= tiposnovedad.descripcion rescue nil %></td>
+  <td class="text-center"><%= tiposnovedad.tipo rescue nil%></td>
+  <td class="text-center"><%= tiposnovedad.estado rescue nil %></td>
+  <td class="text-center"><%= tiposnovedad.porcentaje rescue nil %></td>
+  <td class="text-center"><%= tiposnovedad.multiplica rescue nil %></td>
+  <td class="text-center"><%= tiposnovedad.incluye_vacaciones rescue nil %></td>
+  <td class="text-center"><%= tiposnovedad.tiposnaporte.descripcioncorta rescue 'N/A' %></td>
+</tr>

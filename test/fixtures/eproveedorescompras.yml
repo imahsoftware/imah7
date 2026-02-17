@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedor: one
+  fecha: 2022-02-14
+  nro_factura: MyString
+  valor: 9.99
+  descuento: 9.99
+  centroscosto: one
+  subtotal: 9.99
+  estado: MyString
+  saldo: 9.99
+  total: 9.99
+  observacion: MyString
+  user: one
+
+two:
+  eproveedor: two
+  fecha: 2022-02-14
+  nro_factura: MyString
+  valor: 9.99
+  descuento: 9.99
+  centroscosto: two
+  subtotal: 9.99
+  estado: MyString
+  saldo: 9.99
+  total: 9.99
+  observacion: MyString
+  user: two

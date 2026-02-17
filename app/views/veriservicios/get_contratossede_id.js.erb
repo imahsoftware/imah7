@@ -1,0 +1,19 @@
+<% if @contratossedes.present? %>
+	<% if @contratossedes.present? %>
+	  $('#veriservicio_contratossede_id').empty();
+	  $('#veriservicio_contratossede_id').append('<option selected>-- Seleccione --</option>');
+	  <% @contratossedes.each do |contratossede| %>
+	    $('#veriservicio_contratossede_id').append('<option value="<%= contratossede.id %>"><%= contratossede.nombre rescue nil %></option>');
+	  <% end %>
+	  $('#veriservicio_contratossede_id').prop('disabled', false);
+	<% else %>
+	  $('#veriservicio_contratossede_id').empty();
+	  $('#veriservicio_contratossede_id').append('<option selected>-- Seleccione --</option>');
+	  $('#veriservicio_contratossede_id').prop('disabled', true);
+	<% end %>
+<% else %>
+  $('#veriservicio_contratossede_id').empty();
+  $('#veriservicio_contratossede_id').append('<option selected>-- Seleccione --</option>');
+  $('#veriservicio_contratossede_id').prop('disabled', true);
+<% end %>
+

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  infgrupostabla_id: 1
+  orden: 1
+  encabezado: MyString
+  encabezado_estilo: MyString
+  campo: MyString
+  estilo: MyString
+  tipo: MyString
+
+two:
+  infgrupostabla_id: 1
+  orden: 1
+  encabezado: MyString
+  encabezado_estilo: MyString
+  campo: MyString
+  estilo: MyString
+  tipo: MyString

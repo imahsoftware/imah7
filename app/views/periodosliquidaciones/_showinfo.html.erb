@@ -1,0 +1,34 @@
+<br/><br/>
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th width="8%" class="text-left"></th>
+    <th width="15%" class="text-center">Periodo</th>
+    <th class="text-left">Empleado</th>
+    <th width="30%" class="text-left">Empresa - Grupo - Contrato</th>
+    <th width="10%" class="text-center">Estado</th>
+  </tr>
+  <% @datos.each do |m| %>
+    <tr>
+      <td>
+        <div align="center">
+          <%= link_to tirilla_contratospernominas_path(idnomina: m.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+          <%= link_to edit_contratospersona_path(id: m.contratospersona_id, etapa: 'F'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "Ir al contrato" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-user"></i></button>
+          <% end %>
+        </div>
+      </td>
+      <td class="text-center" style="font-size:11px;"><%= m.periodoliq rescue nil %></td>
+      <td class="text-left" style="font-size:11px;"><%= m.nombreempleado rescue nil %></td>
+      <td class="text-left" style="font-size:10px;"><%= m.identnombre rescue nil %>
+        <br/><%= m.descripcion rescue nil %>
+        <em><strong>(<%= m.nro_contrato rescue nil %>)</strong></em></td>
+      <td class="text-center" style="font-size:10px;"><strong>
+        <% if m.estado.to_s == 'CONSOLIDADO' %>
+          <small class="text-red"><%= m.estado rescue nil %></small>
+        <% else %><small class="text-blue"><%= m.estado rescue nil %></small>
+        <% end %></strong></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,17 @@
+<tr id="contratosenteppsdetalle_<%= contratosenteppsdetalle.id %>">
+  <td class="text-center">
+    <% if ['PENDIENTE', 'RECHAZADO'].include?(@contratosentepp.estado) %>
+      <%= link_to edit_contratosentepp_contratosenteppsdetalle_path(@contratosentepp, contratosenteppsdetalle), remote: true, class: 'edit_contratosenteppsdetalle_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to contratosentepp_contratosenteppsdetalle_path(@contratosentepp, contratosenteppsdetalle), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <button class="btn btn-xs btn-info">
+      <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Creación: <%= contratosenteppsdetalle.created_at.strftime("%Y-%m-%d %X") rescue nil %></div>"><i class="fa fa-child" aria-hidden="true"></i></span>
+    </button>
+  </td>
+  <td align="left" class="text-table"><%= contratosenteppsdetalle.item rescue nil %></td>
+  <td align="right" class="text-table"><%= camponumerico contratosenteppsdetalle.cantidad rescue nil %></td>
+</tr>

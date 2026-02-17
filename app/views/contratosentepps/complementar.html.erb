@@ -1,0 +1,81 @@
+<div class="box-body" style="margin-right: 25px;padding-top: 0px; margin-top: -15px;">
+  <div class="row">
+    <h4>
+      <%= @contratosentepp.formulario.nombre_completo rescue nil %>
+    </h4>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-header with-border">
+    <h3 class="box-title">
+      <%= link_to procesos_contratossolepps_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+        <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+      <% end %> Entrega EPP</h3>
+    <div class="box-body">
+      <table class="table table-bordered table-condensed table-striped">
+        <tr class="thcolor">
+          <th width="10%" class="text-left text-tr-table"></th>
+          <th width="30%" class="text-left text-tr-table">Fecha Creación</th>
+          <th class="text-left text-tr-table">Contrato</th>
+          <th width="15%" class="text-center"></th>
+        </tr>
+        <tr>
+          <td class="text-center text-tr-table">
+            <div class="btn-group" id="botones<%= @contratosentepp.id %>">
+              <button type="button" class="btn btn-warning dropdown-toggle btn-xs" data-toggle="dropdown">
+                Opciones <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to ver_contratosentepps_path(id: @contratosentepp.id), data: { toggle: 'tooltip' }, class: 'popup' do %>
+                    <div class="text-blue"><i class="fa fa-clone"></i> Ver solicitud</div>
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td class="text-left text-tr-table">
+            <small>
+              <%= @contratosentepp.created_at.strftime("%Y-%m-%d %X") rescue nil %> - <%= @contratosentepp.user.nombre rescue nil %>
+              <% if @contratosentepp.user.email.present? %> <br/><i class="fa fa-envelope"></i> <%= @contratosentepp.user.email rescue nil %><% end %>
+              <% if @contratosentepp.user.celular.present? %> <br/><i class="fa fa-phone"></i> <%= @contratosentepp.user.celular rescue nil %><% end %>
+            </small>
+          </td>
+
+          <td class="text-tr-table">
+            <small><%= @contratosentepp.contrato.empresa.identnombre rescue nil %>
+              <br/><strong>Nro Contrato : </strong><%= @contratosentepp.contrato.nro_contrato rescue nil %></small>
+          </td>
+          <td class="text-tr-table text-center">
+            <% if @contratosentepp.contratosenteppsdetalles.present? and ['PENDIENTE'].include?(@contratosentepp.estado) %>
+              <%= link_to estado_contratosentepps_path(id: @contratosentepp.id, estado: "INICIAR FIRMA"), remote: true, data: { toggle: 'tooltip', confirm: "Seguro que desea Iniciar el Proceso de Firma" } do %>
+                <button class="btn btn-xs btn-success"><i class="fa fa-check"></i> Iniciar Proceso de Firma</button>
+              <% end %>
+            <% else %>
+              <span class="label label-success"><%= @contratosentepp.estado rescue nil %></span>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="nav-tabs-custom">
+  <ul class="nav nav-tabs">
+    <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+      <%= link_to complementar_contratosentepps_path(id: @contratosentepp.id, etapa: 'A'), data: { toggle: 'tooltip' } do %>
+        <i class="fa fa-edit"></i> Detalle
+      <% end %>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <% if @etapa == 'A' %>
+      <%= render 'contratosenteppsdetalles/contratosenteppsdetalles' %>
+    <% end %>
+  </div>
+</div>
+
+

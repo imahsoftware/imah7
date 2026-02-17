@@ -1,0 +1,18 @@
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="thcolor">
+        <% if is_auth_c('tiposdocumento') %>
+          <th width="10%"></th>
+        <% end %>
+        <th width="10%">ID</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_tiposdocumentos">
+      <% @tiposdocumentos.each do |tiposdocumento| %>
+        <%= render 'tiposdocumentos/tr', tiposdocumento: tiposdocumento %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

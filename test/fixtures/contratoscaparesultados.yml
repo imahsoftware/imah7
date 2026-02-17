@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  capacitacion_id: 1
+  capacitacionevaluacion_id: 1
+  contratoscapapersona_id: 1
+  contratosperfecha_id: 1
+  respuesta: MyString
+  resultado: 1
+
+two:
+  capacitacion_id: 1
+  capacitacionevaluacion_id: 1
+  contratoscapapersona_id: 1
+  contratosperfecha_id: 1
+  respuesta: MyString
+  resultado: 1

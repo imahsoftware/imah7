@@ -1,0 +1,208 @@
+<%= simple_form_for(@antecedente) do |f| %>
+  <%= f.hidden_field :portafolio_id %>
+  <%= f.hidden_field :regresar, value: @regresar %>
+  <script>
+      function justNumbers(e) {
+          var keynum = window.event ? window.event.keyCode : e.which;
+          if ((keynum == 8) || (keynum == 46))
+              return true;
+
+          return /\d/.test(String.fromCharCode(keynum));
+      }
+
+      function habcampo() {
+
+      }
+      function disable() {
+          document.getElementById("myRadio").disabled = true;
+      }
+
+      function undisable() {
+          document.getElementById("myRadio").disabled = false;
+      }
+
+      $("#ide").keyup(function () {
+        var  ta = $("#ide");
+        letras = ta.val().replace('//g',"");
+        ta.val(letras);
+      });
+
+    </script>
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div class="box box-primary">
+        <div class="box-header">
+          <legend>
+            <div align="center">
+              ENCUESTA DE ESTRATIFICACIÓN DEL RIESGO INDIVIDUAL - <strong><%=@antecedente.nombreportafolio rescue nil %></strong>
+            </div>
+          </legend>
+        </div><!-- /.box-header -->
+        <div class="tab-content">
+          <div class="box-body">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :nombre, label: "Nombre" , input_html: {:onchange => "javascript:this.value=this.value.toUpperCase();"} %></div>
+              <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :identificacion, label: "Nro Identificación", id: "ide", input_html: {onkeypress: "return justNumbers(event);"} %></div>
+              <% if @antecedente.portafolio_id == 1 %>
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :centro_id, collection: Centro.order(:descripcion).collect {|p| [ p.descripcion, p.id ] }, input_html: { class: 'select2' }, as: :select, label: 'Centro de trabajo', include_blank: true%>
+                <%= f.error :centro_id, id: 'antecedente_centro_id_error', class: 'text-red' %>
+              </div>
+              <% end %>
+            </div>
+            <br/>
+            <table class="table table-striped table-responsive">
+              <tr>
+                <th width="40%">EDAD</th>
+                <td colspan="2"><%= f.input :edad, as: :radio_buttons,collection: [['59 años o menor','59 años o menor'], ['60 años o mayor','60 años o mayor']], item_label_class: "radio-inline", label: false %></td>
+              </tr>
+              <tr >
+                <th>SEXO</th>
+                <td colspan="2"><%= f.input :sexo, as: :radio_buttons,collection: [['MASCULINO','MASCULINO'], ['FEMENINO','FEMENINO']], item_label_class: "radio-inline", label: false %></td>
+              </tr>
+              <tr >
+                <th rowspan="2">PERSONAS CON QUIEN CONVIVE</th>
+                <td>Menores de 5 años</td>
+                <td><%= f.input :menores5, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline", label: false %></td>
+              </tr>
+              <tr>
+                <td>Mayores de 60 años</td>
+                <td><%= f.input :mayores60, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr >
+                <th>PESO (Kilos) (dato aproximado)</th>
+                <td colspan="2"><%= f.input :peso,  label: false %></td>
+              </tr>
+              <tr>
+                <th>TALLA (mts) (dato aproximado)</th>
+                <td colspan="2"><%= f.input :talla,  label: false %></td>
+              </tr>
+            </table>
+            <br/>
+            <div class="box-header">
+              <legend>
+                <div align="left">
+                  ANTECEDENTES MÉDICOS IMPORTANTES<br/>
+                  <small>¿Usted tiene actualmente, o tiene antecedentes de alguna de las condiciones de salud mencionadas a continuación?</small>
+                </div>
+              </legend>
+            </div><!-- /.box-header -->
+            <table class="table table-striped table-responsive">
+              <tr>
+                <td colspan="2" width="80%">1. ¿Se encuentra actualmente en estado de embarazo?</td>
+                <td><%= f.input :ant_1, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td colspan="2">2. Si su respuesta anterior es sí, ¿se encuentra actualmente entre el 6° y 9° mes de embarazo?</td>
+                <td><%= f.input :ant_2, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+            </table>
+            <table class="table table-striped table-responsive">
+              <tr>
+                <td rowspan="5" width="40%" valign="middle">3. ¿Usted ha sido diagnosticado como diabético?</td>
+                <td rowspan="5" width="10%"><%= f.input :ant_3, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false,  input_html: {:onchange => "habcampo(this.form);"} %></td>
+                <td width="40%">a. ¿Su diagnóstico fue hace 10 años o más?</td>
+                <td width="10%" id="myRadio"><%= f.input :ant_3a, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>b. ¿Recibe tratamiento con insulina?</td>
+                <td><%= f.input :ant_3b, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>c. ¿Recibe tratamiento con medicamento oral?</td>
+                <td><%= f.input :ant_3c, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>d. ¿Tiene usted mucha dificultad para cumplir la dieta recomendada?</td>
+                <td><%= f.input :ant_3d, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>e. ¿Ha estado hospitalizado o ha sido manejado por complicaciones de su diabetes?</td>
+                <td><%= f.input :ant_3e, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+            </table>
+            <table class="table table-striped table-responsive">
+              <tr>
+                <td width="40%">4. ¿Usted ha sido diagnosticado Hipertenso?</td>
+                <td width="10%"><%= f.input :ant_4, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %>
+                </td>
+                <td width="40%">a. ¿Ha estado hospitalizado o ha sido manejado por complicaciones de su hipertensión?</td>
+                <td width="10%"><%= f.input :ant_4a, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %>
+                </td>
+              </tr>
+              <tr>
+                <td>5. ¿Le han diagnosticado una o varias de estas enfermedades?<br/>
+                  <small>
+                  ➢ Insuficiencia cardíaca<br/>
+                  ➢ Infarto de miocardio<br/>
+                  ➢ Cardiopatía congénita<br/>
+                  ➢ Hipertensión pulmonar<br/>
+                  ➢ Accidente cerebro vascular (Derrame o Trombosis cerebral)</small></td>
+                <td><%= f.input :ant_5, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %>
+                </td>
+                <td>a. ¿ Ha sido sometido a algún procedimiento quirúrgico o intervencionista u hospitalización por su condición médica?</td>
+                <td><%= f.input :ant_5a, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %>
+                </td>
+              </tr>
+            </table>
+            <table class="table table-striped table-responsive">
+              <tr>
+                <td width="80%">6. ¿Usted ha sido diagnosticado por alguna de estas enfermedades? <br/>
+                  <small>➢ Trasplante de médula ósea u otros órganos (riñón, pulmón, etc.) <br/>
+                  ➢ Enfermedades autoinmunes como Lupus<br/>
+                    ➢ VIH / sida</small></td>
+                <td><%= f.input :ant_6, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>7. ¿Recibe tratamiento con corticosteroides por algún tipo de enfermedad?</td>
+                <td><%= f.input :ant_7, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>8. ¿Ha recibido tratamiento para cáncer en los últimos 5 años o está en tratamiento actualmente?</td>
+                <td><%= f.input :ant_8, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>9. ¿Usted ha sido diagnosticado con alguna de estas enfermedades?:<br/>
+                  <small>
+                  ➢ Enfermedad pulmonar obstructiva crónica (EPOC)<br/>
+                  ➢ Enfisema<br/>
+                  ➢ Bronquitis crónica<br/>
+                  ➢ Fibrosis pulmonar<br/> ➢ Silicosis<br/>
+                  ➢ Antracosis<br/>
+                  ➢ Asma</small></td>
+                <td><%= f.input :ant_9, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>10. ¿Está usted en tratamiento médico por Insuficiencia renal crónica?</td>
+                <td><%= f.input :ant_10, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>11. ¿Está usted en tratamiento por cirrosis hepática? ¿O enfermedad hepática crónica?</td>
+                <td><%= f.input :ant_11, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>12. ¿Fuma usted más de 6 cigarrillos diarios? (cigarrillos u otras sustancias)</td>
+                <td><%= f.input :ant_12, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+              <tr>
+                <td>13. ¿Dejó usted de fumar 6 o más cigarrillos diarios hace menos de un año?</td>
+                <td><%= f.input :ant_13, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']],item_label_class: "radio-inline",  label: false %></td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+      </div>
+      <div class="box-footer">
+        <div class="box-tools pull-right">
+          <%= link_to "Regresar", "/#{@regresar.to_s}", class: 'btn btn-danger'%>
+          <%= f.button :submit, "Guardar", class: 'btn btn-danger' do %>
+            <i class="fa fa-check"></i>
+          <% end -%>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+<% end -%>
+<br/>

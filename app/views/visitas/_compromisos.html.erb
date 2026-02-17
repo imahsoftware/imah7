@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="box-header with-border">
+      <i class="fa fa-warning"></i>
+      <h3 class="box-title">Compromisos pendientes</h3>
+    </div>
+
+    <div class="box-body">
+      <div style="padding: 10px;">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor" valign="midle">
+            <th class="text-left text-tr-table">Dia del Compromiso</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% Visitascompromiso.select("fecha, count(9) cant").where("estado = 'PENDIENTE'").group("fecha").order("fecha asc").each do |visitascompromiso| %>
+            <tr>
+              <td class="text-left text-tr-table">
+                <div id="abrir<%= visitascompromiso.fecha %>">
+                  <%= link_to show_detalle_visitascompromisos_path(fecha: visitascompromiso.fecha, ruta: 'ABRIR'), style: "color: black;", remote: true do %>
+                    <i data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aqui para ver detalle"></i>
+                    <i class="fa <%= Time.now.strftime("%Y-%m-%d") == visitascompromiso.fecha.strftime("%Y-%m-%d") ? 'text-red fa-star' : 'fa-calendar-plus-o' %>"></i> <%= visitascompromiso.fecha.strftime("%Y-%m-%d") %> (<%= visitascompromiso.cant rescue 0 %>)
+                  <% end %>
+                </div>
+                <div id="cerrar<%= visitascompromiso.fecha %>" class="pull-left hide">
+                  <%= link_to show_detalle_visitascompromisos_path(fecha: visitascompromiso.fecha, ruta: 'CERRAR'), style: "color: #F21B11; font-weight: bold; font-style: italic;", remote: true do %>
+                    <i data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aqui para ver detalle"></i>
+                    <i class="fa  <%= Time.now.strftime("%Y-%m-%d") == visitascompromiso.fecha.strftime("%Y-%m-%d") ? 'text-red fa-star' : 'fa-calendar-minus-o' %>"></i> <%= visitascompromiso.fecha %> (<%= visitascompromiso.cant rescue 0 %>)
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+            <tr id="tr_show<%= visitascompromiso.fecha %>" class="hidden">
+              <td colspan="6">
+                <div id="abrir_detalle<%= visitascompromiso.fecha %>"></div>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  empresa: one
+  nombre: MyString
+  direccion: MyString
+  dircampo1: MyString
+  dircampo2: MyString
+  dircampo3: MyString
+  dircampo4: MyString
+  dircampo5: MyString
+  dircampo6: MyString
+  dircampo7: MyString
+  dircampo8: MyString
+  dircampo9: MyString
+  municipio: one
+  user: one
+  user_act: 1
+
+two:
+  empresa: two
+  nombre: MyString
+  direccion: MyString
+  dircampo1: MyString
+  dircampo2: MyString
+  dircampo3: MyString
+  dircampo4: MyString
+  dircampo5: MyString
+  dircampo6: MyString
+  dircampo7: MyString
+  dircampo8: MyString
+  dircampo9: MyString
+  municipio: two
+  user: two
+  user_act: 1

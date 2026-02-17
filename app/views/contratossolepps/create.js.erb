@@ -1,0 +1,19 @@
+window.location.href = '<%= complementar_contratossolepps_path(id: @contratossolepp.id, etapa: 'A') %>';
+
+$(".alert_flash").fadeOut(1000, function() {
+	$(this).remove();
+});
+
+$(".clean").val("").trigger('change');
+
+$('[data-toggle="tooltip"]').tooltip();
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+
+
+setTimeout(function() {
+	$(".alert_flash").fadeOut(1000, function() {
+		$(this).remove();
+	});
+}, 5000);

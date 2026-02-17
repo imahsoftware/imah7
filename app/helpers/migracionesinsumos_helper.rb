@@ -1,0 +1,2 @@
+module MigracionesinsumosHelper
+end

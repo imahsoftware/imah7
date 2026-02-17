@@ -1,0 +1,17 @@
+<%= simple_form_for(@migracionescontrato) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :user %>
+    <%= f.association :archivo %>
+    <%= f.input :estado %>
+    <%= f.input :identificacion %>
+    <%= f.input :contratoscargo_id %>
+    <%= f.input :contratosgrupo_id %>
+    <%= f.input :fecha_inicio %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

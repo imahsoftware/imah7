@@ -1,0 +1,4 @@
+<% if @migracion.present? %>
+	$('.div-result').addClass('hidden')
+	$('#<%=@migracion.downcase.gsub(' ', '_')%>').removeClass('hidden');
+<% end %>

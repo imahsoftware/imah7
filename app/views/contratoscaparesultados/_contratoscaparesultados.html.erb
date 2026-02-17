@@ -1,0 +1,15 @@
+<div class="box-header">
+  <h3 class="box-title"><strong>Agregar Otros Empleados</strong></h3>
+</div>
+<div class="box-body">
+  <div class="flash_messages"></div>
+  <%= render 'contratoscaparesultados/form' %>
+  <div id="contratoscaparesultados">
+    <% if capacitacion.contratoscaparesultados.where("ruta = 'B'").order("created_at desc").present? %>
+      <%= render 'contratoscaparesultados/tabla', capacitacion: capacitacion %>
+    <% else %>
+      <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+      </div>
+    <% end %>
+  </div>
+</div>

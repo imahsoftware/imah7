@@ -1,0 +1,18 @@
+$("#otp<%= @visitasatencion.id %> .modal-content").html('<%= j render "visitasatenciones/otp" %>');
+$("#otp<%= @visitasatencion.id %> ").modal();
+
+$(".alert_flash").fadeOut(1000, function() {
+    $(this).remove();
+});
+
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+
+setTimeout(function() {
+    $(".alert_flash").fadeOut(1000, function() {
+        $(this).remove();
+    });
+}, 5000);
+
+$('.tooltip').tooltip('hide');
+
+

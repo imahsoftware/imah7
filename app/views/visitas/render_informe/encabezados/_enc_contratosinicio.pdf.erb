@@ -1,0 +1,36 @@
+<table width="100%">
+  <tr>
+    <td>
+      <div align="center">
+        <%= wicked_pdf_image_tag "#{image_url(@logo)}", size: "230x100" %>
+      </div>
+    </td>
+    <td style="font-size: 18px; font-family: Tahoma;">
+      <div align="center">
+        <b><%= titulo rescue nil %></b>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" width="80%">
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+            <strong>EMPLEADO </strong></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratospersona.nombre_completo rescue nil %></td>
+          <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+            <strong>CARGO </strong></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+            <strong>PERIODO </strong></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @mes rescue nil %></td>
+          <td height="30" style="background: #E8E3E3; padding: 5px; font-size: 10px; font-family: Tahoma;">
+            <strong>TOTAL DE CONTRATOS </strong></td>
+          <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; padding: 3px; padding: 3px;">&nbsp;<%= @contratosvigentes.count rescue 0 %></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

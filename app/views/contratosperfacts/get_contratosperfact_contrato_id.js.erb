@@ -1,0 +1,25 @@
+<% if @contratoscargos.present? %>
+  $('#contratosperfact_contratoscargo_id').empty();
+  $('#contratosperfact_contratoscargo_id').append('<option selected>Seleccione</option>');
+<% @contratoscargos.each do |contratoscargo| %>
+  $('#contratosperfact_contratoscargo_id').append('<option value="<%= contratoscargo.id %>"><%= contratoscargo.desc_contrato %></option>');
+<% end %>
+  $('#contratosperfact_contratoscargo_id').prop('disabled', false);
+<% else %>
+  $('#contratosperfact_contratoscargo_id').empty();
+  $('#contratosperfact_contratoscargo_id').append('<option selected>Seleccione</option>');
+  $('#contratosperfact_contratoscargo_id').prop('disabled', true);
+<% end %>
+
+<% if @contratosgrupos.present? %>
+  $('#contratosperfact_contratosgrupo_id').empty();
+  $('#contratosperfact_contratosgrupo_id').append('<option selected>Seleccione</option>');
+<% @contratosgrupos.each do |contratosgrupo| %>
+  $('#contratosperfact_contratosgrupo_id').append('<option value="<%= contratosgrupo.id %>"><%= contratosgrupo.descripcion %></option>');
+<% end %>
+  $('#contratosperfact_contratosgrupo_id').prop('disabled', false);
+<% else %>
+  $('#contratosperfact_contratosgrupo_id').empty();
+  $('#contratosperfact_contratosgrupo_id').append('<option selected>Seleccione</option>');
+  $('#contratosperfact_contratosgrupo_id').prop('disabled', true);
+<% end %>

@@ -1,0 +1,23 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="15%" class="text-left text-table">Fecha</th>
+        <th width="20%" class="text-left text-table">Marca</th>
+				<th width="20%" class="text-left text-table">Referencia</th>
+				<th width="13%" class="text-center text-table">Fecha Versión</th>
+				<th width="13%" class="text-center text-table">Fecha Vencimiento</th>
+				<th width="15%" class="text-center text-table">Estado</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_insumosfichas">
+	    <% @insumo.insumosfichas.order(id: :desc).each do |insumosficha| %>
+	      <%= render 'insumosfichas/tr', insumosficha: insumosficha %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

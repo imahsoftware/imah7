@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionesinsumos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Contrato</th>
+      <th>Insumo</th>
+      <th>Cantidad mensual</th>
+      <th>Precio unitario</th>
+      <th>Descuento</th>
+      <th>Precio condescuento</th>
+      <th>Total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionesinsumos.each do |migracionesinsumo| %>
+      <tr>
+        <td><%= migracionesinsumo.user %></td>
+        <td><%= migracionesinsumo.archivo %></td>
+        <td><%= migracionesinsumo.estado %></td>
+        <td><%= migracionesinsumo.contrato_id %></td>
+        <td><%= migracionesinsumo.insumo_id %></td>
+        <td><%= migracionesinsumo.cantidad_mensual %></td>
+        <td><%= migracionesinsumo.precio_unitario %></td>
+        <td><%= migracionesinsumo.descuento %></td>
+        <td><%= migracionesinsumo.precio_condescuento %></td>
+        <td><%= migracionesinsumo.total %></td>
+        <td><%= link_to 'Show', migracionesinsumo %></td>
+        <td><%= link_to 'Edit', edit_migracionesinsumo_path(migracionesinsumo) %></td>
+        <td><%= link_to 'Destroy', migracionesinsumo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionesinsumo', new_migracionesinsumo_path %>

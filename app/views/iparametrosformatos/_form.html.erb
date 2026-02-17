@@ -1,0 +1,26 @@
+<%= simple_form_for @iparametrosformato, remote: true do |f| %>
+  <%= hidden_field_tag :iparametro_id, params[:iparametro_id], value: params[:iparametro_id] %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-10">
+        <%= f.input :formato_id, collection: Formato.where(["segmento = 'CONTRATO' and estado = 'ACTIVO'"]).order(:nombre).collect {|p| [ p.nombre, p.id ] }, input_html: { class: 'select2 clean' }, as: :select,  include_blank: true, label: "Formato Asociado" %>
+      </div>
+      <div class="col-md-2">
+        <%= f.input :orden, input_html: { class: 'select2 clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @iparametrosformato.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#iparametrosformato_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", iparametrosformato_path(@iparametrosformato), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

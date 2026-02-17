@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  evaluacion: one
+  clase: MyString
+  actividad: MyString
+  requieredoc: MyString
+
+two:
+  evaluacion: two
+  clase: MyString
+  actividad: MyString
+  requieredoc: MyString

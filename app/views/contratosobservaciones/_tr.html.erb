@@ -1,0 +1,12 @@
+<tr id="contratosobservacion_<%= contratosobservacion.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosobservacion")%>
+      <%= link_to contrato_contratosobservacion_path(@contrato, contratosobservacion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+  </td>
+  <td align="left"><%= contratosobservacion.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><small><%= contratosobservacion.user.nombre rescue nil %></small></td>
+  <td align="justify"><%= contratosobservacion.observacion rescue nil %></td>
+</tr>

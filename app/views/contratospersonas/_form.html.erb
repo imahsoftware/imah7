@@ -1,0 +1,21 @@
+<div class="box-body paddin-body">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="nav-tabs-custom">
+        <% unless @contratospersona.new_record? %>
+          <ul class="nav nav-tabs">
+            <li class="<%= @etapap == "1" ? 'active' : nil %>"> <%= link_to edit_contratospersona_path(etapa: 'A', etapap: "1", id: @contratospersona.id) do %><i class="fa fa-user"></i> Inf Basica <% end %></li>
+            <% unless @contratospersona.new_record? %>
+                <li class="<%= @etapap == "2" ? 'active' : nil %>"> <%= link_to edit_contratospersona_path(etapa: 'A', etapap: "2", id: @contratospersona.id) do %><i class="fa fa-bank"></i> Inf Complementaria <% end %></li>
+            <% end %>
+          </ul>
+        <% end %>
+        <div class="tab-content">
+          <% if @etapap == "1" %><%= render 'contratospersonas/formularios/etapap1' %><% end %>
+          <% if @etapap == "2" %><%= render 'contratospersonas/formularios/etapap2' %><% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

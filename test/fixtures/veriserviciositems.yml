@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  veriservicio: one
+  clasificacion: MyString
+  orden: 1
+  calificacion: 1
+
+two:
+  veriservicio: two
+  clasificacion: MyString
+  orden: 1
+  calificacion: 1

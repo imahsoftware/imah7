@@ -1,0 +1,19 @@
+<tr id="contratosservicio_<%= contratosservicio.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosservicio")%>
+    <%= link_to edit_contrato_contratosservicio_path(@contrato, contratosservicio), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contrato_contratosservicio_path(@contrato, contratosservicio), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+  </td>
+  <td align="left">
+    <%= contratosservicio.user.nombre rescue nil %><br/>
+  <%= contratosservicio.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+  </td>
+  <td align="justify">
+    <%= contratosservicio.servicio rescue nil %>
+  </td>
+</tr>

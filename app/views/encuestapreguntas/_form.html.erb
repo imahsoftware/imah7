@@ -1,0 +1,23 @@
+<%= simple_form_for([@encuesta, @encuestapregunta], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <%= f.input :pregunta, as: :text, input_html: {rows: 2, class: 'wysihtml5 clean' } %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <% if @encuestapregunta.new_record? %>
+          <%= link_to "Cancelar", cancelar_encuestapreguntas_path, remote: true, class: 'cancel_button btn btn-flat btn-warning pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "Cancelar", encuesta_encuestapregunta_path(@encuesta, @encuestapregunta), class: 'btn btn-warning float-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "Guardar", class: "btn btn-danger pull-right"%>
+      </div>
+    </div>
+  </div>
+<% end %>
+

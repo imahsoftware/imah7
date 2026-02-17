@@ -1,0 +1,12 @@
+<div class="box-body">
+  <div id="contratosprosede_form<%= @contratosproyecto.id %>" class="collapse"></div>
+  <div id="contratosprosedes<%= @contratosproyecto.id %>">
+    <% if @contratosproyecto.contratosprosedes.any? %>
+      <%= render 'contratosprosedes/tabla' %>
+    <% else %>
+      <div class="alert alert-warning" style="margin-top: 10px;"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

@@ -1,0 +1,38 @@
+<div class="table-responsive">
+  <div class="pull-right" style="padding: 10px;">
+    <div id="iniciar_capacitacion<%= @contratoscapacitacion.contrato_id %><%= @contratoscapacitacion.id %>" style="margin-right: 10px;">
+      <% if Contratoscapapersona.where("contrato_id = #{@contratoscapacitacion.contrato_id} and  contratoscapacitacion_id = #{@contratoscapacitacion.id} and estado_evaluacion = 'PENDIENTE'").present? %>
+        <%= link_to iniciar_capacitacion_contratos_path(contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Iniciar Capacitación" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-check"></i> Iniciar Capacitación</button>
+        <% end %>
+        <% if is_auth_a('devolver_capacitaciones_pendientes') %>
+          <%= link_to devolver_todo_contratoscapapersonas_path(contratoscapacitacion_id: @contratoscapacitacion.id), remote: true, data: { toggle: 'tooltip', confirm: "Estas Seguro?" }, title: "Devolver Capacitación" do %>
+            <button class="btn btn-xs btn-primary"><i class="fa fa-check"></i> Devolver Capacitaciones</button>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").present? %>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-center text-table" width="5%"></th>
+        <th class="text-left text-table">Datos del usuario</th>
+        <th class="text-center text-table" width="15%">Fecha Marcacion</th>
+        <th class="text-center text-table" width="15%">Estado</th>
+      </tr>
+      </thead>
+      <tbody id="tbody_contratoscapapersonas">
+      <% @contratoscapacitacion.contratoscapapersonas.select("contratoscapapersonas.*, (select autobuscar from contratospersonas where id = contratoscapapersonas.contratospersona_id) autobuscar")
+                               .where("estado_evaluacion = 'PENDIENTE'").order(id: :desc).each do |contratoscapapersona| %>
+        <%= render 'contratoscapapersonas/tr', contratoscapapersona: contratoscapapersona %>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+    </div>
+  <% end %>
+</div>

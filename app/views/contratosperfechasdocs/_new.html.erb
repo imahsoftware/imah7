@@ -1,0 +1,27 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Cargar Documento (<%= @tipo rescue nil %>)
+  <br/>
+  <small><%= @contratosperfecha.contratospersona.autobuscar rescue nil %></small></h4>
+</div>
+
+<div class="modal-body">
+  <%= simple_form_for [@contratosperfecha, @contratosperfechasdoc], remote: true do |f| %>
+    <%= hidden_field_tag :tipo, params[:tipo], value: @tipo %>
+    <%= hidden_field_tag :estado, params[:estado], value: @estado %>
+    <div class="row">
+      <div class="col-md-12">
+        <label>Archivo a cargar <span class="text-red">(Formatos permitidos: PDF, PNG, JPG)</span></label>
+        <%= f.input :soporte_digital, as: :file, input_html: { data: { toggle: 'tooltip', id: 'soporte_digital_input' }, title: 'Seleccionar Archivo' }, label: false %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <%= f.input :descripcion, as: :text, label: 'Descripción', input_html: { class: "clean" } %>
+      </div>
+    </div>
+  <div class="modal-footer">
+    <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger btn-flat" %>
+  </div>
+  <% end %>
+</div>

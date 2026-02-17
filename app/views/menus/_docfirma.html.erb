@@ -1,0 +1,88 @@
+<legend style="margin-top: -19px;">DashBoard Firma de Documentos</legend>
+<% usr = @usr %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <%
+          ["PENDIENTE", "FIRMADO","CONTRATO"].each do |p|
+            if usr.etapa.to_s == "DOC_#{p}"
+              clase = "active"
+            else
+              clase = ""
+            end
+        %>
+          <li class="<%= clase %>">
+            <%= link_to etapar_menus_path(etapa: "DOC_#{p}") do %>
+              <i class="fa fa-adn"></i> <%= p %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <%
+          ["PENDIENTE","FIRMADO","CONTRATO"].each do |p|
+            if usr.etapa.to_s == "DOC_#{p}"
+        %>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="row" style="margin-top: -10px;">
+                    <div class="col-md-4">
+                      <%= form_tag searchdocfirma_todo_menus_path(estado: p), remote: true, method: :get do %>
+                        <div class="form-group input-group" style="padding-bottom: 10px;">
+                          <span class="input-group-addon"><i class="fa fa-users"></i></span>
+                          <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: 'Identificación, Nombre o Apellido' %>
+                          <span class="input-group-btn">
+                              <%= button_tag type: 'submit', class: 'btn btn-primary', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              <% end %>
+                            </span>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <%= link_to informe_datas_path(infgrupo_id: 80, format: :xlsx), data: { toggle: 'tooltip' }, title: "Informe Completo" do %>
+                          <button class="btn btn-xs btn-info"><i class="fa fa-file-excel-o"></i> Generar Informe
+                          </button>
+                        <% end %>
+                    </div>
+                  </div>
+                  <div id="resultado_docfirma_todo<%= p.downcase %>"></div>
+                </div>
+                <br/><br/>
+                <% if @contratosprefechasdocfirma.present?
+                     cadena = ""
+                     if p == 'PENDIENTE'
+                       cadena = ", (select e.autobuscar from empresas e, contratos c where c.id = contratosperfechas.contrato_id and c.empresa_id = e.id) identnombre, (select count(f.id) from contratosperfechas f, controlfirmas c where f.contrato_id = contratosperfechas.contrato_id and f.id = c.id_registro and c.fecha_firma is null) cantidad"
+                     elsif p == 'FIRMADO'
+                       cadena = ", (select e.autobuscar from empresas e, contratos c where c.id = contratosperfechas.contrato_id and c.empresa_id = e.id) identnombre, (select count(f.id) from contratosperfechas f, controlfirmas c where f.contrato_id = contratosperfechas.contrato_id and f.id = c.id_registro and c.fecha_firma is null) cantidad"
+                     elsif p == 'CONTRATO'
+                       cadena = ", (select e.autobuscar from empresas e, contratos c where c.id = contratosperfechas.contrato_id and c.empresa_id = e.id) identnombre, (select count(f.id) from contratosperfechas f where f.contrato_id = contratosperfechas.contrato_id and f.sol_firma_digital = 'SI') cantidad"
+                     end
+                %>
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="3%"></th>
+                      <th class="text-left">Contratos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @contratosprefechasdocfirma.select("contratosperfechas.contrato_id #{cadena.to_s}").distinct.each do |c| %>
+                      <%= render 'menus/tr_docfirma_todo', c: c, p: p %>
+                    <% end %>
+                    </tbody>
+                  </table>
+                  <div class="box-tools pull-right">
+                    <%= will_paginate @contratosprefechasdocfirma.select("contratosperfechas.contrato_id").distinct, :param_name => "doc_#{p.downcase.to_s}", remote: true, renderer: BootstrapPagination::Rails %>
+                  </div><!-- /.box-tools -->
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

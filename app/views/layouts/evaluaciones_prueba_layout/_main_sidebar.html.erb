@@ -1,0 +1,37 @@
+<%
+  @evaluaciones = Evaluacion.where("estado = 'ACTIVO' and fecha_limite >= curdate() and tipo = 'EVALUACION PERIODO PRUEBA'
+                                    and id IN (SELECT evaluacion_id FROM evaluacionesdetalles WHERE clase IN (SELECT descripcion FROM iparametros WHERE campo = 'evaluacion_clase_prueba' AND id IN (SELECT iparametro_id FROM iparametrosusers WHERE user_id = #{is_admin})))").order("id desc")
+%>
+<aside class="main-sidebar">
+  <section class="sidebar">
+    <!-- Sidebar Menu -->
+    <ul class="sidebar-menu" style="overflow: hidden; white-space: normal !important;" data-widget="tree">
+      <li class="header">MENU EVALUACIONES</li>
+      <!-- Optionally, you can add icons to the links -->
+
+      <li class="treeview" style="font-size: 12px !important;">
+        <a href="#"><i class="fa fa-sticky-note"></i> <span>Activos (<%=@evaluaciones.count.to_i rescue 0 %>)</span>
+          <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+          <% if @evaluaciones.present? %>
+            <% @evaluaciones.each do |evaluacion| %>
+              <li class="treeview <%= active_class(detec_evaluaciones_path(id: evaluacion.id)) %>">
+                <%= link_to detec_evaluaciones_path(id: evaluacion.id, tipo: 'EVALUACION PERIODO PRUEBA'), style: "padding: 3px 0px 3px 15px;" do %>
+                  <div style="font-size: 11px; padding: 3px;">
+                    <i class="fa fa-adn"></i> <span><%= evaluacion.tema rescue nil %></span>
+                  </div>
+                <% end %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</aside>
+
+
+

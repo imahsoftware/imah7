@@ -1,0 +1,28 @@
+<%= simple_form_for @tiposcuenta, remote: true do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.input :entidad, input_html: { class: 'clean' } %>
+      </div>
+      <div class="col-md-4">
+        <%= f.input :tipo, input_html: { class: 'clean' } %>
+      </div>
+      <div class="col-md-4">
+        <%= f.input :nro_cuenta, input_html: { class: 'clean' } %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @tiposcuenta.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#tiposcuenta_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", tiposcuenta_path(@tiposcuenta), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

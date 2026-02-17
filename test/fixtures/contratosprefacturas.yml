@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contrato: one
+  user: one
+  subtotal: 9.99
+  ayu: 9.99
+  iva: 9.99
+  total: 9.99
+  siigo_id: 1
+  siigo_nro: 1
+
+two:
+  contrato: two
+  user: two
+  subtotal: 9.99
+  ayu: 9.99
+  iva: 9.99
+  total: 9.99
+  siigo_id: 1
+  siigo_nro: 1

@@ -1,0 +1,2 @@
+module ContratosactividadesHelper
+end

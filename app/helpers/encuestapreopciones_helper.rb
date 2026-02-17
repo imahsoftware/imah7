@@ -1,0 +1,2 @@
+module EncuestapreopcionesHelper
+end

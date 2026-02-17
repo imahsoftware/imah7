@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Tiposnaportes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>Subtipo</th>
+      <th>Descripcion</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tiposnaportes.each do |tiposnaporte| %>
+      <tr>
+        <td><%= tiposnaporte.tipo %></td>
+        <td><%= tiposnaporte.subtipo %></td>
+        <td><%= tiposnaporte.descripcion %></td>
+        <td><%= link_to 'Show', tiposnaporte %></td>
+        <td><%= link_to 'Edit', edit_tiposnaporte_path(tiposnaporte) %></td>
+        <td><%= link_to 'Destroy', tiposnaporte, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Tiposnaporte', new_tiposnaporte_path %>

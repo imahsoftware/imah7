@@ -1,0 +1,149 @@
+<tr id="contratospersona_<%= contratospersona.id %>">
+  <td class="text-center" style="font-size:12px;">
+    <% #@mes = '03'
+       #@anno = '2023'
+      if Contratosperactob.where("contratospersona_id = #{contratospersona.id} and anno = '#{@anno}' and mes = '#{@mes}'").present? %>
+      <%= link_to evaluacion_pdf_contratospersonas_path(id: contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Certificación Laboral PDF' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+    <% if @vcAutoCon or @vcAutoConb %>
+      <%= link_to edit_contratospersona_path(contratospersona.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <% end %>
+    <% if @vcAutoCon or @vcAutoConb or @existesuper %>
+      <%= link_to tirilla_masive_contratospernominas_path(contratospersona_id: contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirillas consolidadas' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+    <% if @idContrato.to_s != "" %>
+      <%= link_to edit_contratospersona_path(contratospersona.id, etapa: 'A'), class: 'edit_contratospersona_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+        <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tirilla_masive_contratospernominas_path(contratospersona_id: contratospersona.id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirillas consolidadas' do %>
+        <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to cartam_contratosperfechas_path(id: contratospersona, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Laboral Completa en PDF' do %>
+      <button class="btn btn-xs btn-danger"><i class="fa fa-cloud-download"></i></button>
+    <% end %>
+  </td>
+  <td class="text-left" style="font-size:12px;"><%= contratospersona.identificacion rescue nil %> <%= contratospersona.nombre_completo rescue nil %>
+      <% if Contratosperactob.where("contratospersona_id = #{contratospersona.id} and anno = '#{@anno}' and mes = '#{@mes}' and user_interventor = #{is_admin} and resultado is null").present? %>
+        <br/><small style="color: red"><i class="fa fa-close"></i> Proceso de evaluación pendiente por terminar</small>
+      <% elsif Contratosperactob.where("contratospersona_id = #{contratospersona.id} and anno = '#{@anno}' and mes = '#{@mes}' and user_interventor = #{is_admin} and resultado is not null").present? %>
+        <br/><small style="color: green"><i class="fa fa-check"></i> Certificación Laboral Finalizada </small>
+      <% end %>
+      <% if @authTirilla %>
+        <% Contratospernomina.includes([:periodosliquidacion]).where(contratospersona_id: contratospersona.id).order("id desc").limit(2).each do |a| %>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">
+            <%= link_to tirilla_contratospernominas_path(periodosliquidacion_id: a.periodosliquidacion_id, contrato_id: a.contrato_id, contratospersona_id: contratospersona.id, contratosgrupo_id: a.contratosgrupo_id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla' do %>
+              <i class="fa fa-file-pdf-o"></i> Periodo: <%= a.periodosliquidacion.descripcion rescue nil %>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+  </td>
+  <td class="text-left" style="font-size:11px;">
+    <% contratospersona.contratosperfechas.includes([:contrato, :contratosgrupo, :contratoscargo]).where("estado = 'ACTIVO'").each do |a| %>
+      <div style="display: flex;align-items: flex-end;">
+        <% if @vcAutoTraslado %>
+          <div style="margin-left: 5px;">
+            <%= link_to new_contratosperfact_path(contratosperfecha_id: a.id), remote: true, data: { toggle: 'tooltip' }, title: 'Solicitar Traslado' do %>
+              <button class="btn btn-xs btn-info"><i class="fa fa-paper-plane-o"></i></button>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @vcAutoCon or @existesuper %>
+          <div style="margin-left: 5px;">
+            <%= link_to new_solicitudesretiro_path(contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, contratospersona_id: contratospersona.id, contratosperfecha_id: a.id), remote: true, data: { toggle: 'tooltip' }, title: 'Solicitar Retiro' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-rocket"></i></button>
+            <% end %>
+            <%= link_to new_contratospervacacion_path(contrato_id: a.contrato_id, contratosperfecha_id: a.id, contratospersona_id: contratospersona.id), remote: true, data: { toggle: 'tooltip' }, title: 'Solicitar Vacaciones' do %>
+              <button class="btn btn-xs btn-warning"><i class="fa fa-plane"></i></button>
+            <% end %>
+            <%= link_to novedad_contratospersonas_path(id: contratospersona.id, contratosperfecha_id: a.id), data: { toggle: 'tooltip' }, title: 'Novedades', remote: true do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-cc-mastercard"></i></button>
+            <% end %>
+            <%= link_to procesos_contratospersonas_path(id: contratospersona.id, contratosperfecha_id: a.id), data: { toggle: 'tooltip' }, title: 'Procesos', remote: true do %>
+              <button class="btn btn-xs btn-primary"><i class="fa fa-map-signs"></i></button>
+            <% end %>
+            <%= link_to inventario_contratospersonas_path(id: contratospersona.id, contratosperfecha_id: a.id), data: { toggle: 'tooltip' }, title: 'Inventario', remote: true do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-bars"></i></button>
+            <% end %>
+            <% if a.ver_doc.to_s == 'SI' and a.personasformulario_id.present? %>
+              <% if Personasformulariosdoc.where("estado = 'APROBADO' and personasformulario_id = #{a.personasformulario_id}").present? %>
+                <%= link_to verdocumentos_contratospersonas_path(id: a.id), remote: true, data: { toggle: 'tooltip' }, title: "Ver Documentos" do %>
+                  <button class="btn btn-xs btn-info"><i class="fa fa-cloud-download"></i></button>
+                <% end %>
+                <div class="modal fade" id="verdocumentos<%=a.id %>">
+                  <div class="modal-dialog modal-dialog-responsive" role="document">
+                    <div class="modal-content"></div></div></div>
+              <% end %>
+            <% end %>
+          </div>
+          <div id="boton_evaluar<%= a.id %><%= contratospersona.id %>" style="margin-left: 5px;">
+            <% if a.fecha_inicio_real.present? and Contratoscargosact.where("contratoscargo_id = #{a.contratoscargo_id}").present? %>
+              <%= link_to evaluacion_contratospersonas_path(id: contratospersona.id, contratosperfecha_id: a.id), data: { toggle: 'tooltip' }, title: 'Certificación Laboral', remote: true do %>
+                <button class="btn btn-xs btn-primary"><i class="fa fa-users"></i>
+                </button>
+              <% end %>
+            <% end %>
+          </div>
+          <div id="mostrar_boton_evalua<%= a.id %><%= contratospersona.id %>" style="margin-left: 5px;"></div>
+        <% elsif @vcAutoInv %>
+          <div style="margin-left: 5px;">
+            <%= link_to inventario_contratospersonas_path(id: contratospersona.id, contratosperfecha_id: a.id), data: { toggle: 'tooltip' }, title: 'Inventario', remote: true do %>
+              <button class="btn btn-xs btn-success"><i class="fa fa-bars"></i></button>
+            <% end %>
+          </div>
+        <% end %>
+        <%= a.contrato.empresa.identnombre rescue nil %>
+      </div>
+      <strong>Nro Contrato : </strong><%= a.contrato.nro_contrato rescue nil %> -
+      <strong>Grupo : </strong><%= a.contratosgrupo.descripcion rescue nil %>
+      <small>(<%= a.contratosgrupo.termino rescue nil %>)</small>
+      <br/><strong>Cargo : </strong><%= a.contratoscargo.perfil rescue nil %><% if is_auth_e('versalarioenempleado') %>(<%= camponumerico a.contratoscargo.salario rescue nil %>)<% end %>
+      <% if a.fecha_pasoalfondo.to_s != "" %><br/>
+        <div class="text-red" style='font-size: 10px;'><strong>->> Fecha paso al fondo --- <%=a.fecha_pasoalfondo rescue nil%>!!</strong></div>
+      <% end %>
+      <% if a.fecha_pasoregrefondo.to_s != "" %><br/>
+        <div class="text-info" style='font-size: 10px;'><strong><<- Fecha Regreso del fondo --- <%=a.fecha_pasoregrefondo rescue nil%>!!</strong></div>
+      <% end %>
+      <% if a.contratosseccion_id.present? %><br/><strong>Sección : </strong><small>(<%= a.contratosseccion.descripcion rescue nil %>)</small><%end %>
+      <br/><strong>Fecha Contrato : </strong><small><%= a.fechascontrato rescue nil %></small>
+      &nbsp;&nbsp;
+      <% if a.contratosperliquidaciones.exists?
+           a.contratosperliquidaciones.each do |a| %>
+          <%= link_to liquidacion_contratosperliquidaciones_path(id: a.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+            <i class="fa fa-file-pdf-o" style="color:red;"></i>
+          <% end %>
+        <% end
+           end %>
+      <% if a.contratospervacaciones.where(estado: 'APROBADA').exists? %>
+        <%= link_to vacacion_contratospervacaciones_path(contratosperfecha_id: a.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+          <i class="fa fa-file-pdf-o" style="color:green;"></i>
+        <% end %>
+        <%= link_to carta_contratospervacaciones_path(contratosperfecha_id: a.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+          <i class="fa fa-file-pdf-o" style="color:red;"></i>
+        <% end %>
+      <% end %>
+
+      <% if Contratospermasdetalle.includes([:contratospermasiva]).joins([:contratospermasiva]).where(["contratospermasdetalles.contratosperfecha_id = #{a.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).exists? %>
+        <% Contratospermasdetalle.includes([:contratospermasiva]).joins([:contratospermasiva]).where(["contratospermasdetalles.contratosperfecha_id = #{a.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).each do |b| %>
+          <%= link_to proceso_contratospermasdetalles_path(id: b.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Ver PDF de ' + b.contratospermasiva.proceso do %>
+            <i class="fa fa-file-pdf-o" style="color:red;"></i>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+</tr>
+
+<div class="modal fade" id="inventarios">
+  <div class="modal-dialog modal-dialog-responsive" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

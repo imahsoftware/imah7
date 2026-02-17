@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Argos</title>
+  <%= csrf_meta_tags %>
+  <%= action_cable_meta_tag %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+</head>
+<body class="hold-transition skin-black-light sidebar-mini">
+<div class="wrapper">
+  <header class="main-header">
+    <%= link_to "", class: 'logo' do %>
+      <span class="logo-mini"><b>ARG</b></span>
+      <span class="logo-lg"><b style="font-size: 13px;">FUNDACIÓN GRUPO ARGOS</b></span>
+    <% end %>
+
+    <nav class="navbar navbar-static-top" role="navigation">
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <%= render 'layouts/without_seg_layout/content_wrapper' %>
+</div>
+</body>
+</html>

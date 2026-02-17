@@ -1,0 +1,139 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="exampleModalLabel">Historico Biracora</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#citaciones" data-toggle="tab">Citaciones</a></li>
+            <li><a href="#descargos" data-toggle="tab">Descargos</a></li>
+            <li><a href="#sanciones" data-toggle="tab">Sanciones</a></li>
+            <li><a href="#notas" data-toggle="tab">Notas</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="citaciones">
+              <% if Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'CITACIONES'").present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <th class="text-center text-table" width="5%">Id</th>
+                    <th class="text-left text-table" width="25%">Usuario</th>
+                    <th class="text-center text-table" width="15%">Codigo Recibido</th>
+                    <th class="text-center text-table" width="20%">Fecha Firma</th>
+                    <th class="text-center text-table">Codigo FIrma</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_contratosperprocesos">
+                  <% Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'CITACIONES'").each do |contratosperproceso| %>
+                    <tr>
+                      <td class="text-center text-table"><%= contratosperproceso.id_tabla rescue nil %></td>
+                      <td class="text-left text-table"><%= contratosperproceso.user.nombre rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_recibido rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.fecha_firma rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+            <div class="tab-pane" id="descargos">
+              <% if Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'DESCARGOS'").present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <th class="text-center text-table" width="5%">Id</th>
+                    <th class="text-left text-table" width="25%">Usuario</th>
+                    <th class="text-center text-table" width="15%">Codigo Recibido</th>
+                    <th class="text-center text-table" width="20%">Fecha Firma</th>
+                    <th class="text-center text-table">Codigo FIrma</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_contratosperprocesos">
+                  <% Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'DESCARGOS'").each do |contratosperproceso| %>
+                    <tr>
+                      <td class="text-center text-table"><%= contratosperproceso.id_tabla rescue nil %></td>
+                      <td class="text-left text-table"><%= contratosperproceso.user.nombre rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_recibido rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.fecha_firma rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+            <div class="tab-pane" id="sanciones">
+              <% if Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'SANCIONES'").present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <th class="text-center text-table" width="5%">Id</th>
+                    <th class="text-left text-table" width="25%">Usuario</th>
+                    <th class="text-center text-table" width="15%">Codigo Recibido</th>
+                    <th class="text-center text-table" width="20%">Fecha Firma</th>
+                    <th class="text-center text-table">Codigo FIrma</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_contratosperprocesos">
+                  <% Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'SANCIONES'").each do |contratosperproceso| %>
+                    <tr>
+                      <td class="text-center text-table"><%= contratosperproceso.id_tabla rescue nil %></td>
+                      <td class="text-left text-table"><%= contratosperproceso.user.nombre rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_recibido rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.fecha_firma rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+            <div class="tab-pane" id="notas">
+              <% if Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'NOTAS'").present? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <th class="text-center text-table" width="5%">Id</th>
+                    <th class="text-left text-table" width="25%">Usuario</th>
+                    <th class="text-center text-table" width="15%">Codigo Recibido</th>
+                    <th class="text-center text-table" width="20%">Fecha Firma</th>
+                    <th class="text-center text-table">Codigo FIrma</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_contratosperprocesos">
+                  <% Bitacoraproceso.where("contratosperproceso_id = #{@contratosperproceso.id} and proceso = 'NOTAS'").each do |contratosperproceso| %>
+                    <tr>
+                      <td class="text-center text-table"><%= contratosperproceso.id_tabla rescue nil %></td>
+                      <td class="text-left text-table"><%= contratosperproceso.user.nombre rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_recibido rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.fecha_firma rescue nil %></td>
+                      <td class="text-center text-table"><%= contratosperproceso.codigo_firma rescue nil %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-danger">
+                  <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

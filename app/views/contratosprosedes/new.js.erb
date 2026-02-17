@@ -1,0 +1,11 @@
+<% if @active_record.present? %>
+	$("#contratosprosede_<%= @active_record.id %>").replaceWith("<%= j render 'tr', contratosprosede: @active_record %>");
+<% end %>
+$("#contratosprosede_form<%= @contratosproyecto.id %>").html("<%= j render 'form' %>");
+$(".datetimepicker").datetimepicker({
+	showClear: true
+});
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$("#contratosprosede_form<%= @contratosproyecto.id %>").collapse("show");
+$(".select2").select2();

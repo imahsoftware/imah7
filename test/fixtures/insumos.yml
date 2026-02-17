@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tipo: MyString
+  bien_servicio: MyString
+  especificacion: MyText
+  presentacion: MyString
+  valor1: 9.99
+  valor2: 9.99
+  estado: MyString
+
+two:
+  tipo: MyString
+  bien_servicio: MyString
+  especificacion: MyText
+  presentacion: MyString
+  valor1: 9.99
+  valor2: 9.99
+  estado: MyString

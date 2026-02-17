@@ -1,0 +1,26 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="8%" class="text-center">Pre-Factura</th>
+        <th width="8%" class="text-center">Factura</th>
+        <th width="10%" class="text-center">Fecha Factura</th>
+        <th width="8%" class="text-center">Nro Recibo</th>
+        <th width="10%" class="text-center">Fecha pago</th>
+        <th class="text-left">Tipo de cuenta</th>
+        <th class="text-right">Dinero</th>
+        <th class="text-right">Retenciones</th>
+        <th class="text-right">Total</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratospagos">
+	    <% @contrato.contratospagos.includes([:user,:contratosprefactura,:tiposcuenta]).order(id: :desc).each do |contratospago| %>
+	      <%= render 'contratospagos/tr', contratospago: contratospago %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

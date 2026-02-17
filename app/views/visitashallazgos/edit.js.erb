@@ -1,0 +1,26 @@
+$("#visitashallazgo_form").collapse("hide");
+
+$("#visitashallazgo_form").empty();
+
+<% if @active_record.present? %>
+	$("#visitashallazgo_<%= @active_record.id %>").replaceWith("<%= j render 'tr', visitashallazgo: @active_record %>");
+<% end %>
+
+$("#visitashallazgo_<%= @visitashallazgo.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#visitashallazgo_<%= @visitashallazgo.id %>").addClass("active_visitashallazgo");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
+$('.datepicker').datepicker({
+    dayNamesMin: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb" ],
+    monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+    dateFormat: "yy-mm-dd",
+    yearRange: '2000:2027',
+    changeMonth: true,
+    changeYear: true,
+});

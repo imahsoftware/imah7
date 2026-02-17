@@ -1,0 +1,29 @@
+<div class="box-body paddin-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"> Actividades
+            <div class="pull-right">
+              <%= link_to new_tarea_tareasactividad_path(@tarea), id: 'new_tareasactividad_button', class: 'btn btn-sm btn-warning', remote: true do %>
+                <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+              <% end %>
+            </div>
+          </h3>
+        </div>
+
+        <div class="card-body">
+          <div id="tareasactividad_form" class="collapse"></div>
+          <div id="tareasactividades" style="margin-top: 10px;">
+            <% if @tarea.tareasactividades.any? %>
+              <%= render 'tareasactividades/tabla' %>
+            <% else %>
+              <%= render 'layouts/procesos/alert_message' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

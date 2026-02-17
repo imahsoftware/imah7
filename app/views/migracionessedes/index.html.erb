@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Migracionessedes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Archivo</th>
+      <th>Estado</th>
+      <th>Contrato</th>
+      <th>Nombre</th>
+      <th>Direccion</th>
+      <th>Ordensede</th>
+      <th>Departamento</th>
+      <th>Municipio</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @migracionessedes.each do |migracionessede| %>
+      <tr>
+        <td><%= migracionessede.user %></td>
+        <td><%= migracionessede.archivo %></td>
+        <td><%= migracionessede.estado %></td>
+        <td><%= migracionessede.contrato_id %></td>
+        <td><%= migracionessede.nombre %></td>
+        <td><%= migracionessede.direccion %></td>
+        <td><%= migracionessede.ordensede %></td>
+        <td><%= migracionessede.departamento %></td>
+        <td><%= migracionessede.municipio %></td>
+        <td><%= link_to 'Show', migracionessede %></td>
+        <td><%= link_to 'Edit', edit_migracionessede_path(migracionessede) %></td>
+        <td><%= link_to 'Destroy', migracionessede, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Migracionessede', new_migracionessede_path %>

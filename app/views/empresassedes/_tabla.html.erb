@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th width="20%" class="text-left">Fecha</th>
+        <th class="text-left">Nombre Sede</th>
+        <th width="20%" class="text-left">Municipio</th>
+        <th width="20%" class="text-left">Dirección</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_empresassedes">
+	    <% @empresa.empresassedes.order(id: :desc).each do |empresassede| %>
+	      <%= render 'empresassedes/tr', empresassede: empresassede %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+
+
+

@@ -1,0 +1,410 @@
+<div align="center">
+  <style type="text/css">H1.SaltoDePagina {PAGE-BREAK-AFTER: always}</style>
+  <table width="100%">
+    <tr>
+      <td>
+        <table width="100%" border="0">
+          <tr>
+            <td style="font-size: 14px; font-family: Tahoma; line-height:150%"><div align="center"><strong><div style="font-size: 18px; font-family: Tahoma;">CONTRATO POR OBRA O LABOR DETERMINADA</div></strong></div></td>
+            <td width="30%"><div align="center"><%= image_tag "#{@logo}", size: "280x120" %></div></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>Empleador(a): </strong></td>
+          <td>&nbsp;<%= @portafolio.razon_social rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>NIT: </strong></td>
+          <td>&nbsp;<%= @portafolio.identificacion rescue nil %>-<%= @portafolio.digito rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Dirección y ciudad: </strong></td>
+          <td>&nbsp;<%= @portafolio.direccion rescue nil %>, MEDELLIN - ANTIOQUIA</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Administradora de Riesgos Laborales: </strong></td>
+          <td>&nbsp;ARL SURA</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Representante Legal: </strong></td>
+          <td>&nbsp;<%= @nombre_firma rescue nil %></td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Correo Electrónico: </strong></td>
+          <td>&nbsp;aseartemporal@gmail.com</td>
+        </tr>
+        <tr>
+          <td height="25" style="background: #E8E3E3;"><strong>Actividad Económica Principal: </strong></td>
+          <td>&nbsp;Actividades de Agencias de empleo temporal</td>
+        </tr>
+      </table>
+      <br/><strong>POLÍTICA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong><br/><br/>
+      <strong><%= @portafolio.razon_social rescue nil %></strong> es una empresa de servicios temporales dedicada al suministro de personal para abarcar las diferentes necesidades de nuestros clientes, por lo tanto para la alta dirección y el área de seguridad y salud en el trabajo, el recurso humano constituye nuestra base principal para la prestación de un excelente servicio, es por ello que se establece la presente Política como parte de nuestras prioridades para el mejoramiento continuo de nuestro Sistema de Gestión de Seguridad y Salud en el Trabajo SG – SST.<br/><br/>
+      Para la alta dirección y todas las partes interesadas de la EST es de total interés mantener y cumplir con la Política de SST y el logro de los Objetivos de SST planteados en el SG SST y es primordial garantizar el bienestar integral de los trabajadores en misión, contribuyendo así a su calidad de vida, generando satisfacción, sentido de pertenencia con la temporal y la empresa usuaria.<br/><br/>
+      Nuestros compromisos para el cumplimiento del anterior propósito son:<br/><br/>
+      <ol id="1">
+        <li>Cumplir con los requisitos legales en cuanto a seguridad y salud en el trabajo que como empresa nos aplique y aquellos que se deriven de nuestra actividad económica y otros requisitos.</li>
+        <li>Adoptar en compañía de la empresa Usuaria disposiciones efectivas para desarrollar las medidas de identificación de peligros, evaluación y valoración de los riesgos y establecimiento de controles que prevengan daños en la salud de los trabajadores en misión y velar porque la empresa Usuaria realice la intervención en los equipos e instalaciones por encontrarse estos en las dependencias de la usuaria.</li>
+        <li>Implementar y desarrollar en compañía de la empresa usuaria las actividades de prevención de accidentes de trabajo y enfermedades laborales, así como la promoción de la salud en el SG SST.</li>
+        <li>Realizar la identificación de peligros, evaluación y valoración de los riesgos en relación con los trabajadores en misión, con énfasis en aquellos considerados como prioritarios.</li>
+        <li>Vincular a todos los trabajadores y partes interesadas para que conozcan, consulten, participen y den cumplimiento a todas las medidas adoptadas y que hacen parte del SG SST, así como informar a través de los canales de comunicación definidos cualquier condición, suceso o anomalía que valla en contra de la Política, Objetivos y Manual del SG SST o cualquier otro requisito definido por la empresa.</li>
+        <li>Lograr la Mejora Continua del SG SST garantizando la actuación sobre las acciones tomadas para el alcance de los resultados previstos.</li>
+      </ol>
+      <br/><br/><%= @nombre_firma rescue nil %><br/>
+      <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/><br/>
+      <br/><strong>OBJETIVOS DEL SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO</strong><br/><br/>
+      <br/><strong>Objetivo general</strong><br/><br/>
+      Apuntar al cumplimiento de la Política de Seguridad y Salud en el trabajo y al desarrollo acertado de la intervención que garantice la mejora continua el Sistema de Gestión de la Seguridad y Salud en el trabajo SG-SST, logrando prevenir y disminuir la ocurrencia de accidentes y enfermedades laborales a los trabajadores en misión.<br/><br/>
+      <br/><strong>Objetivo específicos</strong><br/><br/>
+      <ol id="1">
+        <li>Elaborar, actualizar y hacer seguimiento mediante indicadores al cumplimiento de las normas que le competen a la empresa a través de una Matriz de Requisitos Legales.</li>
+        <li>Elaborar, actualizar y hacer seguimiento al control de riesgos a través de una Matriz de identificación, valoración y evaluación de riesgos.</li>
+        <li>Trabajar de la mano con la empresa usuaria para llevar a cabo los programas, procedimientos, estándares, AROS, instructivos y demás establecidos en el SG SST que apunten a garantizar la seguridad y la salud de los trabajadores en sus puestos de trabajo.</li>
+        <li>Lograr la participación del 100% de los empleados en todas las actividades planteadas dentro del SG SST de la temporal y de la empresa usuaria como: capacitaciones, charlas, programas de bienestar, atención a las comunicaciones y notificación de accidentes, incidentes laborales o notificación de afectaciones a la salud.</li>
+        <li>Realizar la medición de indicadores definidos en el SG SST con el fin revisar el análisis y eficacia de las medidas tomadas para su reducción y realizar ajustes en las medidas y toma de acciones que garanticen la mejora continua, llevando un control documentado de una Matriz de mejoras para seguimiento al cumplimiento de las acciones tomadas en cualquiera de las etapas del desarrollo del SG SST.</li>
+        <li>Diseñar e implementar programas, procesos o procedimientos para el control de los riesgos prioritarios identificados en la Matriz de valoración y evaluación de riesgos.</li>
+      </ol>
+      <br/><strong>POLITICA DE ALCOHOL Y DROGAS</strong><br/><br/>
+      <strong><%= @portafolio.razon_social rescue nil %></strong> como empresa temporal para dar cumplimiento con Ley 9 de 1979 en sus Artículos 84, 85 y 125, Ley 1335 de julio 21 de 2009, Ley 1566 de julio 31 de 2012, Decreto-Ley 1295 de 1994 Cap. 10 Art. 91 inciso b, Resolución 2400 / 79 Cap. III Art. 3 inciso f, Resolución 1075 de marzo 24 de 1992, Resolución 4225 de mayo de 29 de 1992. y consiente de la necesidad de brindar a sus trabajadores y clientes un ambiente de trabajo sano y libre de la farmacodependencia y alcoholismo, que generan efectos contraproducentes a la salud de los trabajadores, al ambiente de trabajo, al desempeño y la productividad de cada uno; se desarrolla esta política institucional para todos los empleados de la empresa.<br/><br/>
+      <strong>Las directrices a cumplir dentro de la empresa y en las instalaciones de los puestos de trabajo, son las siguientes:</strong><br/><br/>
+      <ul>
+        <li>Se prohíbe a todos los empleados presentarse al sitio de trabajo, en estado de embriaguez o bajo influencia de sustancias psicoactivas o abuso de medicamentos que alteren su capacidad de reacción física y mental.</li>
+        <li>Se prohíbe el consumo de cigarrillo, uso de vapeador, consumo de alcohol o sustancias psicoactivas en las instalaciones de la empresa o lugar de trabajo asignado.</li>
+        <li>Está prohibida la posesión y/o comercialización de drogas psicoactivas, bebidas embriagantes, cigarrillos o vapeadores en los puestos de trabajo asignados por la empresa.</li>
+        <li>El personal debe participar en los programas de sensibilización y capacitación de la política de no alcohol, drogas y cigarrillo o vapeador.</li>
+        <li>Los empleados facilitaran la realización de las pruebas necesarias para establecer indicios de abuso de drogas y/o alcohol, en cualquier momento durante el desarrollo de su contrato.</li>
+      </ul>
+      <br/>
+      Igualmente se prohíbe el uso de cualquier sustancia que pueda atentar contra la seguridad de cada individuo o compañeros e interrumpir el normal desempeño laboral.<br/><br/>
+      Con el desacato persistente a alguna de estas normas nos veremos en el deber de realizar llamado de atención o dar por terminada la relación laboral.<br/><br/>
+      <br/><%= @nombre_firma rescue nil %><br/>
+      <strong>Representante Legal (<%= @nombre_empresa rescue nil %>)</strong><br/><br/>
+      <br/><strong>ROLES Y RESPONSABILIDADES CON EL ÁREA DE SEGURIDAD Y SALUD EN EL TRABAJO</strong><br/><br/>
+      Como nuevo integrante de la empresa usted debe:<br/>
+      <br/><strong>PERSONAL EN MISION</strong><br/><br/>
+      <ol id="1">
+        <li>Conocer y velar por el cumplimiento de los Programas, Procedimientos, Instructivos, Protocolos y Estándares de seguridad elaborados por el área de seguridad y salud en el trabajo.</li>
+        <li>Conocer y tener clara la Política, Objetivos, roles y responsabilidades de SST de la empresa temporal y de la empresa usuaria; así mismo dar cumplimiento a estos.</li>
+        <li>Participar en la elaboración del diagnóstico del riesgo e informar cualquier condición que genere peligro en los puestos de trabajo.</li>
+        <li>Asistir a las capacitaciones, brigadas de salud y demás actividades programadas por el área de seguridad y salud en el trabajo para la prevención de accidentes y enfermedades laborales de la empresa temporal o de la empresa usuaria.</li>
+        <li>Cumplir con la normatividad vigente en materia de Seguridad y Salud en el trabajo.</li>
+        <li>Usar los elementos de protección personal y dotación durante la labor y de forma correcta.</li>
+        <li>Cumplir con la Política de alcohol y drogas.</li>
+        <li>Cumplir con el Protocolo de Bioseguridad para la prevención de Riesgo Biológico de la empresa temporal y de la empresa usuaria.</li>
+        <li>Informar cualquier cambio o condición que afecte su salud.</li>
+        <li>Procurar el cuidado integral de su salud y autocuidado en el lugar de trabajo, realizando las actividades de forma segura con el fin de evitar la materialización de un accidente o enfermedad laboral.</li>
+        <li>Velar por el cuidado de las demás personas, estando atentos a las condiciones de riesgo e informando a tiempo, así mismo no poner en riesgo la integridad misma o la de otras personas.</li>
+        <li>No realizar trabajos de alto riesgo (alturas, trabajos en caliente, energías peligrosas etc) sin autorización previa del supervisor de la empresa temporal y si no cuenta con las competencias para hacerlo.</li>
+        <li>Reportar inmediatamente todos los accidentes e incidentes que ocurren en el lugar de trabajo al supervisor o coordinador por parte de la empresa usuaria y la temporal o al área de SST de la empresa Temporal y participar de la investigación del AT o de la EL.</li>
+        <li>Informar a su empleador (<strong><%= @portafolio.razon_social rescue nil %></strong>) y la empresa usuaria cualquier novedad de riesgo o condición que pueda afectar su salud o que este perturbando el ambiente laboral.</li>
+        <li>Cumplir las normas de seguridad e higiene establecidas por la empresa temporal o por la empresa usuaria.</li>
+        <li>Suministrar información clara, completa, veraz y de forma escrita sobre su estado de salud.</li>
+        <li>Antes de ejecutar cualquier actividad donde implique la manipulación de máquinas o herramientas debe diligenciar en compañía del supervisor el preoperacional para la autorización.</li>
+      </ol>
+      <br/><strong>REGLAMENTO DE HIGIENE Y SEGURIDAD INDUSTRIAL</strong><br/><br/>
+      Establece los riesgos existentes de nuestras actividades y destaca la obligación que tenemos todos los empleados de participar en las capacitaciones y orientaciones que se desarrollen como medidas preventivas.<br/><br/>
+      La empresa se compromete a dar cumplimiento a las disposiciones legales vigentes, tendientes a garantizar los mecanismos que aseguren una oportuna y adecuada prevención de los accidentes de trabajo y enfermedades laborales, de conformidad con lo establecido en la normatividad vigente.<br/><br/>
+      Nombre de la ARL a la que está afiliada la empresa: ARL SURA<br/><br/>
+      Clase o tipo de riesgo asignado por la ARL: 1, 2, 3, 4 Y 5 Según el riesgo de la empresa usuaria.<br/><br/>
+      <br/><strong>RIESGOS A LOS CUALES ESTA EXPUESTO EL TRABAJADOR</strong><br/><br/>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="40%" height="25" style="background: #E8E3E3;"><strong>Riesgo Identificado</strong></td>
+          <td width="60%" height="25" style="background: #E8E3E3;"><strong>Actividades</strong></td>
+        </tr>
+        <tr>
+          <td>Riesgo Biológico:<br/>
+            Por exposición o contacto con macroorganismos (picaduras, mordeduras), microorganismos (incluido Covid-19 y sus variantes), contacto con fluidos o excrementos.
+          </td>
+          <td>Transmisión a través de objetos o material contaminado.<br/>
+            Totos los cargos que realizan actividades de aseo, limpieza y desinfección.<br/>
+            Todos los cargos que realizan mantenimiento y sostenimiento de instalaciones locativas.<br/>
+            Todo el personal que realiza atención al público.<br/>
+            Todo el personal que realiza recolección de residuos.</td>
+        </tr>
+        <tr>
+          <td>Riesgo Físico:<br/>
+            Exposición a ruido, exceso o deficiencia de iluminación, vibración, temperaturas extremas, radiaciones ionizantes.</td>
+          <td>Todos los cargos que manipulan maquinas o herramientas que generan ruido y/o vibración.<br/>
+            Todos los que manipulan greca o bebidas calientes.<br/>
+            Todos los trabajadores expuestos al sol.<br/>
+            Personal Administrativo que manipula equipos audio visuales o se encuentra en una oficina.</td>
+        </tr>
+        <tr>
+          <td>Riesgo Químico:<br/>
+            Exposición a gases y vapores, líquidos (nieblas y rocíos), humos metálicos y cualquier agente químico.</td>
+          <td>Todos los cargos que manipulan sustancias químicas.<br/>
+            Todas las personas que manipulan sustancias para fumigación.<br/>
+            Personal que realiza soldadura.</td>
+        </tr>
+        <tr>
+          <td>Riesgo Biomecánico:<br/>
+            Por movimientos repetitivos, manipulación de cargas, sobreesfuerzo o posturas forzadas o prolongadas.</td>
+          <td>Todos los cargos vinculados a la empresa sin importar su lugar de trabajo.</td>
+        </tr>
+        <tr>
+          <td>Condiciones de Seguridad:<br/>
+            Mecánico (elementos de máquinas, herramientas, piezas a trabajar, materiales proyectados sólidos o fluidos), eléctrico (alta y baja tensión, estática), accidentes de tránsito, Trabajo en alturas, trabajos en espacios confinados, tecnológico (explosión, fuga, derrame, incendio), Locativo (almacenamiento, superficies de trabajo. (irregularidades, deslizantes, con diferencia del nivel) condiciones de orden y aseo, caídas de objeto).</td>
+          <td>Todos los operarios que realicen trabajo de alturas, trabajos en espacios confinados, personal eléctrico.<br/><br/>
+            A las condiciones de seguridad a nivel locativo: Están expuestos todo el personal que se contrato para la empresa sin diferenciar cargo.</td>
+        </tr>
+        <tr>
+          <td>Riesgo Mecánico:<br/>
+            Manejo de maquinas y herramientas, proyección de partículas, superficies o herramientas cortantes o punzantes, objetos salientes que ruedan o caen, superficies calientes.</td>
+          <td>Todos los cargos de la empresa <%= @portafolio.razon_social rescue nil %> se pueden ver expuestos a este tipo de riesgo.</td>
+        </tr>
+        <tr>
+          <td>Riesgo Psicosocial:<br/>
+            Condiciones de la tarea (carga mental, contenido de la tarea, demandas emocionales, sistemas de control, definición de roles, monotonía, etc)</td>
+          <td>Todos los cargos de la empresa <%= @portafolio.razon_social rescue nil %> se pueden ver expuestos a este tipo de riesgo.</td>
+        </tr>
+      </table>
+      <br/><strong>DEFINICIONES IMPORTANTES</strong><br/><br/>
+      <br/><strong>ACTO O COMPORTAMIENTO INSEGURO</strong><br/><br/>
+      Se refieren a todas la acciones y decisiones humanas, que pueden causar una situación insegura o incidente, con consecuencias para el trabajador, la producción, el medio ambiente y otras personas. También el comportamiento inseguro incluye la falta de acciones para informar o corregir condiciones inseguras.<br/><br/>
+      <br/><strong>CONDICIÓN INSEGURA</strong><br/><br/>
+      Es todo elemento de los equipos, la materia prima, las herramientas, las máquinas, las instalaciones o el medio ambiente que se convierte en un peligro para las personas, los bienes, la operación y el medio ambiente y que bajo determinadas condiciones puede generar un incidente.<br/><br/>
+      <br/><strong>ACCIDENTE DE TRABAJO: (Decreto 1562 de 2012 - Art. 3).</strong><br/><br/>
+      Es todo suceso repentino que sobrevenga por causa o con ocasión del trabajo, y que produzca en el trabajador una lesión orgánica, una perturbación funcional o psiquiátrica, una invalidez o la muerte.<br/><br/>
+      Es también accidente de trabajo aquel que se produce durante la ejecución de órdenes del empleador, o contratante durante la ejecución de una labor bajo su autoridad, aún fuera del lugar y horas de trabajo.<br/><br/>
+      Igualmente se considera accidente de trabajo el que se produzca durante el traslado de los trabajadores o contratistas desde su residencia a los lugares de trabajo o viceversa, cuando el transporte lo suministre el empleador.<br/><br/>
+      También se considerará como accidente de trabajo el ocurrido durante el ejercicio de la función sindical, aunque el trabajador se encuentre en permiso sindical siempre que el accidente se produzca en cumplimiento de dicha función.<br/><br/>
+      De igual forma se considera accidente de trabajo el que se produzca por la ejecución de actividades recreativas, deportivas o culturales, cuando se actúe por cuenta o en representación del empleador o de la empresa usuaria cuando se trate de trabajadores de empresas de servidos temporales que se encuentren en misión.<br/><br/>
+      <br/><strong>INCIDENTE DE TRABAJO.</strong><br/><br/>
+      Suceso acaecido en el curso del trabajo o en relación con éste, que tuvo el potencial de ser un accidente, en el que hubo personas involucradas sin que sufrieran lesiones corporales o se presentaran daños a la propiedad y/o pérdida en los procesos.<br/><br/>
+      <br/><strong>EN CASO DE ACCIDENTE DE TRABAJO</strong><br/><br/>
+      La ARL en la que se encuentra afiliada la empresa es ARL SURA<br/><br/>
+      Cualquier accidente, incidente o novedad debe ser informado inmediatamente al área de seguridad y salud en el trabajo:<br/><br/>
+      Correo: coordinacionsst@asearesp.com Teléfono: 604 3222278 ext: 109.<br/><br/>
+      <br/><strong>PROCEDIMIENTO REPORTE DE ACCIDENTE O INCIDENTE DE TRABAJO</strong><br/><br/>
+      <br/><strong>Trabajadores:</strong><br/><br/>
+      <ol id="1">
+        <li>Es responsabilidad de todo el personal perteneciente a la organización reportar al jefe y de forma inmediata todos los accidentes o incidentes con y sin lesión ocurridos dentro y fuera de la organización que tengan relación directa o indirecta con la labor para la que fue contratado.</li>
+        <li>En caso de sufrir algún evento, deberá participar en la investigación del mismo bien sea como persona afectada o como testigo de algún evento. Esta participación se hará siempre y cuando no se encuentre incapacitado o limitado para participar de manera telefónica o presencial.</li>
+      </ol>
+      <br/><strong>Supervisores:</strong><br/><br/>
+      Realizar la llamada a la línea de ARL SURA para realizar el reporte telefónicamente y direccionar al empleado al centro médico más cercano.<br/><br/>
+      Teléfono: 604 4444578 ó Línea Gratuita: 018000941414<br/><br/>
+      <br/><strong>ENFERMEDAD LABORAL. (Decreto 1562 de 2012 - Art. 4).</strong><br/><br/>
+      Es enfermedad laboral la contraída como resultado de la exposición a factores de riesgo inherentes a la actividad laboral o del medio en el que el trabajador se ha visto obligado a trabajar. El Gobierno Nacional, determinará, en forma periódica, las enfermedades que se consideran como laborales y en los casos en que una enfermedad no figure en la tabla de enfermedades laborales, pero se demuestre· la relación de causalidad con los factores de riesgo ocupacionales será reconocida como enfermedad laboral, conforme lo establecido en las normas legales vigentes.<br/><br/>
+      <br/><strong>PROCEDIMIENTO REPORTE DE ENFERMEDAD LABORAL</strong><br/><br/>
+      <table width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border:1px solid #CCCCCC; font-size: 12px; font-family: Verdana, Geneva, sans-serif;">
+        <tr>
+          <td width="80%" height="25" style="background: #E8E3E3;"><strong>DESCRIPCIÓN</strong></td>
+          <td width="20%" height="25" style="background: #E8E3E3;"><strong>RESPONSABLE</strong></td>
+        </tr>
+        <tr>
+          <td>Si el trabajador considera que presenta una enfermedad laboral, debe dirigirse al centro médico adscripto en su EPS, e iniciar un proceso, cuando el médico general lo considere necesario remitirá el caso al médico laboral de la EPS para que emita un concepto con la presunta enfermedad laboral.</td>
+          <td>Trabajador</td>
+        </tr>
+        <tr>
+          <td>Informar a Seguridad y Salud en el Trabajo, si el concepto médico de la EPS denota la sospecha o aparición de una enfermedad laboral.</td>
+          <td>Trabajador</td>
+        </tr>
+        <tr>
+          <td>Gestionar los trámites de calificación del origen de la enfermedad en primera oportunidad ante la EPS.</td>
+          <td>Trabajador</td>
+        </tr>
+        <tr>
+          <td>El FUREL se debe diligenciar cuando la EPS, ARL o AFP lo soliciten para calificar en primero oportunidad el origen de la enfermedad.</td>
+          <td>Empleador</td>
+        </tr>
+        <tr>
+          <td>Realizar el proceso de calificación del origen de la enfermedad en primera instancia.</td>
+          <td>EPS</td>
+        </tr>
+        <tr>
+          <td>Revisar y emitir concepto de aceptación o no aceptación del origen de la enfermedad en estudio:<br/>
+            No hay controversia sobre la calificación, la ARL procede al reconocimiento y pago de prestaciones asistenciales y económicas a que tenga derecho el trabajador y le envía las recomendaciones al empleador sobre el manejo en su puesto de trabajo (reubicación, readaptación de tareas, o rediseños al puesto de trabajo).<br/>
+            Si surge controversia o el funcionario no está de acuerdo, las discrepancias serán resueltas por una junta integrada por representantes de las entidades administradoras de salud y de riesgos profesionales.<br/>
+            De persistir el desacuerdo se inicia el proceso de calificación por parte de las Juntas de Calificación de Invalidez</td>
+          <td>EPS – ARL – Juntas de Calificaciones.</td>
+        </tr>
+        <tr>
+          <td>Investigación de enfermedad laboral</td>
+          <td>Equipo investigador</td>
+        </tr>
+        <tr>
+          <td>La empresa de acuerdo al origen de la enfermedad realiza su registro.<br/>
+            Si la enfermedad es de origen común se archiva en la hoja de vida del trabajador y se vincula al programa de vigilancia epidemiológico que corresponda.<br/>
+            Si es de origen laboral, se realiza el ingreso del caso a la carpeta de seguimiento recomendaciones médicas y al programa de vigilancia epidemiológico que corresponda</td>
+          <td>Seguridad y Salud en el Trabajo.</td>
+        </tr>
+      </table>
+      <br/><strong>ESTANDAR DE SEGURIDAD GENERAL EN EL LUGAR DE TRABAJO</strong><br/><br/>
+      <strong><%= @portafolio.razon_social rescue nil %></strong> hace la invitación a sus trabajadores en misión, como parte de la estrategia de prevención y minimización de lesiones o accidentes laborales a tener en cuenta las siguientes normas de seguridad.<br/><br/>
+      <ul>
+        <li>Trabaje de forma segura, si observa algún riesgo repórtelo a su supervisor o jefe directo.</li>
+        <li>Utilice el equipo de protección personal asignado según la actividad que realiza (guantes, gafas de seguridad, protección respiratoria, protección auditiva, entre otros).</li>
+        <li>Se prohíben las bromas y juegos, que puedan provocar accidentes dentro de las instituciones de trabajo.</li>
+        <li>Comunique de inmediato cualquier dolencia o problemas a su salud a su supervisor o jefe directo.</li>
+        <li>Reporte todo incidente y accidente para de esta forma tomar las medidas correctivas necesarias que eviten situaciones inseguras en el futuro.</li>
+        <li>Manténgase a la defensiva cuando se encuentre expuesto a una atmosfera peligrosa.</li>
+        <li>Cuando use herramientas manuales corto punzantes o con filo realice la actividad de manera pausada y no pierda la concentración.</li>
+        <li>Proteja su salud en todo momento adopte posturas seguras para realizar sus tareas.</li>
+        <li>No salte de lugares altos.</li>
+      </ul>
+      <br/><strong>ELEMENTOS DE PROTECCIÓN PERSONAL</strong><br/><br/>
+      Los Elementos de Protección Personal tienen como función principal proteger diferentes partes del cuerpo, para evitar que un trabajador tenga contacto directo con factores de riesgo que le pueden ocasionar una lesión o enfermedad, no evitan el accidente o el contacto con elementos agresivos, pero ayudan a que la lesión sea menos grave.<br/><br/>
+      <br/><strong>Es responsabilidad del empleador o de la empresa Usuaria:</strong><br/><br/>
+      <ul>
+        <li>Suministrar los equipos y elementos de protección personal certificados, adecuados según la naturaleza del riesgo, la exigencia de sus trabajadores, su uso y la matriz de EPP (Elementos de Protección Personal), de modo tal que reúnan las condiciones de seguridad y eficiencia para el usuario.</li>
+        <li>Capacitar en el uso y cuidado de los elementos y equipos de protección personal.</li>
+        <li>Inspeccionar periódicamente el uso y estado de los elementos y equipos de protección personal.</li>
+        <li>Reponer inmediatamente los elementos y equipos de protección personal cuando estos se deterioren por su uso, o pérdida de los mismos.</li>
+      </ul>
+      <br/><strong>Es responsabilidad de los trabajadores en misión:</strong><br/><br/>
+      <ul>
+        <li>Es responsabilidad de cada trabajador, cuidar sus Elementos de Protección Personal.</li>
+        <li>Utilizar adecuadamente, con carácter obligatorio, los equipos y elementos de protección personal asignados, por compromiso con su propia seguridad.</li>
+        <li>Reportar al jefe Inmediato y/o personal de SST la falta o deterioro de los elementos y equipos de protección personal.</li>
+        <li>No iniciar labores si no dispone de los elementos o equipos de protección personal requeridos según la naturaleza del riesgo.</li>
+        <li>Reportar el no uso o uso inadecuado de los elementos y equipos de protección personal por parte de sus compañeros o personal a cargo.</li>
+        <li>Todos los trabajadores que laboren con la empresa <%= @portafolio.razon_social rescue nil %>, está comprometido a preservar su salud física y mental y la de sus compañeros, promoviendo las conductas de autocuidado y el uso adecuado de los Elementos de Protección Personal (EPP).</li>
+        <li>Bajo ninguna circunstancia, los trabajadores podrán desempeñar sus actividades sin el uso de EPP.</li>
+      </ul>
+      <br/><strong>TRABAJO DE ALTURAS.</strong><br/><br/>
+      Es toda actividad que realiza un trabajador que ocasione la suspensión y/o desplazamiento, en el que se vea expuesto a un riesgo de caída, mayor a 2.0 metros, con relación del plano de los pies del trabajador al plano horizontal inferior más cercano a él.<br/><br/>
+      Se prohíbe a los empleados de <%= @portafolio.razon_social rescue nil %>, realizar cualquier tipo de trabajo que implique actividades de alturas o por encima de 2.0 metros sobre un nivel inferior, a menos de que haya sido contratado para este cargo y que cumpla con todos los requerimientos de ley establecidos en la resolución 4272 de 2021 para trabajo seguro en alturas y demás requerimientos de dados por la empresa TEMPORAL.<br/><br/>
+      <br/><strong>PLAN DE EMERGENCIAS DEL CONTRATO:</strong><br/><br/>
+      La gestión del riesgo incorpora la preparación atención y recuperación de las emergencias, que tiene como uno de los propósitos primordiales la implementación de las medidas preventivas, de atención oportuna y respuesta ante incidentes y accidentes que comprometen la seguridad del personal.<br/><br/>
+      Se debe preguntar en cada una de las instituciones o centros de trabajo cual es el plan de emergencia e identificar rutas de evacuación, punto de encuentro y coordinador o responsable del plan de emergencias.<br/><br/>
+      Sin embargo, ante una emergencia usted debe:<br/><br/>
+      <br/><strong>Antes</strong><br/><br/>
+      <ul>
+        <li>Conozca y apoye el trabajo del Plan de Evacuación.</li>
+        <li>Identifique la señalización para evacuar.</li>
+        <li>Realice un recorrido por la empresa y reconozca personalmente las rutas y sitios para evacuación, además recuérdeselo a otros compañeros y visitantes.</li>
+        <li>Elimine obstáculos en puertas y rutas de evacuación.</li>
+        <li>Asegúrese de conocer el sistema de alarma.</li>
+        <li>Siga las instrucciones del Plan de Evacuación en caso de evacuación.</li>
+        <li>Participe en los simulacros de evacuación.</li>
+        <li>Identifique las personas de su área que tengan dificultades de movilidad, o que en caso de emergencias hayan tenido comportamientos fuera de lo normal, aprenda cómo deben ser ayudadas.</li>
+      </ul>
+      <br/><strong>Durante</strong><br/><br/>
+      <ul>
+        <li>No pierda tiempo, interrumpa sus labores inmediatamente y siga las instrucciones de los Líderes de Evacuación.</li>
+        <li>Desconecte enchufes.</li>
+        <li>Mantenga libre la línea telefónica y similares.</li>
+        <li>No corra, camine con paso rápido y por la derecha.</li>
+        <li>Mantenga la calma y no fomente situaciones alarmistas.</li>
+        <li>Emprenda la evacuación hacia el sitio especificado, con rapidez, sin gritos ni aglomeraciones, no se regrese por ningún motivo.</li>
+        <li>No intente llevar consigo los objetos personales.</li>
+        <li>No intente recuperar ningún objeto que se caiga.</li>
+        <li>Promueva la ayuda mutua (controlar reacciones nerviosas).</li>
+        <li>No vuelva a entrar en el área después de evacuada.</li>
+        <li>Mantenga el orden y la tranquilidad en las áreas de seguridad, si el evento es por terrorismo no use lo teléfonos móviles – celulares.</li>
+        <li>Conserve la calma y siga las rutas establecidas para evacuar.</li>
+        <li>Ayude a salir a las personas que tienen limitaciones físicas o dificultades para desplazarse.</li>
+        <li>En caso de humo salga gateando.</li>
+        <li>En caso de sismo ubíquese en un área segura, utilice la posición de seguridad y cuando pase el movimiento si se da la orden de evacuación salga al sitio determinado como de encuentro final.</li>
+        <li>Diríjase al punto de reunión indicado con base en las instrucciones impartidas y espere allí.</li>
+      </ul>
+      <br/><strong>Después</strong><br/><br/>
+      <ul>
+        <li>En el sitio den encuentro repórtese con el coordinador o líder de evacuación asignado.</li>
+        <li>Ayude a informar sobre otras personas que no estén presentes.</li>
+        <li>No se retire del lugar seguro hasta no recibir la orden por parte de los coordinadores o líder de la evacuación.</li>
+        <li>Una vez el Comité de Emergencias, haya dado la orden para volver nuevamente a la edificación o área evacuada, apoye el ingreso organizado.</li>
+        <li>Si por algún caso no se puede regresar a la edificación o área evacuada, conserve la calma y espere que le den indicaciones.</li>
+      </ul>
+      <br/><strong>MANEJO Y USOS EFICIENTE DE LOS RECUSROS NATURALES</strong><br/><br/>
+      <ul>
+        <li>Manejo adecuado de los residuos sólidos, prácticas de separar, reutilizar y aprovechar los residuos.</li>
+        <li>Desconectar todos los equipos eléctricos y electrónicos que no se estén utilizando.</li>
+        <li>Apagar las luces que se encuentren encendidas en oficinas, aulas y demás lugares donde no haya personas y que esta no sea requerida.</li>
+        <li>Utilizar los equipos que tengan la opción en modo de ahorro de energía.</li>
+        <li>Utilizar en la medida de lo posible balde con agua en vez de la manguera.</li>
+        <li>En caso de utilizar la manguera que esta tenga pistola de presión para controlar la salida del agua.</li>
+        <li>No dejar las llaves o canillas abiertas mientras realizamos otras actividades como enjabonar o estregar, cerrar la llave cuando no necesitemos el agua para enjuagar o lavar.</li>
+        <li>Utilizar productos de fácil biodegradabilidad o que contengan concentraciones que no afecten el medio ambiente</li>
+        <li>Utilizar iluminación natural en los espacios que sea posible.</li>
+        <li>Utilizar luminarias ahorradoras.</li>
+        <li>Examinar las llaves de agua, cañerías y tuberías de los exteriores por si tienen fugas. Gota a gota el agua se agota.</li>
+      </ul>
+      <br/><strong>MANEJO ADECUADO DE LAS SUSTANCIAS QUIMICAS</strong><br/><br/>
+      <ul>
+        <li>Conocer el punto donde se almacenan las hojas de seguridad de los productos químicos</li>
+        <li>Antes de usar un producto químico verificar bien cuáles son los riesgos que tiene partiendo de la lectura del pictograma de peligrosidad</li>
+        <li>Usar los Elementos de Protección Personal según lo definido en la hoja de seguridad</li>
+        <li>Garantizar que los recipientes de los productos siempre estén rotulados CORRECTAMENTE Y DE MANERA LEGIBLE.</li>
+        <li>Separar los productos químicos de manera adecuada según la matriz de almacenamiento de sustancias químicas.</li>
+      </ul>
+      <br/><strong>PRESENTACIÓN PERSONAL:</strong><br/><br/>
+      <ul>
+        <li>El uso del uniforme es de obligatorio cumplimiento.</li>
+        <li>Siempre se debe portar el uniforme limpio, completo y planchado, Usar maquillaje discreto, zapatos lustrados, los accesorios y medias deben ser acordes con el uniforme.</li>
+        <li>Los hombres deberán conservar un afeitado y motilado adecuado, además llevarán la camisa por dentro de la pretina del pantalón, los zapatos lustrados, usar correa negra.</li>
+        <li>Portar siempre el carné y usarlo en un lugar visible.</li>
+        <li>En el lugar de trabajo durante la realización de la labor está prohibido el uso de anillos, reloj, pulseras, cadenas y piercing. Debe de usar aretes sobrios y pequeños acordes con su uniforme.</li>
+        <li>Mantenga el cabello recogido y aseado con chulos, moños y/o hebillas de color acorde al uniforme.</li>
+        <li>Mantenga sus uñas limpias y cortas, si usa esmalte que sea en colores claros.</li>
+        <li>No consuma chicle durante la jornada laboral, resulta de muy mala educación, sobre todo en el ámbito laboral.</li>
+        <li>Estar en buenas condiciones de higiene para lo cual es importante el cambio diario del uniforme, uso de desodorante y una buena higiene bucal. No uso de lociones fuertes.</li>
+        <li>Está prohibido el uso de calzado diferente al asignado por la empresa, en caso de necesitar otro tipo de calzado comunicarse con su jefe inmediato quién le dará la asesoría.</li>
+      </ul>
+      <br/><strong>RELACIONES DE TRABAJO, PERMISOS, FALTAS Y SANCIONES.</strong><br/><br/>
+      Recuerde que siempre debe reportar a su supervisor o jefe inmediato todas las novedades concernientes a usted, tales como permisos, situaciones de salud, diligencias personales que interfieran o que se crucen con el desarrollo de sus actividades en el puesto de trabajo, esto lo debe realizar con anticipación, si son citas médicas, diligencias o permisos personales, mínimo con tres días de anticipación, con la salvedad de que sea en caso de fuerza mayor podrán ser el mismo día.<br/><br/>
+      <br/><strong>REGLAMENTO INTERNO DE TRABAJO.</strong><br/><br/>
+      El reglamento interno de trabajo tiene por objeto dar a conocer a sus empleados y directivos sus derechos y deberes tanto a nivel interno de la empresa como fuera de ella, los cuales están contemplados en normas de carácter legal, y son de obligatorio cumplimiento.<br/><br/>
+      <br/><strong>PREVENCIÓN DE EXPOSICIÓN A RIESGO BIOLOGICO (Resolución 2468 de 2022)</strong><br/><br/>
+      <br/><strong>PROTOCOLOS DE BIOSEGURIDAD</strong><br/><br/>
+      Todos los trabajadores de la empresa deberán cumplir con las medidas de prevención adoptadas en los centros de trabajo o por la empresa propia.<br/><br/>
+      <ul>
+        <li>Asistir a las capacitaciones realizadas por el empleador, contratante o la ARL</li>
+        <li>Poner en practica las técnicas de higiene, hábitos saludables y lavado de manos</li>
+        <li>Utilizar los elementos de protección personal y responder por el uso adecuado de dichos elementos.</li>
+        <li>Cuidar su salud (autocuidado) y suministrar información clara, veraz y completa de su estado de salud.</li>
+        <li>Conocer el Plan de Gestión Integral de Residuos de la empresa en la cual desempeña su labor.</li>
+      </ul>
+      <br/><strong>Recomendaciones estándar:</strong><br/><br/>
+      <ul>
+        <li>Higiene de manos</li>
+        <li>Adecuada manipulación de elementos cortopunzantes</li>
+        <li>Limpieza, desinfección e higiene</li>
+        <li>Uso de elementos de protección personal</li>
+        <li>Adecuado Manejo de residuos y disposición final de elementos cortopunzantes.</li>
+      </ul>
+      <br/><strong>Lavado de Manos:</strong><br/><br/>
+      <ul>
+        <li>Antes y después de consumir los alimentos</li>
+        <li>Antes y después de utilizar el baño</li>
+        <li>Después de sonarse la nariz, toser o estornudar</li>
+        <li>Después de haber tocado animales o alimento para animales o excrementos de animales</li>
+        <li>Después de haber manipulado o tocado bolsa con residuos</li>
+      </ul>
+      <br/><strong>Tener en cuenta:</strong><br/><br/>
+      <ul>
+        <li>El uso de guantes no sustituye el lavado de manos</li>
+        <li>Se recomienda tener un adecuado cuidado de la piel para aumentar la eficacia de la fricción y el lavado de manos.</li>
+      </ul>
+      <br/><strong>Recomendaciones Generales para Riesgo Biologico:</strong><br/><br/>
+      <ul>
+        <li>Reportar al supervisor de <%= @portafolio.razon_social rescue nil %> o al área de seguridad y salud en el trabajo cualquier caso de contagio que se llegase a presentar en el lugar de trabajo o su familia, para que se adopten las medidas correspondientes</li>
+        <li>Reportar al supervisor de <%= @portafolio.razon_social rescue nil %> o al área de SST cualquier situación de riesgo en el lugar de trabajo que ponga en riesgo el cumplimiento de los protocolos de Bioseguridad.</li>
+        <li>Depositar adecuadamente en el guardían las agujas o elementos cortopunzantes utilizados para su disposición final</li>
+        <li>Los trabajadores que utilicen objetos cortantes o punzantes no desechables deben depositarlos personalmente en el lugar asignado (recipiente adecuado).</li>
+        <li>Evitar dejar objetos cortantes o punzantes abandonados sobre una superficie o en el suelo, ya que existe riesgo de que otras persoas se puedan accidentar.</li>
+      </ul>
+      <br/><strong>Si usted sufre un pinchazo con aguja, realice inmediatamente las siguientes acciones:</strong><br/><br/>
+      <ul>
+        <li>Enjuage la herida con agua y jabón</li>
+        <li>Informe inmediatamente al supervisor de <%= @portafolio.razon_social rescue nil %> o al Área de SST</li>
+        <li>Siga las instrucciones dadas para atención de accidente de trabajo por riesgo biologico.</li>
+      </ul>
+      <br/><strong>Para un correcto uso y durabilidad del elemento de protección usted debe:</strong><br/><br/>
+      <ul>
+        <li>Utilizarlos exclusivamente en las actividades para las que se han establecido</li>
+        <li>Evitar su contaminación en otras áreas y superficies o que contaminen otros lugares</li>
+        <li>No intercambiarse o compartir los elementos de protección personal con los compañeros de trabajo o cualquier otra persona</li>
+        <li>Deben mantenerse limpios y adecuadamente almacenados en un área especifica donde se garantice ventilación e iluminación, libres de polvo o contaminantes que puedan afectar su vida util o la garantía de protección.</li>
+      </ul>
+      </td>
+    </tr>
+  </table>
+</div>

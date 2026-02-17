@@ -1,0 +1,2 @@
+class Migracionesactividad < ApplicationRecord
+end

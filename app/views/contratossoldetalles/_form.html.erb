@@ -1,0 +1,53 @@
+<%= simple_form_for([@contratossolicitud, @contratossoldetalle], remote: true) do |f| %>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+        <% if @contratossoldetalle.new_record? %>
+          <% if @contratossolicitud.etapa.to_s == 'A' %>
+            <%= f.input :contratosinsumo_id, collection: Contratosinsumo.where(["contrato_id = #{@contratossolicitud.contrato_id}
+                                                                                 and id not in (select contratosinsumo_id from contratossoldetalles where contratosinsumo_id is not null and contratossolicitud_id = #{@contratossolicitud.id})"]).collect {|p| [ p.insumobyiva, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+            <%= f.error :contratosinsumo_id, id: 'contratossoldetalle_contratosinsumo_id', class: 'text-red' %>
+          <% elsif @contratossolicitud.etapa.to_s == 'B' %>
+            <%= f.input :contratosmaquinaria_id, collection: Contratosmaquinaria.where(["contrato_id = #{@contratossolicitud.contrato_id}
+                                                                                 and id not in (select contratosmaquinaria_id from contratossoldetalles where contratosmaquinaria_id is not null and contratossolicitud_id = #{@contratossolicitud.id})"]).collect {|p| [ p.insumo.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+          <% elsif @contratossolicitud.etapa.to_s == 'C' %>
+            <%= f.input :contratosotro_id, collection: Contratosotro.where(["contrato_id = #{@contratossolicitud.contrato_id}
+                                                                             and id not in (select contratosotro_id from contratossoldetalles where contratosotro_id is not null and contratossolicitud_id = #{@contratossolicitud.id})"]).collect {|p| [ p.descripcion, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true%>
+          <% end %>
+        <% else %>
+          <% if @contratossolicitud.etapa.to_s == 'A' %>
+            <%= f.input :contratosinsumo_id, collection: Contratosinsumo.where(["contrato_id = #{@contratossolicitud.contrato_id}"]).collect {|p| [ p.insumo_cliente, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true%>
+          <% elsif @contratossolicitud.etapa.to_s == 'B' %>
+            <%= f.input :contratosmaquinaria_id, collection: Contratosmaquinaria.where(["contrato_id = #{@contratossolicitud.contrato_id}"]).collect {|p| [ p.insumo.insumodetalle, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true%>
+          <% elsif @contratossolicitud.etapa.to_s == 'C' %>
+            <%= f.input :contratosotro_id, collection: Contratosotro.where(["contrato_id = #{@contratossolicitud.contrato_id}"]).collect {|p| [ p.descripcion, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, disabled: true%>
+          <% end %>
+        <% end %>
+      </div>
+      <% if @contratossolicitud.etapa.to_s == 'A' %>
+          <% sedesactivas = Contratossede.where(["id in (select sede from sedesactivas where contrato_id = #{@contratossolicitud.contrato.id} and user_interventor = #{@contratossolicitud.user_id})"]).order(id: :asc) %>
+          <% sedesactivas.each do |a| %>
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+              <% datocampo = ":cantsede_" + a.ordensede.to_s %>
+              <%= f.input eval(datocampo), label: a.nombre %>
+            </div>
+          <% end %>
+      <% else %>
+          <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1"><%= f.input :cantidad, as: :moneda %></div>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratossoldetalle.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: {target: '#contratossoldetalle_form'}, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratossolicitud_contratossoldetalle_path(@contratossolicitud, @contratossoldetalle), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

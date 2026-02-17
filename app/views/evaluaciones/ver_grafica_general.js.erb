@@ -1,0 +1,60 @@
+<% if @evaluacion.tipo == 'EVALUACION PERIODO PRUEBA' %>
+$("#grafica<%= @evaluacion.id %> .modal-content").html('<%= j render "evaluaciones/ver_grafica_general_prueba" %>');
+$("#grafica<%= @evaluacion.id %> ").modal();
+$("#grafica<%= @evaluacion.id %> ").on('shown.bs.modal', function () {
+    inicializarGrafico();
+});
+
+var ctx = document.getElementById("miGraficoTorta<%= @evaluacion.id %>").getContext("2d");
+
+var data = {
+    labels: ["Pendiente (<%= @pendientes rescue 0 %>)", "Deficiente (<%= @no_cumple rescue 0 %>)", "Regular (<%= @finalizados rescue 0 %>)", "Bueno (<%= @no_aplica rescue 0 %>)", "Excelente (<%= @pactialmente rescue 0 %>)"],
+    datasets: [{
+        data: [<%= @pendientes %>, <%= @no_cumple %>, <%= @finalizados %>, <%= @no_aplica rescue 0 %>, <%= @pactialmente rescue 0 %>],
+        backgroundColor: ["#31708f", "#dd4b39", "#00a65a", "#e08e0b", "#BC09D5"]
+    }]
+};
+
+var options = {
+    title: {
+        display: true,
+        text: 'Estado de las actividades programadas'
+    }
+};
+
+var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: options
+});
+<% else %>
+$("#grafica<%= @evaluacion.id %> .modal-content").html('<%= j render "evaluaciones/ver_grafica_general" %>');
+$("#grafica<%= @evaluacion.id %> ").modal();
+$("#grafica<%= @evaluacion.id %> ").on('shown.bs.modal', function () {
+    inicializarGrafico();
+});
+
+var ctx = document.getElementById("miGraficoTorta<%= @evaluacion.id %>").getContext("2d");
+
+var data = {
+    labels: ["Pendiente (<%= @pendientes rescue 0 %>)", "No Cumple (<%= @no_cumple rescue 0 %>)", "Cumple (<%= @finalizados rescue 0 %>)", "No Aplica (<%= @no_aplica rescue 0 %>)", "Parcialmente (<%= @pactialmente rescue 0 %>)"],
+    datasets: [{
+        data: [<%= @pendientes %>, <%= @no_cumple %>, <%= @finalizados %>, <%= @no_aplica rescue 0 %>, <%= @pactialmente rescue 0 %>],
+        backgroundColor: ["#31708f", "#dd4b39", "#00a65a", "#e08e0b", "#BC09D5"]
+    }]
+};
+
+var options = {
+    title: {
+        display: true,
+        text: 'Estado de las actividades programadas'
+    }
+};
+
+var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: options
+});
+<% end %>
+

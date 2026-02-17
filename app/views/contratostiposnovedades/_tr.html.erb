@@ -1,0 +1,10 @@
+<tr id="contratostiposnovedad_<%= contratostiposnovedad.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratostiposnovedad")%>
+      <%= link_to contrato_contratostiposnovedad_path(@contrato, contratostiposnovedad), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+  </td>
+  <td align="left"><%= contratostiposnovedad.tiposnovedad.descripcion rescue nil %></td>
+</tr>

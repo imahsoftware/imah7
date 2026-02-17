@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  eproveedor: one
+  eproveedorescompra: one
+  valor: 9.99
+  estado: MyString
+  saldo: 9.99
+  observaciones: MyString
+  user: one
+  consecutivo: 1
+
+two:
+  eproveedor: two
+  eproveedorescompra: two
+  valor: 9.99
+  estado: MyString
+  saldo: 9.99
+  observaciones: MyString
+  user: two
+  consecutivo: 1

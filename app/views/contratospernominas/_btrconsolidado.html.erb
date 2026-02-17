@@ -1,0 +1,23 @@
+<%= link_to archivosplano_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id), data: { toggle: 'tooltip' }, title: 'Archivos Planos', remote: true do %>
+  <button class="btn btn-xs btn-info"><i class="fa fa-credit-card"></i></button>
+<% end %>
+<%= link_to informe_datas_path(infgrupo_id: 25, portafolio_id: a.contrato_id.to_s + '-' + p.id.to_s + '-' + a.contratosgrupo_id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Nomina' do %>
+  <button class="btn btn-xs btn-danger"><i class="fa fa-file-excel-o"></i></button>
+<% end %>
+<%= link_to tirilla_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, format: :pdf), data: { toggle: 'tooltip' }, title: 'Tirilla PDF' do %>
+  <button class="btn btn-xs btn-warning"><i class="fa fa-file-pdf-o"></i></button>
+<% end %>
+<%= link_to new_contratosprenimagen_path(contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id), remote: true, data: { toggle: 'tooltip' }, title: 'Añadir Soporte Digital' do %>
+  <button class="btn btn-xs btn-primary"><i class="fa fa-image"></i></button>
+<% end %>
+<% if a.estado.to_s != 'CONSOLIDADO' and @autorizacionnomina %>
+  <%= link_to cambioestado_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, estado: "ELIMINAR"), data: { toggle: 'tooltip', confirm: "Seguro que desea ELIMINAR esta prenomina?" }, title: 'Eliminar', remote: true do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-user-secret"></i></button>
+  <% end %>
+  <%= link_to cambioestado_contratospernominas_path(periodosliquidacion_id: p.id, contrato_id: a.contrato_id, contratosgrupo_id: a.contratosgrupo_id, estado: "CONSOLIDADO"), data: { toggle: 'tooltip', confirm: "Seguro que desea CONSOLIDAR esta prenomina?" }, title: 'Consolidar', remote: true do %>
+    <button class="btn btn-xs btn-danger"><i class="fa fa-unlock"></i></button>
+  <% end %>
+<% end %>
+<%= link_to informe_datas_path(infgrupo_id: 35, portafolio_id: a.contrato_id.to_s + '-' + p.id.to_s, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Consolidado por Empresa' do %>
+  <button class="btn btn-xs btn-danger"><i class="fa fa-bolt"></i></button>
+<% end %>

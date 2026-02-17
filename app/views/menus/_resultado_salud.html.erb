@@ -1,0 +1,46 @@
+<div class="col-xs-12">
+  <div class="row">
+    <div class="col-md-6" style="padding: 10px;">
+      <legend style="font-size: 14px;">Buscador</legend>
+      <%= form_tag searchsalud_menus_path(val_salud: @p, contrato_id: @contrato.id), remote: true, method: :get do %>
+        <div class="form-group input-group" style="padding-bottom: 10px;">
+          <span class="input-group-addon"><i class="fa fa-user"></i></span>
+          <%= text_field_tag :autobuscar, params[:autobuscar], class: 'form-control uppercaseInput', autocomplete: 'off', style: "width: 100%", placeholder: "Identificación, Nombre o Apellido - Contrato: #{@contrato.nro_contrato rescue nil}" %>
+          <span class="input-group-btn">
+            <%= button_tag type: 'submit', class: 'btn btn-warning', data: { toggle: 'tooltip' } do %>
+              <i class="fa fa-search" aria-hidden="true"></i>
+            <% end %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<% if variable.where("contrato_id = #{@contrato.id}").present? %>
+  <div class="box-body">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th class="text-left text-table" width="2%"></th>
+        <th class="text-left text-table" width="20%">Empleado</th>
+        <th class="text-left text-table">Contrato</th>
+        <th class="text-center text-table">Fecha Ingreso</th>
+        <th class="text-center text-table" width="6%">EPS</th>
+        <th class="text-center text-table" width="6%">AFP</th>
+        <th class="text-center text-table" width="6%">ARL</th>
+        <th class="text-center text-table" width="6%">CCAF</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% variable.where("contrato_id = #{@contrato.id}").each do |contratosperfecha| %>
+        <%= render 'menus/tr_salud', contratosperfecha: contratosperfecha, p: @p %>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-tools pull-right">
+      <%= will_paginate variable.where("contrato_id = #{@contrato.id}"), :param_name => "sal_#{@p.downcase.to_s}_#{@contrato.id}", renderer: BootstrapPagination::Rails %>
+    </div><!-- /.box-tools -->
+  </div>
+<% end %>
+
+

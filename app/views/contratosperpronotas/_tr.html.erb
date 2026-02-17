@@ -1,0 +1,23 @@
+<tr id="contratosperpronota_<%= contratosperpronota.id %>">
+  <td class="text-center">
+    <% if @contratosperproceso.estado.to_s != 'FINALIZADO' %>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;" id="remove_boton<%= contratosperpronota.id %>">
+        <div>
+          <%= link_to edit_contratosperproceso_contratosperpronota_path(@contratosperproceso, contratosperpronota), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+          <% end %>
+        </div>
+        <div>
+          <%= link_to contratosperproceso_contratosperpronota_path(@contratosperproceso, contratosperpronota), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+            <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= contratosperpronota.created_at.strftime("%Y-%m-%d %X") rescue nil %>
+    <br/><%= contratosperpronota.user.nombre rescue nil %></td>
+  <td align="left" class="text-table"><%= contratosperpronota.nota rescue nil %></td>
+</tr>
+
+

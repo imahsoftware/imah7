@@ -1,0 +1,138 @@
+<br/>
+<table class="table table-bordered table-condensed table-striped">
+  <tr class="thcolor">
+    <th class="text-table">Empleado</th>
+    <th class="text-table" width="80%">Actividades</th>
+  </tr>
+  <% @evaluacionesejecuciones.each do |ev| %>
+    <tr>
+      <td class="text-left text-table">
+        <%= link_to contrato_evaluaciones_path(user_id: ev.user_responsable_id), data: { toggle: 'tooltip' }, title: 'Grupos de Nomina', remote: true do %>
+          <i class="fa fa-clone"></i>
+        <% end %>
+        <%= ev.nombresuser rescue nil %><br/>
+        <b>Email:</b> <%= ev.emailuser rescue nil %><br>
+        <b>Celular:</b> <%= ev.celularuser rescue nil %>
+        <%= link_to actividades_pdf_evaluacionesejecuciones_path(user_id: ev.user_responsable_id, evaluacion_id: current_user.subetapa.to_s, format: :pdf), data: {toggle: 'tooltip'}, title: 'Evaluaciones', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+          <i class="fa fa-file-pdf-o"></i>
+        <% end %>
+      </td>
+      <td width="70%" class="text-table">
+        <table class="table table-bordered table-condensed table-striped">
+          <% Evaluacionesejecucion.joins(:evaluacionesdetalle)
+                                  .select("evaluacionesejecuciones.*, evaluacionesdetalles.actividad evaluacionesdetalles_actividad,
+                                           evaluacionesdetalles.observacion evaluacionesdetalles_observacion,
+                                           evaluacionesdetalles.requieredoc evaluacionesdetalles_requieredoc,
+                                           (select nombre from users where id = evaluacionesejecuciones.user_marca) nombresusermarca,
+                                           (select distinct 'X' from evaluacionesejecucionesdocs where evaluacionesejecucion_id = evaluacionesejecuciones.id) tienedoc")
+                                  .where("evaluacionesejecuciones.evaluacion_id = #{@evaluacion.id}
+                                         and evaluacionesdetalles.clase = '#{@clase}'
+                                         and evaluacionesejecuciones.evaluacionescontrato_id in (select id from evaluacionescontratos where user_responsable = #{ev.user_responsable_id})").each do |p| %>
+            <tr>
+              <td width="8%" class="text-center text-table">
+                <div class="btn-group" id="botones<%= p.id %>">
+                  <%= render 'evaluacionesejecuciones/botones', p: p, user_responsable_id: ev.user_responsable_id %>
+                </div>
+                <%# if p.estado.blank? %>
+
+                <%# else %>
+                  <!-- <div id="estado_evaluacion<%= p.id %>">
+                    <%#= render 'evaluacionesejecuciones/estado_evaluacion', p: p %>
+                  </div> -->
+                <%# end %>
+              </td>
+              <td class="text-justify text-table" style="padding: 5px;">
+                <%= p.evaluacionesdetalles_actividad %>
+                <% if p.evaluacionesdetalles_observacion.present? %>
+                  <em> <small><br/><strong>Observación: </strong> <%= p.evaluacionesdetalles_observacion rescue nil %> </small></em>
+                <% end %>
+                <div id="usuario_marca<%= p.id %><%= ev.user_responsable_id %>">
+                  <% if p.fecha_marca.present? %>
+                    <b><i class="fa fa-user"></i> Usuario:</b> <%= p.nombresusermarca rescue nil %><br/>
+                    <b><i class="fa fa-calendar"></i> Fecha:</b> <%= p.fecha_marca.strftime("%Y-%m-%d %X") rescue nil %>
+                  <% end %>
+                </div>
+                <% if p.evaluacionesdetalles_requieredoc.to_s == 'SI' %>
+                  <br/><strong style="color: red">Debe subir soporte digital</strong>
+                <% end %>
+                <div id="documentos<%= p.id %>">
+                  <% if p.tienedoc.to_s == 'X' %><br/>
+                    <table class="table table-bordered table-condensed table-striped">
+                      <tr class="thcolor">
+                        <td clase="text-center" width="10%"></td>
+                        <td class="text-table" width="90%">Documento Digital</td>
+                      </tr>
+                      <% p.evaluacionesejecucionesdocs.each do |doc| %>
+                        <tr>
+                          <td>
+                            <div align="center">
+                              <% if doc.user_id == is_admin %>
+                                <%= link_to eliminar_evaluacionesejecucionesdocs_path(id: doc.id, evaluacionesejecucion_id: p.id), remote: true, data: { toggle: 'tooltip', confirm: 'Estas Seguro?' }, title: 'Eliminar' do %>
+                                  <i class="fa fa-trash"></i>
+                                <% end %>
+                              <% end %>
+                              <%= link_to doc.docevaluacion.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver Imagen', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                                <i class="fa fa-cloud-download text-danger"></i>
+                              <% end %></div>
+                          </td>
+                          <td clase="text-justify"><%= doc.tipo rescue nil %></td>
+                        </tr>
+                      <% end %>
+                    </table>
+                  <% end %>
+                </div>
+              </td>
+              <td width="40%" cls="text-justify text-table">
+                <div id="input_registro_data<%= p.id %>"><%= render 'evaluacionesejecuciones/input_registro', p: p %></div>
+                <div id="mensaje_error<%= p.id %>"></div>
+              </td>
+            </tr>
+
+            <div class="modal fade" id="nuevoSoporte<%= p.id %>">
+              <div class="modal-dialog modal-dialog-responsive" role="document">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    var observacionTextareas = document.querySelectorAll('.resultado-textarea<%= p.id %>');
+
+                    observacionTextareas.forEach(function (textarea) {
+                        textarea.addEventListener('input', function () {
+                            var resultado = this.value;
+                            var evaluacionesejecucionId = this.getAttribute('data-evaluacionesejecucion-id');
+
+                            $.ajax({
+                                url: '/evaluacionesejecuciones/update_resultado',
+                                type: 'POST',
+                                data: {
+                                    id: evaluacionesejecucionId,
+                                    resultado: resultado,
+                                    evaluacion_id: <%= @evaluacion.id %>
+                                },
+                                success: function (data) {
+                                    console.log('Resultado actualizada:', data);
+                                },
+                                error: function (error) {
+                                    console.error('Error al actualizar el resultado:', error);
+                                }
+                            });
+                        });
+                    });
+                });
+            </script>
+          <% end %>
+        </table>
+      </td>
+    </tr>
+    <div class="modal fade" id="contrato<%=ev.user_responsable_id %>">
+      <div class="modal-dialog modal-dialog-responsive" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+<% end %>
+</table>
+
+
+

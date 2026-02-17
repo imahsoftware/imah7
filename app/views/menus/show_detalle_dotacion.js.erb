@@ -1,0 +1,15 @@
+
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle_dotacion<%= @contrato.id %><%= @estado_car %>").html('<%= j render "menus/abrir_detalle_dotacion", contrato: @contrato, contratosprefechasdotacion: @contratosprefechasdotacion, p: @p %>');
+$("#abrir_dotacion<%= @contrato.id %><%= @estado_car %>").addClass("hide");
+$("#cerrar_dotacion<%= @contrato.id %><%= @estado_car %>").removeClass("hide");
+$("#tr_show_dotacion<%= @contrato.id %><%= @estado_car %>").removeClass("hidden");
+<% else %>
+$("#abrir_dotacion<%= @contrato.id %><%= @estado_car %>").removeClass("hide");
+$("#cerrar_dotacion<%= @contrato.id %><%= @estado_car %>").addClass("hide");
+$("#abrir_detalle_dotacion<%= @contrato.id %><%= @estado_car %>").html(null);
+$("#tr_show_dotacion<%= @contrato.id %><%= @estado_car %>").addClass("hidden");
+<% end %>
+$(function(){
+    $('.pagination a').attr('data-remote', 'true')
+});

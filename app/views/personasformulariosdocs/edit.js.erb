@@ -1,0 +1,62 @@
+<% if @active_record.present? %>
+	$("#personasformulariosdoc_<%= @active_record.id %>").replaceWith("<%= j render 'tr', personasformulariosdoc: @active_record %>");
+<% end %>
+
+$("#personasformulariosdoc_<%= @personasformulariosdoc.id %>").html("<td colspan='6'><%= j render 'form' %></td>");
+$("#personasformulariosdoc_<%= @personasformulariosdoc.id %>").addClass("active_personasformulariosdoc");
+$("#personasformulariosdoc_form").empty();
+$("#personasformulariosdoc_form").collapse("hide");
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+
+// Selector normal
+$(document).ready(function () {
+    $('.js-searchable').select2({
+        allowClear: true,
+        width: '100%',
+        placeholder: '-- Seleccionar --'
+    });
+});
+
+/// Calendario
+
+$(".datetimepicker").datetimepicker({
+    showClear: true
+});
+
+
+/// Convierte texto en mayuscula
+$('.uppercaseInput').keyup(function () {
+    $(this).val($(this).val().toUpperCase());
+});
+
+$(".select2").select2();
+
+$(function () {
+    return $('.select2Ciudad').select2({
+        minimumInputLength: 3,
+        maximumInputLength: 20,
+        placeholder: "[ Seleccionar Ciudad... ]",
+        ajax: {
+            url: '/personasformularios/search.json',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term,
+                    page: params.page
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.name,
+                            id: item.id
+                        };
+                    })
+                };
+            }
+        }
+    });
+});

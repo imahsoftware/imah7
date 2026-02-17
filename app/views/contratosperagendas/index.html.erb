@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratosperagendas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Contratospersona</th>
+      <th>User</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratosperagendas.each do |contratosperagenda| %>
+      <tr>
+        <td><%= contratosperagenda.contratospersona %></td>
+        <td><%= contratosperagenda.user %></td>
+        <td><%= contratosperagenda.fecha %></td>
+        <td><%= contratosperagenda.hora %></td>
+        <td><%= link_to 'Show', contratosperagenda %></td>
+        <td><%= link_to 'Edit', edit_contratosperagenda_path(contratosperagenda) %></td>
+        <td><%= link_to 'Destroy', contratosperagenda, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratosperagenda', new_contratosperagenda_path %>

@@ -1,0 +1,60 @@
+<tr id="personasformulariosexamen_<%= personasformulariosexamen.id %>">
+  <% if is_tipoconsulta != "CANDIDATO" %>
+    <td class="text-center">
+      <% if is_auth_a("examensst") %>
+        <%= link_to edit_personasformulario_personasformulariosexamen_path(@personasformulario, personasformulariosexamen), remote: true, class: 'edit_personasformulariosexamen_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+          <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+        <% end %>
+      <% end %>
+      <% if is_auth_e("examensst") and personasformulariosexamen.estado.to_s == 'PENDIENTE' %>
+        <%= link_to personasformulario_personasformulariosexamen_path(@personasformulario, personasformulariosexamen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+        <% end %>
+      <% end %>
+      <% if is_auth_a("examensst") %>
+        <%= link_to abrir_documento_personasforexadocs_path(id: personasformulariosexamen.id, personasformulario_id: @personasformulario.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Soporte Digital" do %>
+          <button class="btn btn-xs btn-info"><i class="fa fa-cloud-download"></i></button>
+        <% end %>
+        <% if personasformulariosexamen.observacion_eps.present? %>
+          <%= link_to notificacion_personasformulariosexamenes_path(id: personasformulariosexamen.id, personasformulario_id: @personasformulario.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Generar PDF' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i></button>
+          <% end %>
+        <% end %>
+      <% end %>
+      <br/>
+      <%= link_to notificacion_examen_personasformulariosexamenes_path(id: personasformulariosexamen.id), remote: true,  data: { confirm: "Estas Seguro de Enviar el mensaje?", toggle: 'tooltip' }, title: 'Enviar mensaje de agenda - SMS' do %>
+        <button class="btn btn-xs btn-danger"><i class="fa fa-comment-o"></i></button>
+      <% end %>
+      <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= personasformulariosexamen.user_nombre.html_safe rescue nil %><%= personasformulariosexamen.user_actnombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+    </td>
+  <% end %>
+  <td align="center" class="text-table"><%= personasformulariosexamen.tipo rescue nil %></td>
+  <td align="left" class="text-table"><%= personasformulariosexamen.descripcion rescue nil %>
+    <% if is_auth_a("examensst") %>
+      <% if personasformulariosexamen.personasforexadocs.present? %>
+        <% personasformulariosexamen.personasforexadocs.each do |personasforexadoc| %>
+          <div align="left">
+            <%= link_to personasformulariosexamen_personasforexadoc_path(personasformulariosexamen, personasforexadoc), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+              <i class="fa fa-trash text-red"></i>
+            <% end %>&nbsp;
+            <%= link_to personasforexadoc.documento_examen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+              <i class="fa fa-cloud-download"></i> <%= personasforexadoc.descripcion rescue nil %>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left" class="text-table"><%= personasformulariosexamen.direccion rescue nil %>
+   <div align="justify"><strong>Recomendación: </strong> <%= personasformulariosexamen.recomendaciones rescue nil %></div>
+  </td>
+  <td align="center" class="text-table"><%= personasformulariosexamen.fecha rescue nil %>
+    - <%= personasformulariosexamen.hora rescue nil %></td>
+  <td align="center" class="text-table"><%= personasformulariosexamen.estado rescue nil %></td>
+</tr>
+<div class="modal fade" id="abrirdoc<%= personasformulariosexamen.id %>">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

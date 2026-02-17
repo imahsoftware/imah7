@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Contratossolicitud:</strong>
+  <%= @contratossolimagen.contratossolicitud %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @contratossolimagen.user %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @contratossolimagen.descripcion %>
+</p>
+
+<p>
+  <strong>Solimagenes:</strong>
+  <%= @contratossolimagen.solimagenes %>
+</p>
+
+<%= link_to 'Edit', edit_contratossolimagen_path(@contratossolimagen) %> |
+<%= link_to 'Back', contratossolimagenes_path %>

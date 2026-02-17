@@ -1,0 +1,18 @@
+<tr id="centro_<%= centro.id %>">
+  <td class="text-center">
+    <%# if is_auth_a('centro') %>
+      <%= link_to edit_centro_path(centro), remote: true, class: 'edit_centro_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+    <%# end %>
+    <% if Antecedente.where(centro_id: centro.id).exists? == false %>
+      <%= link_to centro, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+    <%= link_to informe_datas_path(infgrupo_id: 11, portafolio_id: centro.id, format: :xlsx), data: { toggle: 'tooltip' }, title: 'Descargar Informe Autoevaluaciones por Centro' do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-file-excel-o"></i></button><%end %>
+   </td>
+  <td><%= centro.codigo %></td>
+  <td><%= centro.descripcion %></td>
+</tr>

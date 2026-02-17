@@ -1,0 +1,24 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-condensed table-striped">
+	  <thead class="thcolor">
+      <tr>
+        <td width="10%"></td>
+        <th class="text-left">Nombre Proyecto</th>
+        <th width="15%" class="text-right">Valor</th>
+        <th width="15%" class="text-right">Utilizado</th>
+        <th width="15%" class="text-right">Saldo</th>
+      </tr>
+    </thead>
+	  <tbody id="tbody_contratosproyectos">
+      <% @contrato.contratosproyectos.includes([:contratosprosedes]).order(id: :desc).each do |contratosproyecto| %>
+	      <%= render 'contratosproyectos/tr', contratosproyecto: contratosproyecto %>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>
+<div class="box-tools pull-right" id="page_links">
+  <%#= will_paginate @contratosproyectos, :param_name => 'contratosedes' , renderer: BootstrapPagination::Rails %>
+</div>
+
+
+

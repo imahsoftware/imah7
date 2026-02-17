@@ -1,0 +1,2 @@
+module ContratossoleppsatencionesHelper
+end

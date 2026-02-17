@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Contratossoleppscontroles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Cantidad aprobada</th>
+      <th>Cantidad restante</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contratossoleppscontroles.each do |contratossoleppscontrol| %>
+      <tr>
+        <td><%= contratossoleppscontrol.item %></td>
+        <td><%= contratossoleppscontrol.cantidad_aprobada %></td>
+        <td><%= contratossoleppscontrol.cantidad_restante %></td>
+        <td><%= link_to 'Show', contratossoleppscontrol %></td>
+        <td><%= link_to 'Edit', edit_contratossoleppscontrol_path(contratossoleppscontrol) %></td>
+        <td><%= link_to 'Destroy', contratossoleppscontrol, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Contratossoleppscontrol', new_contratossoleppscontrol_path %>

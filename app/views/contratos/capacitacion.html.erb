@@ -1,0 +1,54 @@
+<div class="box box-primary">
+  <div class="box-header">
+    <div class="box-header">
+      <h3 class="box-title">Capacitaciones Asignadas</h3>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <% if @capacitaciones.present? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <thead>
+              <tr class="thcolor">
+                <th width="10%"></th>
+                <th width="20%" class="text-left text-table">Capacitación</th>
+                <th width="30%" class="text-left text-table">Contrato</th>
+                <th width="8%" class="text-center text-table">Pendientes</th>
+                <th width="10%" class="text-center text-table">Otros Pendientes</th>
+                <th width="15%" class="text-center text-table">Pend Iniciar Capacitación</th>
+                <th width="8%" class="text-center text-table">En Proceso</th>
+                <th width="10%" class="text-center text-table">Finalizados</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @capacitaciones.includes([:contrato, :capacitacion]).each do |contratoscapacitacion| %>
+                <tr id="capacitacion_<%= contratoscapacitacion.id %>">
+                  <td class="text-center text-table" id="rowspan<%= contratoscapacitacion.id %>">
+                    <%= link_to show_detalle_contratos_path(contratoscapacitacion_id: contratoscapacitacion.id, contrato_id: contratoscapacitacion.contrato_id), data: { toggle: 'tooltip' }, title: 'Ver Capacitaciones' do %>
+                      <button class="btn btn-xs btn-danger"><i class="fa fa-users"></i></button>
+                    <% end %>
+                    <%= link_to capacitacion_pdf_contratoscapacitaciones_path(id: contratoscapacitacion.id, contrato_id: contratoscapacitacion.contrato_id), class: 'popup', data: { toggle: 'tooltip' }, title: 'Capacitación PDF' do %>
+                      <button class="btn btn-xs btn-primary"><i class="fa fa-file-pdf-o"></i></button>
+                    <% end %>
+                  </td>
+                  <td class="text-left text-table"><%= contratoscapacitacion.capacitacion.descripcion rescue nil %></td>
+                  <td class="text-left text-table"><%= contratoscapacitacion.contrato.empresa.identnombre rescue nil %></td>
+                  <td class="text-center text-table"><%= Contratosperfecha.where("estado = 'ACTIVO' and (fecha_fin is null or fecha_fin > now()) and contrato_id = #{contratoscapacitacion.contrato_id}").count rescue 0 %></td>
+                  <td class="text-center text-table"><%= Contratoscapapersona.where(ruta: 'B', estado_evaluacion: 'PENDIENTE', contratoscapacitacion_id: contratoscapacitacion.id).count rescue 0 %></td>
+                  <td class="text-center text-table"><%= contratoscapacitacion.contratoscapapersonas.where("estado_evaluacion = 'PENDIENTE'").count rescue 0 %></td>
+                  <td class="text-center text-table"><%= Contratoscapapersona.where("estado_evaluacion = 'INICIAR CAPACITACION' and  contratoscapacitacion_id = #{contratoscapacitacion.id}").count %></td>
+                  <td class="text-center text-table"><%= Contratoscapapersona.where("estado_evaluacion = 'FINALIZADO' and  contratoscapacitacion_id = #{contratoscapacitacion.id}").count %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <% else %>
+            <div class="alert alert-danger">
+              <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

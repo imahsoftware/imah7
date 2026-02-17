@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  user: one
+  valor: 9.99
+  termino_descuento: MyString
+  user_actualiza: 1
+  estado: MyString
+
+two:
+  contratospersona: two
+  user: two
+  valor: 9.99
+  termino_descuento: MyString
+  user_actualiza: 1
+  estado: MyString

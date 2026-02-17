@@ -1,0 +1,60 @@
+<%
+  is_auth_c_contratacionaprobar = is_auth_c("contratacionaprobar")
+%>
+<div class="table-responsive">
+  <% if @personasformulariosb.present? %><br/>
+    <div class="box-body no-padding">
+      <table class="table table-bordered table-condensed table-striped">
+        <tbody>
+        <tr class="thcolor">
+          <th width="5%"></th>
+          <th width="5%" class="text-center text-table">Lote</th>
+          <th width="10%" class="text-center text-table">Identificación</th>
+          <th class="text-left text-table">Nombre</th>
+          <th width="25%" class="text-left text-table">Cargo</th>
+          <th width="10%" class="text-center text-table">Contacto</th>
+          <th width="10%" class="text-center text-table">Etapa</th>
+          <th width="10%" class="text-center text-table">Estado Examen</th>
+        </tr>
+        <% @personasformulariosb.each do |personasformulario| %>
+          <tr id="parcargo_<%= personasformulario.id %>">
+            <td class="text-center">
+              <%= link_to edit_personasformulario_path(personasformulario), class: 'edit_parcargo_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+                <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+              <% end %>
+            </td>
+            <td class="text-center text-table"><%= personasformulario.archivo_id rescue nil %></td>
+            <td class="text-center text-table"><%= personasformulario.identificacion rescue nil %>
+              <% if personasformulario.estado.to_s == 'APROBADO' and personasformulario.estado_examen_medico_ori.to_s == 'APROBADO' %>
+                <% if is_auth_c_contratacionaprobar %>
+                  <%= link_to envio_formulario_personasformularios_path(id: personasformulario, estado: 'CONTRATACION'), data: { confirm: "Seguro que desea iniciar el proceso de contratación?", toggle: 'tooltip' }, title: "Aprobar Contratacion" do %>
+                    <i class="fa fa-diamond text-red"></i>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="text-left text-table"><%= personasformulario.nombre_completo rescue nil %></td>
+            <td class="text-left text-table"><%= personasformulario.cargo_descripcion rescue nil %></td>
+            <td class="text-center text-table"><%= personasformulario.celular rescue nil %> <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'>Email: <%= personasformulario.correo rescue nil %></div>"><i class="fa fa-commenting" aria-hidden="true"></i></span></td>
+            <td class="text-center text-table"><%= personasformulario.estado rescue nil %></td>
+            <td class="text-center text-table"><%= personasformulario.estado_examen_medico rescue nil %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box-footer clearfix">
+      <div class="box-tools pull-right">
+        <%= will_paginate @personasformulariosb, renderer: BootstrapPagination::Rails %>
+        <%#= will_paginate personasformularios, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails %>
+      </div><!-- /.box-tools -->
+    </div><!-- box-footer -->
+
+    <script>
+        $(function () {
+            $('.pagination a').attr('data-remote', 'true')
+        });
+    </script>
+  <% end %>
+</div>

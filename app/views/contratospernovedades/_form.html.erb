@@ -1,0 +1,67 @@
+<%= simple_form_for([@contratospersona, @contratospernovedad], remote: true) do |f|  %>
+<%
+  dato2 = ""
+  if @contratospernovedad.new_record?
+    dato2 = "false"
+  else
+    dato2 = "true"
+  end
+%>
+  <div class="bs-callout">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3 col-lg-8"><%= f.input :tiposnovedad_id, collection: Tiposnovedad.where(["id in (select tiposnovedad_id from contratostiposnovedades where contrato_id = #{@contratospersona.datoscontratoid})"]).order(:descripcion).collect {|p| [ p.descripcionampliada, p.id ] }, input_html: { class: 'select2' }, as: :select, include_blank: true, label: "Novedad", disabled: eval(dato2) %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :fecha, as: :string, input_html: { class: 'datepicker', data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}, readonly: true }, disabled: eval(dato2)  %></div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :numero, as: :moneda, disabled: eval(dato2)  %></div>
+    </div>
+    <legend>Dias Novedad</legend>
+    <div class="form-group date optional contratospernovedad_fecha_real has-error"></div>
+    <% con = 0
+       @fechas.each do |a|
+         dato = ":fecha"+a.pos.to_s rescue nil
+         con = con + 1
+    %>
+      <% if con == 1 %><div class="row"><% end %>
+      <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+        <% if eval("@contratospernovedad.fecha"+a.pos.to_s).to_s == "" %>
+          <%= f.input eval(dato), as: :boolean, checked_value: a.fecha.to_s, unchecked_value: nil, input_html: { style: 'font-size: 9px;'}, label: a.formatdate.to_s rescue nil%>
+        <% else %>
+          <i class="fa fa-check text-red"> <%= a.formatdate.to_s%> </i>
+        <% end %>
+          </div>
+      <% if con == 12 %></div><% con = 0 end %>
+    <% end %>
+    <% if con != 12 %></div><% con = 0 end %>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><%= f.input :observacion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 2 } %></div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><%= f.input :novedadimagen, as: :file, label: 'Soporte Digital' %></div>
+    </div>
+    <%  if [5870,1,5381,5187,18717].include?(is_admin) %>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :valor_novedad, as: :moneda %></div>
+      </div>
+    <% end %>
+    <%  valor = Parametro.where(descripcion: 'ID Contratos con nov especiales').map(&:valor)
+      if valor.include?(@contratospersona.datoscontratoid.to_i) %>
+      <legend>Reemplazo</legend>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-2"><%= f.input :reemplazado_identificacion, :input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Identificacion" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"><%= f.input :reemplazado, :input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();"}, label: "Nombre" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :reemplazado_dias, as: :moneda, label: "Dias Reemplazados" %></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"><%= f.input :reemplazado_nodias, as: :moneda, label: "Dias NO Reemplazados" %></div>
+      </div>
+    <% end %>
+    <div class="row">
+      <div class="col-md-6">
+        <% if @contratospernovedad.new_record? %>
+          <%= button_tag "#{t :cancelar}", type: 'button', data: { target: '#contratospernovedad_form' }, class: 'cancel_button btn btn-flat btn-default pull-left', aria_hidden: true %>
+        <% else %>
+          <%= link_to "#{t :cancelar}", contratospersona_contratospernovedad_path(@contratospersona, @contratospernovedad), class: 'btn btn-flat btn-default pull-left', aria_hidden: true, remote: true %>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <%= f.button :submit, "#{t :guardar}", class: "btn btn-danger pull-right" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+<br/>

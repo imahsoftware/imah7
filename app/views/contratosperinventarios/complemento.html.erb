@@ -1,0 +1,49 @@
+<div class="col-md-12">
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <h3 class="box-title">
+        <%= link_to contratospersonas_path, data: { toggle: 'tooltip' }, title: 'Regresar' do %>
+          <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+        <% end %> Inventario</h3>
+    </div>
+    <div class="box-body">
+      <%= render 'contratosperinventarios/form' %>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+                <%= link_to complemento_contratosperinventarios_path(id: @contratosperinventario.id, etapa: 'A'), data: { toggle: 'tooltip' } do %>
+                  <i class="fa fa-sticky-note"></i> Detalles
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'B' ? 'active' : '' %>">
+                <%= link_to complemento_contratosperinventarios_path(id: @contratosperinventario.id, etapa: 'B'), data: { toggle: 'tooltip' } do %>
+                  <i class="fa fa-users"></i> Atención
+                <% end %>
+              </li>
+              <li class="<%= @etapa == 'C' ? 'active' : '' %>">
+                <%= link_to complemento_contratosperinventarios_path(id: @contratosperinventario.id, etapa: 'C'), data: { toggle: 'tooltip' } do %>
+                  <i class="fa fa-edit"></i> Notas
+                <% end %>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <% if @etapa == 'A' %>
+                <div class="active"><%= render 'contratosperinvdetalles/contratosperinvdetalles' %></div>
+              <% end %>
+              <% if @etapa == 'B' %>
+                <div class="active"><%= render 'contratosperinvatenciones/contratosperinvatenciones' %></div>
+              <% end %>
+              <% if @etapa == 'C' %>
+                <div class="active"><%= render 'contratosperinvnotas/contratosperinvnotas' %></div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>

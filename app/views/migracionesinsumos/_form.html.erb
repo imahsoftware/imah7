@@ -1,0 +1,20 @@
+<%= simple_form_for(@migracionesinsumo) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :user %>
+    <%= f.association :archivo %>
+    <%= f.input :estado %>
+    <%= f.input :contrato_id %>
+    <%= f.input :insumo_id %>
+    <%= f.input :cantidad_mensual %>
+    <%= f.input :precio_unitario %>
+    <%= f.input :descuento %>
+    <%= f.input :precio_condescuento %>
+    <%= f.input :total %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

@@ -1,0 +1,19 @@
+<table class="table table-bordered table-responsive table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="10%"></th>
+    <th class="text-left">Nombre</th>
+    <th class="text-left">Segmento</th>
+    <th class="text-left">Estado</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_formatos">
+  <% @formatos.order(created_at: :desc).each do |formato| %>
+    <%= render 'formatos/tr', formato: formato %>
+  <% end %>
+  </tbody>
+</table>
+<div class="box-tools pull-right">
+  <%= will_paginate @formatos, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+</div><!-- /.box-tools -->
+

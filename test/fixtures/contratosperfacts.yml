@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  contratosperfecha: one
+  contratospersona: one
+  contrato_id: 1
+  contratosgrupo_id: 1
+  contratoscargo_id: 1
+  estado: MyString
+  oricontrato_id: 1
+  oricontratosgrupo_id: 1
+  oricontratoscargo_id: 1
+
+two:
+  user: two
+  contratosperfecha: two
+  contratospersona: two
+  contrato_id: 1
+  contratosgrupo_id: 1
+  contratoscargo_id: 1
+  estado: MyString
+  oricontrato_id: 1
+  oricontratosgrupo_id: 1
+  oricontratoscargo_id: 1

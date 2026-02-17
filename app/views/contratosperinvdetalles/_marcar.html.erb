@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @contratosperinvdetalle.item %></h4>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+
+    <div class="col-md-12">
+      <div style="width: 100%; padding: 10px; border-radius: 5px; background-color: #F7D189; color: red;">
+        Para la devolución del elemento debes dejar una observación justificando el estado.
+      </div>
+      <%= simple_form_for @contratosperinvdetalle, :url => update2_contratosperinvdetalles_path(id: @contratosperinvdetalle.id), :method => :post, remote: true do |f| %>
+        <%= hidden_field_tag :devolucion, params[:devolucion], value: 'DEVOLUCION' %>
+        <%= hidden_field_tag :consecutivo, params[:consecutivo], value: @consecutivo %>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><%= f.input :observacion_devolucion, as: :text,:input_html => {:onchange => "javascript:this.value=this.value.toUpperCase();", :rows => 4 }, label: 'Observación de Devolución' %></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="pull-left btn btn-flat btn-default" data-dismiss="modal"><%=t :cancelar%></button>
+          <div class="box-tools pull-right">
+            <%= f.button :submit, 'Aceptar', class: 'btn btn-flat btn-primary' %>
+          </div><!-- /.box-tools -->
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

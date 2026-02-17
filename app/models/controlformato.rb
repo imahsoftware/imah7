@@ -1,0 +1,3 @@
+
+class Controlformato < ApplicationRecord
+end

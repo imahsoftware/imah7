@@ -1,0 +1,69 @@
+<div class="box box-primary">
+  <%= simple_form_for(@personasevaluacion) do |f| %>
+    <%= f.hidden_field :persona_id%>
+    <table class="table table-striped table-responsive">
+      <tbody>
+      <tr>
+        <td class="thcolor"><%= @personasevaluacion.persona.identificacion rescue nil %> <%= @personasevaluacion.persona.nombre.upcase rescue nil%></td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="box-header">
+      <legend>
+        <div align="center">
+        AUTOEVALUACIÓN DE SÍNTOMAS DE COVID-19 - <strong><%= @personasevaluacion.persona.nombreportafolio rescue nil %></strong><br/>
+        <small>Evalúa el estado de tu salud diariamente antes de acudir a tu jornada laboral</small>
+        </div>
+      </legend>
+    </div><!-- /.box-header -->
+      <table class="table table-striped table-responsive">
+        <thead>
+          <th colspan="2"><div align="left">¿Qué síntomas tienes? Responde las siguientes preguntas guías en la evaluación</div></th>
+        </thead>
+        <tbody>
+        <tr>
+          <td width="80%">1. ¿Tienes sensación de falta de aire de inicio brusco (en ausencia de cualquier otra patología que justifique este síntoma)?</td>
+          <td width="20%"><%= f.input :eva_1, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>2. ¿Tienes fiebre de difícil control por más de 3 días? (+ 37,8°C)</td>
+          <td><%= f.input :eva_2, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>3. ¿Tienes tos seca y persistente?</td>
+          <td><%= f.input :eva_3, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>4. ¿Tienes sensación de fatiga o cansancio muscular?</td>
+          <td><%= f.input :eva_4, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>5. ¿Tienes secreciones nasales?</td>
+          <td><%= f.input :eva_5, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>6. ¿Tienes dolor de garganta o dolor de cabeza?</td>
+          <td><%= f.input :eva_6, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>7. ¿Tienes pérdida del olfato y/o el gusto?</td>
+          <td><%= f.input :eva_7, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>8. ¿Tienes sensación de malestar general?</td>
+          <td><%= f.input :eva_8, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        <tr>
+          <td>9. ¿Tienes trastornos gástricos o intestinales (náuseas, vómito, diarrea)</td>
+          <td><%= f.input :eva_9, as: :radio_buttons,collection: [['SI','SI'], ['NO','NO']], item_label_class: "radio-inline",label: false %></td>
+        </tr>
+        </tbody>
+      </table>
+    <div class="box-footer">
+      <div class="box-tools pull-right">
+        <%= f.button :submit, "#{t :guardar}", class: 'btn btn-danger' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+

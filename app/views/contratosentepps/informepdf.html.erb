@@ -1,0 +1,88 @@
+<%
+  # atencion... SI MODIFICAS ESTE.. MODIFICA _informepdf.html.erb
+  # atencion... SI MODIFICAS ESTE.. MODIFICA _informepdf.html.erb
+  # atencion... SI MODIFICAS ESTE.. MODIFICA _informepdf.html.erb
+  # atencion... SI MODIFICAS ESTE.. MODIFICA _informepdf.html.erb
+
+  @contratosenteppsfirma = Contratosenteppsfirma.find(contratosenteppsfirma_id) if contratosenteppsfirma_id.present? == true
+  @contratosperfecha = Contratosperfecha.find(@contratosenteppsfirma.contratosperfecha_id)
+  @contratosentepp = Contratosentepp.find(@contratosenteppsfirma.contratosentepp_id)
+  @logo = @contratosentepp.user.portafolio.logoportafolio.to_s
+%>
+<div align="center">
+  <br/>
+  <table width="760" border="0" cellspacing="0" cellpadding="1">
+    <tr>
+      <td valign="center">
+        <table width="100%">
+          <tr>
+            <th colspan="2" style="font-size: 18px; font-family: Tahoma;">
+              <div align="center">SOLICITUD DE ENTREGA EPP</div>
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <div align="center">
+                <img src="https://appasearesp.com/assets/logo_inicio_asear-5c57ea3346366aa678c6903bc8728755246c4c483e5f9f45abc893d4ff1e872c.png" alt="" width="230" height="100">
+              </div>
+            </td>
+            <td width="80%">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+                <tr>
+                  <td width="30%" style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>EMPLEADO SOLICITUD</strong></td>
+                  <td width="70%" style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosperfecha.contratospersona.autobuscar rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>CARGO</strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosperfecha.contratoscargo.perfil rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>CONTRATO</strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosentepp.contrato.empresa.identnombre rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>NRO CONTRATO </strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosentepp.contrato.nro_contrato rescue nil %></td>
+                </tr>
+                <tr>
+                  <td style="background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma;">&nbsp;<strong>FECHA REGISTRO</strong></td>
+                  <td style="border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma;">&nbsp;<%= @contratosentepp.created_at.strftime("%Y-%m-%d %X") rescue nil %></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <br/>
+        <br/>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC; font-size: 10px; font-family: Tahoma;" id="sample">
+          <tr style="background: #adadad">
+            <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: left;" width="70%">Item</th>
+            <th style="padding: 3px; background: #E8E3E3; border:1px solid #CCCCCC; font-size: 11px; font-family: Tahoma; text-align: right;">Cantidad</th>
+          </tr>
+          <% @contratosentepp.contratosenteppsdetalles.where("contratosperfecha_id = #{@contratosperfecha.id}").each do |contratosenteppsdetalle| %>
+            <tr>
+              <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: left;"><%= contratosenteppsdetalle.item rescue nil %></td>
+              <td style="padding: 3px; border:1px solid #CCCCCC;font-size: 10px; font-family: Tahoma; text-align: right;"><%= camponumerico contratosenteppsdetalle.cantidad rescue nil %></td>
+            </tr>
+          <% end %>
+        </table>
+        <br/>
+        <div style="background-color: #ffffff; font-family: Tahoma; font-size: 10px;">
+          <div align="left">
+            <br/><br/><strong>Documento Firmado Digitalmente</strong><br/><br/>
+            <b>Empleado:</b> <%= @contratosperfecha.contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(@contratosperfecha.contratospersona.identificacion) rescue nil %><br/>
+            <b>Cargo:</b> <%= @contratosperfecha.contratoscargo.perfil rescue nil %><br/>
+            <b>Firma Digital:</b> <%=@contratosenteppsfirma.codigo_firma rescue nil %><br/>
+            <b>Fecha Firma:</b> <%=@contratosenteppsfirma.fecha_firma.strftime("%Y-%m-%d %X") rescue nil %><br/><br/>
+            <small style="font-size: 9px;">* Este documento fue generado con firma electrónica y cuenta con plena validez
+              jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12</small>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+

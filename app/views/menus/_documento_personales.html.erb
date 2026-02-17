@@ -1,0 +1,74 @@
+<%
+  isadmin = @usr.id
+  contratosperfecha = Contratosperfecha.where("estado = 'ACTIVO' and contratospersona_id = (select id from contratospersonas where identificacion = '#{@usr.identificacion}') and (fecha_fin is null or fecha_fin >= curdate())")[0] rescue nil
+  if contratosperfecha.present?
+    @contratospersona = contratosperfecha.contratospersona
+%>
+  <div class="col-md-7">
+    <div class="box box-danger">
+      <div class="box-body">
+        <div class="box-header">
+          <h3 class="box-title"><strong>Carga aquí tus documentos digitales</strong></h3>
+          <div class="box-tools pull-right">
+            <%= link_to new_contratospersona_contratosperimagen_path(@contratospersona, ruta: "MENUS"), id: 'new_contratosperimagen_button', class: 'btn btn-sm btn-warning', remote: true do %>
+              <i class="fa fa-plus-square"> </i> <span><%= t :agregar %></span>
+            <% end %>
+          </div>
+        </div>
+        <div class="box-body">
+          <div class="flash_messages"></div>
+          <div id="contratosperimagen_form" class="collapse"></div>
+          <div id="contratosperimagenes">
+            <% if @contratospersona.contratosperimagenes.where("user_id = #{isadmin} and (descripcion != 'CONTRATO FIRMADO DIGITALMENTE' and compromiso_id is null) or (compromiso_id is not null and estado = 'APROBADO')").present? %>
+              <div class="table-responsive">
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead class="thcolor">
+                  <tr>
+                    <td width="15%"></td>
+                    <th width="25%" class="text-left text-table">Tipo de documento</th>
+                    <th class="text-left text-table">Imagen</th>
+                  </tr>
+                  </thead>
+                  <tbody id="tbody_contratosperimagenes">
+                  <% @contratospersona.contratosperimagenes.where("user_id = #{isadmin} and (descripcion != 'CONTRATO FIRMADO DIGITALMENTE' and compromiso_id is null) or (compromiso_id is not null and estado = 'APROBADO')").limit(4).order(id: :desc).each do |contratosperimagen| %>
+                    <tr id="contratosperimagen_<%= contratosperimagen.id %>">
+                      <td class="text-center">
+                        <% if contratosperimagen.descripcion != "CONTRATO FIRMADO DIGITALMENTE" %>
+                          <% if contratosperimagen.estado.to_s == 'PENDIENTE' %>
+                            <%= link_to contratospersona_contratosperimagen_path(@contratospersona, contratosperimagen), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+                              <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+                        <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                          <button class="btn btn-xs btn-primary"><i class="fa fa-cloud-download"></i></button>
+                        <% end %>
+                        <button class="btn btn-xs btn-info">
+                          <span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosperimagen.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span>
+                        </button>
+                      </td>
+                      <td align="left" style="font-size: 10px;"><%= contratosperimagen.descripcion rescue nil %></td>
+                      <td align="left" style="font-size: 10px;"><%= contratosperimagen.personasimagen_file_name rescue nil %>
+                        <% if contratosperimagen.estado == 'RECHAZADO' %><br/>
+                          <b>Estado: </b> Rechazado<br/>
+                          <b>Observación: </b>
+                          <small style="color: red"><%= contratosperimagen.observacion_aprobacion rescue nil %></small>
+                        <% else %><br/>
+                          <b>Estado: </b>  <%= contratosperimagen.estado rescue nil %>
+                        <% end %>   </td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              </div>
+            <% else %>
+              <div class="alert alert-danger">
+                <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

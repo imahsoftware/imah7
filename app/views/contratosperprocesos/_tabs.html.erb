@@ -1,0 +1,25 @@
+<li class="<%= @subetapa == '1' ? 'active' : "" %>">
+  <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: '1')  do %>
+    <i class="fa fa-file-pdf-o"></i> Doc - Digitales
+  <% end %>
+</li>
+<li class="<%= @subetapa == '2' ? 'active' : "" %>">
+  <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: '2')  do %>
+    <i class="fa fa-sticky-note-o"></i> Citación
+  <% end %>
+</li>
+<li class="<%= @subetapa == '3' ? 'active' : "" %>">
+  <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: '3')  do %>
+    <i class="fa fa-odnoklassniki"></i> Descargo
+  <% end %>
+</li>
+<li class="<%= @subetapa == '4' ? 'active' : "" %>">
+  <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: '4')  do %>
+    <i class="fa fa-balance-scale"></i> Sanción
+  <% end %>
+</li>
+<li class="<%= @subetapa == '5' ? 'active' : "" %>">
+  <%= link_to editproceso_contratosperprocesos_path(id: @contratosperproceso.id, contratospersona_id: @contratospersona.id, etapa: '5')  do %>
+    <i class="fa fa-commenting"></i> Nota
+  <% end %>
+</li>

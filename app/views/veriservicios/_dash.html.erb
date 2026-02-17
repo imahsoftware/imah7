@@ -1,0 +1,60 @@
+<section class="content-header" style="padding: 0px 15px 0 15px !important; margin-top: -10px;">
+  <h1 style="font-size: 20px;">DashBoard Servicios
+  </h1>
+</section>
+<br/>
+<div class="box">
+  <div class="box-body">
+    <div class="col-xs-12">
+      <% if @fechas.present? %>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th class="text-left">Fecha</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @fechas.each do |fecha| %>
+            <tr>
+              <td class="text-table">
+                <div id="abrir_servicio<%= fecha.fecha_reprogramacion %>" class="pull-left">
+                  <%= link_to show_detalle_veriservicios_path(fecha: fecha.fecha_reprogramacion, ruta: 'ABRIR'), remote: true do %>
+                    <i class="fa fa-arrow-circle-down" data-toggle="tooltip" style="color:green;" data-original-title="Pulsa aquí para Ver Empleados"></i>
+                    <% if fecha.fecha_reprogramacion == Time.now.strftime('%Y-%m') %>
+                      <i class="text-red fa fa-star"></i> <%= fecha.fecha_reprogramacion %>
+                    <% else %>
+                      <%= fecha.fecha_reprogramacion %>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div id="cerrar_servicio<%= fecha.fecha_reprogramacion %>" class="pull-left hide">
+                  <%= link_to show_detalle_veriservicios_path(fecha: fecha.fecha_reprogramacion, ruta: 'CERRAR'), remote: true do %>
+                    <i class="fa fa-arrow-circle-up" data-toggle="tooltip" style="color:red;" data-original-title="Pulsa aquí para Ver Empleados"></i>
+                    <% if fecha.fecha_reprogramacion == Time.now.strftime('%Y-%m') %>
+                      <i class="text-red fa fa-star"></i> <%= fecha.fecha_reprogramacion %>
+                    <% else %>
+                      <%= fecha.fecha_reprogramacion %>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div class="pull-right">
+                  <b class="text-red">Registros En Proceso: <span style="color: black"><%= Veriservicio.where("estado_proceso = 'EN PROCESO' and id in (select veriservicio_id from veriserviciosagendas where fecha_reprogramacion = '#{fecha.fecha_reprogramacion}')").count rescue 0 %></span></b>
+                  <i class="fa fa-certificate text-red"></i> &nbsp;
+                </div>
+              </td>
+            </tr>
+            <tr id="tr_show_servicio<%= fecha.fecha_reprogramacion %>" class="hidden">
+              <td>
+                <div id="abrir_detalle_servicio<%= fecha.fecha_reprogramacion %>" style="padding-left: 30px; padding-right: 30px;"></div>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="alert alert-danger"><h4><i class="icon fa fa-info"></i> <%=t :atencion%></h4><%=t :atencion_msj%></div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

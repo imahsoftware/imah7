@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title"><%= @titulo rescue il %>
+    <br/>
+    <small><%= @contratosperdotacion.contratospersona.autobuscar rescue nil %></small></h4>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+
+    <div class="col-md-12">
+      <div id="mensaje_error<%= @contratosperdotacion.id %>"></div>
+      <br/>
+      <%= simple_form_for @contratosperdotacion, remote: true do |f| %>
+        <%= hidden_field_tag :ruta, params[:ruta], value: @ruta %>
+        <div class="bs-callout">
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+              <table class="table table-bordered table-condensed table-striped">
+                <tr class="thcolor">
+                  <th class="text-center text-table-10" width="25%">Pantalon</th>
+                  <th class="text-center text-table-10" width="25%">Camisa</th>
+                  <th class="text-center text-table-10" width="25%">Zapatos</th>
+                  <% if @contratosperdotacion.pantalon == 'SI' or @contratosperdotacion.camisa == 'SI' or @contratosperdotacion.zapatos == 'SI' %>
+                    <th class="text-center text-table-10" width="25%"></th>
+                  <% end %>
+                </tr>
+
+                <tr>
+                  <td class="text-center text-table-10" width="25%">
+                    <%= f.input :pantalon, as: :radio_buttons, collection: [['SI', 'SI'], ["NO", "NO"]], wrapper: :horizontal_radio_and_checkboxes, item_label_class: "radio-inline", item_wrapper_tag: false, label: false, disabled: !Contratosperdotacion.where("perdotacion_original_id = #{@contratosperdotacion.id} and pantalon = 'SI' ").present? ? false : true %>
+                  </td>
+                  <td class="text-center text-table-10" width="25%">
+                    <%= f.input :camisa, as: :radio_buttons, collection: [['SI', 'SI'], ["NO", "NO"]], wrapper: :horizontal_radio_and_checkboxes, item_label_class: "radio-inline", item_wrapper_tag: false, label: false, disabled: !Contratosperdotacion.where("perdotacion_original_id = #{@contratosperdotacion.id} and camisa = 'SI' ").present? ? false : true %>
+                  </td>
+
+                  <td class="text-center text-table-10" width="25%">
+                    <%= f.input :zapatos, as: :radio_buttons, collection: [['SI', 'SI'], ["NO", "NO"]], wrapper: :horizontal_radio_and_checkboxes, item_label_class: "radio-inline", item_wrapper_tag: false, label: false, disabled: !Contratosperdotacion.where("perdotacion_original_id = #{@contratosperdotacion.id} and zapatos = 'SI' ").present? ? false : true %>
+                  </td>
+
+                  <% if @contratosperdotacion.pantalon == 'SI' or @contratosperdotacion.camisa == 'SI' or @contratosperdotacion.zapatos == 'SI' %>
+                    <td class="text-center text-table-10" width="25%"><%= f.button :submit, "#{t :guardar}", class: "btn btn-danger" %></td>
+                  <% end %>
+                </tr>
+              </table>
+              <div class="col-md-2"></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <br/>
+    </div>
+  </div>
+</div>

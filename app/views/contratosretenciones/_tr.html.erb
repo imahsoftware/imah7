@@ -1,0 +1,15 @@
+<tr id="contratosretencion_<%= contratosretencion.id %>">
+  <td class="text-center">
+    <%# if is_auth_e("contratosretencion")%>
+    <%= link_to edit_contrato_contratosretencion_path(@contrato, contratosretencion), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contrato_contratosretencion_path(@contrato, contratosretencion), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <%# end %>
+    <button class="btn btn-xs btn-info"><span data-toggle="tooltip" data-html="true" data-original-title="<div align='left'><%= contratosretencion.user_nombre.html_safe rescue nil %></div>"><i class="fa fa-user" aria-hidden="true"></i></span></button>
+  </td>
+  <td align="left"><%= contratosretencion.tipospretencion.detalle  rescue nil %></td>
+  <td align="center"><%= contratosretencion.estado  rescue nil %></td>
+</tr>

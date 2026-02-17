@@ -1,0 +1,12 @@
+
+<% if @ruta == 'ABRIR' %>
+$("#abrir_detalle<%= @showevaluacion %>").html('<%= j render "evaluaciones/show_evaluacion_prueba"  %>');
+$("#abrir_evaluacion<%= @showevaluacion %>").addClass("hide");
+$("#cerrar_evaluacion<%= @showevaluacion %>").removeClass("hide");
+$("#tr_show<%= @showevaluacion %>").removeClass("hidden");
+<% else %>
+$("#abrir_evaluacion<%= @showevaluacion %>").removeClass("hide");
+$("#cerrar_evaluacion<%= @showevaluacion %>").addClass("hide");
+$("#abrir_detalle<%= @showevaluacion %>").html(null);
+$("#tr_show<%= @showevaluacion %>").addClass("hidden");
+<% end %>

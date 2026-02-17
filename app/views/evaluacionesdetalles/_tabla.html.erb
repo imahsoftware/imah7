@@ -1,0 +1,16 @@
+<table class="table table-bordered table-condensed table-striped">
+  <thead>
+  <tr class="thcolor">
+    <th width="7%"></th>
+    <th class="font-size-text-tabla text-table text-center" width="14%">Clase</th>
+    <th class="font-size-text-tabla text-table" width="45%">Actividad</th>
+    <th class="font-size-text-tabla text-table text-center" width="10%">Requiere Doc</th>
+    <th class="font-size-text-tabla text-table">Observación</th>
+  </tr>
+  </thead>
+  <tbody id="tbody_evaluacionesdetalles">
+  <% @evaluacion.evaluacionesdetalles.order(id: :desc).each do |evaluacionesdetalle| %>
+    <%= render 'evaluacionesdetalles/tr', evaluacionesdetalle: evaluacionesdetalle %>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+<% if @controlfirma.codigo_otp.to_s == "" %>
+$("#tratamientoOTP").html("<%= j render 'controlfirmas/otp_tratamiento', controlfirma: @controlfirma %>");
+$("#inicioOTP").remove();
+<% else %>
+$(document).ready( function() {
+    url = "<%= menus_path %>"
+    $(location).attr("href", url);
+});
+<% end %>
+

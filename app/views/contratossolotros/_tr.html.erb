@@ -1,0 +1,19 @@
+<tr id="contratossolotro_<%= contratossolotro.id %>">
+  <td class="text-center">
+    <% if @contratossolicitud.estado.to_s == 'PENDIENTE' %>
+    <%= link_to edit_contratossolicitud_contratossolotro_path(@contratossolicitud, contratossolotro), remote: true, class: 'edit_contratosmodificacion_button', data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+      <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+    <% end %>
+      <%= link_to contratossolicitud_contratossolotro_path(@contratossolicitud, contratossolotro), remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+         <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    <% end %>
+  </td>
+  <td align="left"><%= contratossolotro.insumo.bien_servicio rescue nil %></td>
+  <td align="center"><%= camponumerico contratossolotro.cantidad rescue nil %></td>
+  <td align="right"><%= camponumerico contratossolotro.precio_unitario rescue nil %></td>
+  <td align="right"><%= camponumerico contratossolotro.total rescue nil %></td>
+</tr>
+
+
+

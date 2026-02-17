@@ -1,0 +1,9 @@
+$("#entrega_anticipada<%= @contratosperdotacion.id %><%= @contrato.id %> .modal-content").html('<%= j render "contratosperdotaciones/entrega_anticipada" %>');
+$("#entrega_anticipada<%= @contratosperdotacion.id %><%= @contrato.id %> ").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".select1<%= @contratosperdotacion.id %><%= @contrato.id %>").select2();
+$(".select2<%= @contratosperdotacion.id %><%= @contrato.id %>").select2();
+$(".select3<%= @contratosperdotacion.id %><%= @contrato.id %>").select2();
+
+

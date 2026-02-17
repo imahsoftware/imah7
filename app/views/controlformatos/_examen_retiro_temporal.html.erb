@@ -1,0 +1,112 @@
+<%
+  @controlfirma = Controlfirma.find(controlfirma_id)
+  @contratosperfecha = Contratosperfecha.find(id_registro)
+  contratospersona = @contratosperfecha.contratospersona
+  #@logo = @contratosperfecha.contrato.empresa.logo.to_s
+  portafolio = Portafolio.find(@contratosperfecha.contrato.empresa.portafolio_id)
+  @logo_firma = portafolio.logo_firma
+  @nombre_firma = portafolio.nombre_rep.to_s
+  @logo = portafolio.logo_empresa_assets
+  @nombre_empresa = portafolio.razon_social.to_s
+%>
+<div align="center">
+  <table width="85%">
+    <tr>
+      <td height="50px">
+        <div align="right"><%= image_tag "#{@logo}", size: "240x100" %></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="justify" style="font-size: 14px; font-family: Tahoma;">
+          <br/>
+          Medellin, <%= namedate(@controlfirma.fecha_firma) rescue nil %>
+          <br/><br/><br/><br/>
+          SEÑOR(A): <strong><%= contratospersona.nombre_completo rescue nil %></strong><br/>
+          C.C. <strong><%= camponumerico2(contratospersona.identificacion) rescue nil %></strong><br/>
+          Cargo: <strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %></strong><br/>
+          <br/><br/>
+          <strong>ASUNTO:</strong> NOTIFICACIÓN PARA REALIZACIÓN DE EXAMEN MÉDICO OCUPACIONAL DE RETIRO
+          <br/><br/>
+          Cordial saludo,<br/><br/>
+          <% if @controlfirma.portafolio_id == 1 %>
+            Por medio de la presente informamos que ya que su vínculo laboral finalizó con la Empresa y dándole
+            cumplimiento a lo establecido en el Artículo 6 de la resolución 1843 de 2025 y el Articulo 57 numeral 7 del
+            código sustantivo del trabajo usted podrá solicitar la realización del examen médico de egreso sin ningún
+            costo, dentro de los cinco (5) días hábiles siguientes a la emisión de este documento, para lo cual deberá
+            asistir a las instalaciones de <b>ALMAVID SALUD S.A.S ubicada en la Carrera 46 # 50 - 63 piso 12</b>, La
+            Candelaria
+            - Edificio Playa Oriental PH, Frente a la Clínica SOMA. Por lo expuesto dejamos constancia que la Empresa
+            <b><%=@nombre_empresa %></b>, cumple con su procedimiento interno de Salud Ocupacional y la normativa nacional
+            vigente
+            establecida.
+          <% elsif @controlfirma.portafolio_id == 3 %>
+            Por medio de la presente informamos que ya que su vínculo laboral finalizó con la Empresa y dándole
+            cumplimiento a lo establecido en el Artículo 6 de la resolución 1843 de 2025 y el Articulo 57 numeral 7 del
+            código sustantivo del trabajo usted podrá solicitar la realización del examen médico de egreso sin ningún
+            costo, dentro de los cinco (5) días hábiles siguientes a la emisión de este documento, para lo cual deberá
+            asistir a las instalaciones de <b>ALMAVID SALUD S.A.S</b> ubicada en la Carrera 46 # 50 - 63 piso 12, La
+            Candelaria
+            - Edificio Playa Oriental PH, Frente a la Clínica SOMA. Por lo expuesto dejamos constancia que la Empresa
+            <b><%=@nombre_empresa %></b>, cumple con su procedimiento interno de Salud Ocupacional y la normativa nacional
+            vigente
+            establecida.
+          <% elsif @controlfirma.portafolio_id == 4 %>
+            Por medio de la presente informamos que ya que su vínculo laboral finalizó con la Empresa y dándole
+            cumplimiento a lo establecido en el Artículo 6 de la resolución 1843 de 2025 y el Articulo 57 numeral 7 del
+            código sustantivo del trabajo usted podrá solicitar la realización del examen médico de egreso sin ningún
+            costo, dentro de los cinco (5) días hábiles siguientes a la emisión de este documento, para lo cual deberá
+            asistir a las instalaciones de <b>ALMAVID SALUD S.A.S ubicada en la Calle 53C sur Nro. 43–74</b>, detrás del
+            centro comercial Mayorca (nueva torre) al frente de la IPS CES. Estación Itagüí del metro. Por lo expuesto dejamos
+            constancia que la Empresa <b><%=@nombre_empresa %></b>, cumple con su procedimiento interno de Salud Ocupacional
+            y la
+            normativa nacional vigente establecida.
+          <% elsif @controlfirma.portafolio_id == 5 %>
+            Por medio de la presente informamos que ya que su vínculo laboral finalizó con la Empresa y dándole
+            cumplimiento a lo establecido en el Artículo 6 de la resolución 1843 de 2025 y el Articulo 57 numeral 7 del
+            código sustantivo del trabajo usted podrá solicitar la realización del examen médico de egreso sin ningún
+            costo, dentro de los cinco (5) días hábiles siguientes a la emisión de este documento, para lo cual deberá
+            asistir a las instalaciones de <b>ALMAVID SALUD S.A.S</b> ubicada en la Calle 53C sur Nro. 43–74, detrás del
+            centro
+            comercial Mayorca (nueva torre) al frente de la IPS CES. Estación Itagüí del metro. Por lo expuesto dejamos
+            constancia que la Empresa <b><%=@nombre_empresa %>,</b> cumple con su procedimiento interno de Salud Ocupacional
+            y la
+            normativa nacional vigente establecida.
+          <% end %>
+          <br/>
+          <br/>
+          <b>NOTA:</b> Esta evaluación médica tiene carácter voluntario, para usted sea cual fuere la razón de su salida
+          de nuestra empresa, por lo que la realización del mismo queda expresamente bajo absoluta responsabilidad suya
+          como trabajador.
+          <br/><br/>
+          Gracias por su atención.
+          <br/><br/>
+          Cordialmente,<br/><br/><br/>
+          <strong>
+            <% if @controlfirma.codigo_firma.present? %>
+              <%= image_tag("#{image_url(@logo_firma)}", style: 'position: relative; margin-bottom: -10px; top: 15px; right: 10px; z-index: 0; width: 200px;') %>
+            <% end %>
+            <br>
+            <b style="font-size: 16px; font-family: Tahoma; margin-top: -30px;position: relative;z-index: 9999"><%#= pgh.valor rescue nil %></b><br/>
+            <%= @nombre_firma %><br/>
+            Representante Legal<br/>
+            <%= @nombre_empresa %></strong>
+          <br/><br/>
+          <% if @controlfirma.codigo_firma.present? %>
+            <%= contratospersona.nombre_completo rescue nil %><br/>
+            <b>CC:</b> <%= camponumerico2(contratospersona.identificacion) rescue nil %><br/>
+            <b>FIRMA DIGITAL:</b> <%= @controlfirma.codigo_firma %><br/>
+            <b>FECHA FIRMA:</b> <%= @controlfirma.fecha_firma %><br/>
+            * Este documento fue generado con firma electrónica y cuenta con plena validez jurídica, conforme a lo dispuesto en la Ley 527/99 y el decreto reglamentario 2364/12
+          <% else %>
+            FIRMA DEL TRABAJADOR:
+            CC: <%= camponumerico2(contratospersona.identificacion) rescue nil %>
+          <% end %>
+          <br/>
+          <div align="justify" style="font-size: 10px; font-family: Tahoma;">FYH: <%= @controlfirma.fecha_firma.strftime("%Y-%m-%d") rescue nil %> - Fecha Solicitud: <%=@controlfirma.created_at.strftime("%Y-%m-%d %X") rescue nil %> - por: <%=User.find(@controlfirma.user_solicitante).nombre rescue nil %></div>
+        </div>
+        <br/><br/><br/>
+      </td>
+    </tr>
+  </table>
+</div>

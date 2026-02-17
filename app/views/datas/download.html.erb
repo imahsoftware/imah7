@@ -1,0 +1,18 @@
+<%
+  rutaupload = "#{::Rails.root}/public/download/"
+  dirs = []
+
+  Find.find(rutaupload) do |f|
+    type = case
+    when File.file?(f) then "F"
+      nombre2 = File.basename(f).to_s
+      dirs << nombre2
+    end
+  end
+  dirs.sort_by { |nombre2|
+ %>
+    <div class="text-red" style="font-size: 13px; padding: 4px;" >
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+      <%=link_to nombre2.to_s, descargarfile_datas_path(:ruta=>"#{::Rails.root}/public/download/#{nombre2.to_s}") %>
+    </div>
+<% }    %>

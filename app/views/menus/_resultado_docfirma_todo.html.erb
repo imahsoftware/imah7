@@ -1,0 +1,26 @@
+<% if @contratosprefechasdocfirma_todo.present? %>
+  <div class="box-body">
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+      <tr class="thcolor">
+        <th class="text-left text-table" width="2%"></th>
+        <th class="text-left text-table" width="20%">Empleado</th>
+        <th class="text-left text-table">Contrato</th>
+        <th class="text-left text-table">Fechas</th>
+        <th class="text-center text-table">Tipo Documento</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @contratosprefechasdocfirma_todo.each do |contratosperfecha| %>
+        <%= render 'menus/tr_docfirma', contratosperfecha: contratosperfecha, p: @p %>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="box-tools pull-right">
+      <%= will_paginate @contratosprefechasdocfirma_todo, :param_name => "doc_#{@p.downcase.to_s}", renderer: BootstrapPagination::Rails %>
+    </div><!-- /.box-tools -->
+  </div>
+<% else %>
+  <div class="alert alert-danger">
+    <h4><i class="icon fa fa-info"></i> <%= t :atencion %></h4><%= t :atencion_msj %> </div>
+<% end %>

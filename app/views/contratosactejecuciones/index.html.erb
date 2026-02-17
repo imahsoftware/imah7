@@ -1,0 +1,293 @@
+<% title 'Actividades' %>
+<script>
+    $( document ).ready(function() {
+        $('.datetimepicker').datetimepicker({
+            format: 'DD-MM-YYYY',
+            ignoreReadonly: true
+        });
+    });
+</script>
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <% class11a = ""
+           class12a = ""
+           class13a = ""
+           class14a = ""
+           if @etapa == '11'
+             class11a = "class=active"
+           elsif @etapa == '12'
+             class12a = "class=active"
+           elsif @etapa == '13'
+             class13a = "class=active"
+           elsif @etapa == '14'
+             class14a = "class=active"
+           end
+        %>
+        <li <%=class11a%>><%= link_to contratosactejecuciones_index_path(etapa: "11") do %><i class="fa fa-search" ></i> <span></span>Seguimiento Actividades<% end %></li>
+        <li <%=class13a%>><%= link_to contratosactejecuciones_index_path(etapa: "13") do %><i class="fa fa-search" ></i> <span></span> Verificación Diaria<% end %></li>
+        <li <%=class14a%>><%= link_to contratosactejecuciones_index_path(etapa: "14") do %><i class="fa fa-search" ></i> <span></span> Verificación Mensual<% end %></li>
+        <li <%=class12a%>><%= link_to contratosactejecuciones_index_path(etapa: "12") do %><i class="fa fa-file" ></i> <span></span> Listado<% end %></li>
+      </ul>
+      <div class="tab-content">
+        <% if @etapa == '11' %>
+          <div class="box">
+            <div class="flash_messages"></div>
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-md-12"><legend>Seguimiento ejecución de Actividades - Buscador</legend></div>
+              </div>
+            </div><!-- /.box-header -->
+            <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+              <%= hidden_field_tag :etapa, '11' %>
+              <div class="box-body">
+                <div class="form-group">
+                  <%= label_tag :sede, 'Nodo' %><br/>
+                  <%= select_tag 'ubicacion[contratossede_id]', options_from_collection_for_select(select_sedeejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :usuario, 'Usuario' %><br/>
+                  <%= select_tag 'ubicacion[user_id]', options_from_collection_for_select(select_userejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '450px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :clase, 'Clase' %><br/>
+                  <%= select_tag 'ubicacion[clase]', options_for_select(select_act_clase), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :realizada, 'Realizada' %><br/>
+                  <%= select_tag 'ubicacion[realizada]', options_for_select(select_sino), prompt: '--Seleccionar--', data: { width: '150px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :fechas_tanque, 'Fecha Actividad' %><br/>
+                  <%= text_field_tag :fchinicio, params[:fchinicio], { class: 'datepicker form-control', style:'width:110px;', placeholder: 'Fecha Inicial', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %> -
+                  <%= text_field_tag :fchfin, params[:fchfin], { class: 'datepicker form-control', style:'width:110px;',placeholder: 'Fecha Final', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :actividad, 'Actividad' %><br/>
+                  <%= select_tag 'ubicacion[contratosactividad_id]', options_from_collection_for_select(select_actividadejecucion, :id, :nombrelista), prompt: '--Seleccionar--', data: { width: '650px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  <% end %>
+                  <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                  <% end %>
+                </div>
+              </div>
+
+            <% end %>
+          </div><!-- /.box -->
+          <% if @contratosactejecuciones.present? %>
+            <div class="box box-danger">
+              <div class="box-body">
+                <div class="box-header with-border">
+                  <legend>Resultado (<%=@contratosactejecuciones.count rescue 0%>) </legend>
+                </div><!-- /.box-header -->
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="12%" style='font-size: 11px;'><div align="center">Fecha Act.</div></th>
+                      <th width="20%" style='font-size: 11px;'><div align="left">Usuario</div></th>
+                      <th width="15%" style='font-size: 11px;'><div align="left">Nodo</div></th>
+                      <th style='font-size: 11px;'><div align="left">Actividad</div></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @contratosactejecuciones.each do |t| %>
+                      <tr>
+                        <td><div align="center" style='font-size: 11px;'><%= t.created_at.strftime("%Y-%m-%d %X") rescue nil %></div></td>
+                        <td><div align="left" style='font-size: 11px;'><%=t.user.nombre rescue nil %></div></td>
+                        <td><div align="left" style='font-size: 11px;'><%=t.contratossede.nombre rescue nil %></div></td>
+                        <td><div align="justify" style='font-size: 10px;'><%= t.contratosactividad.nombrelista rescue nil%></div>
+                          <% if t.realizada.to_s == 'NO' %>
+                            <div class="text-red" style='font-size: 10px;'><strong>NO REALIZADA: <%=t.nota %></strong></div>
+                          <% end %></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @contratosactejecuciones, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+                </div><!-- /.box-tools -->
+              </div>
+            </div>
+          <% end %>
+        <% elsif @etapa == '12' %>
+          <div class="box box-primary">
+            <div class="flash_messages"></div>
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-md-12"><legend>Actividades - Buscador</legend></div>
+              </div>
+            </div><!-- /.box-header -->
+            <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+              <%= hidden_field_tag :etapa, '12' %>
+              <div class="box-body">
+                <div class="form-group">
+                  <%= label_tag :detalle, 'Detalle' %><br/>
+                  <%= text_field_tag :detalle, params[:detalle], class: 'form-control', style:'width:400px;', autocomplete: 'off' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :sede, 'Sede' %><br/>
+                  <%= select_tag 'ubicacion[contratossede_id]', options_from_collection_for_select(select_sedeejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '400px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :tipo, 'Tipo' %><br/>
+                  <%= select_tag 'ubicacion[tipo]', options_for_select(select_act_tipo), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :clase, 'Clase' %><br/>
+                  <%= select_tag 'ubicacion[clase]', options_for_select(select_act_clase), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :dia, 'Dia Semana' %><br/>
+                  <%= select_tag 'ubicacion[dia_semana]', options_for_select(select_diassemana), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= button_tag type: 'submit', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Buscar' do %>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  <% end %>
+                  <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                  <% end %>
+                </div>
+              </div>
+
+            <% end %>
+          </div><!-- /.box -->
+          <% if @contratosactividades.count.to_i > 0 %>
+            <div class="box box-primary">
+              <div class="box-body">
+                <div class="box-header with-border">
+                  <legend>Actividades (<%=@contratosactividades.count rescue 0%>) </legend>
+                </div><!-- /.box-header -->
+                <div class="table-responsive">
+                  <table class="table table-bordered table-condensed table-striped">
+                    <thead>
+                    <tr class="thcolor">
+                      <th width="5%"></th>
+                      <th width="35%" style='font-size: 11px;'><div align="left">Actividad</div></th>
+                      <th width="20%" style='font-size: 11px;'><div align="left">Sede</div></th>
+                      <th width="20%" style='font-size: 11px;'><div align="left">Clase</div></th>
+                      <th width="20%" style='font-size: 11px;'><div align="left">Tipo</div></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @contratosactividades.each do |t| %>
+                      <tr>
+                        <td><div align="center">
+                          <%= link_to edit2_contratosactividades_path(id: t.id), remote: true, class: 'edit_contratossolicitud_button', data: { toggle: 'tooltip' }, title: "Actualiza Actividad" do %>
+                            <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+                          <% end %>
+                        </div></td>
+                        <td><div align="left" style='font-size: 11px;'><%= t.detalle rescue nil%></div></td>
+                        <td><div align="left" style='font-size: 11px;'><%=t.contratossede.nombre rescue nil %></div></td>
+                        <td><div align="left" style='font-size: 11px;'><%=t.clase rescue nil %></div></td>
+                        <td><div align="left" style='font-size: 11px;'><%=t.tipo rescue nil %>
+                          <% if t.dia_semana.to_s != "" %>
+                            - <%=t.dia_semana rescue nil %>
+                          <% end %>
+                        </div></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-tools pull-right">
+                  <%= will_paginate @contratosactividades, :previous_label => '&laquo; Anterior', :next_label => 'Siguiente &raquo;', renderer: BootstrapPagination::Rails  %>
+                </div><!-- /.box-tools -->
+              </div>
+            </div>
+          <% end %>
+
+        <% elsif @etapa == '13' %>
+          <div class="box">
+            <div class="flash_messages"></div>
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-md-12"><legend>Verificación Diaria Metro - Buscador</legend></div>
+              </div>
+            </div><!-- /.box-header -->
+            <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+              <%= hidden_field_tag :etapa, '13' %>
+              <div class="box-body">
+                <div class="form-group">
+                  <%= label_tag :tipo, 'Tipo' %><br/>
+                  <%= select_tag 'ubicacion[nodo]', options_for_select(select_act_tipo), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :sede, 'Nodo' %><br/>
+                  <%= select_tag 'ubicacion[contratossede_id]', options_from_collection_for_select(select_sedeejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :usuario, 'Usuario' %><br/>
+                  <%= select_tag 'ubicacion[user_id]', options_from_collection_for_select(select_userejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '450px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :fechas_tanque, 'Fecha revisión' %><br/>
+                  <%= text_field_tag :fchinicio, params[:fchinicio], { class: 'datepicker form-control', style:'width:110px;', placeholder: 'Fecha Inicial', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %> -
+                  <%= text_field_tag :fchfin, params[:fchfin], { class: 'datepicker form-control', style:'width:110px;',placeholder: 'Fecha Final', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+                </div>
+                <div class="form-group">
+                  <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div><!-- /.box -->
+        <% elsif @etapa == '14' %>
+          <div class="box">
+            <div class="flash_messages"></div>
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-md-12"><legend>Verificación Mensual Metro - Buscador</legend></div>
+              </div>
+            </div><!-- /.box-header -->
+            <%= form_tag request.path, method: :get, class: 'form-inline' do %>
+              <%= hidden_field_tag :etapa, '14' %>
+              <div class="box-body">
+                <div class="form-group">
+                  <%= label_tag :tipo, 'Tipo' %><br/>
+                  <%= select_tag 'ubicacion[nodo]', options_for_select(select_act_tipo), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :sede, 'Nodo' %><br/>
+                  <%= select_tag 'ubicacion[contratossede_id]', options_from_collection_for_select(select_sedeejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '200px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :usuario, 'Usuario' %><br/>
+                  <%= select_tag 'ubicacion[user_id]', options_from_collection_for_select(select_userejecucion, :id, :nombre), prompt: '--Seleccionar--', data: { width: '450px' }, class: 'form-control select2' %>
+                </div>
+                <div class="form-group">
+                  <%= label_tag :fechas_tanque, 'Fecha revisión' %><br/>
+                  <%= text_field_tag :fchinicio, params[:fchinicio], { class: 'datepicker form-control', style:'width:110px;', placeholder: 'Fecha Inicial', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %> -
+                  <%= text_field_tag :fchfin, params[:fchfin], { class: 'datepicker form-control', style:'width:110px;',placeholder: 'Fecha Final', readonly: true, data: {date_options: {format: 'DD/MM/YYYY', ignoreReadonly: true}}} %>
+                </div>
+                <div class="form-group">
+                  <%= button_tag type: 'submit', value: 'xlsx', name: 'format', class: 'btn btn-primary', style: 'margin-top: 24px;', data: { toggle: 'tooltip' }, title: 'Excel' do %>
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div><!-- /.box -->
+        <% elsif @etapa == '15' %>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="actualizar">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contratospersona: one
+  tiposentidad: one
+  user: one
+  tipodescuento: MyString
+  prestaciones: MyString
+  porcentaje: MyString
+  valor: 9.99
+  termino_descuento: MyString
+  tope: 9.99
+  user_actualiza: 1
+
+two:
+  contratospersona: two
+  tiposentidad: two
+  user: two
+  tipodescuento: MyString
+  prestaciones: MyString
+  porcentaje: MyString
+  valor: 9.99
+  termino_descuento: MyString
+  tope: 9.99
+  user_actualiza: 1

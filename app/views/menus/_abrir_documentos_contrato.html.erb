@@ -1,0 +1,173 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+  <h4 class="modal-title">Documentos del contrato</h4>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead class="thcolor">
+    <tr>
+      <th width="35%" class="text-left">Empleado</th>
+      <th width="65%" class="text-left">Contrato</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td class="text-left text-table">
+        <%= @contratosperfecha.contratospersona.autobuscar rescue nil %>
+      </td>
+      <td class="text-left text-table">
+        <small><%= @contratosperfecha.contrato.empresa.identnombre rescue nil %>
+          <br/><strong>Nro Contrato : </strong><%= @contratosperfecha.contrato.nro_contrato rescue nil %> -
+          <strong>Cargo : </strong><%= @contratosperfecha.contratoscargo.perfil rescue nil %>
+          <br/><strong>Grupo de nomina : </strong><%= @contratosperfecha.contratosgrupo.descripcion rescue nil %>
+          <% if @contratosperfecha.contratosseccion_id.present? %>
+            <br/><strong>Sección : </strong><%= @contratosperfecha.contratosseccion.descripcion2 rescue nil %>
+          <% end %>
+        </small>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-bordered table-condensed table-striped">
+        <thead class="thcolor">
+        <tr>
+          <th width="40%" class="text-left">Tipo</th>
+          <th class="text-left">Documento Digital</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% if @contratosperfecha.personasformulario_id.present? %>
+          <% Personasformulariosdoc.includes([:parcargosdoc]).where("estado = 'APROBADO' and personasformulario_id = #{@contratosperfecha.personasformulario_id}").each do |personasformulariosdoc| %>
+            <tr>
+              <td class="text-left text-table"><%= personasformulariosdoc.parcargosdoc.descripcion rescue nil %></td>
+              <td class="text-left text-table">
+                <% if personasformulariosdoc.soporte_digital_file_name.present? %>
+                  <%= link_to personasformulariosdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' }, title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <i class="fa fa-cloud-download"></i> <%= personasformulariosdoc.soporte_digital_file_name rescue nil %>
+                  <% end %>
+                  <% if personasformulariosdoc.observacion.present? %>
+                    <div class="text-justify text-red">
+                      <small><b>Observacion: </b> <%= personasformulariosdoc.observacion rescue nil %></small>
+                    </div>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+        <% Contratosperimagen.where("contratosperfecha_id = #{@contratosperfecha.id}").each do |contratosperimagen| %>
+          <tr>
+            <td class="text-left text-table"><%= contratosperimagen.descripcion rescue nil %></td>
+            <td class="text-left text-table">
+              <%= link_to contratosperimagen.personasimagen.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download"></i> <%= contratosperimagen.personasimagen_file_name rescue nil %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% @contratosperfecha.contratosperfechasdocs.each do |contratosperfechasdoc| %>
+          <tr>
+            <td class="text-left text-table">AFILIACION <%= contratosperfechasdoc.tipo rescue nil %></td>
+            <td class="text-left text-table">
+              <%= link_to contratosperfechasdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download"></i> <%= contratosperfechasdoc.descripcion rescue nil %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% @contratosperfecha.contratosperfechasdocs.each do |contratosperfechasdoc| %>
+          <tr>
+            <td class="text-left text-table">AFILIACION <%= contratosperfechasdoc.tipo rescue nil %></td>
+            <td class="text-left text-table">
+              <%= link_to contratosperfechasdoc.soporte_digital.url(:original, false), data: { toggle: 'tooltip' },title: "Ver Documento", onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                <i class="fa fa-cloud-download"></i> <%= contratosperfechasdoc.descripcion rescue nil %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% Solicitudesretiro.where("contratosperfecha_id = #{@contratosperfecha.id} and estado_final is null").each do |p| %>
+          <tr>
+            <td class="text-left text-table">SOLICITUDES DE LIQUIDACION</td>
+            <td class="text-left text-table">
+              <% if p.contratosperliquidacion_id.to_s == ""  %>
+                EN PROCESO...
+              <% else %>
+                <%= link_to liquidacion_contratosperliquidaciones_path(id: p.contratosperliquidacion_id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+                  <i class="fa fa-cloud-download"></i> Liquidacion en proceso <% if p.consecutivo.to_s == "" %> (Periodo: <%=p.fecha.strftime("%Y-%m").to_s rescue nil %>)<% else %>(Lote: <%=p.consecutivo rescue 0 %>)<% end %>
+                <% end %>
+                <% if p.documento_retiro_file_name.present? %>
+                  <br/>
+                  <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                    <i class="fa fa-cloud-download text-danger"></i> Solicitud Retiro
+                  <% end %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% @contratosperfecha.contratosperliquidaciones.where(estado: 'PAGADO').each do |a|
+          p = Solicitudesretiro.where(contratosperliquidacion_id: a.id)[0]
+        %>
+          <tr>
+            <td class="text-left text-table">LIQUIDACION</td>
+            <td class="text-left text-table">
+              <%= link_to liquidacion_contratosperliquidaciones_path(id: a.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Liquidación PDF' do %>
+                <i class="fa fa-cloud-download"></i> Liquidacion lote (<%=p.consecutivo rescue 0 %>)
+              <% end %>
+              <% if p.documento_retiro_file_name.present? %>
+                <br/>
+                <%= link_to p.documento_retiro.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento de Retiro', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-cloud-download text-danger"></i> Solicitud Retiro
+                <% end %>
+              <% end %>
+              <% Contratosperlimagen.where(contratosperfecha_id: @contratosperfecha.id).each do |b| %>
+                <br/>
+                <%= link_to b.liquidacionesimagen.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=450,width=600,scrollbars=yes");return false;' do %>
+                  <i class="fa fa-cloud-download text-danger"></i> Soporte Pago liquidación
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+
+        <% if @contratosperfecha.contratospervacaciones.where("estado != 'PENDIENTE'").exists? %>
+          <tr>
+            <td class="text-left text-table">VACACIONES </td>
+            <td class="text-left text-table">
+              <%= link_to vacacion_contratospervacaciones_path(contratosperfecha_id: @contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Vacaciones PDF' do %>
+                <i class="fa fa-cloud-download"></i> Vacaciones
+              <% end %>
+              <%= link_to carta_contratospervacaciones_path(contratosperfecha_id: @contratosperfecha.id, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: 'Carta Vacaciones PDF' do %>
+                <i class="fa fa-cloud-download"></i> Carta
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% if Contratospermasdetalle.joins([:contratospermasiva]).where(["contratospermasdetalles.contratosperfecha_id = #{@contratosperfecha.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).exists? %>
+          <% Contratospermasdetalle.joins(:contratospermasiva)
+                                  .select("distinct contratospermasivas.proceso").group("contratospermasivas.proceso")
+                                  .where(["contratospermasdetalles.contratosperfecha_id = #{@contratosperfecha.id} and contratospermasivas.proceso != 'LIQUIDACION'"]).each do |c| %>
+            <tr>
+              <td class="text-left text-table"><%=c.proceso rescue nil %></td>
+              <td class="text-left text-table">
+                <%= link_to proceso_contratospermasdetalles_path(contratosperfecha_id: @contratosperfecha.id, proceso: c.proceso.to_s, format: :pdf), data: { toggle: 'tooltip' }, class: 'popup', title: c.proceso do %>
+                  <i class="fa fa-cloud-download"></i> <%=c.proceso %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

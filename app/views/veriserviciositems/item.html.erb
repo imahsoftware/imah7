@@ -1,0 +1,93 @@
+<div class="box box-danger">
+  <div class="box-header">
+    <h3 class="box-title"><strong>Item y Complementos</strong>
+    </h3>
+    <% if [4, 5].include?(@veriserviciositem.calificacion) %>
+      <% if Veriserviciosinota.exists?(veriserviciositem_id: @veriserviciositem.id) and Veriserviciosiimagen.exists?(veriserviciositem_id: @veriserviciositem.id) %>
+        <div class="pull-right">
+          <%= link_to edit_veriservicio_path(id: @veriserviciositem.veriservicio_id), data: { toggle: 'tooltip' }, title: 'Continuar' do %>
+            <button class="btn btn-xs btn-success"><i class="fa fa-check-circle"></i> Continuar</button>
+          <% end %>
+        </div>
+      <% end %>
+    <% elsif [1, 2, 3].include?(@veriserviciositem.calificacion) %>
+      <% if Veriserviciosinota.exists?(veriserviciositem_id: @veriserviciositem.id) and Veriserviciosicompromiso.exists?(veriserviciositem_id: @veriserviciositem.id) and Veriserviciosiimagen.exists?(veriserviciositem_id: @veriserviciositem.id) %>
+        <div class="pull-right">
+          <%= link_to edit_veriservicio_path(id: @veriserviciositem.veriservicio_id), data: { toggle: 'tooltip' }, title: 'Continuar' do %>
+            <button class="btn btn-xs btn-success"><i class="fa fa-check-circle"></i> Continuar</button>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="box-body">
+    <div class="mensaje_firma_agenda"><i class="icon fa fa-info"></i> Recuerda que, para poder continuar con el proceso
+      de verificación, debes diligenciar el cargue de documentos digitales, las observaciones y los compromisos. Cuando
+      termines, se habilitará un botón para que puedas continuar con el proceso.
+    </div>
+    <br/>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead class="thcolor">
+      <tr>
+        <th class="text-left text-table">Descripción</th>
+        <th class="text-center text-table" width="15%">Calificación</th>
+        <th class="text-center text-table" width="20%">Fecha Calificación</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td align="left" class="text-table"><%= @veriserviciositem.descripcion rescue nil %></td>
+        <td align="center" class="text-table"><%= @veriserviciositem.calificacion rescue nil %></td>
+        <td align="center" class="text-table"><%= @veriserviciositem.updated_at.strftime('%Y-%m-%d %X') rescue nil %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="<%= @etapa == 'A' ? 'active' : '' %>">
+          <%= link_to item_veriserviciositems_path(id: @veriserviciositem.id, etapa: "A") do %>
+            <i class="fa fa-image"></i> Documentos Digitales
+          <% end %>
+        </li>
+        <li class="<%= @etapa == 'B' ? 'active' : '' %>">
+          <%= link_to item_veriserviciositems_path(id: @veriserviciositem.id, etapa: "B") do %>
+            <i class="fa fa-book"></i> Notas y/o Observaciones
+          <% end %>
+        </li>
+        <% if [1, 2, 3].include?(@veriserviciositem.calificacion) %>
+          <li class="<%= @etapa == 'C' ? 'active' : '' %>">
+            <%= link_to item_veriserviciositems_path(id: @veriserviciositem.id, etapa: "C") do %>
+              <i class="fa fa-align-justify"></i> Compromisos
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="tab-content">
+        <% if @etapa == 'A' %>
+          <%= render 'veriserviciosiimagenes/veriserviciosiimagenes' %>
+        <% end %>
+        <% if @etapa == 'B' %>
+          <%= render 'veriserviciosinotas/veriserviciosinotas' %>
+        <% end %>
+        <% if @etapa == 'C' %>
+          <%= render 'veriserviciosicompromisos/veriserviciosicompromisos' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .modal {
+        z-index: 1050 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1040 !important;
+    }
+</style>

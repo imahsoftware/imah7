@@ -1,0 +1,16 @@
+<tr id="tiposcuenta_<%= tiposcuenta.id %>">
+  <% if is_auth_c('tiposcuenta') %>
+  	<td class="text-center">
+      <%= link_to edit_tiposcuenta_path(tiposcuenta), class: 'edit_tiposcuenta_button', remote: true, data: { toggle: 'tooltip' }, title: "#{t :title_editar}" do %>
+         <button class="btn btn-xs btn-warning"><i class="fa fa-edit"></i></button>
+      <% end %>
+      <%= link_to tiposcuenta, remote: true, method: :delete, data: { confirm: "#{t :elimina_confirma}", toggle: 'tooltip' }, title: "#{t :title_elimina}" do %>
+          <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+      <% end %>
+    </td>
+  <% end %>
+  <td><%= tiposcuenta.id %></td>
+  <td><%= tiposcuenta.entidad %></td>
+  <td><%= tiposcuenta.tipo %></td>
+  <td><%= tiposcuenta.nro_cuenta %></td>
+</tr>

@@ -1,0 +1,86 @@
+<%
+=begin
+  @usuarios = Tareasactividad.select("tareasactividades.user_persona, (select nombre from users where id = tareasactividades.user_persona) nombreuser,
+                                     (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                      and t.user_persona = tareasactividades.user_persona and t.estado in ('1','1.0')) finalizadas ")
+                             .where(tarea_id: @tarea.id)
+  @registros = @usuarios.select("user_persona").distinct
+  labels = []
+  valores = []
+  colores = []
+  @registros.each do |registro2|
+    user = User.find_by(id: registro2.user_persona)
+    labels << (user ? user.nombre : 'Usuario Desconocido')
+    valores << Tareasactividad.where(tarea_id: @tarea.id, user_persona: registro2.user_persona, estado: '1').count
+    colores << "#28AF10"
+  end
+=end
+  datos = Tareasactividad.select("tareasactividades.user_persona, (select nombre from users where id = tareasactividades.user_persona) nombreuser,
+                                     (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                      and t.user_persona = tareasactividades.user_persona and t.estado = '0') pendientes,
+                                     (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                      and t.user_persona = tareasactividades.user_persona and t.estado = '0.5') procesos,
+                                     (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                      and t.user_persona = tareasactividades.user_persona and t.estado = '1.0') noaplica ,
+                                     (select count(t.id) from tareasactividades t where t.tarea_id = tareasactividades.tarea_id
+                                      and t.user_persona = tareasactividades.user_persona and t.estado = '1') finalizadas")
+                             .where(tarea_id: @tarea.id).group("user_persona").order("2 asc")
+  labels = []
+  valores0 = []
+  valores1 = []
+  valores2 = []
+  valores3 = []
+  colores0 = []
+  colores1 = []
+  colores2 = []
+  colores3 = []
+  datos.each do |registro2|
+    labels << registro2.nombreuser rescue nil
+    valores0 << registro2.pendientes rescue 0
+    valores1 << registro2.procesos rescue 0
+    valores2 << registro2.noaplica rescue 0
+    valores3 << registro2.finalizadas rescue 0
+    colores0 << "#EE2727"
+    colores1 << "#FFCE56"
+    colores2 << "#0073b7"
+    colores3 << "#28AF10"
+  end
+%>
+<canvas id="miGraficoBarras2" width="340" height="250"></canvas>
+<script>
+    var ctx = document.getElementById("miGraficoBarras2").getContext("2d");
+
+    var data = {
+        labels: <%= labels.to_json.html_safe %>,
+        datasets: [
+            {label: 'Pendientes', data: <%= valores0.to_json.html_safe %>, backgroundColor: <%= colores0.to_json.html_safe %>},
+            {label: 'En Proceso',data: <%= valores1.to_json.html_safe %>,backgroundColor: <%= colores1.to_json.html_safe %>},
+            {label: 'No Aplica',data: <%= valores2.to_json.html_safe %>,backgroundColor: <%= colores2.to_json.html_safe %>},
+            {label: 'Finalizadas',data: <%= valores3.to_json.html_safe %>,backgroundColor: <%= colores3.to_json.html_safe %>}]
+    };
+
+    var options = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        title: {
+            display: true,
+            text: '<%= @tarea.tema.capitalize rescue nil %>'
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    fontSize: 10 // Ajusta el tamaño de la letra aquí
+                }
+            }
+        }
+    };
+
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+</script>

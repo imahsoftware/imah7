@@ -1,0 +1,18 @@
+$("#proveedoresimagen_form").collapse("hide");
+
+$("#proveedoresimagen_form").empty();
+
+<% if @active_record.present? %>
+	$("#proveedoresimagen_<%= @active_record.id %>").replaceWith("<%= j render 'tr', proveedoresimagen: @active_record %>");
+<% end %>
+
+$("#proveedoresimagen_<%= @proveedoresimagen.id %>").html("<td colspan='12'><%= j render 'form' %></td>");
+
+$("#proveedoresimagen_<%= @proveedoresimagen.id %>").addClass("active_proveedoresimagen");
+
+$(".select2").select2();
+
+$(".tooltip").tooltip("hide");
+
+$('[data-toggle="tooltip"]').tooltip();
+$(".datetimepicker").datetimepicker();
