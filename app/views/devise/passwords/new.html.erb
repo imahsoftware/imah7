@@ -1,25 +1,39 @@
 <div id="wrapper">
+
+  <!-- ── PANEL IZQUIERDO OSCURO ── -->
   <div id="right">
     <div id="showcase">
       <div class="showcase-content">
-        <%= image_tag('logos/logo_inicio_asear.png', size: '500x200') %>
+        <%= image_tag('logos/logo_inicio_imah.png', class: 'showcase-logo') %>
+        <p class="showcase-tagline">Sistema de Gestión Imah</p>
       </div>
+      <div class="deco deco-1"></div>
+      <div class="deco deco-2"></div>
+      <div class="grid-overlay"></div>
     </div>
   </div>
+
+  <!-- ── PANEL DERECHO BLANCO ── -->
   <div id="left">
     <div id="signin">
+
       <div class="logo">
-        <%= render 'users/flash_message_session', titulo: 'Ingreso al Sistema' %>
+        <%= render 'users/flash_message_session', titulo: 'Recuperar Contraseña' %>
+        <p class="form-subtitle">Ingresa tu usuario para continuar</p>
       </div>
+
       <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+
         <div>
           <label>Usuario</label>
           <%= f.input_field :username, autocomplete: 'off', required: false, autofocus: true, class: 'form-control', placeholder: 'Usuario' %>
         </div>
+
         <br/>
         <div>
-          <%= f.button :submit, 'Aceptar', class: 'primary-btn', disabled_with: 'Iniciando...' %>
+          <%= f.button :submit, 'Aceptar', class: 'primary-btn', disabled_with: 'Enviando...' %>
         </div>
+
       <% end %>
 
       <div class="links">
@@ -40,282 +54,305 @@
         <% end %>
       </div>
 
+      <div class="back-link">
+        <%= link_to new_session_path(resource_name) do %>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
+          Volver al inicio de sesión
+        <% end %>
+      </div>
+
       <%= render 'layouts/flash_messages' %>
     </div>
+
     <footer id="main-footer">
       Copyright &copy; <%= Time.now.strftime("%Y") %> <b>ImahSoftware</b> | Todos los derechos reservados.
       <em>(Asear 2.0)</em>
     </footer>
   </div>
+
 </div>
 
-
-
 <style>
-    .alert_remove {
-        font-size: 14px;
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+    :root {
+        --red:      #C9392B;
+        --red-dark: #a82e22;
+        --red-glow: rgba(201,57,43,0.13);
+        --black:    #111;
+        --panel:    #17171a;
+        --white:    #ffffff;
+        --gray-bg:  #f5f5f7;
+        --border:   #d0d0d5;
+        --muted:    #999;
+        --font:     'Plus Jakarta Sans', sans-serif;
+        --ease:     cubic-bezier(.4,0,.2,1);
     }
 
-    .callout_message-danger {
-        background-color: red;
-        color: #fff;
-        padding: 10px;
-        border-radius: 5px;
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        width: calc(100% - 20px);
-        max-width: 300px; /* Ajusta el ancho máximo según tus preferencias */
-        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-    }
-
-    .callout_message-success {
-        background-color: green;
-        color: #fff;
-        padding: 10px;
-        border-radius: 5px;
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        width: calc(100% - 20px);
-        max-width: 300px; /* Ajusta el ancho máximo según tus preferencias */
-        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-    }
-
-    @import url('https://fonts.googleapis.com/css?family=Roboto:300');
-
-    * {
-        box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-        font-family: 'Roboto', sans-serif;
+        font-family: var(--font);
         font-weight: 300;
-        background: #fff;
-        color: #fff;
+        background: var(--gray-bg);
         overflow: hidden;
         margin: 0;
+        height: 100vh;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-weight: 300;
-    }
-
+    /* ── Layout 50/50 ── */
     #wrapper {
         display: flex;
         flex-direction: row;
+        height: 100vh;
     }
 
+    #right { flex: 1; }
     #left {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        flex: 1;
         align-items: center;
         justify-content: center;
         height: 100vh;
-        background-color: white;
+        background: var(--gray-bg);
+        position: relative;
     }
 
-    #right {
-        flex: 1;
-    }
-
-    /* Sign In */
-    #signin {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 80%;
-        padding-bottom: 1rem;
-    }
-
-    #signin form {
-        width: 80%;
-        padding-bottom: 1.8rem;
-    }
-
-    #signin .logo {
-        margin-bottom: 3vh;
-    }
-
-    #signin .logo img {
-        width: 300px;
-    }
-
-    #signin label {
-        font-size: 0.9rem;
-        line-height: 2rem;
-        font-weight: 500;
-        color: #000;
-    }
-
-    #signin .text-input {
-        margin-bottom: 1.3rem;
-        width: 100%;
-        border-radius: 2px;
-        background: #f1f1f1;
-        border: 1px solid #555;
-        color: #000;
-        padding: 0.5rem 1rem;
-        line-height: 1.3rem;
-    }
-
-    #signin .primary-btn {
-        width: 100%;
-    }
-
-    #signin .secondary-btn,
-    .or,
-    .links {
-        width: 60%;
-    }
-
-    #signin .links a {
-        display: block;
-        color: #000000;
-        text-decoration: none;
-        margin-bottom: 1rem;
-        text-align: center;
-        font-size: 0.9rem;
-    }
-
-    #signin .or {
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 1.2rem;
-        align-items: center;
-    }
-
-    #signin .or .bar {
-        flex: auto;
-        border: none;
-        height: 1px;
-        background: #aaa;
-    }
-
-    #signin .or span {
-        color: #ccc;
-        padding: 0 0.8rem;
-    }
-
-    /* Showcase */
+    /* ── Panel oscuro ── */
     #showcase {
+        width: 100%; height: 100%;
+        background: var(--panel);
         display: flex;
-        justify-content: center;
         align-items: center;
-        background-color: #E6E6E6;
-        height: 100vh;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .deco {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .deco-1 {
+        width: 700px; height: 700px;
+        top: -200px; right: -200px;
+        background: radial-gradient(circle, rgba(201,57,43,0.15) 0%, transparent 65%);
+    }
+    .deco-2 {
+        width: 450px; height: 450px;
+        bottom: -120px; left: -120px;
+        background: radial-gradient(circle, rgba(201,57,43,0.09) 0%, transparent 65%);
+    }
+    .grid-overlay {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 55px 55px;
+        pointer-events: none;
+    }
+
+    .showcase-content {
+        position: relative; z-index: 1;
         text-align: center;
+        animation: fadeUp .9s var(--ease) both;
     }
 
-    #showcase .showcase-text {
-        font-size: 3rem;
-        width: 100%;
-        color: #fff;
-        margin-bottom: 1.5rem;
+    .showcase-logo { max-width: 960px; width: 100%; }
+
+    .showcase-tagline {
+        color: rgba(255,255,255,0.35);
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-top: 1.4rem;
+        font-weight: 300;
     }
 
-    #showcase .secondary-btn {
-        width: 60%;
-        margin: auto;
+    @keyframes fadeUp {
+        from { opacity:0; transform:translateY(16px); }
+        to   { opacity:1; transform:translateY(0); }
     }
 
-    /* Footer */
-    #main-footer {
-        color: #C8C8C8;
-        text-align: center;
-        font-size: 0.8rem;
-        max-width: 80%;
-        padding-top: 5rem;
+    /* ── Card ── */
+    #signin {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 3rem 3rem;
+        width: 82%;
+        max-width: 480px;
+        box-shadow:
+          0 1px 3px rgba(0,0,0,0.05),
+          0 12px 40px rgba(0,0,0,0.1),
+          0 0 0 1px rgba(0,0,0,0.04);
+        animation: fadeUp .55s var(--ease) .1s both;
     }
 
-    /* Button */
-    .primary-btn {
-        padding: 5px;
-        height: 3.7rem;
+    /* Título */
+    #signin .logo { margin-bottom: 2rem; }
+
+    #signin .logo h1,
+    #signin .logo h2,
+    #signin .logo h3,
+    #signin .logo .titulo {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--black);
+        letter-spacing: -0.035em;
+        line-height: 1.2;
+    }
+
+    .form-subtitle {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 0.4rem;
+        font-weight: 400;
+    }
+
+    /* ── Labels ── */
+    #signin label {
         display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--black);
+        line-height: 2rem;
+        margin-bottom: 0;
+    }
+
+    /* ── Inputs ── */
+    .form-control {
+        width: 100%;
+        height: 3.6rem;
+        border-radius: 8px;
+        background: #f8f8f9;
+        border: 1.5px solid var(--border);
+        color: var(--black);
+        padding: 0 1.1rem;
+        font-family: var(--font);
+        font-size: 1.05rem;
+        font-weight: 400;
+        outline: none;
+        transition: border-color .2s var(--ease), box-shadow .2s var(--ease), background .2s;
+        -webkit-appearance: none;
+        display: block;
+    }
+
+    .form-control::placeholder { color: #b8b8bf; font-weight: 300; }
+
+    .form-control:focus {
+        background: var(--white);
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px var(--red-glow);
+    }
+
+    #signin form > div { margin-bottom: 1.2rem; }
+
+    /* ── Botón ── */
+    .primary-btn {
+        width: 100%;
+        height: 3.6rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border: 0;
-        border-radius: 2px;
-        font-weight: 500;
-        background: #C9392B;
-        color: #fff;
-        text-decoration: none;
+        border-radius: 8px;
+        font-family: var(--font);
+        font-size: 1.05rem;
+        font-weight: 600;
+        background: var(--red);
+        color: var(--white);
         cursor: pointer;
-        text-align: center;
-        transition: all 0.5s;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        transition: background .2s, transform .15s, box-shadow .2s;
+        letter-spacing: 0.01em;
+    }
+
+    .primary-btn::after {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(255,255,255,.1), transparent);
     }
 
     .primary-btn:hover {
-        background-color: #CA493C;
-        color: #fff;
+        background: var(--red-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(201,57,43,0.3);
+        color: var(--white);
     }
+    .primary-btn:active { transform: translateY(0); }
 
-    .secondary-btn {
-        padding: 0.7rem 1rem;
-        height: 2.7rem;
-        display: block;
-        border: 1px solid #f4f4f4;
-        border-radius: 2px;
-        font-weight: 500;
-        background: none;
-        color: #fff;
-        text-decoration: none;
-        cursor: pointer;
+    /* ── Back link ── */
+    .back-link {
+        margin-top: 1.2rem;
         text-align: center;
-        transition: all 0.5s;
     }
 
-    .secondary-btn:hover {
-        border-color: #ff7b39;
-        color: #ff7b39;
+    .back-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color .2s;
     }
+    .back-link a:hover { color: var(--red); }
 
-    /* Media Queries */
-    @media (min-width: 1200px) {
-        #left {
-            flex: 4;
-        }
-
-        #right {
-            flex: 6;
-        }
+    /* ── Links ── */
+    .links { margin-top: 1rem; width: 100%; }
+    .links ul { list-style: none; }
+    .links a {
+        display: block;
+        color: var(--red);
+        text-decoration: none;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: opacity .2s;
     }
+    .links a:hover { opacity: .7; }
 
-    @media (max-width: 768px) {
-        body {
-            overflow: auto;
-        }
-
-        #right {
-            display: none;
-        }
-
-        #left {
-            justify-content: start;
-            margin-top: 4vh;
-        }
-
-        #signin .logo {
-            margin-bottom: 2vh;
-        }
-
-        #signin .text-input {
-            margin-bottom: 0.7rem;
-        }
-
-        #main-footer {
-            padding-top: 1rem;
-        }
+    /* ── Footer ── */
+    #main-footer {
+        position: absolute;
+        bottom: 1.5rem;
+        font-size: 0.68rem;
+        color: #aaa;
+        text-align: center;
+        width: 100%;
+        padding: 0 2rem;
     }
+    #main-footer b { color: var(--red); font-weight: 600; }
 
-    .hidden {
-        display: none !important;
+    /* ── Flash ── */
+    .callout_message-danger {
+        background: #fef2f2; color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 0.75rem 1rem; border-radius: 10px;
+        font-size: 0.82rem; margin-top: 1rem;
+    }
+    .callout_message-success {
+        background: #f0fdf4; color: #15803d;
+        border: 1px solid #bbf7d0;
+        padding: 0.75rem 1rem; border-radius: 10px;
+        font-size: 0.82rem; margin-top: 1rem;
+    }
+    .alert_remove { font-size: 14px; }
+    .hidden { display: none !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+        body { overflow: auto; }
+        #wrapper { flex-direction: column; height: auto; }
+        #right { display: none; }
+        #left { min-height: 100vh; padding: 2.5rem 1.5rem 5rem; height: auto; }
+        #signin { width: 100%; max-width: 100%; padding: 2rem 1.5rem; }
+        #main-footer { position: relative; bottom: auto; margin-top: 2rem; }
     }
 </style>
-
