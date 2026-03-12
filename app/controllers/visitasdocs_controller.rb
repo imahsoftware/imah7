@@ -1,6 +1,6 @@
 class VisitasdocsController < ApplicationController
   before_action :set_visitasdoc, only: [:show, :destroy]
-
+  #
   def index
     @visitasdocs = Visitasdoc.all
   end
