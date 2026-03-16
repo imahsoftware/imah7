@@ -14,6 +14,7 @@ class Contratosperfecha < ApplicationRecord
   has_many :contratosperfechasdocs
   has_many :contratospernotas
   has_many :contratosperprocesos
+  has_many :interventorias, dependent: :destroy
 
   validates_presence_of :fecha_inicio, :contratoscargo_id, :contratosgrupo_id,:tipo_contrato, :estado, message: "* Obligatorio"
 

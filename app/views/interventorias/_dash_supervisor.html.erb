@@ -1,0 +1,179 @@
+<%# app/views/interventorias/_dash_supervisor.html.erb %>
+<%# Vista del supervisor/interventor: informes pendientes de revisión y revisados %>
+
+<%# ── PENDIENTES DE REVISION ──────────────────────────────────────────────── %>
+<% if @message_interventor.to_s == 'SI' %>
+  <legend>
+    <i class="fa fa-clock-o"></i>
+    Revisión Cuentas de Cobro
+    <span class="badge badge-warning"><%= @interventorias&.count.to_i %></span>
+  </legend>
+
+  <% if @interventorias.present? && @interventorias.count > 0 %>
+    <table class="table table-bordered table-condensed table-striped table-hover">
+      <thead>
+      <tr class="thcolor">
+        <th width="22%" class="text-center">Acción</th>
+        <th width="13%" class="text-center">Fecha</th>
+        <th width="12%" class="text-center">Identificación</th>
+        <th width="38%" class="text-center">Nombre</th>
+        <th width="15%" class="text-center">Periodo</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @interventorias.each do |interventoria| %>
+        <tr class="<%= cycle('even1', 'odd1') %>">
+          <td class="text-center">
+            <%# Ver informe %>
+            <%= link_to verificacion_interventorias_path(id: interventoria.id),
+                        class: 'btn btn-xs btn-info popup',
+                        title: 'Ver Informe' do %>
+              <i class="fa fa-file-pdf-o"></i> Informe
+            <% end %>
+
+            <%# Ver informe final si es último mes %>
+            <% contrato = interventoria.contrato %>
+            <% if contrato&.fecha_fin &&
+                  interventoria.mes.to_s == contrato.fecha_fin.strftime("%-m") &&
+                  interventoria.anno.to_s == contrato.fecha_fin.strftime("%Y") %>
+              <%= link_to visualizarfinal_interventorias_path(
+                            contrato_id: contrato.id,
+                            ano: interventoria.anno,
+                            mes: interventoria.mes),
+                          class: 'btn btn-xs btn-danger popup',
+                          title: 'Informe Final' do %>
+                <i class="fa fa-file-pdf-o"></i> Final
+              <% end %>
+            <% end %>
+
+            <%# Revisar informe %>
+            <%= link_to revisioninter_interventorias_path(id: interventoria.id),
+                        class: 'btn btn-xs btn-success' do %>
+              <i class="fa fa-check"></i> Revisar
+            <% end %>
+          </td>
+          <td class="text-center"><%= interventoria.updated_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          <td class="text-center"><%= interventoria.identificacion_contratista %></td>
+          <td class="text-left"><%= interventoria.nombre_contratista %></td>
+          <td class="text-center">
+            <%= interventoria.anno %> - <%= interventoria.desc_mes %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-success">
+      <i class="fa fa-check-circle"></i> No hay cuentas de cobro pendientes de revisión.
+    </div>
+  <% end %>
+<% end %>
+
+<br>
+
+<%# ── CUENTAS REVISADAS (AÑO ACTUAL) ────────────────────────────────────── %>
+<% if @perfecha_supervisor %>
+  <legend>
+    <i class="fa fa-history"></i> Cuentas de Cobro Revisadas — Año <%= Date.today.year %>
+  </legend>
+
+  <%
+    meses_con_interventoria = Interventoria
+      .where(contratosperfecha_id: @perfecha_supervisor.id, anno: Date.today.year.to_s)
+      .distinct
+      .pluck(:mes)
+      .sort
+      .reverse
+  %>
+
+  <% if meses_con_interventoria.empty? %>
+    <div class="alert alert-info"><i class="fa fa-info-circle"></i> No hay cuentas revisadas este año.</div>
+  <% else %>
+    <table class="table table-bordered table-condensed table-striped">
+      <tr>
+        <td>
+          <% meses_con_interventoria.each do |mes_num| %>
+            <%
+              interventorias_mes = Interventoria
+                .where(contratosperfecha_id: @perfecha_supervisor.id,
+                       anno: Date.today.year.to_s,
+                       mes:  mes_num.to_s)
+                .order(updated_at: :asc)
+              uid = "sup_#{Date.today.year}_#{mes_num}"
+            %>
+            <div style="font-size: 13px; font-family: Tahoma; margin: 4px 0;">
+              <strong>
+                <a href="javascript:void(0);" onclick="SINO('<%= uid %>')">
+                  <i class="fa fa-chevron-right"></i>
+                </a>
+                &nbsp;
+                <a href="javascript:void(0);" onclick="SINO('<%= uid %>')">
+                  <%= Date.today.year %> - <%= Interventoria::MESES[mes_num.to_i] %>
+                  <span class="badge"><%= interventorias_mes.count %></span>
+                </a>
+              </strong>
+            </div>
+
+            <div id="<%= uid %>" style="display: none; margin: 5px 20px;">
+              <% if interventorias_mes.any? %>
+                <table class="table table-bordered table-condensed table-striped">
+                  <thead>
+                  <tr class="thcolor">
+                    <th width="20%" class="text-center">Acción</th>
+                    <th width="14%" class="text-center">Fecha</th>
+                    <th width="12%" class="text-center">Nro. Contrato</th>
+                    <th width="10%" class="text-center">Estado</th>
+                    <th class="text-center">Contratista</th>
+                    <th width="13%" class="text-center">Periodo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% interventorias_mes.each do |interventoria| %>
+                    <tr>
+                      <td class="text-center">
+                        <%= link_to verificacion_interventorias_path(id: interventoria.id),
+                                    class: 'btn btn-xs btn-info popup' do %>
+                          <i class="fa fa-file-pdf-o"></i> Informe
+                        <% end %>
+
+                        <% if interventoria.firma_digital_supervisor.blank? && is_auth_c("interventoriaedicion") %>
+                          <%= link_to firmar_digital_interventorias_path(id: interventoria.id),
+                                      remote: true,
+                                      class: 'btn btn-xs btn-dropbox' do %>
+                            <i class="fa fa-pencil"></i> Firmar
+                          <% end %>
+                        <% else %>
+                          <%= link_to visualizaracum_interventorias_path(
+                                        contrato_id: interventoria.contrato_id,
+                                        ano: interventoria.anno,
+                                        mes: interventoria.mes),
+                                      class: 'btn btn-xs btn-warning popup' do %>
+                            <i class="fa fa-file-pdf-o"></i> Acumulado
+                          <% end %>
+                        <% end %>
+                      </td>
+                      <td class="text-center"><%= interventoria.updated_at&.strftime("%Y-%m-%d %H:%M") %></td>
+                      <td class="text-center"><%= interventoria.contrato&.nro_contrato %></td>
+                      <td class="text-center">
+                          <span class="label <%= label_estado_interventoria(interventoria.estado) %>">
+                            <%= interventoria.estado %>
+                          </span>
+                      </td>
+                      <td class="text-left"><%= interventoria.identificacion_contratista %> - <%= interventoria.nombre_contratista %></td>
+                      <td class="text-center"><%= interventoria.anno %> - <%= interventoria.desc_mes %></td>
+                    </tr>
+                  <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <div class="alert alert-info alert-sm"><i class="fa fa-info-circle"></i> No hay cuentas.</div>
+              <% end %>
+            </div>
+          <% end %>
+        </td>
+      </tr>
+    </table>
+  <% end %>
+<% end %>
+
+

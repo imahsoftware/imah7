@@ -1,0 +1,27 @@
+<%# app/views/interventorias/index.html.erb %>
+<% usr = @user %>
+
+<% if usr.etapa.to_s == 'MI_CUENTA' %>
+  <%= render 'leyenda_estados' %>
+  <%= render 'dash_micuenta' %>
+
+<% elsif usr.etapa.to_s == 'SUPERVISOR' %>
+  <%= render 'dash_supervisor' %>
+
+<% elsif usr.etapa.to_s == 'TALENTO_HUMANO' && is_auth_c("interventoriagh") %>
+  <%= render 'dash_interventoriagh' %>
+
+<% elsif usr.etapa.to_s == 'CONTABILIDAD' && is_auth_c("interventoriatesoreria") %>
+  <%= render 'dash_interventoriacont' %>
+
+<% elsif usr.etapa.to_s == 'INDICADORES' %>
+  <%= render 'reporte' %>
+
+<% elsif usr.etapa.to_s == 'BUSCADOR' && is_auth_c("interventoriabuscador") %>
+  <%= render 'buscar' %>
+  <div id="idSearch" style="margin-top:10px;"></div>
+
+<% else %>
+  <%= render 'buscar' %>
+  <div id="idSearch" style="margin-top:10px;"></div>
+<% end %>

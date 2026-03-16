@@ -1,0 +1,26 @@
+<%# app/views/interventorias/_leyenda_estados.html.erb %>
+<%# Reemplaza los iconos image_tag del original con badges Bootstrap %>
+
+<div class="row" style="margin-bottom: 15px; font-size: 11px; font-family: Tahoma;">
+  <div class="col-xs-12">
+    <div class="box box-default box-solid">
+      <div class="box-header with-border">
+        <h4 class="box-title"><i class="fa fa-info-circle"></i> Estado de los Informes</h4>
+      </div>
+      <div class="box-body no-padding">
+        <table class="table table-condensed" style="margin: 0;">
+          <tr>
+            <td class="text-center"><span class="label label-default">No generado</span></td>
+            <td class="text-center"><span class="label label-default" style="background:#fff; color:#333; border:1px solid #ccc;">Listo, pendiente envío</span></td>
+            <td class="text-center"><span class="label label-info">Actividades pendientes</span></td>
+            <td class="text-center"><span class="label label-warning">Enviado a revisor</span></td>
+            <td class="text-center"><span class="label label-danger">Rechazado</span></td>
+            <td class="text-center"><span class="label label-success">Aprobado interventor → SGSST</span></td>
+            <td class="text-center"><span class="label" style="background:#3c8dbc;">Aprobado SGSST</span></td>
+            <td class="text-center"><span class="label" style="background:#00a65a;">Contabilizado</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

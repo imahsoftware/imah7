@@ -298,6 +298,14 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular('formatosvariable', 'formatosvariables')
   inflect.irregular('iparametrosformato', 'iparametrosformatos')
   inflect.irregular('notificacionesplataforma','notificacionesplataformas')
+
+
+  inflect.irregular('interventoria','interventorias')
+  inflect.irregular('interbitacora','interbitacoras')
+  inflect.irregular('interactividad','interactividades')
+  inflect.irregular('interactobservacion','interactobservaciones')
+  inflect.irregular('interactimagen','interactimagenes')
+  inflect.irregular('interactimagen','interactimagenes')
 end
 
 

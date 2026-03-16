@@ -32,6 +32,7 @@ class Contrato < ApplicationRecord
   has_many :contratossecciones, dependent: :destroy
   has_many :contratoscapacitaciones, dependent: :destroy
   has_many :contratosservicios
+  has_many :interventorias, dependent: :destroy
 
   validates_presence_of :nro_contrato, :objeto, :tiposcontrato_id, :valor, :plazo_mes, :plazo_dia, :fecha_inicio, :fecha_fin, :estado
 

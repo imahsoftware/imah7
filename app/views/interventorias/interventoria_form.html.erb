@@ -1,0 +1,23 @@
+<% if @interventoria.etapa.to_s == "1" %>
+  <%= render "form" %>
+<% else %>
+  <legend style="margin-top: -40px;">Supervisión<small>(<%= @interventoria.nombre_contratista rescue nil %>)</small></legend>
+
+  <% if @interventoria.etapa.to_s == "21" %>
+    <% case @interventoria.estado.to_s
+       when "RECHAZADOGH" %>
+      <%= render 'actividadesgh' %>
+    <% when "APROBADOGH" %>
+      <%= render 'actividadescont' %>
+    <% when 'PREPARAFINAL', 'RECHAZADOFINALGH', 'RECHAZADOFINALINT' %>
+      <%= render 'preparafinal' %>
+    <% when 'REVISIONFINALGH', 'REVISIONFINALINT' %>
+      <%= render 'interactividades/interactividades' %>
+    <% else %>
+      <%= render 'interactividades/interactividades' %>
+    <% end %>
+  <% elsif @interventoria.etapa.to_s == "3" %>
+    <%= render 'bitacora' %>
+  <% end %>
+
+<% end %>

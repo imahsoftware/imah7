@@ -1,0 +1,7 @@
+// app/views/interventorias/buscar.js.erb
+<% if @sin_resultados %>
+document.getElementById('idSearch').innerHTML =
+    '<div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No hay resultados para la búsqueda.</div>';
+<% else %>
+document.getElementById('idSearch').innerHTML = "<%= j render('resultados_buscar') %>";
+<% end %>

@@ -1,0 +1,61 @@
+<%# app/views/layouts/interventorias_layout/_main_content.html.erb %>
+
+<div class="content-wrapper">
+
+  <section class="content-header">
+    <h1>
+      <% if @interventoria.present? && !@interventoria.new_record? %>
+        <%= @interventoria.nombre_contratista rescue 'Informe de Supervisión' %>
+        <small>
+          <i class="fa fa-calendar-o"></i>
+          <%= @interventoria.periodo_actual %>
+          &nbsp;
+          <span class="label label-<%= estado_label_class(@interventoria.estado) %>">
+            <%= @interventoria.estado %>
+          </span>
+        </small>
+      <% elsif action_name == 'index' %>
+        Informes de Supervisión
+        <% if @user.present? %>
+          <% etapa_nombres = { 'MI_CUENTA' => 'Mi Cuenta', 'BUSCADOR' => 'Buscador',
+                               'SUPERVISOR' => 'Supervisor', 'TALENTO_HUMANO' => 'Talento Humano',
+                               'CONTABILIDAD' => 'Contabilidad', 'TESORERIA' => 'Tesorería',
+                               'INDICADORES' => 'Indicadores' } %>
+          <small><%= etapa_nombres[@user.etapa.to_s] || 'Inicio' %></small>
+        <% end %>
+      <% else %>
+        Informes de Supervisión
+      <% end %>
+    </h1>
+
+    <ol class="breadcrumb">
+      <li><%= link_to 'Inicio', root_path %></li>
+      <li><%= link_to 'Interventorías', interventorias_path %></li>
+      <% if @interventoria.present? && !@interventoria.new_record? %>
+        <li><%= link_to 'Cuenta de Cobro', edit_interventoria_path(@interventoria, etapa: '1') %></li>
+        <% if params[:etapa].present? && params[:etapa] != '1' %>
+          <li class="active">
+            <% etapa_nombres = { '21' => 'Obligaciones', '3' => 'Bitácora' } %>
+            <%= etapa_nombres[params[:etapa].to_s] || params[:etapa] %>
+          </li>
+        <% end %>
+      <% end %>
+    </ol>
+  </section>
+
+  <section class="content">
+
+    <%# Flash messages %>
+    <% { notice: ['success', 'check-circle'], alert: ['warning', 'exclamation-triangle'], error: ['danger', 'times-circle'] }.each do |key, (type, icon)| %>
+      <% if flash[key].present? %>
+        <div class="alert alert-<%= type %> alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <i class="fa fa-<%= icon %>"></i> <%= flash[key] %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= yield %>
+
+  </section>
+</div>

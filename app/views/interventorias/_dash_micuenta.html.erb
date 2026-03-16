@@ -1,0 +1,115 @@
+<%# app/views/interventorias/_dash_micuenta.html.erb %>
+<%# Vista del contratista: muestra sus contratos activos y los periodos disponibles %>
+
+<% if @message.present? %>
+  <div class="alert alert-warning">
+    <i class="fa fa-exclamation-triangle"></i> <%= @message %>
+  </div>
+
+<% elsif @contratosperfechas.blank? %>
+  <div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> No tiene contratos activos asociados a su usuario.
+  </div>
+
+<% else %>
+  <% @contratosperfechas.each do |perfecha| %>
+    <% contrato = perfecha.contrato %>
+    <% next unless contrato %>
+
+    <%
+      periodos = Interventoria.periodos_disponibles(contrato.fecha_inicio, contrato.fecha_fin)
+    %>
+
+    <div class="box box-primary box-solid" style="margin-bottom: 20px;">
+      <div class="box-header with-border">
+        <h3 class="box-title">
+          <i class="fa fa-file-text-o"></i>
+          Contrato N° <%= contrato.nro_contrato %>
+          &nbsp;<small><%= contrato.tiposcontrato&.descripcion %></small>
+        </h3>
+        <div class="box-tools pull-right">
+          <button type="button" class="btn btn-box-tool" data-widget="collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="box-body">
+        <div class="row">
+          <%# Datos del contrato %>
+          <div class="col-md-7">
+            <table class="table table-condensed" style="font-size: 12px;">
+              <tr>
+                <td width="35%"><strong>Objeto:</strong></td>
+                <td><%= contrato.objeto %></td>
+              </tr>
+              <tr>
+                <td><strong>Valor Total:</strong></td>
+                <td>$ <%= number_to_currency(contrato.valor, precision: 0, unit: '', delimiter: '.') %></td>
+              </tr>
+              <tr>
+                <td><strong>Valor Mensual:</strong></td>
+                <td>$ <%= number_to_currency(perfecha.salario, precision: 0, unit: '', delimiter: '.') %></td>
+              </tr>
+              <tr>
+                <td><strong>Vigencia:</strong></td>
+                <td>
+                  <%= contrato.fecha_inicio&.strftime("%d/%m/%Y") %> al
+                  <%= contrato.fecha_fin&.strftime("%d/%m/%Y") %>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Estado contrato:</strong></td>
+                <td><span class="label label-<%= contrato.estado == 'A' ? 'success' : 'default' %>"><%= contrato.estado %></span></td>
+              </tr>
+            </table>
+          </div>
+
+          <%# Lista de periodos %>
+          <div class="col-md-5">
+            <% if periodos.empty? %>
+              <div class="alert alert-info alert-sm">
+                <i class="fa fa-info-circle"></i> No hay periodos disponibles.
+              </div>
+            <% else %>
+              <table class="table table-bordered table-condensed table-striped" style="font-size: 12px;">
+                <thead>
+                <tr class="thcolor">
+                  <th width="15%" class="text-center">Estado</th>
+                  <th width="45%" class="text-center">Año - Mes</th>
+                  <th width="40%" class="text-center">Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% periodos.each do |periodo| %>
+                  <%
+                    interventoria = Interventoria.find_by(
+                      contrato_id: contrato.id,
+                      anno:        periodo[:ano],
+                      mes:         periodo[:mes].to_s.to_i.to_s
+                    )
+                    estado_badge = icono_estado_interventoria(interventoria)
+                  %>
+                  <tr class="<%= cycle('even1', 'odd1') %>">
+                    <td class="text-center"><%= estado_badge %></td>
+                    <td class="text-center">
+                      <%= periodo[:ano] %> - <%= Interventoria::MESES[periodo[:mes].to_i] %>
+                    </td>
+                    <td class="text-center">
+                      <%= render 'acciones_periodo',
+                                 contrato:     contrato,
+                                 periodo:      periodo,
+                                 interventoria: interventoria,
+                                 perfecha:     perfecha %>
+                    </td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </div><%# /row %>
+      </div><%# /box-body %>
+    </div><%# /box %>
+  <% end %>
+<% end %>

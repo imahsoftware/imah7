@@ -2,6 +2,68 @@ Rails.application.routes.draw do
 
   mount ActionCable.server => '/cable'
 
+  # config/routes.rb — agregar dentro de Rails.application.routes.draw do
+
+  resources :interventorias do
+    collection do
+      get  :buscar
+      get  :validar
+      get  :borrar
+      get  :etapar
+      get  :visualizar
+      get  :visualizarfinal
+      get  :visualizaracum
+      get  :informe_indicadores
+      post :envio
+      post :aprobar
+      post :rechazar
+    end
+
+    member do
+      get  :revisioninter
+      get  :revisionfinal
+      get  :verificacionfinal
+      get  :verificacion
+      get  :firmar_digital
+      get  :aprobargh_modal
+      get  :rechazargh_modal
+      get  :rechazarghfinal_modal
+      get  :aprobarghfinal_modal
+      get  :aprobarcont_modal
+      post :envio
+      post :enviofinalgh
+      post :enviofinalint
+      post :aprobarint
+      post :rechazarint
+      post :aprobar
+      post :rechazar
+      post :enviogh
+      post :aprobargh
+      post :rechazargh
+      post :aprobarghfinal
+      post :rechazarghfinal
+      post :aprobarcont
+      post :rechazarcont
+      post :firmar_informes
+      post :validaresp
+      post :recalcular_retencion
+    end
+  end
+
+  resources :interactividades do
+    member do
+      get  :cargue_documentos
+      get  :cargue_observaciones
+      post :update_observation
+    end
+  end
+
+  resources :interactimagenes
+  resources :interactobservaciones
+  resources :interbitacoras
+
+
+
   resources :notificacionesplataformas, only: [:index] do
     member do
       patch :marcar_como_leida

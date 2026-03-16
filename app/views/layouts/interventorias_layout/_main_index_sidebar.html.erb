@@ -1,0 +1,74 @@
+<%# app/views/layouts/interventorias_layout/_main_index_sidebar.html.erb %>
+<%# Sidebar del INDEX: muestra las etapas disponibles según permisos %>
+
+<aside class="main-sidebar">
+  <section class="sidebar">
+
+    <%
+      usr = @user || is_admin
+
+      etapas_disponibles = []
+      if usr.try(:identificacion).present?
+        tiene_perfechas = Contratosperfecha
+          .joins(:contratospersona)
+          .where("contratospersonas.identificacion = ? AND contratosperfechas.estado NOT IN (?)",
+                 usr.identificacion, ['C'])
+          .exists?
+        etapas_disponibles << 'MI_CUENTA' if tiene_perfechas
+      end
+
+      etapas_disponibles << 'BUSCADOR'       if is_auth_c("interventoriabuscador")
+      etapas_disponibles << 'SUPERVISOR'     if is_auth_c("interventoria")
+      etapas_disponibles << 'TALENTO_HUMANO' if is_auth_c("interventoriagh")
+      etapas_disponibles << 'CONTABILIDAD'   if is_auth_c("interventoriacont")
+      etapas_disponibles << 'TESORERIA'      if is_auth_c("interventoriatesoreria")
+      etapas_disponibles << 'INDICADORES'    if is_auth_c("interventoriaindicadores")
+
+      etapa_labels = {
+        'MI_CUENTA'      => { icon: 'fa-user',      label: 'Mi Cuenta',      color: '#00a65a' },
+        'BUSCADOR'       => { icon: 'fa-search',    label: 'Buscador',       color: '#3c8dbc' },
+        'SUPERVISOR'     => { icon: 'fa-eye',       label: 'Supervisor',     color: '#3c8dbc' },
+        'TALENTO_HUMANO' => { icon: 'fa-users',     label: 'Talento Humano', color: '#f39c12' },
+        'CONTABILIDAD'   => { icon: 'fa-calculator',label: 'Contabilidad',   color: '#605ca8' },
+        'TESORERIA'      => { icon: 'fa-bank',      label: 'Tesorería',      color: '#d81b60' },
+        'INDICADORES'    => { icon: 'fa-bar-chart', label: 'Indicadores',    color: '#00c0ef' },
+      }
+    %>
+
+    <ul class="sidebar-menu" data-widget="tree">
+
+      <%# Logo / título del módulo %>
+      <li class="header" style="font-size:11px; letter-spacing:1px;">
+        INFORMES DE SUPERVISIÓN
+      </li>
+
+      <%# Opciones de navegación %>
+      <% etapas_disponibles.each do |etapa| %>
+        <% cfg = etapa_labels[etapa] || { icon: 'fa-cog', label: etapa, color: '#aaa' } %>
+        <% activo = usr.etapa.to_s == etapa %>
+        <li class="<%= 'active' if activo %>" style="<%= "background:#f4f4f4; border-left: 3px solid #{cfg[:color]};" if activo %>">
+          <%= link_to etapar_interventorias_path(etapa: etapa),
+                      style: "font-size:13px; #{'font-weight:600;' if activo}" do %>
+            <i class="fa <%= cfg[:icon] %>" style="color:<%= activo ? cfg[:color] : '#aaa' %>; width:18px;"></i>
+            <span><%= cfg[:label] %></span>
+            <% if activo %>
+              <span class="pull-right"><i class="fa fa-chevron-right" style="font-size:10px; color:<%= cfg[:color] %>;"></i></span>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <%# Separador %>
+      <li class="header" style="font-size:10px; margin-top:10px;"></li>
+
+      <%# Regresar al inicio %>
+      <li>
+        <%= link_to root_path, style: "font-size:12px; color:#999 !important;" do %>
+          <i class="fa fa-arrow-left" style="color:#999; width:18px;"></i>
+          <span>Regresar al inicio</span>
+        <% end %>
+      </li>
+
+    </ul>
+  </section>
+</aside>

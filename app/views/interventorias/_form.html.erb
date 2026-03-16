@@ -1,0 +1,159 @@
+
+<div class="box box-primary">
+  <div class="box-body">
+
+    <% if @interventoria.persisted? && is_auth_c("interventoriasrecalculo") %>
+      <div style="margin-bottom:10px;">
+        <%= link_to validaresp_interventorias_path(id: @interventoria.id),
+                    class: 'btn btn-warning btn-sm' do %>
+          <i class="fa fa-refresh"></i> Recálculo
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= simple_form_for(@interventoria) do |f| %>
+      <%= hidden_field_tag :id, @interventoria.id %>
+
+      <%# Todo dentro de ic-form-center para alineación uniforme %>
+      <div class="ic-form-center">
+
+        <%# ── MENSAJES DE ESTADO ──────────────────────────────── %>
+        <%# En ERB no se puede usar case/when con HTML entre tags — usar if/elsif %>
+        <% if @interventoria.editable? %>
+
+          <% if @interventoria.estado.to_s == 'PREPARAFINAL' %>
+            <% fecha_limite = Sifi.find(110).valor.to_s rescue '9999-12-31 23:59:59' %>
+            <% if Time.now.strftime("%Y-%m-%d %H:%M:%S") <= fecha_limite %>
+              <div class="ic-alert ic-alert-warning">
+                <i class="fa fa-clock-o"></i>
+                <div>
+                  Recuerde tener la cuenta de cobro diligenciada y los soportes de seguridad social cargados.
+                  <% if @interventoria.habilitado_final? %>
+                    Si el informe está listo pulse
+                    <% if @interventoria.fin_anno.blank? %>
+                      <%= link_to 'Aquí', enviofinalgh_interventorias_path(id: @interventoria.id, fin_anno: 'SI'), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                    <% else %>
+                      <%= link_to 'Aquí', enviofinalint_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                    <% end %>
+                  <% else %>
+                    <strong>No has completado el diligenciamiento. Verifica!!</strong>
+                  <% end %>
+                </div>
+              </div>
+            <% else %>
+              <div class="ic-alert ic-alert-danger">
+                <i class="fa fa-ban"></i>
+                <div>El tiempo para enviar la cuenta de cobro ha finalizado.</div>
+              </div>
+            <% end %>
+
+          <% elsif @interventoria.estado.to_s == 'RECHAZADOFINALINT' %>
+            <div class="ic-alert ic-alert-danger">
+              <i class="fa fa-times-circle"></i>
+              <div>Su informe presenta problemas. Corríjalos y reenvíe.
+                <%= link_to 'Reenviar', enviofinalint_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+              </div>
+            </div>
+
+          <% elsif @interventoria.estado.to_s == 'RECHAZADOFINALGH' %>
+            <div class="ic-alert ic-alert-danger">
+              <i class="fa fa-times-circle"></i>
+              <div>Su informe fue rechazado por Gestión Humana. Corríjalo y reenvíe.
+                <%= link_to 'Reenviar', enviofinalgh_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+              </div>
+            </div>
+
+          <% elsif %w[APROBADO APROBADOGH APROBADOCONT].include?(@interventoria.estado.to_s) %>
+            <%# Sin mensaje — informe aprobado %>
+
+          <% else %>
+            <% errores = @interventoria.validainforme.to_s %>
+            <% if errores.present? %>
+              <div class="ic-alert ic-alert-danger">
+                <i class="fa fa-exclamation-circle"></i>
+                <div>
+                  <strong>ATENCIÓN — Se han detectado las siguientes inconsistencias:</strong>
+                  <%= errores.html_safe %>
+                </div>
+              </div>
+            <% else %>
+              <% sin_desarrollo = @interventoria.interactividades.where("desarrollo IS NULL OR desarrollo = ''").count %>
+              <% if sin_desarrollo == 0 && @interventoria.interactividades.count > 0 %>
+                <% if @interventoria.estado.to_s == 'RECHAZADO' %>
+                  <div class="ic-alert ic-alert-danger">
+                    <i class="fa fa-times-circle"></i>
+                    <div>El informe fue rechazado. Verifique y complemente las actividades.
+                      <%= link_to 'Reenviar', envio_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                    </div>
+                  </div>
+                <% elsif @interventoria.estado.to_s == 'RECHAZADOGH' %>
+                  <div class="ic-alert ic-alert-danger">
+                    <i class="fa fa-times-circle"></i>
+                    <div>El informe fue rechazado por Gestión Humana. Verifique y complemente.
+                      <%= link_to 'Reenviar', enviogh_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                    </div>
+                  </div>
+                <% elsif @interventoria.activo.to_s == 'S' %>
+                  <div class="ic-alert ic-alert-info">
+                    <i class="fa fa-check-circle"></i>
+                    <div>Tiene <%= @interventoria.interactividades.count %> obligaciones registradas y todas están diligenciadas.
+                      <%= link_to 'Enviar para revisión', envio_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-primary', data: { confirm: '¿Está seguro?' } %>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <% end %><%# /editable? %>
+
+        <%# ── CONTENIDO PRINCIPAL ─────────────────────────────── %>
+        <%= render 'interventorias/cuenta_cobro', f: f %>
+
+        <div class="box-body">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-12">
+              <%= f.input :observaciones,
+                          as: :text,
+                          label: 'Observaciones y forma de pago:',
+                          input_html: {
+                            rows: 4,
+                            onchange: 'this.value=this.value.toUpperCase();'
+                          } %>
+              <hr size="1" noshade class="hrlinea">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-6">
+              Última Actualización:
+              <%= User.find(@interventoria.user_actualiza).username rescue nil %>
+              - <%= @interventoria.updated_at&.strftime("%Y-%m-%d %H:%M:%S") %>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-6">
+              <% estados_sin_guardar = %w[APROBADO APROBADOGH APROBADOCONT
+                                                REVISIONFINALGH REVISIONFINALINT] %>
+              <% if @interventoria.editable? &&
+                    !estados_sin_guardar.include?(@interventoria.estado.to_s) &&
+                    !@interventoria.bloqueado? %>
+                <%= f.button :submit, "#{t :guardar}",
+                             class: 'btn btn-success pull-right',
+                             data: { disable_with: 'Guardando...' } %>
+              <% end %>
+              <% if is_auth_c("interventoriaespecial") %>
+                <%= f.button :submit, "#{t :guardar}",
+                             class: 'btn btn-success pull-right',
+                             data: { disable_with: 'Guardando...' } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ic-form-center -->
+
+      </div>
+    <% end %>
+
+    </div>
+</div>

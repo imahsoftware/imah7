@@ -1,0 +1,255 @@
+<%
+  # ── Cálculo de valores base ─────────────────────────────
+  valor_mes_c = @interventoria.contrato&.monto_maximo_mes.to_i
+  if valor_mes_c == 0
+    plazo = @interventoria.contrato&.plazo_mes.to_i
+    valor_mes_c = plazo > 0 ? (@interventoria.contrato&.valor.to_i / plazo) : 0
+  end
+  valor_dia        = valor_mes_c > 0 ? (valor_mes_c / 30) : 0
+  dias_laborados   = valor_dia > 0 ? (@interventoria.valor_mes.to_i / valor_dia rescue 0) : 0
+  desc_suspension  = valor_dia * @interventoria.diassuspension.to_i
+  valor_total_c    = @interventoria.contrato&.valor.to_i
+  total_suspension = Interventoria.where(contrato_id: @interventoria.contrato_id).sum(:diassuspension).to_i
+%>
+
+<div class="ic-section">
+  <div class="ic-section-title"><i class="fa fa-file-text-o"></i>Información del Contrato</div>
+  <table class="ic-tbl">
+    <tr>
+      <th>Contrato N°</th>
+      <td class="ic-valor-principal"><%= @interventoria.contrato.nro_contrato rescue '—' %></td>
+    </tr>
+    <tr>
+      <th>Tipo</th>
+      <td>CONTRATO DE <%= @interventoria.contrato&.tiposcontrato&.descripcion rescue '—' %></td>
+    </tr>
+    <tr>
+      <th>Objeto</th>
+      <td><%= @interventoria.contrato&.objeto %></td>
+    </tr>
+    <tr>
+      <th>Valor Total</th>
+      <td>
+        <div class="ic-valor-principal">$ <%= number_to_currency(valor_total_c, precision: 0, unit: "", delimiter: ".") %></div>
+        <div class="ic-valor-palabras">(<%= valor_total_c.to_words.upcase rescue numero_a_palabras(valor_total_c) rescue '' %> PESOS M/L)</div>
+      </td>
+    </tr>
+    <tr>
+      <th>Valor Mensual</th>
+      <td>
+        <div class="ic-valor-principal">$ <%= number_to_currency(valor_mes_c, precision: 0, unit: "", delimiter: ".") %></div>
+        <div class="ic-valor-palabras">(<%= valor_mes_c.to_words.upcase rescue numero_a_palabras(valor_mes_c) rescue '' %> PESOS M/L)</div>
+      </td>
+    </tr>
+    <tr>
+      <th>Duración</th>
+      <td>
+        <% if @interventoria.contrato&.plazo_mes.to_i > 0 %>
+          <strong><%= @interventoria.contrato.plazo_mes %></strong> meses
+        <% end %>
+        <% if @interventoria.contrato&.plazo_dia.to_i > 0 %>
+          &nbsp;—&nbsp;<strong><%= @interventoria.contrato.plazo_dia %></strong> días
+        <% end %>
+        <span style="color:#888; margin-left:8px;">
+          Inicio: <strong><%= @interventoria.contrato&.fecha_inicio&.strftime("%d/%m/%Y") %></strong>
+          &nbsp;·&nbsp;Fin: <strong><%= (@interventoria.contrato&.fecha_fin || @interventoria.contrato&.fecha_final)&.strftime("%d/%m/%Y") %></strong>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th>Días Suspensión</th>
+      <td><%= total_suspension %> días</td>
+    </tr>
+    <% if @interventoria.contrato&.try(:nro_compromiso).present? %>
+      <tr>
+        <th>Nro Compromiso</th>
+        <td><%= @interventoria.contrato.try(:nro_compromiso) %></td>
+      </tr>
+    <% end %>
+    <% if @interventoria.contrato&.try(:nro_disponibilidad).present? %>
+      <tr>
+        <th>Nro Disponibilidad</th>
+        <td><%= @interventoria.contrato.try(:nro_disponibilidad) %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <th>Periodo</th>
+      <td><span class="ic-periodo-badge"><%= @interventoria.periodo_actual %></span></td>
+    </tr>
+  </table>
+</div>
+
+<%# ══════════════════════════════════════════════════════════ %>
+<%# BLOQUE 2 — MODIFICACIONES (solo si existen)               %>
+<%# ══════════════════════════════════════════════════════════ %>
+<% if @interventoria.contrato&.contratosmodificaciones&.exists? %>
+  <div class="ic-section">
+    <div class="ic-section-title"><i class="fa fa-edit"></i>Modificaciones al Contrato</div>
+    <table class="ic-ded">
+      <thead>
+      <tr>
+        <th style="text-align:left">Tipo</th>
+        <th>Mes</th><th>Días</th>
+        <th>Nro Compromiso</th><th>Fch Compromiso</th>
+        <th>Nro Disponibilidad</th><th>Fch Disponibilidad</th>
+        <th>Valor</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @interventoria.contrato.contratosmodificaciones.each do |m| %>
+        <tr>
+          <td style="text-align:left"><%= m.tipo_modificacion rescue '—' %></td>
+          <td><%= m.plazo_mes rescue '—' %></td>
+          <td><%= m.try(:plazo_dia) || m.try(:plazo_dias) || '—' %></td>
+          <td><%= m.try(:nro_compromiso) || '—' %></td>
+          <td><%= m.try(:fecha_compromiso) || '—' %></td>
+          <td><%= m.try(:nro_disponibilidad) || m.try(:nro_diponibilidad) || '—' %></td>
+          <td><%= m.try(:fecha_disponibilidad) || m.try(:fecha_diponibilidad) || '—' %></td>
+          <td><%= camponumerico(m.valor) rescue '0' %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<%# ══════════════════════════════════════════════════════════ %>
+<%# BLOQUE 3 — CÁLCULO DE RETENCIÓN                           %>
+<%# ══════════════════════════════════════════════════════════ %>
+<div class="ic-section">
+  <div class="ic-section-title"><i class="fa fa-calculator"></i>Deducciones y Cálculo de Retención</div>
+
+  <%# Resumen de honorarios %>
+  <div class="ic-honorarios">
+    <div class="ic-hon-box">
+      <div class="ic-hon-label">Días laborados</div>
+      <div class="ic-hon-value"><%= dias_laborados %></div>
+    </div>
+    <div class="ic-hon-box">
+      <div class="ic-hon-label">Valor día</div>
+      <div class="ic-hon-value">$ <%= number_to_currency(valor_dia, precision: 0, unit: "", delimiter: ".") %></div>
+    </div>
+    <div class="ic-hon-box ic-hon-total">
+      <div class="ic-hon-label">Honorarios del periodo</div>
+      <div class="ic-hon-value">$ <%= number_to_currency(@interventoria.valor_mes, precision: 0, unit: "", delimiter: ".") %></div>
+    </div>
+  </div>
+
+  <table class="ic-ded">
+    <thead>
+    <tr>
+      <th style="width:46%;text-align:left">Descripción</th>
+      <th style="width:22%">Valor Esperado</th>
+      <th style="width:32%">Valor Real</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr class="ic-grp"><td colspan="3">Rentas Exentas</td></tr>
+
+    <tr>
+      <td>Aportes Salud</td>
+      <td><span class="ic-esp">$ <%= number_to_currency(@interventoria.salud_auto, precision: 0, unit: "", delimiter: ".") %></span></td>
+      <td><%= f.input :salud, label: false, input_html: { id: 'interventoria_salud', style: 'text-align:center' } %></td>
+    </tr>
+    <tr>
+      <td>Aportes Obligatorios Fondos de Pensión</td>
+      <td><span class="ic-esp">$ <%= number_to_currency(@interventoria.pension_auto, precision: 0, unit: "", delimiter: ".") %></span></td>
+      <td><%= f.input :pension, label: false, input_html: { id: 'interventoria_pension', style: 'text-align:center' } %></td>
+    </tr>
+    <tr>
+      <td>Aportes Cuentas AFC</td>
+      <td><span class="ic-esp">0</span></td>
+      <td><%= f.input :afc, label: false, input_html: { id: 'interventoria_afc', style: 'text-align:center' } %></td>
+    </tr>
+    <tr>
+      <td>Aportes Voluntarios Fondos de Pensión</td>
+      <td><span class="ic-esp">0</span></td>
+      <td><%= f.input :voluntarias, label: false, input_html: { id: 'interventoria_voluntarias', style: 'text-align:center' } %></td>
+    </tr>
+
+    <tr class="ic-subtotal">
+      <td colspan="2"><strong>Total Rentas Exentas</strong></td>
+      <td id="ic-subtotalr">$ <%= number_to_currency(@interventoria.subtotalr, precision: 0, unit: "", delimiter: ".") %></td>
+    </tr>
+
+    <tr class="ic-grp"><td colspan="3">Deducciones</td></tr>
+
+    <tr>
+      <td>Aportes ARL</td>
+      <td><span class="ic-esp">$ <%= number_to_currency(@interventoria.arl_auto, precision: 0, unit: "", delimiter: ".") %></span></td>
+      <td><%= f.input :arl, label: false, input_html: { id: 'interventoria_arl', style: 'text-align:center' } %></td>
+    </tr>
+    <tr>
+      <td>Intereses Créditos de Vivienda <small style="color:#888">(máx. 100 UVT = $ <%= number_to_currency(@interventoria.limite_vivienda, precision: 0, unit: "", delimiter: ".") %>)</small></td>
+      <td><span class="ic-esp">0</span></td>
+      <td><%= f.input :interes_credito, as: :select, collection: select_sino_credito, label: false, input_html: { id: 'interventoria_interes_credito', class: 'select2', data: { width: '100%' } } %></td>
+    </tr>
+    <tr>
+      <td>Salud Medicina Prepagada <small style="color:#888">(máx. 16 UVT = $ <%= number_to_currency(@interventoria.limite_prepagada, precision: 0, unit: "", delimiter: ".") %>)</small></td>
+      <td><span class="ic-esp">0</span></td>
+      <td><%= f.input :salud_prepagada, as: :select, collection: select_sino_prepagada, label: false, input_html: { id: 'interventoria_salud_prepagada', class: 'select2', data: { width: '100%' } } %></td>
+    </tr>
+    <tr>
+      <td>Dependientes (10% honorarios) <small style="color:#888">(máx. 32 UVT = $ <%= number_to_currency(@interventoria.limite_dependencia, precision: 0, unit: "", delimiter: ".") %>)</small></td>
+      <td><span class="ic-esp">0</span></td>
+      <td><%= f.input :dependientes, as: :select, collection: select_sino_dependiente, label: false, input_html: { id: 'interventoria_dependientes', class: 'select2', data: { width: '100%' } } %></td>
+    </tr>
+
+    <% if @interventoria.diassuspension.to_i > 0 %>
+      <tr class="ic-susp">
+        <td>Días de Suspensión en el Mes</td>
+        <td style="text-align:center"><%= @interventoria.diassuspension.to_i %> días</td>
+        <td>- $ <%= number_to_currency(desc_suspension, precision: 0, unit: "", delimiter: ".") %></td>
+      </tr>
+    <% end %>
+
+    <tr class="ic-total">
+      <td colspan="2">TOTAL A PAGAR</td>
+      <td id="ic-total-display">$ <%= number_to_currency(@interventoria.total, precision: 0, unit: "", delimiter: ".") %></td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<script>
+    $(document).ready(function(){
+        function fmt(n){ return '$ ' + parseInt(n||0).toLocaleString('es-CO'); }
+
+        function recalcular(){
+            $.ajax({
+                url: '<%= recalcular_retencion_interventoria_path(@interventoria) %>',
+                type: 'POST',
+                data: {
+                    id: <%= @interventoria.id %>,
+                    pvr0: $('#interventoria_valor_mes').val(),
+                    pvr1: $('#interventoria_salud').val(),
+                    pvr2: $('#interventoria_arl').val(),
+                    pvr3: $('#interventoria_interes_credito').val(),
+                    pvr4: $('#interventoria_salud_prepagada').val(),
+                    pvr5: $('#interventoria_dependientes').val(),
+                    pvr6: $('#interventoria_pension').val(),
+                    pvr7: $('#interventoria_afc').val(),
+                    pvr8: $('#interventoria_voluntarias').val()
+                },
+                headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') },
+                success: function(r){
+                    if(r.subtotalr !== undefined) $('#ic-subtotalr').text(fmt(r.subtotalr));
+                    if(r.total !== undefined){
+                        $('#ic-total-display').text(fmt(r.total)).addClass('ic-flash');
+                        setTimeout(function(){ $('#ic-total-display').removeClass('ic-flash'); }, 500);
+                    }
+                },
+                error: function(x,s,e){ console.error('Recálculo error:', e); }
+            });
+        }
+
+        $(document).on('change',
+            '#interventoria_salud, #interventoria_arl, #interventoria_pension, ' +
+            '#interventoria_afc, #interventoria_voluntarias, ' +
+            '#interventoria_interes_credito, #interventoria_salud_prepagada, #interventoria_dependientes',
+            recalcular
+        );
+    });
+</script>

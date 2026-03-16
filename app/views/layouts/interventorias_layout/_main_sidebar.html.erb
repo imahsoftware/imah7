@@ -1,0 +1,60 @@
+<%# app/views/layouts/interventorias_layout/_main_sidebar.html.erb %>
+<%# Sidebar del EDIT: muestra las secciones del informe (etapas 1, 21, 3) %>
+
+<aside class="main-sidebar" style="margin-top: 40px;">
+  <section class="sidebar">
+    <ul class="sidebar-menu" data-widget="tree">
+
+      <%# Volver al index de interventorias %>
+      <li style="font-size: 12px !important;">
+        <%= link_to interventorias_path do %>
+          <i class="fa fa-arrow-left text-success"></i>
+          <span><%= I18n.t("regresar") %></span>
+        <% end %>
+      </li>
+
+      <li class="header"><%= I18n.t("menu") %></li>
+
+      <% unless @interventoria&.new_record? %>
+
+        <%# Etapa 1: Cuenta de Cobro — datos fiscales %>
+        <li class="<%= active_class(edit_interventoria_path(id: @interventoria.id, etapa: '1')) %>">
+          <%= link_to edit_interventoria_path(id: @interventoria.id, etapa: '1'),
+                      style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-file-text-o"></i>
+            <span style="font-size: 12px !important;">Cuenta de Cobro</span>
+          <% end %>
+        </li>
+
+        <%# Etapa 21: Obligaciones / Actividades %>
+        <li class="<%= active_class(edit_interventoria_path(id: @interventoria.id, etapa: '21')) %>">
+          <%= link_to edit_interventoria_path(id: @interventoria.id, etapa: '21'),
+                      style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-list-ul"></i>
+            <span style="font-size: 12px !important;">Obligaciones</span>
+          <% end %>
+        </li>
+
+        <%# Etapa 3: Bitácora %>
+        <li class="<%= active_class(edit_interventoria_path(id: @interventoria.id, etapa: '3')) %>">
+          <%= link_to edit_interventoria_path(id: @interventoria.id, etapa: '3'),
+                      style: "padding: 7px 0px 7px 15px;" do %>
+            <i class="fa fa-book"></i>
+            <span style="font-size: 12px !important;">Bitácora</span>
+          <% end %>
+        </li>
+
+        <%# Información del periodo actual %>
+        <li class="header" style="font-size: 10px; color: #b8c7ce; white-space: normal; line-height: 1.4;">
+          <%= @interventoria.periodo_actual rescue nil %>
+          <br>
+          <span class="label <%= label_estado_interventoria(@interventoria.estado) %>" style="font-size: 10px;">
+            <%= @interventoria.estado %>
+          </span>
+        </li>
+
+      <% end %>
+
+    </ul>
+  </section>
+</aside>

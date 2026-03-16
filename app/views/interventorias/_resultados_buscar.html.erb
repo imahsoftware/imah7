@@ -1,0 +1,72 @@
+<%# app/views/interventorias/_resultados_buscar.html.erb %>
+<% if @sin_resultados %>
+  <div class="callout callout-warning" style="margin-top:10px; border-radius:0;">
+    <i class="fa fa-search"></i>
+    No se encontraron informes con los criterios ingresados.
+  </div>
+<% else %>
+  <div class="rb-count">
+    <i class="fa fa-list"></i>
+    Se encontraron <strong><%= @interventorias.count %></strong> resultado(s)
+    <% if @interventorias.count == 100 %>
+      &nbsp;<span class="text-warning">(máx. 100 — refine la búsqueda)</span>
+    <% end %>
+  </div>
+
+  <table class="rb-table">
+    <thead>
+    <tr>
+      <th style="width:115px;">Identificación</th>
+      <th>Contratista</th>
+      <th style="text-align:center; width:130px;">Periodo</th>
+      <th style="text-align:right; width:150px;">Honorarios</th>
+      <th style="text-align:center; width:140px;">Estado</th>
+      <th style="text-align:center; width:45px;">Ver</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @interventorias.each do |inv| %>
+      <%
+        est = inv.estado.to_s
+        badge_class = case est
+                      when 'PENDIENTE'                                      then 'est-pendiente'
+                      when 'REVISION','REVISIONFINALINT','REVISIONFINALGH'  then 'est-revision'
+                      when 'APROBADO','APROBADOGH','APROBADOCONT','APROBADOFINAL' then 'est-aprobado'
+                      when /^RECHAZADO/                                     then 'est-rechazado'
+                      when 'TESORERIA'                                      then 'est-tesoreria'
+                      else 'est-pendiente'
+                      end
+      %>
+      <tr>
+        <td class="rb-id"><%= inv.identificacion_contratista %></td>
+        <td>
+          <div class="rb-nombre"><%= inv.nombre_contratista %></div>
+          <div class="rb-sub"><%= inv.contrato&.nro_contrato %></div>
+        </td>
+        <td style="text-align:center;">
+            <span class="rb-periodo">
+              <i class="fa fa-calendar-o"></i>
+              <%= inv.desc_mes %> <%= inv.anno %>
+            </span>
+        </td>
+        <td class="rb-valor">
+          <% if inv.valor_mes.to_i > 0 %>
+            $ <%= number_to_currency(inv.valor_mes, precision: 0, unit: '', delimiter: '.') %>
+          <% else %>
+            <span style="color:#ccc;">—</span>
+          <% end %>
+        </td>
+        <td style="text-align:center;">
+          <span class="badge-estado <%= badge_class %>"><%= est %></span>
+        </td>
+        <td style="text-align:center;">
+          <%= link_to edit_interventoria_path(inv, etapa: '1'),
+                      class: 'rb-btn', title: 'Ver informe' do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-folder-open-o"></i></button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

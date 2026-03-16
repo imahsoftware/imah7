@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta charset="utf-8">
+  <title><%= I18n.t("application.titulo_aplicacion") %></title>
+  <%= csrf_meta_tags %>
+  <%= action_cable_meta_tag %>
+  <%= favicon_link_tag 'favicon.ico' %>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= yield :head %>
+</head>
+<body class="sidebar-mini skin-blue-light">
+<div class="wrapper">
+  <%= render 'layouts/main_layout/main_header' %>
+  <!-- Renderiza sidebar diferente según la acción: edit usa main_sidebar, otras usan main_index_sidebar -->
+  <% if action_name == 'edit' %>
+    <%= render 'layouts/interventorias_layout/main_sidebar' %>
+  <% else %>
+    <%= render 'layouts/interventorias_layout/main_index_sidebar' %>
+  <% end %>
+
+  <%= render 'layouts/interventorias_layout/main_content' %>
+  <%= render 'layouts/main_layout/main_footer' %>
+  <%= render 'layouts/main_layout/control_sidebar' %>
+
+</div>
+</body>
+</html>

@@ -342,3 +342,220 @@ canvas {
   font-size: 9px;
   margin-left: 10px;
 }
+
+
+/*
+**************************************************
+**************************************************
+**************************************************
+NUEVO DISENO PARA EL PROCESO DE AUDITORIAS
+**************************************************
+**************************************************
+**************************************************
+*/
+
+/* ── AdminLTE 2 compatible — sin gradientes, sin border-radius exagerado ── */
+.ic-section {
+  background: #fff;
+  border: 1px solid #d2d6de;
+  margin-bottom: 18px;
+}
+.ic-section-title {
+  background: #394959;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.ic-section-title i { margin-right: 6px; }
+
+/* Tabla info contrato */
+.ic-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ic-tbl tr { border-bottom: 1px solid #f0f0f0; }
+.ic-tbl tr:last-child { border-bottom: none; }
+.ic-tbl th {
+  width: 26%;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  color: #333;
+  font-weight: 700;
+  text-align: left;
+  vertical-align: top;
+  border-right: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+.ic-tbl td {
+  padding: 8px 12px;
+  color: #444;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.ic-valor-principal { font-weight: 700; color: #222; font-size: 12.5px; }
+.ic-valor-palabras  { font-size: 10.5px; color: #888; margin-top: 1px; }
+.ic-periodo-badge {
+  display: inline-block;
+  background: #d9edf7;
+  color: #31708f;
+  border: 1px solid #bce8f1;
+  padding: 2px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* Resumen honorarios — 3 cajas flat */
+.ic-honorarios {
+  display: flex;
+  border-bottom: 1px solid #d2d6de;
+}
+.ic-hon-box {
+  flex: 1;
+  padding: 12px 14px;
+  text-align: center;
+  border-right: 1px solid #d2d6de;
+}
+.ic-hon-box:last-child { border-right: none; }
+.ic-hon-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+.ic-hon-value { font-size: 14px; font-weight: 700; color: #222; }
+.ic-hon-box.ic-hon-total .ic-hon-value { color: #00a65a; }
+
+/* Tabla deducciones */
+.ic-ded { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ic-ded th, .ic-ded td { padding: 7px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.ic-ded thead tr { background: #ecf0f1; }
+.ic-ded thead th { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #555; text-align: center; border-bottom: 2px solid #d2d6de; }
+.ic-ded thead th:first-child { text-align: left; }
+.ic-ded tbody tr:hover { background: #fafafa; }
+.ic-ded td:not(:first-child) { text-align: center; }
+
+/* Filas de grupo */
+.ic-grp td {
+  background: #f5f5f5 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  color: #555 !important;
+  border-top: 1px solid #ddd !important;
+  padding: 5px 12px !important;
+}
+/* Fila subtotal */
+.ic-subtotal td {
+  background: #ebf5fb !important;
+  font-weight: 700 !important;
+  color: #2471a3 !important;
+  font-size: 12px !important;
+}
+/* Suspensión */
+.ic-susp td { background: #fef9e7 !important; color: #7d6608 !important; font-weight: 600 !important; }
+/* Total final */
+.ic-total td {
+  background: #00a65a !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+/* Badge valor esperado */
+.ic-esp {
+  display: inline-block;
+  background: #d9edf7;
+  color: #31708f;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Inputs dentro de tabla */
+.ic-ded .form-group { margin-bottom: 0; }
+.ic-ded input.form-control,
+.ic-ded select.form-control {
+  height: 28px;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 0;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+.ic-ded input.form-control:focus,
+.ic-ded select.form-control:focus {
+  border-color: #394959;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Animación recálculo */
+.ic-flash { animation: icFlash .4s ease; }
+@keyframes icFlash { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+
+/* ── MENSAJES DE ESTADO INTERVENTORIA ───────────────────── */
+.ic-alert {
+  border-radius: 0;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+.ic-alert > i   { font-size: 20px; margin-top: 2px; flex-shrink: 0; }
+.ic-alert > div { flex: 1; }
+.ic-alert ul    { margin: 4px 0 0 0; padding-left: 18px; }
+.ic-alert li    { margin: 3px 0; }
+/* Colores AdminLTE 2 */
+.ic-alert-warning { background: #fcf8e3; border-left: 4px solid #f0ad4e; color: #8a6d3b; border-color: #faebcc; }
+.ic-alert-danger  { background: #f2dede; border-left: 4px solid #d9534f; color: #a94442; border-color: #ebccd1; }
+.ic-alert-info    { background: #d9edf7; border-left: 4px solid #5bc0de; color: #31708f; border-color: #bce8f1; }
+.ic-alert-success { background: #dff0d8; border-left: 4px solid #5cb85c; color: #3c763d; border-color: #d6e9c6; }
+.ic-alert .btn  { margin-left: 6px; }
+/* Tabla principal centrada */
+.ic-form-center { width: 80%; margin: 0 auto; }
+@media(max-width: 992px){ .ic-form-center { width: 100%; } }
+/* Observaciones y footer */
+.ic-obs-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3a5c;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  margin-bottom: 5px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+.ic-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0 4px;
+  font-size: 11.5px;
+  color: #7a8fa6;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  border-top: 1px solid #eef0f4;
+  margin-top: 10px;
+}
+
+
+
+.rb-count { font-size:12px; color:#888; padding:8px 0 6px; }
+.rb-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e0e0e0; }
+.rb-table thead tr { background:#394959; color: #ffffff; border-bottom:1px solid #ddd; }
+.rb-table th { padding:8px 12px; font-size:11px; color: #ffffff; font-weight:600;  text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; }
+.rb-table td { padding:10px 12px; border-bottom:1px solid #f0f0f0; vertical-align:middle; font-size:12.5px; }
+.rb-table tbody tr:last-child td { border-bottom:none; }
+.rb-table tbody tr:hover td { background:#fafafa; }
+.rb-id { font-family:monospace; font-size:12px; color:#888; }
+.rb-nombre { font-weight:600; font-size:13px; color:#333; }
+.rb-sub { font-size:11px; color:#aaa; margin-top:2px; }
+.rb-periodo { display:inline-flex; align-items:center; gap:4px; background:#f4f4f4; border:1px solid #e8e8e8; border-radius:20px; padding:2px 10px; font-size:11px; color:#666; white-space:nowrap; }
+.rb-valor { text-align:right; font-family:monospace; font-size:12px; font-weight:600; color:#333; }
+.rb-btn { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:4px; border:1px solid #ddd; background:#fff; color:#666; text-decoration:none; }
+.rb-btn:hover { background:#f4f4f4; color:#333; border-color:#ccc; }
+.badge-estado { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+.est-pendiente    { background:#f4f4f4; color:#666; }
+.est-revision     { background:#fdf3e0; color:#9a6700; }
+.est-aprobado     { background:#e6f4e6; color:#2d7a2d; }
+.est-rechazado    { background:#fde8e8; color:#c0392b; }
+.est-tesoreria    { background:#e8f0fd; color:#1a56c4; }
