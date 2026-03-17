@@ -1,0 +1,184 @@
+<script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+<tr id="interactividad_<%= interactividad.id %>">
+  <td class="text-center text-table-tr">
+    <%= interactividad.consecutivo %>.
+    <% if interactividad.desarrollo.to_s != "" %>
+      <img src="/images/connect.png" title="Actividad desarrollada"/>
+    <% end %>
+
+    <%#= link_to cargue_observaciones_interactividades_path(interactividad_id: interactividad.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Observaciones" do %>
+    <!--      <button class="btn btn-xs btn-success"><i class="fa fa-sticky-note"></i></button>-->
+    <%# end %>
+
+    <% if @interventoria.acceso.to_s == 'S' %>
+      <% if @interventoria.estado.to_s == 'RECHAZADO' %>
+        <% if interactividad.interactobservaciones.exists? %>
+          <%= link_to cargue_documentos_interactividad_path(interactividad_id: interactividad.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Soporte Digital" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-upload"></i></button>
+          <% end %>
+        <% end %>
+      <% else %>
+        <% if interactividad.bloqueado.to_s != 'SI' %>
+          <%= link_to cargue_documentos_interactividad_path(interactividad_id: interactividad.id), remote: true, data: { toggle: 'tooltip' }, title: "Cargar Soporte Digital" do %>
+            <button class="btn btn-xs btn-warning"><i class="fa fa-upload"></i></button>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+  <td class="text-justify text-table-tr">
+    <strong><%= interactividad.actividad %></strong>
+    <% if interactividad.interactimagenes.exists? %><br/><br/>
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+        <tr class="thcolor">
+          <th width="90%" class="text-center text-table-tr">Soporte Digital - Descripcion y Nombre del documento</th>
+          <th width="10%" class="text-table-tr"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% interactividad.interactimagenes.each do |interactimagen| %>
+          <tr>
+            <td class="text-justify text-table-tr"><%= interactimagen.descripcion.upcase rescue nil %>
+              - <%= interactimagen.interactividad_file_name.upcase rescue nil %></td>
+            <td class="text-center text-table-tr">
+              <%= link_to interactimagen.interactividad.url(:original, false), data: { toggle: 'tooltip' }, title: 'Ver documento', onclick: 'window.open(this.href,"new_window","height=600,width=830,scrollbars=yes");return false' do %>
+                <i class='fa fa-cloud-download text-red'></i>
+              <% end %>
+              <% if interactividad.interventoria.estado.to_s == 'REVISION' %>
+              <% else %>
+                <%# if interactividad.bloqueado.to_s != 'SI' %>
+                <%= link_to interactividad_interactimagen_path(interactividad, interactimagen), method: :delete, data: { confirm: '¿Seguro?', toggle: 'tooltip' }, title: 'Eliminar Documento' do %>
+                  <i class="fa fa-trash"></i>
+                <% end %>
+                <%# end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% end %>
+    <br/>
+  </td>
+  <td class="camposDesc  text-table-tr">
+    <% if @interventoria.acceso.to_s == 'S' %>
+      <% if @interventoria.estado.to_s == 'RECHAZADO' %>
+        <% if interactividad.interactobservaciones.exists? %>
+          <textarea id="note<%= interactividad.id %>" class="form-control desarrollo-textarea" rows="4" data-interactividad-id="<%= interactividad.id %>" oninput="convertirAMayusculas(this); saveObservation(this);"><%= interactividad.desarrollo %></textarea>
+          <%#= link_to image_tag("editar.png"),  edit_interactividad_path(interactividad), :title=>"Registrar avance"%>
+          <%#= link_to image_tag("editar.png"),  edit_interactividad_path(interactividad), :title=>"Registrar avance"%>
+          <%#= link_bar_universal(edit_interventoria_interactividad_path(@interventoria, interactividad), 'edit', "#{I18n.t("title_editar")}", 'A', nil, 'remote') %>
+          <%#= link_bar_universal(interventoria_interactividad_path(@interventoria, interactividad), 'trash', "#{I18n.t("title_elimina")}", 'E', nil, 'remote') %>
+        <% else %>
+          <div style="width: 700px; word-wrap: break-word; white-space: normal; overflow-wrap: break-word;" align="justify" >
+            <strong><%= interactividad.desarrollo %></strong>
+          </div>
+        <% end %>
+      <% elsif @interventoria.estado.to_s == 'APROBADO' %>
+        <div style="width: 700px; word-wrap: break-word; white-space: normal; overflow-wrap: break-word;" align="justify" >
+          <strong><%= interactividad.desarrollo %></strong>
+        </div>
+      <% elsif interactividad.bloqueado.to_s == 'SI' %>
+        <div style="width: 700px; word-wrap: break-word; white-space: normal; overflow-wrap: break-word;" align="justify" >
+          <strong><%= interactividad.desarrollo %></strong>
+        </div>
+      <% else %>
+        <%#= link_to image_tag("editar.png"),  edit_interactividad_path(interactividad), :title=>"Registrar avance"%>
+        <%#= link_to image_tag("editar.png"),  edit_interactividad_path(interactividad), :title=>"Registrar avance"%>
+        <%#= link_bar_universal(edit_interventoria_interactividad_path(@interventoria, interactividad), 'edit', "#{I18n.t("title_editar")}", 'A', nil, 'remote') %>
+        <textarea id="note<%= interactividad.id %>" class="form-control desarrollo-textarea" rows="4" data-interactividad-id="<%= interactividad.id %>" oninput="convertirAMayusculas(this); saveObservation(this);"><%= interactividad.desarrollo %></textarea>
+        <%#= link_bar_universal(interventoria_interactividad_path(@interventoria, interactividad), 'trash', "#{I18n.t("title_elimina")}", 'E', nil, 'remote') %>
+      <% end %>
+    <% else %>
+      <% if @interventoria.estado.to_s == 'REVISION' %>
+        <div style="width: 700px; word-wrap: break-word; white-space: normal; overflow-wrap: break-word;" align="justify" >
+          <strong><%= interactividad.desarrollo %></strong>
+        </div>
+      <% end %>
+    <% end %>
+    <% if interactividad.interactobservaciones.exists? %>
+      <br>
+      <a href="javascript:void(0);" onclick="SINO('observaciones_<%= interactividad.id %>')">
+        <span class="text-red" data-toggle="tooltip">
+          <strong><i class="fa fa-sticky-note"></i> Actividad con observaciones (<%= interactividad.interactobservaciones.count rescue 0 %>
+            )</strong>
+        </span>
+      </a>
+
+      <div class="text-left" id="observaciones_<%= interactividad.id %>" style="display:none;">
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+          <tr class="thcolor">
+            <th width="100%" class="text-left text-table-tr">Observaciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% interactividad.interactobservaciones.each do |interactobservacion| %>
+            <tr>
+              <td class="text-justify text-table-tr"><%= interactobservacion.obs rescue nil %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+
+    <% end %>
+    </div>
+
+
+  </td>
+</tr>
+
+<script type="text/javascript" charset="utf-8">
+
+    autosize(document.getElementById("note<%= interactividad.id %>"));
+
+    function convertirAMayusculas(textarea) {
+        textarea.value = textarea.value.toUpperCase();
+    }
+
+    function saveObservation(textarea) {
+        var desarrollo = textarea.value.toUpperCase();
+        var interactividadId = textarea.getAttribute('data-interactividad-id');
+
+        $.ajax({
+            url: '/interactividades/update_observation',
+            type: 'POST',
+            data: {
+                id: interactividadId,
+                desarrollo: desarrollo,
+                interventoria_id: '<%= interactividad.interventoria_id %>'
+            },
+            success: function (data) {
+                console.log('Observación actualizada:', data);
+            },
+            error: function (error) {
+                console.error('Error al actualizar la observación:', error);
+            }
+        });
+    }
+
+
+</script>
+
+<style>
+    textarea {
+        overflow: hidden;
+        resize: none;
+        box-sizing: border-box;
+        width: 100%;
+    }
+</style>
+
+
+<div class="modal fade" id="cargar_documento<%= interactividad.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document" style="width: 70%">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="cargar_observacion<%= interactividad.id %>">
+  <div class="modal-dialog modal-dialog-responsive" role="document" style="width: 70%">
+    <div class="modal-content"></div>
+  </div>
+</div>

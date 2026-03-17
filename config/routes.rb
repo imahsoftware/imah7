@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       post :envio
       post :aprobar
       post :rechazar
+      resources :interactividades
     end
 
     member do

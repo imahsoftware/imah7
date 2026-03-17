@@ -41,6 +41,15 @@ class Interventoria < ApplicationRecord
     periodos.reverse
   end
 
+
+  def acceso
+    if self.estado.to_s == "REVISION" or self.estado.to_s == "APROBADO"
+      return 'N'
+    else
+      return 'S'
+    end
+  end
+
   # ─── CONTROL DE ACCESO ────────────────────────────────────────────────────
   # Reemplaza el método acceso del original (devolvía 'S'/'N')
   def editable?

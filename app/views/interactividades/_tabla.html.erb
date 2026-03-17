@@ -1,0 +1,20 @@
+<% if @interventoria.fin_anno == 'SI' and Time.now.strftime("%Y-%m-%d %X") > Sifi.find(110).valor.to_s and ['PENDIENTE'].include?(@interventoria.estado.to_s) %>
+  <div align="center" style="color:red; background-color: #FFFFCC; padding: 10px" class="camposDescN16">
+    Debes esperar el tiempo necesario para que se habiliten las actividades pendientes por diligenciar. Una vez que estén activas, podrás completarlas para finalizar el proceso de cierre de fin de año.
+  </div>
+<% else %>
+  <table class="table table-bordered table-condensed table-striped">
+    <thead>
+    <tr class="thcolor">
+      <th width="8%">Acción</th>
+      <th width="40%" class="text-left text-table-tr">Actividad</th>
+      <th class="text-table-tr">Desarrollo de la Actividad</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @interventoria.interactividades.order(consecutivo: :asc).each do |interactividad| %>
+      <%= render 'interactividades/tr', interactividad: interactividad %>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

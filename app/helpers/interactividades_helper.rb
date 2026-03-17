@@ -1,0 +1,2 @@
+module InteractividadesHelper
+end
