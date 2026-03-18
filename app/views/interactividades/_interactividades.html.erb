@@ -1,0 +1,123 @@
+<%# app/views/interactividades/_interactividades.html.erb %>
+<%# Vista principal de obligaciones — un solo render para todos los estados %>
+
+<%# ── JS compartido: autosize + autoguardado (una sola vez, no por fila) ──── %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/4.0.2/autosize.min.js"></script>
+<script>
+    // Convierte textarea a mayúsculas y guarda con debounce
+    var saveTimers = {};
+    function initDesarrolloTextarea(id) {
+        var el = document.getElementById('note' + id);
+        if (!el) return;
+        autosize(el);
+        el.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+            var interactividadId = this.getAttribute('data-interactividad-id');
+            clearTimeout(saveTimers[interactividadId]);
+            saveTimers[interactividadId] = setTimeout(function() {
+                $.ajax({
+                    url: '/interactividades/update_observation',
+                    type: 'POST',
+                    data: {
+                        id: interactividadId,
+                        desarrollo: el.value,
+                        interventoria_id: '<%= @interventoria.id %>'
+                    },
+                    success: function(data) {
+                        // Actualizar div de preview si existe (para PREPARAFINAL)
+                        var preview = $('#desarrollo_preview_' + interactividadId);
+                        if (preview.length && data.desarrollo) {
+                            preview.html(data.desarrollo.replace(/\n/g, '<br/>'));
+                        }
+                    }
+                });
+            }, 800); // debounce 800ms — no spamea el servidor
+        });
+    }
+
+    function toggleObservaciones(id) {
+        $('#observaciones_' + id).toggle();
+    }
+
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+<style>
+    .ia-textarea { overflow: hidden; resize: none; box-sizing: border-box; width: 100%; border-radius: 0; }
+    .ia-obs-badge { cursor: pointer; }
+    .ia-desarrollo-preview { word-wrap: break-word; white-space: normal; overflow-wrap: break-word; }
+</style>
+
+<%# ── MENSAJE DE ESTADO ────────────────────────────────────────────────────── %>
+<% if @interventoria.editable? %>
+  <%
+    sin_desarrollo = @interventoria.interactividades.where("desarrollo IS NULL OR desarrollo = ''").count
+    total          = @interventoria.interactividades.count
+    estado         = @interventoria.estado.to_s
+  %>
+  <% if sin_desarrollo > 0 %>
+    <div class="ic-alert ic-alert-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      <div>Tiene <strong><%= total %></strong> obligaciones registradas, de las cuales
+        <strong><%= sin_desarrollo %></strong> no tienen desarrollo diligenciado.</div>
+    </div>
+  <% elsif estado == 'RECHAZADO' %>
+    <div class="ic-alert ic-alert-danger">
+      <i class="fa fa-times-circle"></i>
+      <div>El informe fue rechazado por el interventor. Verifique y complemente las actividades.</div>
+    </div>
+  <% elsif estado == 'RECHAZADOGH' %>
+    <div class="ic-alert ic-alert-danger">
+      <i class="fa fa-times-circle"></i>
+      <div>El informe fue rechazado por Gestión Humana. Verifique y complemente las actividades.</div>
+    </div>
+  <% elsif total > 0 %>
+    <div class="ic-alert ic-alert-success">
+      <i class="fa fa-check-circle"></i>
+      <div>Tiene <strong><%= total %></strong> obligaciones registradas y todas están debidamente diligenciadas.</div>
+    </div>
+  <% end %>
+<% end %>
+
+<%# ── CUERPO PRINCIPAL ─────────────────────────────────────────────────────── %>
+<div class="box box-primary">
+  <div class="flash_messages"></div>
+  <div class="box-body">
+
+    <div class="box-header with-border" style="padding-bottom: 0;">
+      <h3 class="box-title">
+        <i class="fa fa-list-ul"></i> Obligaciones del Contrato
+      </h3>
+      <%# Botón nuevo — solo en estados editables normales %>
+      <% if @interventoria.editable? &&
+            !%w[RECHAZADOGH APROBADOGH PREPARAFINAL RECHAZADOFINALGH RECHAZADOFINALINT
+                REVISIONFINALGH REVISIONFINALINT].include?(@interventoria.estado.to_s) &&
+            is_auth_c("interventoriasactividades") %>
+        <div class="box-tools pull-right">
+          <%= link_to new_interventoria_interactividad_path(@interventoria),
+                      remote: true,
+                      class: 'btn btn-sm btn-success',
+                      title: 'Nueva obligación' do %>
+            <i class="fa fa-plus"></i> Nueva
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="interactividad_form" class="collapse" style="padding: 10px 0;"></div>
+
+    <div id="interactividades" style="margin-top: 10px;">
+      <% if @interventoria.interactividades.any? %>
+        <%= render 'interactividades/tabla', usuario_actual: User.find_by(id: is_admin) %>
+      <% else %>
+        <div class="alert alert-warning">
+          <i class="fa fa-info-circle"></i>
+          No hay obligaciones registradas para este informe.
+        </div>
+      <% end %>
+    </div>
+
+  </div><%# /box-body %>
+</div><%# /box %>

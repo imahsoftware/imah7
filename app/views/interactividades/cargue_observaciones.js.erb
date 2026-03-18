@@ -1,0 +1,6 @@
+$("#cargar_observacion<%= @interactividad.id %> .modal-content").html('<%= j render "interactividades/cargar_observaciones" %>');
+$("#cargar_observacion<%= @interactividad.id %>").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();

@@ -1,0 +1,9 @@
+<%# Cierra modal + refresca la fila sin reload completo %>
+<%# app/views/interactimagenes/create.js.erb %>
+$("#cargar_documento<%= @interactividad.id %>").modal('hide');
+$(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
+$("#interactividad_<%= @interactividad.id %>").replaceWith(
+    "<%= j render 'interactividades/tr', interactividad: @interactividad, usuario_actual: User.find_by(id: is_admin) %>"
+);
+$('[data-toggle="tooltip"]').tooltip();
+setTimeout(function() { $(".alert_flash").fadeOut(800, function() { $(this).remove(); }); }, 4000);

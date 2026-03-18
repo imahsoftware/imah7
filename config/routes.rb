@@ -52,15 +52,26 @@ Rails.application.routes.draw do
   end
 
   resources :interactividades do
+    resources :interactimagenes
     member do
       get  :cargue_documentos
       get  :cargue_observaciones
       post :update_observation
     end
+    collection do
+      post :update_observation
+      get  :cargue_documentos
+      get  :cargue_observaciones
+    end
   end
 
   resources :interactimagenes
-  resources :interactobservaciones
+  resources :interactobservaciones do
+    collection do
+      get :verificar
+      get :verificacion
+    end
+  end
   resources :interbitacoras
 
 

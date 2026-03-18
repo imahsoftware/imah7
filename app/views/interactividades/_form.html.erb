@@ -1,0 +1,125 @@
+<%# app/views/interactividades/_form.html.erb %>
+
+<style>
+    .ia-form-section { background:#fff; border:1px solid #d2d6de; margin-bottom:10px; }
+    .ia-form-title   { background:#3c4b5e; color:#fff; padding:8px 14px; font-size:12px; font-weight:600; letter-spacing:0.3px; }
+    .ia-form-ctx     { background:#f7f9fc; border-bottom:1px solid #e8ecf0; padding:8px 14px; font-size:12px; display:flex; gap:24px; flex-wrap:wrap; color:#555; }
+    .ia-form-ctx strong { color:#333; }
+    .ia-form-body    { padding:16px 18px; }
+    .ia-form-label   { font-size:12px; font-weight:600; color:#444; margin-bottom:4px; display:block; }
+    .ia-form-req     { color:#e74c3c; }
+    .ia-actividad-ro { background:#f7f9fc; border:1px solid #e0e4e8; padding:8px 12px; font-size:12px; color:#333; line-height:1.6; }
+    .ia-nro-badge    { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; background:#3c4b5e; color:#fff; font-size:14px; font-weight:700; margin-right:8px; flex-shrink:0; }
+    .ia-actividad-header { display:flex; align-items:flex-start; gap:0; }
+    .ia-form-footer  { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #eee; padding-top:12px; margin-top:4px; }
+</style>
+
+<%= simple_form_for([@interventoria, @interactividad], remote: true) do |f| %>
+  <div class="ia-form-section">
+
+    <%# ── Título ──────────────────────────────────────────────────────────── %>
+    <div class="ia-form-title">
+      <i class="fa fa-pencil-square-o"></i>&nbsp;
+      <% if @interactividad.new_record? %>
+        Nueva Obligación
+      <% else %>
+        Editando Obligación N° <%= @interactividad.consecutivo %>
+      <% end %>
+    </div>
+
+    <%# ── Contexto ────────────────────────────────────────────────────────── %>
+    <div class="ia-form-ctx">
+      <span><strong>Contrato:</strong> <%= @interventoria.contrato_texto %></span>
+      <span><strong>Periodo:</strong> <%= @interventoria.periodo_actual %></span>
+      <% if @interactividad.persisted? %>
+        <span><strong>Actividad N°:</strong> <%= @interactividad.consecutivo %></span>
+      <% end %>
+    </div>
+
+    <div class="ia-form-body">
+
+      <%# ── Fila: Contador + Actividad ─────────────────────────────────────── %>
+      <div style="margin-bottom:14px;">
+        <label class="ia-form-label">
+          Actividad / Obligación
+          <% if @interactividad.new_record? %><span class="ia-form-req">*</span><% end %>
+        </label>
+
+        <div class="ia-actividad-header">
+          <%# Contador circular %>
+          <span class="ia-nro-badge">
+            <%= @interactividad.new_record? ? '?' : @interactividad.consecutivo %>
+          </span>
+
+          <%# Texto o input según modo %>
+          <div style="flex:1;">
+            <% if @interactividad.new_record? %>
+              <%= f.input :actividad,
+                          label: false,
+                          wrapper: false,
+                          input_html: {
+                            rows: 3,
+                            placeholder: 'DESCRIBA LA ACTIVIDAD U OBLIGACIÓN CONTRACTUAL...',
+                            oninput: 'this.value=this.value.toUpperCase()',
+                            class: 'form-control',
+                            style: 'border-radius:0; font-size:12px; resize:vertical;'
+                          } %>
+            <% else %>
+              <div class="ia-actividad-ro">
+                <%= @interactividad.actividad %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <%# ── Desarrollo ─────────────────────────────────────────────────────── %>
+      <div style="margin-bottom:14px;">
+        <label class="ia-form-label">
+          Desarrollo de la Actividad <span class="ia-form-req">*</span>
+        </label>
+        <%= f.input :desarrollo,
+                    as: :text,
+                    label: false,
+                    wrapper: false,
+                    input_html: {
+                      rows: 5,
+                      placeholder: 'DESCRIBA EL DESARROLLO O CUMPLIMIENTO DE LA ACTIVIDAD...',
+                      oninput: 'this.value=this.value.toUpperCase()',
+                      class: 'form-control',
+                      style: 'border-radius:0; font-size:12px; resize:vertical;'
+                    } %>
+      </div>
+
+      <%# ── Botones ────────────────────────────────────────────────────────── %>
+      <div class="ia-form-footer">
+        <div>
+          <% if @interactividad.new_record? %>
+            <%= link_to new_interventoria_interactividad_path(@interventoria),
+                        remote: true,
+                        class: 'btn btn-default btn-sm',
+                        style: 'border-radius:0; font-size:12px;' do %>
+              <i class="fa fa-times"></i> Cancelar
+            <% end %>
+          <% else %>
+            <%= link_to interventoria_interactividad_path(@interventoria, @interactividad),
+                        remote: true,
+                        class: 'btn btn-default btn-sm',
+                        style: 'border-radius:0; font-size:12px;' do %>
+              <i class="fa fa-times"></i> Cancelar
+            <% end %>
+          <% end %>
+        </div>
+        <div>
+          <%= f.button :submit,
+                       class: 'btn btn-success btn-sm',
+                       style: 'border-radius:0; font-size:12px;' do %>
+            <i class="fa fa-check"></i>
+            &nbsp;<%= @interactividad.new_record? ? 'Guardar Obligación' : 'Actualizar' %>
+          <% end %>
+        </div>
+      </div>
+
+    </div><%# /ia-form-body %>
+  </div><%# /ia-form-section %>
+<% end %>

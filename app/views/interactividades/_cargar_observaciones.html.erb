@@ -1,0 +1,13 @@
+<%# app/views/interactividades/_cargar_observaciones.html.erb %>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h4 class="modal-title">
+    <i class="fa fa-sticky-note"></i> Registrar Observación
+  </h4>
+</div>
+<div class="modal-body">
+  <p class="text-muted" style="font-size:12px;">
+    <strong>Actividad:</strong> <%= @interactividad.actividad.truncate(100) %>
+  </p>
+  <%= render 'interactobservaciones/new' %>
+</div>

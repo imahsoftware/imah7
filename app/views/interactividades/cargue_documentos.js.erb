@@ -1,0 +1,6 @@
+$("#cargar_documento<%= @interactividad.id %> .modal-content").html('<%= j render "interactividades/cargar_documentos" %>');
+$("#cargar_documento<%= @interactividad.id %>").modal();
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();
+$(".form-group").removeClass("has-error");
+$(".form-group > .help-block.help-block-error").remove();

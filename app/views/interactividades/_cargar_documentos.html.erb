@@ -1,0 +1,13 @@
+<%# app/views/interactividades/_cargar_documentos.html.erb %>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h4 class="modal-title">
+    <i class="fa fa-upload"></i> Cargar Soporte Digital
+  </h4>
+</div>
+<div class="modal-body">
+  <p class="text-muted" style="font-size:12px;">
+    <strong>Actividad:</strong> <%= @interactividad.actividad.truncate(100) %>
+  </p>
+  <%= render 'interactimagenes/new' %>
+</div>

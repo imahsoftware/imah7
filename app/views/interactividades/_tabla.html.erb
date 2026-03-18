@@ -1,20 +1,98 @@
-<% if @interventoria.fin_anno == 'SI' and Time.now.strftime("%Y-%m-%d %X") > Sifi.find(110).valor.to_s and ['PENDIENTE'].include?(@interventoria.estado.to_s) %>
-  <div align="center" style="color:red; background-color: #FFFFCC; padding: 10px" class="camposDescN16">
-    Debes esperar el tiempo necesario para que se habiliten las actividades pendientes por diligenciar. Una vez que estén activas, podrás completarlas para finalizar el proceso de cierre de fin de año.
+<%# app/views/interactividades/_tabla.html.erb %>
+<%
+  estado       = @interventoria.estado.to_s
+  solo_ss      = %w[RECHAZADOGH PREPARAFINAL RECHAZADOFINALGH RECHAZADOFINALINT]
+  solo_lectura = %w[APROBADOGH REVISIONFINALGH REVISIONFINALINT]
+
+  actividades = if solo_ss.include?(estado)
+                  @interventoria.interactividades
+                                .where("actividad LIKE ?", "%PAGO%DE%SEGURIDAD%SOCIAL%")
+                                .order(:consecutivo)
+                else
+                  @interventoria.interactividades.order(:consecutivo)
+                end
+%>
+
+<% if @interventoria.fin_anno == 'SI' &&
+      Time.now.strftime("%Y-%m-%d %X") > (Sifi.find(110).valor.to_s rescue '9999') &&
+      estado == 'PENDIENTE' %>
+  <div class="ic-alert ic-alert-warning">
+    <i class="fa fa-clock-o"></i>
+    <div>Debes esperar a que se habiliten las actividades pendientes para el cierre de fin de año.</div>
   </div>
 <% else %>
-  <table class="table table-bordered table-condensed table-striped">
+
+  <style>
+      .ia-table           { width:100%; border-collapse:collapse; font-size:12.5px; }
+      .ia-table thead tr  { background:#3c4b5e; color:#fff; }
+      .ia-table thead th  { padding:9px 12px; font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; border:none; }
+      .ia-table tbody td  { padding:12px 12px; vertical-align:top; border-bottom:1px solid #edf0f3; }
+      .ia-table tbody tr:last-child td { border-bottom:none; }
+      .ia-table tbody tr:hover td { background:#fafbfc; }
+
+      /* Columna N° */
+      .ia-col-nro         { width:48px; text-align:center; border-right:1px solid #edf0f3 !important; }
+      .ia-nro-circulo     { font-size:15px; font-weight:700; color:#3c4b5e; }
+      .ia-nro-check       { display:none; }
+
+      /* Columna botones */
+      .ia-col-btn         { width:44px; text-align:center; border-right:1px solid #edf0f3 !important; }
+      .ia-col-btn .btn    { margin-bottom:3px; display:block; width:32px; }
+
+      /* Columna actividad */
+      .ia-col-act         { }
+      .ia-act-nombre      { font-weight:700; color:#2c3e50; line-height:1.5; margin-bottom:4px; }
+
+      /* Soporte digital */
+      .ia-soporte-wrap    { margin-top:8px; }
+      .ia-soporte-header  { background:#eaf0fb; border:1px solid #d0dff5; border-bottom:none;
+          padding:5px 10px; font-size:11px; font-weight:700;
+          color:#1a56c4; letter-spacing:0.3px; display:flex; align-items:center; gap:6px; }
+      .ia-soporte-row     { display:flex; align-items:center; justify-content:space-between;
+          padding:6px 10px; background:#fff; border:1px solid #d0dff5;
+          border-top:none; font-size:11px; color:#444; }
+      .ia-soporte-row + .ia-soporte-row { border-top:none; }
+      .ia-soporte-nombre  { flex:1; word-break:break-all; }
+      .ia-soporte-acciones{ display:flex; gap:6px; flex-shrink:0; margin-left:10px; }
+
+      /* Observaciones */
+      .ia-obs-toggle      { margin-top:6px; cursor:pointer; font-size:11px; color:#c0392b;
+          font-weight:600; display:inline-flex; align-items:center; gap:4px; }
+      .ia-obs-item        { margin-top:4px; padding:6px 10px; background:#fff5f5;
+          border-left:3px solid #e74c3c; font-size:11px; color:#c0392b; line-height:1.5; }
+
+      /* Columna desarrollo */
+      .ia-col-dev         { width:35%; }
+      .ia-textarea        { width:100%; border-radius:0; border:1px solid #d2d6de;
+          padding:7px 9px; font-size:12px; resize:vertical;
+          min-height:80px; box-sizing:border-box; line-height:1.5; }
+      .ia-textarea:focus  { border-color:#3c8dbc; outline:none;
+          box-shadow:0 0 0 2px rgba(60,141,188,0.15); }
+      .ia-dev-txt         { word-wrap:break-word; line-height:1.6; color:#333; font-size:12px; }
+      .ia-dev-vacio       { color:#ccc; font-size:11px; font-style:italic; }
+  </style>
+
+  <table class="ia-table">
     <thead>
-    <tr class="thcolor">
-      <th width="8%">Acción</th>
-      <th width="40%" class="text-left text-table-tr">Actividad</th>
-      <th class="text-table-tr">Desarrollo de la Actividad</th>
+    <tr>
+      <th class="ia-col-nro">N°</th>
+      <% unless solo_lectura.include?(estado) %>
+        <th class="ia-col-btn"></th>
+      <% end %>
+      <th>Actividad</th>
+      <% unless solo_lectura.include?(estado) %>
+        <th class="ia-col-dev">Desarrollo de la Actividad</th>
+      <% end %>
     </tr>
     </thead>
-    <tbody>
-    <% @interventoria.interactividades.order(consecutivo: :asc).each do |interactividad| %>
-      <%= render 'interactividades/tr', interactividad: interactividad %>
+    <tbody id="tbody_interactividades">
+    <% actividades.each do |interactividad| %>
+      <%= render 'interactividades/tr',
+                 interactividad:   interactividad,
+                 usuario_actual:   usuario_actual,
+                 solo_lectura_modo: solo_lectura.include?(estado) %>
     <% end %>
     </tbody>
   </table>
+
 <% end %>

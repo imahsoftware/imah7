@@ -1,0 +1,47 @@
+<%# app/views/interactimagenes/_new.html.erb %>
+<%= simple_form_for([@interactividad, @interactimagen], remote: true,
+                    html: { multipart: true }) do |f| %>
+
+  <%# Contexto de la actividad %>
+  <table class="table table-bordered table-condensed" style="font-size:12px; margin-bottom:12px;">
+    <thead>
+    <tr class="thcolor">
+      <th style="width:5%; text-align:center;">N°</th>
+      <th style="width:45%;">Actividad</th>
+      <th style="width:50%;">Desarrollo actual</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td style="text-align:center;"><%= @interactividad.consecutivo %></td>
+      <td><%= @interactividad.actividad %></td>
+      <td><%= @interactividad.desarrollo %></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6">
+      <%= f.input :descripcion,
+                  label: 'Descripción del documento',
+                  input_html: {
+                    style: 'border-radius:0; text-transform:uppercase;',
+                    onchange: 'this.value=this.value.toUpperCase()'
+                  } %>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+      <%= f.input :interactividad,
+                  as: :file,
+                  label: 'Archivo a cargar',
+                  hint: 'Máx. 12MB — PDF, Word, Excel, imagen' %>
+    </div>
+  </div>
+
+  <div class="modal-footer" style="padding: 10px 0 0;">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+      <i class="fa fa-times"></i> Cerrar
+    </button>
+    <%= f.button :submit, 'Cargar Soporte', class: 'btn btn-warning' %>
+  </div>
+
+<% end %>

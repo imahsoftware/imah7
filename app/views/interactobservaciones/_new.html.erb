@@ -1,0 +1,44 @@
+<%# app/views/interactobservaciones/_new.html.erb %>
+<%= simple_form_for([@interactividad, @interactobservacion], remote: true) do |f| %>
+
+  <%# Contexto de la actividad %>
+  <table class="table table-bordered table-condensed" style="font-size:12px; margin-bottom:12px;">
+    <thead>
+    <tr class="thcolor">
+      <th style="width:5%; text-align:center;">N°</th>
+      <th style="width:45%;">Actividad</th>
+      <th style="width:50%;">Desarrollo actual</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td style="text-align:center;"><%= @interactividad.consecutivo %></td>
+      <td><%= @interactividad.actividad %></td>
+      <td><%= @interactividad.desarrollo %></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <%= hidden_field_tag :interactividad_id, @interactividad.id %>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <%= f.input :observaciones,
+                  as: :text,
+                  label: 'Observación del Interventor',
+                  input_html: {
+                    rows: 5,
+                    style: 'border-radius:0; text-transform:uppercase;',
+                    onchange: 'this.value=this.value.toUpperCase()'
+                  } %>
+    </div>
+  </div>
+
+  <div class="modal-footer" style="padding: 10px 0 0;">
+    <button type="button" class="btn btn-default" data-dismiss="modal">
+      <i class="fa fa-times"></i> Cerrar
+    </button>
+    <%= f.button :submit, 'Guardar Observación', class: 'btn btn-primary' %>
+  </div>
+
+<% end %>
