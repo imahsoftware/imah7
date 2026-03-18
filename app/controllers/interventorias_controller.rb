@@ -15,6 +15,37 @@ class InterventoriasController < ApplicationController
   def index
     @user = current_user_obj
     cargar_datos_por_etapa(@user)
+
+    if is_auth_c("interventoriagh")
+      @objetos = Contratosperfecha
+                   .joins(:contratospernominas)
+                   .where(
+                     "YEAR(contratosperfechas.fecha_inicio) = YEAR(CURDATE()) AND " \
+                       "MONTH(contratosperfechas.fecha_inicio) = MONTH(CURDATE())"
+                   )
+                   .select(
+                     "DISTINCT MONTH(contratosperfechas.fecha_inicio) AS mes, " \
+                       "YEAR(contratosperfechas.fecha_inicio)           AS ano, " \
+                       "LPAD(MONTH(contratosperfechas.fecha_inicio),2,'0') AS mesc"
+                   )
+                   .order("ano DESC, mes DESC")
+    end
+
+    if is_auth_c("interventoriacont")
+      @objetos = Contratosperfecha
+                   .joins(:contratospernominas)
+                   .where(
+                     "YEAR(contratosperfechas.fecha_inicio) = YEAR(CURDATE()) AND " \
+                       "MONTH(contratosperfechas.fecha_inicio) <= MONTH(CURDATE())"
+                   )
+                   .select(
+                     "DISTINCT MONTH(contratosperfechas.fecha_inicio) AS mes, " \
+                       "YEAR(contratosperfechas.fecha_inicio)           AS ano, " \
+                       "LPAD(MONTH(contratosperfechas.fecha_inicio),2,'0') AS mesc"
+                   )
+                   .order("ano DESC, mes DESC")
+    end
+
     respond_to do |format|
       format.html
       format.js
@@ -46,6 +77,9 @@ class InterventoriasController < ApplicationController
       format.js
     end
   end
+
+
+
 
   # ─── CRUD BÁSICO ──────────────────────────────────────────────────────────
   def new

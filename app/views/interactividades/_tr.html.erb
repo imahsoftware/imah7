@@ -6,7 +6,7 @@
   con_obs        = interactividad.interactobservaciones.exists?
   con_imgs       = interactividad.interactimagenes.exists?
   tiene_dev      = interactividad.desarrollo.present?
-  modo_compacto  = solo_lectura_modo
+  modo_compacto  = local_assigns[:solo_lectura_modo] || false
 
   puede_editar = editable && !bloqueada &&
                  !%w[APROBADO APROBADOGH APROBADOCONT APROBADOFINAL
