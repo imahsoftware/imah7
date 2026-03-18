@@ -97,8 +97,11 @@
                     <i class="fa fa-check-circle"></i>
                     <div>Tiene <%= @interventoria.interactividades.count %> obligaciones registradas y todas están
                       diligenciadas.
-                      <%= link_to 'Enviar para revisión', envio_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-primary', data: { confirm: '¿Está seguro?' } %>
-                    </div>
+                      <%= link_to 'Enviar para revisión',
+                                  envio_interventorias_path(id: @interventoria.id),
+                                  method: :post,
+                                  class: 'btn btn-xs btn-primary',
+                                  data: { confirm: '¿Está seguro?' } %>                    </div>
                   </div>
                 <% end %>
               <% end %>

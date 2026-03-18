@@ -1,179 +1,286 @@
 <%# app/views/interventorias/_dash_supervisor.html.erb %>
-<%# Vista del supervisor/interventor: informes pendientes de revisión y revisados %>
+<% is_auth_c_interventoriaedicion = is_auth_c("interventoriaedicion") %>
+
+<legend>Validación Supervisor</legend>
 
 <%# ── PENDIENTES DE REVISION ──────────────────────────────────────────────── %>
 <% if @message_interventor.to_s == 'SI' %>
-  <legend>
-    <i class="fa fa-clock-o"></i>
-    Revisión Cuentas de Cobro
-    <span class="badge badge-warning"><%= @interventorias&.count.to_i %></span>
-  </legend>
-
-  <% if @interventorias.present? && @interventorias.count > 0 %>
-    <table class="table table-bordered table-condensed table-striped table-hover">
-      <thead>
+  <legend>Revisión Cuentas de Cobro (<%= @interventorias.count.to_i %>)</legend>
+  <% if @interventorias.count.to_i > 0 %>
+    <table class="table table-bordered table-condensed table-striped">
       <tr class="thcolor">
-        <th width="22%" class="text-center">Acción</th>
-        <th width="13%" class="text-center">Fecha</th>
-        <th width="12%" class="text-center">Identificación</th>
-        <th width="38%" class="text-center">Nombre</th>
-        <th width="15%" class="text-center">Periodo</th>
+        <th width="20%" class="text-center">Acción</th>
+        <th width="10%" class="text-center">Fecha</th>
+        <th width="10%" class="text-center">Identificación</th>
+        <th width="40%" class="text-center">Nombre</th>
+        <th width="10%" class="text-center">Periodo</th>
       </tr>
-      </thead>
-      <tbody>
       <% @interventorias.each do |interventoria| %>
-        <tr class="<%= cycle('even1', 'odd1') %>">
+        <tr valign="middle" class="<%= cycle('even1', 'odd1') %> text_tr">
           <td class="text-center">
-            <%# Ver informe %>
             <%= link_to verificacion_interventorias_path(id: interventoria.id),
-                        class: 'btn btn-xs btn-info popup',
-                        title: 'Ver Informe' do %>
-              <i class="fa fa-file-pdf-o"></i> Informe
+                        data: { toggle: 'tooltip' }, title: 'Informe', class: 'popup' do %>
+              <button class="btn btn-xs btn-info">
+                <i class="fa fa-file-pdf-o"></i> Informe
+              </button>
             <% end %>
 
-            <%# Ver informe final si es último mes %>
-            <% contrato = interventoria.contrato %>
-            <% if contrato&.fecha_fin &&
-                  interventoria.mes.to_s == contrato.fecha_fin.strftime("%-m") &&
-                  interventoria.anno.to_s == contrato.fecha_fin.strftime("%Y") %>
+            <% if interventoria.contrato.fechafinal.present? &&
+                  interventoria.mes.to_s == interventoria.contrato.fechafinal.strftime("%m") &&
+                  interventoria.anno.to_s == interventoria.contrato.fechafinal.strftime("%Y") %>
               <%= link_to visualizarfinal_interventorias_path(
-                            contrato_id: contrato.id,
+                            contrato_id: interventoria.contrato.id,
                             ano: interventoria.anno,
                             mes: interventoria.mes),
-                          class: 'btn btn-xs btn-danger popup',
-                          title: 'Informe Final' do %>
-                <i class="fa fa-file-pdf-o"></i> Final
+                          data: { toggle: 'tooltip' }, title: 'Informe Final', class: 'popup' do %>
+                <button class="btn btn-xs btn-danger">
+                  <i class="fa fa-file-pdf-o"></i> Informe Final
+                </button>
               <% end %>
+              <br/>
             <% end %>
 
-            <%# Revisar informe %>
-            <%= link_to revisioninter_interventorias_path(id: interventoria.id),
-                        class: 'btn btn-xs btn-success' do %>
-              <i class="fa fa-check"></i> Revisar
+            <% limite = Parametro.find_by(id: 31)&.valor.to_s %>
+            <% if Time.now.strftime("%Y-%m-%d %H:%M:%S") <= limite %>
+              <%= link_to "Revisar",
+                          revisioninter_interventorias_path(id: interventoria.id),
+                          class: "btn btn-xs btn-success" %>
+            <% else %>
+              <span class="text-danger">Ha superado el límite: <%= limite %></span>
             <% end %>
           </td>
-          <td class="text-center"><%= interventoria.updated_at&.strftime("%Y-%m-%d %H:%M") %></td>
-          <td class="text-center"><%= interventoria.identificacion_contratista %></td>
-          <td class="text-left"><%= interventoria.nombre_contratista %></td>
           <td class="text-center">
-            <%= interventoria.anno %> - <%= interventoria.desc_mes %>
+            <%= interventoria.updated_at.strftime("%Y-%m-%d %H:%M:%S") rescue nil %>
+          </td>
+          <td class="text-center">
+            <%= interventoria.contrato.empleado.identificacion rescue nil %>
+          </td>
+          <td class="text-justify">
+            <% if interventoria.contrato.contratosimagenes.exists? %>
+              <a href="javascript:void(0);"
+                 onclick="SINO('demoint1_<%= interventoria.id %>')">
+                <%= interventoria.contrato.empleado.nombres rescue nil %>
+              </a>
+              <div id="demoint1_<%= interventoria.id %>" style="display:none;">
+                <% interventoria.contrato.contratosimagenes.order(created_at: :DESC).each do |img| %>
+                  <%= link_to img.descripcion, img.contrato.url(:original, false), class: 'popup' %>
+                  <br/>
+                <% end %>
+              </div>
+            <% else %>
+              <div style="color:red;" class="camposDescN11">
+                <%= interventoria.contrato.empleado.nombres rescue nil %>
+              </div>
+            <% end %>
+          </td>
+          <td class="text-center">
+            <%= interventoria.anno %> - <%= descmesmin(interventoria.mes) rescue nil %>
           </td>
         </tr>
       <% end %>
-      </tbody>
     </table>
   <% else %>
-    <div class="alert alert-success">
-      <i class="fa fa-check-circle"></i> No hay cuentas de cobro pendientes de revisión.
+    <div class="text-center" style="color:red;">
+      <i class="fa fa-info-circle"></i>
+      No hay Cuentas de Cobro pendientes de Revisión
     </div>
   <% end %>
 <% end %>
 
 <br>
 
-<%# ── CUENTAS REVISADAS (AÑO ACTUAL) ────────────────────────────────────── %>
-<% if @perfecha_supervisor %>
-  <legend>
-    <i class="fa fa-history"></i> Cuentas de Cobro Revisadas — Año <%= Date.today.year %>
-  </legend>
+<%# ── CUENTAS REVISADAS AÑO ACTUAL ───────────────────────────────────────── %>
+<legend>Cuentas de Cobro Revisadas</legend>
+<%
+  anno_actual = Date.today.year.to_s
+  mes_actual  = Date.today.month.to_s.rjust(2, '0')
 
-  <%
-    meses_con_interventoria = Interventoria
-      .where(contratosperfecha_id: @perfecha_supervisor.id, anno: Date.today.year.to_s)
-      .distinct
-      .pluck(:mes)
-      .sort
-      .reverse
-  %>
+  # Meses del año actual que tienen interventorías del supervisor
+  meses_revisados = Interventoria
+    .where(anno: anno_actual, interventorempleado_id: @interventorempleado_id)
+    .where("mes <= ?", mes_actual)
+    .where.not(estado: %w[REVISION REVISIONFINALINT])
+    .distinct
+    .pluck(:mes)
+    .sort
+    .reverse
+%>
+<table class="table table-bordered table-condensed table-striped">
+  <tr>
+    <td>
+      <% meses_revisados.each do |mes| %>
+        <% intervs = Interventoria
+          .where(anno: anno_actual, mes: mes, interventorempleado_id: @interventorempleado_id)
+          .order(updated_at: :asc) %>
+        <div style="font-size:13px; font-family: Tahoma;">
+          <strong>
+            <a href="javascript:void(0);"
+               onclick="SINO('demo1<%= anno_actual %>_<%= mes %>')">
+              <img src="/images/1nuevo.png"/>
+            </a>
+            &nbsp;
+            <a href="javascript:void(0);"
+               onclick="SINO('demo1<%= anno_actual %>_<%= mes %>')">
+              <%= anno_actual %> - <%= descmesmin(mes) %> (<%= intervs.count %>)
+            </a>
+          </strong>
+        </div>
+        <div id="demo1<%= anno_actual %>_<%= mes %>" style="display:none;">
+          <% if intervs.any? %>
+            <table class="table table-bordered table-condensed table-striped">
+              <tr class="thcolor">
+                <th width="18%" class="text-center">Acción</th>
+                <th width="15%" class="text-center">Fecha</th>
+                <th width="10%" class="text-center">Nro. Contrato</th>
+                <th width="10%" class="text-center">Estado</th>
+                <th class="text-center">Contratista</th>
+                <th width="12%" class="text-center">Periodo</th>
+              </tr>
+              <% intervs.each do |interventoria| %>
+                <tr valign="middle">
+                  <td class="text-center">
+                    <%= link_to verificacion_interventorias_path(id: interventoria.id),
+                                data: { toggle: 'tooltip' }, title: 'Informe', class: 'popup' do %>
+                      <button class="btn btn-xs btn-info">
+                        <i class="fa fa-file-pdf-o"></i> Informe
+                      </button>
+                    <% end %>
 
-  <% if meses_con_interventoria.empty? %>
-    <div class="alert alert-info"><i class="fa fa-info-circle"></i> No hay cuentas revisadas este año.</div>
-  <% else %>
-    <table class="table table-bordered table-condensed table-striped">
-      <tr>
-        <td>
-          <% meses_con_interventoria.each do |mes_num| %>
-            <%
-              interventorias_mes = Interventoria
-                .where(contratosperfecha_id: @perfecha_supervisor.id,
-                       anno: Date.today.year.to_s,
-                       mes:  mes_num.to_s)
-                .order(updated_at: :asc)
-              uid = "sup_#{Date.today.year}_#{mes_num}"
-            %>
-            <div style="font-size: 13px; font-family: Tahoma; margin: 4px 0;">
-              <strong>
-                <a href="javascript:void(0);" onclick="SINO('<%= uid %>')">
-                  <i class="fa fa-chevron-right"></i>
-                </a>
-                &nbsp;
-                <a href="javascript:void(0);" onclick="SINO('<%= uid %>')">
-                  <%= Date.today.year %> - <%= Interventoria::MESES[mes_num.to_i] %>
-                  <span class="badge"><%= interventorias_mes.count %></span>
-                </a>
-              </strong>
-            </div>
-
-            <div id="<%= uid %>" style="display: none; margin: 5px 20px;">
-              <% if interventorias_mes.any? %>
-                <table class="table table-bordered table-condensed table-striped">
-                  <thead>
-                  <tr class="thcolor">
-                    <th width="20%" class="text-center">Acción</th>
-                    <th width="14%" class="text-center">Fecha</th>
-                    <th width="12%" class="text-center">Nro. Contrato</th>
-                    <th width="10%" class="text-center">Estado</th>
-                    <th class="text-center">Contratista</th>
-                    <th width="13%" class="text-center">Periodo</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <% interventorias_mes.each do |interventoria| %>
-                    <tr>
-                      <td class="text-center">
-                        <%= link_to verificacion_interventorias_path(id: interventoria.id),
-                                    class: 'btn btn-xs btn-info popup' do %>
-                          <i class="fa fa-file-pdf-o"></i> Informe
-                        <% end %>
-
-                        <% if interventoria.firma_digital_supervisor.blank? && is_auth_c("interventoriaedicion") %>
-                          <%= link_to firmar_digital_interventorias_path(id: interventoria.id),
-                                      remote: true,
-                                      class: 'btn btn-xs btn-dropbox' do %>
-                            <i class="fa fa-pencil"></i> Firmar
-                          <% end %>
-                        <% else %>
-                          <%= link_to visualizaracum_interventorias_path(
-                                        contrato_id: interventoria.contrato_id,
-                                        ano: interventoria.anno,
-                                        mes: interventoria.mes),
-                                      class: 'btn btn-xs btn-warning popup' do %>
-                            <i class="fa fa-file-pdf-o"></i> Acumulado
-                          <% end %>
-                        <% end %>
-                      </td>
-                      <td class="text-center"><%= interventoria.updated_at&.strftime("%Y-%m-%d %H:%M") %></td>
-                      <td class="text-center"><%= interventoria.contrato&.nro_contrato %></td>
-                      <td class="text-center">
-                          <span class="label <%= label_estado_interventoria(interventoria.estado) %>">
-                            <%= interventoria.estado %>
-                          </span>
-                      </td>
-                      <td class="text-left"><%= interventoria.identificacion_contratista %> - <%= interventoria.nombre_contratista %></td>
-                      <td class="text-center"><%= interventoria.anno %> - <%= interventoria.desc_mes %></td>
-                    </tr>
-                  <% end %>
-                  </tbody>
-                </table>
-              <% else %>
-                <div class="alert alert-info alert-sm"><i class="fa fa-info-circle"></i> No hay cuentas.</div>
+                    <% if interventoria.firma_digital_supervisor.blank? && is_auth_c_interventoriaedicion %>
+                      <%= link_to firmar_digital_interventorias_path(
+                                    contrato_id: interventoria.contrato_id,
+                                    ano: interventoria.anno,
+                                    mes: interventoria.mes,
+                                    id: interventoria.id),
+                                  data: { toggle: 'tooltip' }, title: 'Firmar Informe', remote: true do %>
+                        <button class="btn btn-xs btn-dropbox">
+                          <i class="fa fa-pencil"></i> Firmar Informe
+                        </button>
+                      <% end %>
+                    <% else %>
+                      <% es_final = interventoria.contrato.fechafinal.present? &&
+                                    interventoria.contrato.fechafinal.strftime("%m") == interventoria.mes.to_s %>
+                      <%= link_to visualizaracum_interventorias_path(
+                                    contrato_id: interventoria.contrato_id,
+                                    ano: interventoria.anno,
+                                    mes: interventoria.mes),
+                                  data: { toggle: 'tooltip' },
+                                  title: es_final ? 'Informe Final' : 'Informe Acumulado',
+                                  class: 'popup' do %>
+                        <button class="btn btn-xs <%= es_final ? 'btn-dropbox' : 'btn-warning' %>">
+                          <i class="fa fa-file-pdf-o"></i>
+                          <%= es_final ? 'Inf. Final' : 'Acumulado' %>
+                        </button>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="text-center"><%= interventoria.updated_at.strftime("%Y-%m-%d %H:%M:%S") rescue nil %></td>
+                  <td class="text-center"><%= interventoria.contrato.nro_contrato rescue nil %></td>
+                  <td class="text-center"><%= interventoria.estado rescue nil %></td>
+                  <td class="text-left">
+                    <%= interventoria.contrato.empleado.identificacion rescue nil %> -
+                    <%= interventoria.contrato.empleado.nombres rescue nil %>
+                  </td>
+                  <td class="text-center">
+                    <%= interventoria.anno %> - <%= descmesmin(interventoria.mes) rescue nil %>
+                  </td>
+                </tr>
               <% end %>
+            </table>
+          <% else %>
+            <div class="text-center" style="color:red;">
+              <i class="fa fa-info-circle"></i> No hay cuentas de cobro
             </div>
           <% end %>
-        </td>
-      </tr>
-    </table>
-  <% end %>
-<% end %>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+</table>
 
+<br>
 
+<%# ── CUENTAS AÑO ANTERIOR ───────────────────────────────────────────────── %>
+<legend>Cuentas de Cobro Año Anterior</legend>
+<%
+  anno_anterior = (Date.today.year - 1).to_s
+  meses_anteriores = Interventoria
+    .where(anno: anno_anterior, interventorempleado_id: @interventorempleado_id)
+    .distinct
+    .pluck(:mes)
+    .sort
+    .reverse
+%>
+<table class="table table-bordered table-condensed table-striped">
+  <tr>
+    <td>
+      <% meses_anteriores.each do |mes| %>
+        <% intervs = Interventoria
+          .where(anno: anno_anterior, mes: mes, interventorempleado_id: @interventorempleado_id)
+          .order(updated_at: :asc) %>
+        <div style="font-size:13px; font-family: Tahoma;">
+          <strong>
+            <a href="javascript:void(0);"
+               onclick="SINO('demo2<%= anno_anterior %>_<%= mes %>')">
+              <img src="/images/1nuevo.png"/>
+            </a>
+            &nbsp;
+            <a href="javascript:void(0);"
+               onclick="SINO('demo2<%= anno_anterior %>_<%= mes %>')">
+              <%= anno_anterior %> - <%= descmesmin(mes) %> (<%= intervs.count %>)
+            </a>
+          </strong>
+        </div>
+        <div id="demo2<%= anno_anterior %>_<%= mes %>" style="display:none;">
+          <table class="table table-bordered table-condensed table-striped">
+            <tr class="thcolor">
+              <th width="18%" class="text-center">Acción</th>
+              <th width="15%" class="text-center">Fecha</th>
+              <th width="10%" class="text-center">Nro. Contrato</th>
+              <th width="10%" class="text-center">Estado</th>
+              <th class="text-center">Contratista</th>
+              <th width="12%" class="text-center">Periodo</th>
+            </tr>
+            <% intervs.each do |interventoria| %>
+              <tr valign="middle">
+                <td class="text-center">
+                  <%= link_to verificacion_interventorias_path(id: interventoria.id),
+                              data: { toggle: 'tooltip' }, title: 'Informe', class: 'popup' do %>
+                    <button class="btn btn-xs btn-info">
+                      <i class="fa fa-file-pdf-o"></i> Informe
+                    </button>
+                  <% end %>
+
+                  <% es_final = interventoria.contrato.fechafinal.present? &&
+                                interventoria.contrato.fechafinal.strftime("%m") == interventoria.mes.to_s %>
+                  <%= link_to visualizaracum_interventorias_path(
+                                contrato_id: interventoria.contrato_id,
+                                ano: interventoria.anno,
+                                mes: interventoria.mes),
+                              data: { toggle: 'tooltip' },
+                              title: es_final ? 'Informe Final' : 'Informe Acumulado',
+                              class: 'popup' do %>
+                    <button class="btn btn-xs <%= es_final ? 'btn-dropbox' : 'btn-warning' %>">
+                      <i class="fa fa-file-pdf-o"></i>
+                      <%= es_final ? 'Inf. Final' : 'Acumulado' %>
+                    </button>
+                  <% end %>
+                </td>
+                <td class="text-center"><%= interventoria.updated_at.strftime("%Y-%m-%d %H:%M:%S") rescue nil %></td>
+                <td class="text-center"><%= interventoria.contrato.nro_contrato rescue nil %></td>
+                <td class="text-center"><%= interventoria.estado rescue nil %></td>
+                <td class="text-left">
+                  <%= interventoria.contrato.empleado.identificacion rescue nil %> -
+                  <%= interventoria.contrato.empleado.nombres rescue nil %>
+                </td>
+                <td class="text-center">
+                  <%= interventoria.anno %> - <%= descmesmin(interventoria.mes) rescue nil %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      <% end %>
+    </td>
+  </tr>
+</table>

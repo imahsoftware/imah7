@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       get  :visualizaracum
       get  :informe_indicadores
       post :envio
+      get :verificacion
+      get :revisioninter
       post :aprobar
       post :rechazar
       resources :interactividades

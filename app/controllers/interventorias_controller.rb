@@ -66,9 +66,9 @@ class InterventoriasController < ApplicationController
                           termino, termino)
     end
 
-    scope = scope.where(anno: params[:anno])                     if params[:anno].present?
-    scope = scope.where(mes:  params[:mes].to_s.rjust(2, '0'))  if params[:mes].present?
-    scope = scope.where(estado: params[:estado])                 if params[:estado].present?
+    scope = scope.where(anno: params[:anno]) if params[:anno].present?
+    scope = scope.where(mes: params[:mes].to_s.rjust(2, '0')) if params[:mes].present?
+    scope = scope.where(estado: params[:estado]) if params[:estado].present?
 
     @interventorias = scope.order(anno: :desc, mes: :desc).limit(100)
     @sin_resultados = @interventorias.empty?
@@ -78,14 +78,11 @@ class InterventoriasController < ApplicationController
     end
   end
 
-
-
-
   # ─── CRUD BÁSICO ──────────────────────────────────────────────────────────
   def new
     @interventoria = Interventoria.new(
       contrato_id: params[:contrato_id],
-      etapa:       '1'
+      etapa: '1'
     )
     render :interventoria_form
   end
@@ -142,12 +139,12 @@ class InterventoriasController < ApplicationController
     msn = if @interventoria.estado.to_s == 'APROBADO' || @interventoria.fin_anno == 'SI'
             @interventoria.update!(estado: 'APROBADOGH',
                                    firma_digital_supervisor: SecureRandom.hex(14),
-                                   fecha_firma_supervisor:   Time.now)
+                                   fecha_firma_supervisor: Time.now)
             "INFORME APROBADO POR TALENTO HUMANO"
           else
             @interventoria.update!(estado: 'APROBADO',
                                    firma_digital_supervisor: SecureRandom.hex(14),
-                                   fecha_firma_supervisor:   Time.now)
+                                   fecha_firma_supervisor: Time.now)
             "INFORME APROBADO POR SUPERVISOR"
           end
     @interventoria.registrar_bitacora(is_admin, msn)
@@ -282,7 +279,7 @@ class InterventoriasController < ApplicationController
     if verificar_otp
       @interventoria.update!(
         firma_digital_empleado: SecureRandom.hex(14),
-        fecha_firma_empleado:   Time.now
+        fecha_firma_empleado: Time.now
       )
       flash[:notice] = "Tu informe ha sido firmado con éxito."
     else
@@ -292,48 +289,56 @@ class InterventoriasController < ApplicationController
   end
 
   # ─── VISTAS DE REVISION ───────────────────────────────────────────────────
-  def revisioninter;    end
-  def revisionfinal;    end
+  def revisioninter; end
+
+  def revisionfinal; end
+
   def verificacionfinal; end
-  def verificacion;     end
-  def firmar_digital;   end
+
+  def verificacion; end
+
+  def firmar_digital; end
 
   # ─── MODALES OTP ──────────────────────────────────────────────────────────
-  def aprobargh_modal;       end
-  def rechazargh_modal;      end
+  def aprobargh_modal; end
+
+  def rechazargh_modal; end
+
   def rechazarghfinal_modal; end
-  def aprobarghfinal_modal;  end
-  def aprobarcont_modal;     end
+
+  def aprobarghfinal_modal; end
+
+  def aprobarcont_modal; end
 
   # ─── CALCULO DE RETENCION (AJAX) ─────────────────────────────────────────
   # Un solo método reemplaza los 8 obs_* duplicados del original
   def recalcular_retencion
     @interventoria = Interventoria.find(params[:id])
     resultado = Interventoria.calcular_retencion(
-      valor_mes:            @interventoria.valor_mes.to_i,
-      salud:                params[:salud].to_i,
-      arl:                  params[:arl].to_i,
-      pension:              params[:pension].to_i,
-      interes_credito:      params[:interes_credito].to_i,
-      salud_prepagada:      params[:salud_prepagada].to_i,
-      dependientes:         params[:dependientes].to_i,
-      afc:                  params[:afc].to_i,
-      voluntarias:          params[:voluntarias].to_i,
-      base_uvt_config:      valor_config(:base_uvt),
+      valor_mes: @interventoria.valor_mes.to_i,
+      salud: params[:salud].to_i,
+      arl: params[:arl].to_i,
+      pension: params[:pension].to_i,
+      interes_credito: params[:interes_credito].to_i,
+      salud_prepagada: params[:salud_prepagada].to_i,
+      dependientes: params[:dependientes].to_i,
+      afc: params[:afc].to_i,
+      voluntarias: params[:voluntarias].to_i,
+      base_uvt_config: valor_config(:base_uvt),
       retefuente383_config: valor_config(:retefuente383),
       retefuente384_config: valor_config(:retefuente384)
     )
 
     @interventoria.assign_attributes(
-      salud:           params[:salud].to_i,
-      arl:             params[:arl].to_i,
-      pension:         params[:pension].to_i,
+      salud: params[:salud].to_i,
+      arl: params[:arl].to_i,
+      pension: params[:pension].to_i,
       interes_credito: params[:interes_credito].to_i,
       salud_prepagada: params[:salud_prepagada].to_i,
-      dependientes:    params[:dependientes].to_i,
-      afc:             params[:afc].to_i,
-      voluntarias:     params[:voluntarias].to_i,
-      subtotalr:       resultado[:subtotalr]
+      dependientes: params[:dependientes].to_i,
+      afc: params[:afc].to_i,
+      voluntarias: params[:voluntarias].to_i,
+      subtotalr: resultado[:subtotalr]
     )
     @interventoria.save
 
@@ -345,8 +350,8 @@ class InterventoriasController < ApplicationController
   def validar
     @interventoria = Interventoria.find_by(
       contrato_id: params[:contrato_id],
-      anno:        params[:ano],
-      mes:         params[:mes]
+      anno: params[:ano],
+      mes: params[:mes]
     )
     if @interventoria
       redirect_to edit_interventoria_path(@interventoria, etapa: '1')
@@ -365,8 +370,8 @@ class InterventoriasController < ApplicationController
   def borrar
     @interventoria = Interventoria.find_by(
       contrato_id: params[:contrato_id],
-      anno:        params[:ano],
-      mes:         params[:mes]
+      anno: params[:ano],
+      mes: params[:mes]
     )
     return redirect_to(interventorias_path, alert: "Informe no encontrado") unless @interventoria
     if @interventoria.bloqueado?
@@ -382,42 +387,42 @@ class InterventoriasController < ApplicationController
   # ─── VISUALIZACION ───────────────────────────────────────────────────────
   def visualizar
     @interventoria = Interventoria.find_by(
-      anno:        params[:ano],
-      mes:         params[:mes],
+      anno: params[:ano],
+      mes: params[:mes],
       contrato_id: params[:contrato_id]
     )
   end
 
   def visualizarfinal
-    @contrato      = Contrato.find(params[:contrato_id])
+    @contrato = Contrato.find(params[:contrato_id])
     @interventoria = Interventoria.find_by(anno: params[:ano], mes: params[:mes], contrato_id: params[:contrato_id])
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf:      "InformeFinal",
+        render pdf: "InformeFinal",
                template: "interventorias/visualizarfinal.html.erb",
                encoding: "UTF-8",
                page_size: 'Letter',
-               margin:   { top: 47, bottom: 35, left: 10, right: 10 },
-               footer:   { html: { template: 'menus/footer_informe_general.html.erb' } },
-               header:   { spacing: 10, html: { template: 'menus/header_informe_general.html.erb' } }
+               margin: { top: 47, bottom: 35, left: 10, right: 10 },
+               footer: { html: { template: 'menus/footer_informe_general.html.erb' } },
+               header: { spacing: 10, html: { template: 'menus/header_informe_general.html.erb' } }
       end
     end
   end
 
   def visualizaracum
-    @contrato      = Contrato.find(params[:contrato_id])
+    @contrato = Contrato.find(params[:contrato_id])
     @interventoria = Interventoria.find_by(anno: params[:ano], mes: params[:mes], contrato_id: params[:contrato_id])
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf:      "InformeAcum",
+        render pdf: "InformeAcum",
                template: "interventorias/visualizaracum.html.erb",
                encoding: "UTF-8",
                page_size: 'Letter',
-               margin:   { top: 47, bottom: 35, left: 10, right: 10 },
-               footer:   { html: { template: 'menus/footer_informe_general.html.erb' } },
-               header:   { spacing: 10, html: { template: 'menus/header_informe_general.html.erb' } }
+               margin: { top: 47, bottom: 35, left: 10, right: 10 },
+               footer: { html: { template: 'menus/footer_informe_general.html.erb' } },
+               header: { spacing: 10, html: { template: 'menus/header_informe_general.html.erb' } }
       end
     end
   end
@@ -432,7 +437,7 @@ class InterventoriasController < ApplicationController
   def informe_indicadores
     @tipo = params[:tipo]
     anno_actual = Date.today.year.to_s
-    mes_actual  = Date.today.month.to_s
+    mes_actual = Date.today.month.to_s
 
     @nombre, @interventorias = case @tipo
                                when '1' then ["Pendientes de envío",
@@ -443,7 +448,7 @@ class InterventoriasController < ApplicationController
                                               Interventoria.where(estado: %w[APROBADO REVISIONFINALGH], anno: anno_actual, mes: mes_actual)]
                                when '4' then ["Pendientes de reenvío por rechazados",
                                               Interventoria.where(estado: 'RECHAZADO', anno: anno_actual, mes: mes_actual)]
-                               else          [nil, Interventoria.none]
+                               else [nil, Interventoria.none]
                                end
 
     respond_to do |format|
@@ -455,6 +460,7 @@ class InterventoriasController < ApplicationController
   end
 
   # ─── PRIVATE ──────────────────────────────────────────────────────────────
+
   private
 
   def set_interventoria
@@ -491,34 +497,38 @@ class InterventoriasController < ApplicationController
   # Carga los datos del index según el rol/etapa del usuario
   def cargar_datos_por_etapa(user)
     anno_actual = Date.today.year.to_s
-    mes_actual  = Date.today.month.to_s
+    mes_actual = Date.today.month.to_s
 
     case user.etapa.to_s
     when 'SUPERVISOR'
-      # Cuentas pendientes de revisión para este supervisor
-      if user.identificacion.present?
-        @perfecha_supervisor = Contratosperfecha.joins(:contratospersona)
-                                                .find_by("contratospersonas.identificacion = ?", user.identificacion)
-        if @perfecha_supervisor
-          @interventorias = Interventoria
-                              .where(estado: %w[REVISION REVISIONFINALINT], contratosperfecha_id: @perfecha_supervisor.id)
-                              .order(updated_at: :asc)
-          @message_interventor = 'SI'
-        end
+      if user.contratospersona_id.present?
+        perfechas_ids = Contratosperfecha
+                          .where(contratospersona_id: user.contratospersona_id)
+                          .pluck(:id)
+        @interventorias = Interventoria
+                            .where(estado: %w[REVISION REVISIONFINALINT],
+                                   contratosperfecha_id: perfechas_ids)
+                            .order(updated_at: :asc)
+      else
+        # fallback: ve todas (admin/supervisor sin contratospersona_id)
+        @interventorias = Interventoria
+                            .where(estado: %w[REVISION REVISIONFINALINT])
+                            .order(updated_at: :asc)
       end
-
+      @interventorempleado_id = user.contratospersona_id # para filtrar revisadas
+      @message_interventor = 'SI'
     when 'TALENTO_HUMANO'
       if is_auth_c("interventoriagh")
-        @interventoriasgh  = Interventoria.where(estado: %w[APROBADO REVISIONFINALGH])
-                                          .order(updated_at: :asc)
-        @interventoriasok  = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA])
-                                          .order(updated_at: :asc)
+        @interventoriasgh = Interventoria.where(estado: %w[APROBADO REVISIONFINALGH])
+                                         .order(updated_at: :asc)
+        @interventoriasok = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA])
+                                         .order(updated_at: :asc)
       end
 
     when 'CONTABILIDAD'
       if is_auth_c("interventoriatesoreria")
-        @interventoriaste   = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA])
-                                           .order(updated_at: :asc)
+        @interventoriaste = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA])
+                                         .order(updated_at: :asc)
         @interventoriasteok = Interventoria.where(estado: %w[APROBADOGH TESORERIA])
                                            .order(updated_at: :asc)
       end
@@ -541,7 +551,7 @@ class InterventoriasController < ApplicationController
   # Verifica OTP usando ROTP
   def verificar_otp
     otp_code = (1..6).map { |i| params["nr#{i}"] }.join
-    totp     = ROTP::TOTP.new(is_admin.otp_secret)
+    totp = ROTP::TOTP.new(is_admin.otp_secret)
     @otp_valid = totp.verify(otp_code)
   end
 
@@ -566,14 +576,14 @@ class InterventoriasController < ApplicationController
   def crear_periodo_nuevo(contrato_id, ano, mes)
     perfecha = Contratosperfecha.find_by(contrato_id: contrato_id)
     interventoria = Interventoria.create!(
-      contrato_id:         contrato_id,
+      contrato_id: contrato_id,
       contratosperfecha_id: perfecha&.id,
-      anno:                ano,
-      mes:                 mes,
-      user_id:             is_admin,
-      estado:              'PENDIENTE',
-      etapa:               '1',
-      valor_mes:           perfecha&.salario.to_i
+      anno: ano,
+      mes: mes,
+      user_id: is_admin,
+      estado: 'PENDIENTE',
+      etapa: '1',
+      valor_mes: perfecha&.salario.to_i
     )
     interventoria.registrar_bitacora(is_admin, "SE CREA EL PROCESO")
     redirect_to edit_interventoria_path(interventoria, etapa: '1')
@@ -583,16 +593,16 @@ class InterventoriasController < ApplicationController
     # Aquí iría la lógica de recálculo que antes era prc_interventoriarecalculo
     # Se implementa en Ruby en lugar de stored procedure Oracle
     resultado = Interventoria.calcular_retencion(
-      valor_mes:            interventoria.valor_mes.to_i,
-      salud:                interventoria.salud.to_i,
-      arl:                  interventoria.arl.to_i,
-      pension:              interventoria.pension.to_i,
-      interes_credito:      interventoria.interes_credito.to_i,
-      salud_prepagada:      interventoria.salud_prepagada.to_i,
-      dependientes:         interventoria.dependientes.to_i,
-      afc:                  interventoria.afc.to_i,
-      voluntarias:          interventoria.voluntarias.to_i,
-      base_uvt_config:      valor_config(:base_uvt),
+      valor_mes: interventoria.valor_mes.to_i,
+      salud: interventoria.salud.to_i,
+      arl: interventoria.arl.to_i,
+      pension: interventoria.pension.to_i,
+      interes_credito: interventoria.interes_credito.to_i,
+      salud_prepagada: interventoria.salud_prepagada.to_i,
+      dependientes: interventoria.dependientes.to_i,
+      afc: interventoria.afc.to_i,
+      voluntarias: interventoria.voluntarias.to_i,
+      base_uvt_config: valor_config(:base_uvt),
       retefuente383_config: valor_config(:retefuente383),
       retefuente384_config: valor_config(:retefuente384)
     )
