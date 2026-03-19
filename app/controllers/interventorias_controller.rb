@@ -526,12 +526,25 @@ class InterventoriasController < ApplicationController
       end
 
     when 'CONTABILIDAD'
-      if is_auth_c("interventoriatesoreria")
-        @interventoriaste = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA])
-                                         .order(updated_at: :asc)
-        @interventoriasteok = Interventoria.where(estado: %w[APROBADOGH TESORERIA])
-                                           .order(updated_at: :asc)
+      if is_auth_c("interventoriacont")
+        anno_actual = Date.today.year.to_s
+        mes_actual  = Date.today.month
+
+        # Reemplaza fechascontables con Ruby puro
+        @objetos = (1..mes_actual).to_a.reverse.map do |m|
+          OpenStruct.new(
+            ano:  anno_actual,
+            mes:  m.to_s,
+            mesc: m.to_s.rjust(2, '0')
+          )
+        end
+
+        @interventoriaste   = Interventoria.where(anno: anno_actual, estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
+        @interventoriasteok = Interventoria.where(estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
       end
+    when 'TESORERIA'
+      @interventoriaste = Interventoria.where(anno: Date.today.year.to_s, estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
+      @interventoriasteok = Interventoria.where(estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
 
     when 'MI_CUENTA'
       # El contratista ve sus propios periodos

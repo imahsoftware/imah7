@@ -12,7 +12,11 @@
   <%= render 'dash_interventoriagh' %>
 
 <% elsif usr.etapa.to_s == 'CONTABILIDAD' && is_auth_c("interventoriatesoreria") %>
+
   <%= render 'dash_interventoriacont' %>
+
+<% elsif usr.etapa.to_s == 'TESORERIA' %>
+  <%= render 'dash_tesoreria' %>
 
 <% elsif usr.etapa.to_s == 'INDICADORES' %>
   <%= render 'reporte' %>

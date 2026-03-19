@@ -1,0 +1,66 @@
+<legend>Validacion Tesoreria</legend>
+<% if @interventoriaste.count.to_i > 0 %>
+  <!--table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="sortable"-->
+  <table class="table table-bordered table-condensed table-striped">
+    <tr class="thcolor">
+      <th width="20%" class="text-center">Acción</th>
+      <th width="10%" height="20" class="text-center">Fecha</th>
+      <th width="10%" class="text-center">Identificación</th>
+      <th width="40%" class="text-center">Nombre</th>
+      <th width="10%" class="text-center">Periodo</th>
+    </tr>
+    <% @interventoriaste.each do |interventoria| %>
+      <tr valign="middle" class="<%= cycle('even1', 'odd1') %> text_tr">
+        <td class="text-center">
+          <%= link_to verificacion_interventorias_path(id: interventoria.id), data: { toggle: 'tooltip' }, title: 'Informe', class: 'popup' do %>
+            <button class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i> Informe </button>
+          <% end %>
+          <% if interventoria.mes.to_s == interventoria.contrato.fechafinalreal.strftime("%m").to_s && interventoria.anno.to_s == interventoria.contrato.fechafinalreal.strftime("%Y").to_s %>
+            <%= link_to visualizarfinal_interventorias_path(contrato_id: interventoria.contrato.id, ano: interventoria.anno, mes: interventoria.mes), data: { toggle: 'tooltip' }, title: 'Informe Final', class: 'popup' do %>
+              <button class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o"></i> Informe Final </button>
+            <% end %>
+            &nbsp;
+          <% end %>
+          <% if Time.now.strftime("%Y-%m-%d %X") <= Sifi.find(107).valor.to_s %>
+            <%#= link_to 'Informe 3', { :controller => "interventorias", :action => "revisioninter", :id => interventoria.id }, :class => "rubrolink" %>
+            <%= link_to "Informe", revisioninter_interventorias_path(id: interventoria.id), class: "btn btn-xs btn-success"%>
+
+          <% else %>
+            Ha superado el límite: <%= Sifi.find(107).valor.to_s %>
+          <% end -%>
+
+        </td>
+        <td class="text-center">
+          <%= interventoria.updated_at.strftime("%Y-%m-%d %X") rescue nil %>
+        </td>
+        <td class="text-center">
+          <%= interventoria.contrato.empleado.identificacion rescue nil %>
+        </td>
+        <td class="text-justify">
+          <% if interventoria.contrato.contratosimagenes.exists? %>
+
+            <a href="javascript:void(0);" onclick="SINO('demoint1_<%=interventoria.id%>')"><%= interventoria.contrato.empleado.nombres rescue nil %></a>
+            <div id="demoint1_<%= interventoria.id %>" style="display:none;">
+              <%# for contratosimagen in interventoria.contrato.contratosimagenes.find(:all, :order => 'created_at DESC') %>
+              <% for contratosimagen in interventoria.contrato.contratosimagenes.order(created_at: :DESC) %>
+                <%#= link_to contratosimagen.descripcion, contratosimagen.contrato.url(:original, false), { :popup => ['new_window', 'height=450,width=600,scrollbars=yes'], :class => "verlink" } %>
+                <%= link_to contratosimagen.descripcion, contratosimagen.contrato.url(:original, false),  class: 'popup' %>
+                <br/>
+              <% end %>
+            </div>
+
+          <% else %>
+            <div align="justify" style="color:red;" class="camposDescN11"><%= interventoria.contrato.empleado.nombres rescue nil %></div>
+          <% end %></td>
+        <td class="text-center">
+          <%= interventoria.anno %> - <%= descmesmin(interventoria.mes) rescue nil %>
+        </td>
+
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <div align="center" style="color:red;" class="campos"><img src="/images/connect.png"/> No hay Cuentas de Cobro pendientes de Revisión
+  </div>
+<% end %>
+<br>
