@@ -245,7 +245,6 @@ class Interventoria < ApplicationRecord
 
   def registrar_obligaciones(cargo_id)
     actividades = Contratoscargosact.where(contratoscargo_id: cargo_id)
-    byebug
     Rails.logger.debug ">>> actividades count: #{actividades.count}"
     Rails.logger.debug ">>> interventoria id: #{id}, user_id: #{user_id}"
 
