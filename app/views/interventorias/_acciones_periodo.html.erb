@@ -34,13 +34,7 @@
 
   <%# Enviar para revisión (estado PENDIENTE) %>
   <% if interventoria.estado.to_s == 'PENDIENTE' %>
-    <%= link_to enviogh_interventorias_path(id: interventoria.id),
-                method: :post,
-                data: { confirm: '¿Está seguro de enviar el informe para revisión?' },
-                class: 'btn btn-xs btn-warning',
-                title: 'Enviar a revisión' do %>
-      <i class="fa fa-send"></i> Enviar
-    <% end %>
+
   <% end %>
 
   <%# Informe final / acumulado para el supervisor %>

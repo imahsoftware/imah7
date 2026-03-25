@@ -14,6 +14,10 @@ class InterventoriasController < ApplicationController
   # Dashboard principal — el contenido varía según la etapa del usuario
   def index
     @user = current_user_obj
+    # Cargar empleado para verificar contratos vigentes en el sidebar
+    if @user.identificacion.present?
+      @empleado = Contratospersona.find_by(identificacion: @user.identificacion)
+    end
     cargar_datos_por_etapa(@user)
 
     if is_auth_c("interventoriagh")
@@ -353,8 +357,11 @@ class InterventoriasController < ApplicationController
       anno: params[:ano],
       mes: params[:mes]
     )
+
+
     if @interventoria
       redirect_to edit_interventoria_path(@interventoria, etapa: '1')
+
     else
       crear_periodo_nuevo(params[:contrato_id], params[:ano], params[:mes])
     end
@@ -598,7 +605,13 @@ class InterventoriasController < ApplicationController
       etapa: '1',
       valor_mes: perfecha&.salario.to_i
     )
+    contratospersona = Contratospersona.find_by(contrato_id: contrato_id)
+    cargo_id = contratospersona&.contratoscargo_id
+    interventoria.registrar_obligaciones(cargo_id) if cargo_id.present?
+
     interventoria.registrar_bitacora(is_admin, "SE CREA EL PROCESO")
+
+
     redirect_to edit_interventoria_path(interventoria, etapa: '1')
   end
 

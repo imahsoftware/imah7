@@ -3,10 +3,12 @@
     <%
       usr = @user
       estados = []
-      if @empleado.present?
-        if @empleado.contratos.where("COALESCE(to_char(fecha_masmodi,'YYYY'), to_char(fecha_final,'YYYY')) >= to_char(trunc(sysdate),'YYYY') AND estado NOT IN (?)", ['C']).present?
-          estados << 'MI_CUENTA'
-        end
+      if @empleado.present? && Contratosperfecha
+        .where(contratospersona_id: @empleado.id)
+        .where("fecha_inicio <= CURDATE() AND fecha_fin IS NULL")
+        .where(estado: 'ACTIVO')
+        .exists?
+        estados << 'MI_CUENTA'
       end
       if is_auth_c("interventoriabuscador")
         estados << 'BUSCADOR'

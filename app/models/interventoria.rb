@@ -3,7 +3,7 @@ class Interventoria < ApplicationRecord
   belongs_to :contratosperfecha
   belongs_to :user
   has_many :interactividades, dependent: :destroy
-  has_many :interbitacoras,   dependent: :destroy
+  has_many :interbitacoras, dependent: :destroy
 
   # ─── ESTADOS ────────────────────────────────────────────────────────────────
   ESTADOS = %w[PENDIENTE REVISION REVISIONFINALINT REVISIONFINALGH
@@ -30,17 +30,16 @@ class Interventoria < ApplicationRecord
   # Reemplaza la tabla fechascontables de Oracle
   def self.periodos_disponibles(fecha_inicio, fecha_fin = nil)
     return [] if fecha_inicio.nil?
-    inicio  = fecha_inicio.beginning_of_month
-    fin     = [fecha_fin, Date.today].compact.min.beginning_of_month
+    inicio = fecha_inicio.beginning_of_month
+    fin = [fecha_fin, Date.today].compact.min.beginning_of_month
     periodos = []
-    current  = inicio
+    current = inicio
     while current <= fin
       periodos << { ano: current.year.to_s, mes: current.month.to_s.rjust(2, '0') }
       current = current.next_month
     end
     periodos.reverse
   end
-
 
   def acceso
     if self.estado.to_s == "REVISION" or self.estado.to_s == "APROBADO"
@@ -142,30 +141,30 @@ class Interventoria < ApplicationRecord
                               interes_credito:, salud_prepagada:, dependientes:,
                               afc:, voluntarias:, base_uvt_config:,
                               retefuente383_config:, retefuente384_config:)
-    valor_mes      = valor_mes.to_i
-    salud          = salud.to_i
-    arl            = arl.to_i
-    pension        = pension.to_i
-    interes_credito= interes_credito.to_i
-    salud_prepagada= salud_prepagada.to_i
-    dependientes   = dependientes.to_i
-    afc            = afc.to_i
-    voluntarias    = voluntarias.to_i
+    valor_mes = valor_mes.to_i
+    salud = salud.to_i
+    arl = arl.to_i
+    pension = pension.to_i
+    interes_credito = interes_credito.to_i
+    salud_prepagada = salud_prepagada.to_i
+    dependientes = dependientes.to_i
+    afc = afc.to_i
+    voluntarias = voluntarias.to_i
 
-    subtotal      = salud + arl + interes_credito + salud_prepagada + dependientes
-    subtotalr     = pension + afc + voluntarias
-    valortotal    = valor_mes - subtotal - subtotalr
-    renta         = (valortotal * 25) / 100
+    subtotal = salud + arl + interes_credito + salud_prepagada + dependientes
+    subtotalr = pension + afc + voluntarias
+    valortotal = valor_mes - subtotal - subtotalr
+    renta = (valortotal * 25) / 100
     base_retefuente = valortotal - renta
-    base_uvt      = (base_retefuente.to_f / base_uvt_config.to_f).round(0).to_i
+    base_uvt = (base_retefuente.to_f / base_uvt_config.to_f).round(0).to_i
 
     # Método 383: tabla de rangos UVT
-    vlr1           = calcular_uvt_383(base_uvt)
-    retefuente383  = (vlr1 * retefuente383_config.to_f).round(-3).to_i
+    vlr1 = calcular_uvt_383(base_uvt)
+    retefuente383 = (vlr1 * retefuente383_config.to_f).round(-3).to_i
 
     # Método 384
-    base384        = ((valor_mes - salud - arl - pension).to_f / retefuente384_config.to_f).round(2)
-    retefuente384  = calcular_retefuente384(base384, retefuente384_config)
+    base384 = ((valor_mes - salud - arl - pension).to_f / retefuente384_config.to_f).round(2)
+    retefuente384 = calcular_retefuente384(base384, retefuente384_config)
 
     total = if retefuente383 > retefuente384
               valor_mes - retefuente383
@@ -174,15 +173,15 @@ class Interventoria < ApplicationRecord
             end
 
     {
-      subtotal:        subtotal,
-      subtotalr:       subtotalr,
-      subtotalt:       valortotal,
-      renta:           renta,
+      subtotal: subtotal,
+      subtotalr: subtotalr,
+      subtotalt: valortotal,
+      renta: renta,
       base_retefuente: base_retefuente,
-      base_uvt:        base_uvt,
-      retefuente383:   retefuente383,
-      retefuente384:   retefuente384,
-      total:           total
+      base_uvt: base_uvt,
+      retefuente383: retefuente383,
+      retefuente384: retefuente384,
+      total: total
     }
   end
 
@@ -190,13 +189,13 @@ class Interventoria < ApplicationRecord
     # Tabla de rangos UVT - ajustar según tabla vigente
     # Retorna el factor para aplicar
     case base_uvt
-    when 0..95     then 0
-    when 96..150   then (base_uvt - 95) * 19.0 / 100
-    when 151..360  then (base_uvt - 150) * 28.0 / 100 + 10.45
-    when 361..640  then (base_uvt - 360) * 33.0 / 100 + 69.25
-    when 641..945  then (base_uvt - 640) * 35.0 / 100 + 161.65
+    when 0..95 then 0
+    when 96..150 then (base_uvt - 95) * 19.0 / 100
+    when 151..360 then (base_uvt - 150) * 28.0 / 100 + 10.45
+    when 361..640 then (base_uvt - 360) * 33.0 / 100 + 69.25
+    when 641..945 then (base_uvt - 640) * 35.0 / 100 + 161.65
     when 946..2300 then (base_uvt - 945) * 37.0 / 100 + 268.40
-    else                (base_uvt - 2300) * 39.0 / 100 + 769.55
+    else (base_uvt - 2300) * 39.0 / 100 + 769.55
     end
   end
 
@@ -244,11 +243,32 @@ class Interventoria < ApplicationRecord
     "CONTRATO: #{nro} - PERIODO: #{periodo_actual}" rescue nil
   end
 
+  def registrar_obligaciones(cargo_id)
+    actividades = Contratoscargosact.where(contratoscargo_id: cargo_id)
+    byebug
+    Rails.logger.debug ">>> actividades count: #{actividades.count}"
+    Rails.logger.debug ">>> interventoria id: #{id}, user_id: #{user_id}"
+
+    actividades.each_with_index do |actividad, index|
+      Rails.logger.debug ">>> creando interactividad: #{actividad.descripcion}"
+      interactividad = Interactividad.new(
+        interventoria_id: id,
+        actividad: actividad.descripcion,
+        user_id: user_id,
+        consecutivo: index + 1
+      )
+      unless interactividad.save
+        Rails.logger.debug ">>> ERROR: #{interactividad.errors.full_messages}"
+      end
+
+    end
+  end
+
   def registrar_bitacora(user_id, mensaje)
     Interbitacora.create!(
-      user_id:         user_id,
+      user_id: user_id,
       interventoria_id: id,
-      observacion:     "#{texto_bitacora} - #{mensaje}"
+      observacion: "#{texto_bitacora} - #{mensaje}"
     )
   end
 
