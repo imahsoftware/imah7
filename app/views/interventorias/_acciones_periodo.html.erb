@@ -1,13 +1,13 @@
 <%# app/views/interventorias/_acciones_periodo.html.erb %>
-<%# Renderiza los botones de acción para un periodo dado %>
 <%# Variables: contrato, periodo, interventoria (puede ser nil), perfecha %>
 
 <% if interventoria.nil? %>
   <%# Periodo no generado — crear %>
   <%= link_to validar_interventorias_path(
-                contrato_id: contrato.id,
-                ano:         periodo[:ano],
-                mes:         periodo[:mes]),
+                contrato_id:          contrato.id,
+                contratosperfecha_id: perfecha.id,
+                ano:                  periodo[:ano],
+                mes:                  periodo[:mes]),
               method: :get,
               class: 'btn btn-xs btn-default',
               title: 'Generar informe' do %>
@@ -15,7 +15,6 @@
   <% end %>
 
 <% else %>
-  <%# Periodo existente — botones según estado %>
 
   <%# Ver / Editar informe %>
   <% if interventoria.editable? %>
@@ -32,47 +31,44 @@
     <% end %>
   <% end %>
 
-  <%# Enviar para revisión (estado PENDIENTE) %>
-  <% if interventoria.estado.to_s == 'PENDIENTE' %>
-
+  <%# Recargar actividades — solo si está editable y no tiene ninguna %>
+  <% if interventoria.editable? && !interventoria.bloqueado? && interventoria.interactividades.empty? %>
+    <%= link_to recargar_actividades_interventoria_path(interventoria),
+                method: :post,
+                data: { confirm: '¿Recargar las actividades del cargo? Se eliminarán las existentes.' },
+                class: 'btn btn-xs btn-warning',
+                title: 'Recargar actividades del cargo' do %>
+      <i class="fa fa-refresh"></i> Actividades
+    <% end %>
   <% end %>
 
-  <%# Informe final / acumulado para el supervisor %>
+  <%# Informe acumulado / final %>
   <% if interventoria.firmado_supervisor? %>
     <% es_ultimo_mes = contrato.fecha_fin&.strftime("%m") == periodo[:mes] &&
                        contrato.fecha_fin&.strftime("%Y") == periodo[:ano] %>
-    <% if es_ultimo_mes %>
-      <%= link_to visualizaracum_interventorias_path(
-                    contrato_id: contrato.id,
-                    ano:         periodo[:ano],
-                    mes:         periodo[:mes]),
-                  class: 'btn btn-xs btn-dropbox popup',
-                  title: 'Informe Final' do %>
-        <i class="fa fa-file-pdf-o"></i> Final
-      <% end %>
-    <% else %>
-      <%= link_to visualizaracum_interventorias_path(
-                    contrato_id: contrato.id,
-                    ano:         periodo[:ano],
-                    mes:         periodo[:mes]),
-                  class: 'btn btn-xs btn-warning popup',
-                  title: 'Informe Acumulado' do %>
-        <i class="fa fa-file-pdf-o"></i> Acum.
-      <% end %>
-    <% end %>
-  <% end %>
-
-  <%# Eliminar (solo si no está bloqueado) %>
-  <% if interventoria.editable? && !interventoria.bloqueado? %>
-    <%= link_to borrar_interventorias_path(
+    <%= link_to visualizaracum_interventorias_path(
                   contrato_id: contrato.id,
                   ano:         periodo[:ano],
                   mes:         periodo[:mes]),
+                class: "btn btn-xs #{es_ultimo_mes ? 'btn-dropbox' : 'btn-warning'} popup",
+                title: es_ultimo_mes ? 'Informe Final' : 'Informe Acumulado' do %>
+      <i class="fa fa-file-pdf-o"></i> <%= es_ultimo_mes ? 'Final' : 'Acum.' %>
+    <% end %>
+  <% end %>
+
+  <%# Eliminar — solo si editable y no bloqueado %>
+  <% if interventoria.editable? && !interventoria.bloqueado? %>
+    <%= link_to borrar_interventorias_path(
+                  contrato_id:          contrato.id,
+                  contratosperfecha_id: perfecha.id,
+                  ano:                  periodo[:ano],
+                  mes:                  periodo[:mes]),
                 method: :delete,
                 data: { confirm: 'Atención: Se eliminarán todas las actividades, soportes y observaciones de este periodo. ¿Está seguro?' },
                 class: 'btn btn-xs btn-danger',
-                title: 'Eliminar' do %>
+                title: 'Eliminar informe' do %>
       <i class="fa fa-trash"></i>
     <% end %>
   <% end %>
+
 <% end %>

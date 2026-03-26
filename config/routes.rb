@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     collection do
       get  :buscar
       get  :validar
-      get  :borrar
+      delete :borrar
       get  :etapar
       get  :visualizar
       get  :visualizarfinal
@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       post :firmar_informes
       post :validaresp
       post :recalcular_retencion
+      post :recargar_actividades
     end
   end
 

@@ -50,6 +50,81 @@
     .ia-desarrollo-preview { word-wrap: break-word; white-space: normal; overflow-wrap: break-word; }
 </style>
 
+<%# ── LÍNEA DE TIEMPO DEL ESTADO ACTUAL ──────────────────────────────────── %>
+<%
+  estado_actual = @interventoria.estado.to_s
+  pasos = [
+    { estado: 'PENDIENTE',         icono: 'fa-clock-o',       color: '#bdc3c7', label: 'Pendiente envío' },
+    { estado: 'REVISION',          icono: 'fa-paper-plane',   color: '#f39c12', label: 'En revisión' },
+    { estado: 'RECHAZADO',         icono: 'fa-times-circle',  color: '#e74c3c', label: 'Rechazado' },
+    { estado: 'APROBADO',          icono: 'fa-check-circle',  color: '#27ae60', label: 'Aprobado supervisor' },
+    { estado: 'REVISIONFINALGH',   icono: 'fa-shield',        color: '#3c8dbc', label: 'Revisión SGSST' },
+    { estado: 'RECHAZADOGH',       icono: 'fa-times-circle',  color: '#e74c3c', label: 'Rechazado SGSST' },
+    { estado: 'APROBADOGH',        icono: 'fa-thumbs-up',     color: '#3c8dbc', label: 'Aprobado SGSST' },
+    { estado: 'APROBADOCONT',      icono: 'fa-money',         color: '#00a65a', label: 'Contabilizado' },
+  ]
+  # Índice del estado actual en el flujo principal (ignorar rechazos para el progreso)
+  flujo_principal = %w[PENDIENTE REVISION APROBADO REVISIONFINALGH APROBADOGH APROBADOCONT]
+  idx_actual = flujo_principal.index(estado_actual) || -1
+%>
+
+<div class="box box-default box-solid" style="margin-bottom: 12px;">
+  <div class="box-header with-border" style="padding: 8px 15px;">
+    <h4 class="box-title" style="font-size: 13px;">
+      <i class="fa fa-map-signs"></i> Estado actual del informe:
+      <strong style="color: #3c8dbc; margin-left: 5px;"><%= estado_actual %></strong>
+      &nbsp;—&nbsp;
+      <small>
+        Periodo: <strong><%= Interventoria::MESES[@interventoria.mes.to_i] %> <%= @interventoria.anno %></strong>
+        &nbsp;|&nbsp;
+        Contrato: <strong><%= @interventoria.contrato&.nro_contrato %></strong>
+      </small>
+    </h4>
+  </div>
+  <div class="box-body" style="padding: 14px 15px 10px;">
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0; font-size: 11px;">
+      <% pasos.each_with_index do |paso, i| %>
+        <%
+          es_actual   = paso[:estado] == estado_actual
+          es_rechazo  = paso[:estado].start_with?('RECHAZADO')
+          en_flujo    = flujo_principal.index(paso[:estado])
+          completado  = en_flujo && idx_actual > en_flujo
+          color_circulo = if es_actual
+                            paso[:color]
+                          elsif completado
+                            '#27ae60'
+                          else
+                            '#dde1e7'
+                          end
+          color_texto = es_actual ? '#333' : (completado ? '#27ae60' : '#aaa')
+          borde_actual = es_actual ? "3px solid #{paso[:color]}" : 'none'
+        %>
+        <div style="text-align: center; min-width: 75px; <%= es_rechazo && !es_actual ? 'opacity:0.4;' : '' %>">
+          <div style="width: 36px; height: 36px; border-radius: 50%;
+                      background: <%= color_circulo %>; color: #fff;
+                      display: flex; align-items: center; justify-content: center;
+                      margin: 0 auto 4px; font-size: 15px;
+                      box-shadow: <%= es_actual ? "0 0 0 3px #{paso[:color]}44" : 'none' %>;">
+            <% if completado %>
+              <i class="fa fa-check"></i>
+            <% else %>
+              <i class="fa <%= paso[:icono] %>"></i>
+            <% end %>
+          </div>
+          <span style="color: <%= color_texto %>; font-weight: <%= es_actual ? '700' : '400' %>;">
+            <%= paso[:label] %>
+          </span>
+        </div>
+        <% unless i == pasos.size - 1 %>
+          <div style="flex: 1; min-width: 10px; height: 2px;
+                      background: <%= completado ? '#27ae60' : '#dde1e7' %>;
+                      margin: 0 2px; margin-bottom: 18px;"></div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
 <%# ── MENSAJE DE ESTADO ────────────────────────────────────────────────────── %>
 <% if @interventoria.editable? %>
   <%
@@ -115,6 +190,15 @@
         <div class="alert alert-warning">
           <i class="fa fa-info-circle"></i>
           No hay obligaciones registradas para este informe.
+          <% if @interventoria.editable? && !@interventoria.bloqueado? %>
+            &nbsp;
+            <%= link_to recargar_actividades_interventoria_path(@interventoria),
+                        method: :post,
+                        data: { confirm: '¿Recargar las actividades del cargo asignado?' },
+                        class: 'btn btn-xs btn-warning' do %>
+              <i class="fa fa-refresh"></i> Recargar actividades
+            <% end %>
+          <% end %>
         </div>
       <% end %>
     </div>

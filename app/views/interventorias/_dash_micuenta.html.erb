@@ -17,7 +17,9 @@
     <% next unless contrato %>
 
     <%
-      periodos = Interventoria.periodos_disponibles(contrato.fecha_inicio, contrato.fecha_fin)
+      # Los periodos se calculan desde la fecha del contratosperfecha (vinculación del contratista),
+      # NO desde la fecha del contrato. Si no hay fecha_fin en perfecha, corre hasta hoy.
+      periodos = Interventoria.periodos_disponibles(perfecha.fecha_inicio, perfecha.fecha_fin)
     %>
 
     <div class="box box-primary box-solid" style="margin-bottom: 20px;">
@@ -25,7 +27,7 @@
         <h3 class="box-title">
           <i class="fa fa-file-text-o"></i>
           Contrato N° <%= contrato.nro_contrato %>
-          &nbsp;<small><%= contrato.tiposcontrato&.descripcion %></small>
+          &nbsp;<span class="label" style="background:#f39c12; color:#fff; font-size:11px;"><%= contrato.tiposcontrato&.descripcion %></span>
         </h3>
         <div class="box-tools pull-right">
           <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -54,13 +56,22 @@
               <tr>
                 <td><strong>Vigencia:</strong></td>
                 <td>
-                  <%= contrato.fecha_inicio&.strftime("%d/%m/%Y") %> al
-                  <%= contrato.fecha_fin&.strftime("%d/%m/%Y") %>
+                  <%# Vigencia basada en contratosperfecha, no en el contrato %>
+                  <%= perfecha.fecha_inicio&.strftime("%d/%m/%Y") %>
+                  <% if perfecha.fecha_fin.present? %>
+                    al <%= perfecha.fecha_fin.strftime("%d/%m/%Y") %>
+                  <% else %>
+                    <span class="label label-success" style="font-size: 10px;">En ejecución</span>
+                  <% end %>
                 </td>
               </tr>
               <tr>
                 <td><strong>Estado contrato:</strong></td>
-                <td><span class="label label-<%= contrato.estado == 'A' ? 'success' : 'default' %>"><%= contrato.estado %></span></td>
+                <td>
+                  <span class="label label-<%= perfecha.estado.to_s == 'ACTIVO' ? 'success' : 'default' %>">
+                    <%= perfecha.estado %>
+                  </span>
+                </td>
               </tr>
             </table>
           </div>
@@ -84,9 +95,10 @@
                 <% periodos.each do |periodo| %>
                   <%
                     interventoria = Interventoria.find_by(
-                      contrato_id: contrato.id,
-                      anno:        periodo[:ano],
-                      mes:         periodo[:mes].to_s.to_i.to_s
+                      contrato_id:             contrato.id,
+                      contratosperfecha_id:    perfecha.id,
+                      anno:                    periodo[:ano],
+                      mes:                     periodo[:mes].to_s.to_i.to_s
                     )
                     estado_badge = icono_estado_interventoria(interventoria)
                   %>
@@ -97,10 +109,10 @@
                     </td>
                     <td class="text-center">
                       <%= render 'acciones_periodo',
-                                 contrato:     contrato,
-                                 periodo:      periodo,
+                                 contrato:      contrato,
+                                 periodo:       periodo,
                                  interventoria: interventoria,
-                                 perfecha:     perfecha %>
+                                 perfecha:      perfecha %>
                     </td>
                   </tr>
                 <% end %>

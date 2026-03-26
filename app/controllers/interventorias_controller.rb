@@ -8,7 +8,7 @@ class InterventoriasController < ApplicationController
                                               aprobarghfinal rechazarghfinal aprobarcont
                                               rechazarcont firmar_digital firmar_informes
                                               revisioninter revisionfinal verificacionfinal
-                                              verificacion validaresp]
+                                              verificacion validaresp recargar_actividades]
 
   # ─── INDEX ─────────────────────────────────────────────────────────────────
   # Dashboard principal — el contenido varía según la etapa del usuario
@@ -353,15 +353,14 @@ class InterventoriasController < ApplicationController
   # Crea el informe del periodo si no existe, o redirige al existente
   def validar
     @interventoria = Interventoria.find_by(
-      contrato_id: params[:contrato_id],
-      anno: params[:ano],
-      mes: params[:mes]
+      contrato_id:          params[:contrato_id],
+      contratosperfecha_id: params[:contratosperfecha_id],
+      anno:                 params[:ano],
+      mes:                  params[:mes]
     )
-
 
     if @interventoria
       redirect_to edit_interventoria_path(@interventoria, etapa: '1')
-
     else
       crear_periodo_nuevo(params[:contrato_id], params[:ano], params[:mes])
     end
@@ -376,9 +375,16 @@ class InterventoriasController < ApplicationController
   # Elimina un periodo
   def borrar
     @interventoria = Interventoria.find_by(
+      contrato_id:          params[:contrato_id],
+      contratosperfecha_id: params[:contratosperfecha_id],
+      anno:                 params[:ano],
+      mes:                  params[:mes]
+    )
+    # fallback sin perfecha_id por compatibilidad con links viejos
+    @interventoria ||= Interventoria.find_by(
       contrato_id: params[:contrato_id],
-      anno: params[:ano],
-      mes: params[:mes]
+      anno:        params[:ano],
+      mes:         params[:mes]
     )
     return redirect_to(interventorias_path, alert: "Informe no encontrado") unless @interventoria
     if @interventoria.bloqueado?
@@ -389,6 +395,25 @@ class InterventoriasController < ApplicationController
       flash[:notice] = "El informe ha sido eliminado con éxito."
     end
     redirect_to interventorias_path
+  end
+
+  # Recarga las actividades de un informe que quedó sin ellas
+  def recargar_actividades
+    @interventoria = Interventoria.find(params[:id])
+    if @interventoria.bloqueado?
+      flash[:alert] = "Informe bloqueado, no se pueden recargar actividades."
+      return redirect_to edit_interventoria_path(@interventoria, etapa: '21')
+    end
+    perfecha = @interventoria.contratosperfecha
+    cargo_id = perfecha&.contratoscargo_id
+    if cargo_id.present?
+      @interventoria.interactividades.destroy_all
+      @interventoria.registrar_obligaciones(cargo_id)
+      flash[:notice] = "Actividades recargadas con éxito (#{@interventoria.interactividades.count} obligaciones)."
+    else
+      flash[:alert] = "No se encontró el cargo asociado. Verifique la configuración del contrato."
+    end
+    redirect_to edit_interventoria_path(@interventoria, etapa: '21')
   end
 
   # ─── VISUALIZACION ───────────────────────────────────────────────────────
@@ -594,19 +619,24 @@ class InterventoriasController < ApplicationController
 
   # Crea un nuevo periodo de interventoría
   def crear_periodo_nuevo(contrato_id, ano, mes)
-    perfecha = Contratosperfecha.find_by(contrato_id: contrato_id)
+    perfecha = if params[:contratosperfecha_id].present?
+                 Contratosperfecha.find(params[:contratosperfecha_id])
+               else
+                 Contratosperfecha.find_by(contrato_id: contrato_id)
+               end
     interventoria = Interventoria.create!(
-      contrato_id: contrato_id,
-      contratosperfecha_id: perfecha&.id,
-      anno: ano,
-      mes: mes,
-      user_id: is_admin,
-      estado: 'PENDIENTE',
-      etapa: '1',
-      valor_mes: perfecha&.salario.to_i
+      contrato_id:             contrato_id,
+      contratosperfecha_id:    perfecha&.id,
+      anno:                    ano,
+      mes:                     mes,
+      user_id:                 is_admin,
+      estado:                  'PENDIENTE',
+      etapa:                   '1',
+      valor_mes:               perfecha&.salario.to_i
     )
-    contratospersona = Contratospersona.find_by(contrato_id: contrato_id)
-    cargo_id = contratospersona&.contratoscargo_id
+    # El cargo_id viene directo del contratosperfecha — evita ambigüedad cuando
+    # hay múltiples contratistas en el mismo contrato
+    cargo_id = perfecha&.contratoscargo_id
     interventoria.registrar_obligaciones(cargo_id) if cargo_id.present?
 
     interventoria.registrar_bitacora(is_admin, "SE CREA EL PROCESO")
