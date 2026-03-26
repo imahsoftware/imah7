@@ -1,0 +1,182 @@
+<%# app/views/interventorias/verificacion.html.erb %>
+<%# Vista de solo lectura del informe — para cualquier rol %>
+<%
+  contrato = @interventoria.contrato
+  perfecha = @interventoria.contratosperfecha
+  persona  = perfecha&.contratospersona
+  # Si valor_mes no está diligenciado aún, mostrar el salario del perfecha
+  valor_mes_display = @interventoria.valor_mes.to_i > 0 ? @interventoria.valor_mes.to_i : perfecha&.salariofinal.to_i
+  total_display     = @interventoria.total.to_i > 0 ? @interventoria.total.to_i : nil
+%>
+
+<div class="vf-header">
+  <div class="vf-title">
+    <i class="fa fa-file-text-o"></i>
+    Informe — Contrato N° <%= contrato&.nro_contrato %>
+  </div>
+  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+    <span class="vf-badge" style="background:#f39c12;"><%= contrato&.tiposcontrato&.descripcion %></span>
+    <span class="vf-badge" style="background:#3c8dbc;"><%= @interventoria.periodo_actual %></span>
+    <span class="vf-badge" style="background:<%= @interventoria.estado.to_s.start_with?('APROBADO') ? '#27ae60' : '#e67e22' %>;">
+      <%= @interventoria.estado %>
+    </span>
+    <button onclick="window.close();" class="btn btn-xs btn-default">
+      <i class="fa fa-times"></i> Cerrar
+    </button>
+  </div>
+</div>
+
+<%# ── CONTRATISTA + CONTRATO ─────────────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+  <div class="vf-card">
+    <div class="vf-card-hdr"><i class="fa fa-user"></i> Contratista</div>
+    <div class="vf-card-body">
+      <div class="vf-grid">
+        <div class="vf-field full">
+          <label>Nombre</label>
+          <span style="font-size:14px; font-weight:700;"><%= persona&.nombre_completo %></span>
+        </div>
+        <div class="vf-field">
+          <label>Identificación</label>
+          <span><%= persona&.tipodoc_identificacion.presence || "#{persona&.tipo_identificacion} #{persona&.identificacion}" %></span>
+        </div>
+        <div class="vf-field">
+          <label>Cargo / Perfil</label>
+          <span><%= perfecha&.contratoscargo&.perfil %></span>
+        </div>
+        <div class="vf-field">
+          <label>Correo</label>
+          <span><%= persona&.correo %></span>
+        </div>
+        <div class="vf-field">
+          <label>Teléfono</label>
+          <span><%= persona&.tele %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vf-card">
+    <div class="vf-card-hdr"><i class="fa fa-file-text-o"></i> Contrato</div>
+    <div class="vf-card-body">
+      <div class="vf-grid">
+        <div class="vf-field full">
+          <label>Objeto</label>
+          <span><%= contrato&.objeto %></span>
+        </div>
+        <div class="vf-field">
+          <label>Valor Mensual</label>
+          <span style="font-size:14px; font-weight:700;">
+            $ <%= number_to_currency(perfecha&.salariofinal, precision: 0, unit: '', delimiter: '.') %>
+          </span>
+        </div>
+        <div class="vf-field">
+          <label>Vigencia</label>
+          <span>
+            <%= perfecha&.fecha_inicio&.strftime("%d/%m/%Y") %>
+            <% if perfecha&.fecha_fin.present? %>
+              al <%= perfecha.fecha_fin.strftime("%d/%m/%Y") %>
+            <% else %>
+              <span style="background:#27ae60;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;">En ejecución</span>
+            <% end %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── CUENTA DE COBRO ─────────────────────────────────────────────────────── %>
+<div class="vf-card">
+  <div class="vf-card-hdr"><i class="fa fa-calculator"></i> Cuenta de Cobro</div>
+  <div class="vf-card-body">
+    <div class="vf-grid">
+      <div class="vf-field">
+        <label>Honorarios del Periodo</label>
+        <span style="font-size:15px; font-weight:700;">$ <%= number_to_currency(valor_mes_display, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="vf-field">
+        <label>Total a Pagar</label>
+        <% if total_display %>
+          <span style="font-size:15px; font-weight:700; color:#27ae60;">$ <%= number_to_currency(total_display, precision: 0, unit: '', delimiter: '.') %></span>
+        <% else %>
+          <span style="color:#aaa; font-size:12px;"><i class="fa fa-info-circle"></i> Pendiente de diligenciar cuenta de cobro</span>
+        <% end %>
+      </div>
+      <div class="vf-field">
+        <label>Aportes Salud</label>
+        <span>$ <%= number_to_currency(@interventoria.salud, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="vf-field">
+        <label>Aportes Pensión</label>
+        <span>$ <%= number_to_currency(@interventoria.pension, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="vf-field">
+        <label>Aportes ARL</label>
+        <span>$ <%= number_to_currency(@interventoria.arl, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="vf-field">
+        <label>Retención en la Fuente</label>
+        <span>$ <%= number_to_currency([@interventoria.retefuente383.to_i, @interventoria.retefuente384.to_i].max, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="vf-field full">
+        <label>Observaciones y Forma de Pago</label>
+        <span><%= @interventoria.observaciones %></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── ACTIVIDADES ─────────────────────────────────────────────────────────── %>
+<div class="vf-card">
+  <div class="vf-card-hdr">
+    <i class="fa fa-list-ul"></i> Obligaciones del Contrato
+    <span class="badge" style="background:#3c8dbc; margin-left:6px;"><%= @interventoria.interactividades.count %></span>
+  </div>
+  <div class="vf-card-body" style="padding:0;">
+    <% if @interventoria.interactividades.any? %>
+      <table class="table table-condensed table-striped" style="margin:0; font-size:12px;">
+        <thead>
+          <tr class="thcolor">
+            <th width="5%" class="text-center">N°</th>
+            <th width="30%">Actividad</th>
+            <th>Desarrollo</th>
+            <th width="8%" class="text-center">Soporte</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @interventoria.interactividades.order(:consecutivo).each do |act| %>
+            <tr>
+              <td class="text-center"><%= act.consecutivo %></td>
+              <td><%= act.actividad %></td>
+              <td style="color:<%= act.desarrollo.present? ? '#2c3e50' : '#ccc' %>; white-space:pre-wrap;">
+                <%= act.desarrollo.presence || 'Sin desarrollo' %>
+              </td>
+              <td class="text-center">
+                <% if act.interactimagenes.exists? %>
+                  <% act.interactimagenes.each do |img| %>
+                    <%= link_to img.interactividad.url(:original, false),
+                                onclick: 'window.open(this.href,"nw","height=600,width=830,scrollbars=yes");return false',
+                                class: 'btn btn-xs btn-info',
+                                title: img.interactividad_file_name do %>
+                      <i class="fa fa-paperclip"></i>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <span style="color:#ccc;">—</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="alert alert-warning" style="margin:10px;">
+        <i class="fa fa-exclamation-triangle"></i> No hay actividades registradas.
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# ── BITÁCORA ────────────────────────────────────────────────────────────── %>
+<%= render 'bitacora' %>

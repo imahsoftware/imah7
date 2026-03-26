@@ -1,0 +1,296 @@
+<%# app/views/interventorias/revisioninter.html.erb %>
+<%# Vista del supervisor para revisar, aprobar o rechazar un informe %>
+<%
+  contrato = @interventoria.contrato
+  perfecha = @interventoria.contratosperfecha
+  persona  = perfecha&.contratospersona
+  valor_mes_display = @interventoria.valor_mes.to_i > 0 ? @interventoria.valor_mes.to_i : perfecha&.salariofinal.to_i
+  total_display     = @interventoria.total.to_i > 0 ? @interventoria.total.to_i : nil
+%>
+
+<style>
+  .rv-header     { background:#3c4b5e; color:#fff; border-radius:6px; padding:14px 20px;
+                   display:flex; align-items:center; justify-content:space-between;
+                   flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .rv-title      { font-size:15px; font-weight:700; display:flex; align-items:center; gap:10px; }
+  .rv-badge      { padding:3px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+  .rv-card       { background:#fff; border:1px solid #e0e4ea; border-radius:6px;
+                   margin-bottom:14px; overflow:hidden; }
+  .rv-card-hdr   { background:#f4f6f9; border-bottom:1px solid #e0e4ea; padding:9px 16px;
+                   font-size:12px; font-weight:700; color:#3c4b5e; text-transform:uppercase;
+                   letter-spacing:.5px; display:flex; align-items:center; gap:7px; }
+  .rv-card-body  { padding:14px 16px; }
+  .rv-grid       { display:grid; grid-template-columns:1fr 1fr; gap:10px 20px; font-size:12.5px; }
+  .rv-field label{ display:block; font-size:10px; font-weight:700; color:#3c8dbc;
+                   text-transform:uppercase; letter-spacing:.5px; margin-bottom:2px;
+                   border-bottom:1px solid #e8ecf0; padding-bottom:2px; }
+  .rv-field span { color:#2c3e50; font-size:13px; font-weight:500; display:block; padding-top:1px; }
+  .rv-field.full { grid-column:1/-1; }
+  .rv-acciones   { display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+                   padding:14px 16px; background:#f9fafb; border-top:1px solid #e0e4ea; }
+  .rv-obs        { width:100%; }
+  .rv-obs textarea { width:100%; border:1px solid #d2d6de; border-radius:4px;
+                     padding:8px 10px; font-size:12px; resize:vertical; }
+</style>
+
+<%# ── CABECERA ──────────────────────────────────────────────────────────── %>
+<div class="rv-header">
+  <div class="rv-title">
+    <i class="fa fa-eye"></i>
+    Revisión — Contrato N° <%= contrato&.nro_contrato %>
+  </div>
+  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+    <span class="rv-badge" style="background:#f39c12;"><%= contrato&.tiposcontrato&.descripcion %></span>
+    <span class="rv-badge" style="background:#3c8dbc;"><%= @interventoria.periodo_actual %></span>
+    <span class="rv-badge" style="background:#e67e22;"><%= @interventoria.estado %></span>
+    <%= link_to interventorias_path, class: 'btn btn-xs btn-default' do %>
+      <i class="fa fa-arrow-left"></i> Volver
+    <% end %>
+  </div>
+</div>
+
+<%# ── DATOS CONTRATISTA + CONTRATO ───────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+  <div class="rv-card">
+    <div class="rv-card-hdr"><i class="fa fa-user"></i> Contratista</div>
+    <div class="rv-card-body">
+      <div class="rv-grid">
+        <div class="rv-field full">
+          <label>Nombre</label>
+          <span style="font-size:14px; font-weight:700;"><%= persona&.nombre_completo %></span>
+        </div>
+        <div class="rv-field">
+          <label>Identificación</label>
+          <span><%= persona&.tipodoc_identificacion.presence || "#{persona&.tipo_identificacion} #{persona&.identificacion}" %></span>
+        </div>
+        <div class="rv-field">
+          <label>Cargo / Perfil</label>
+          <span><%= perfecha&.contratoscargo&.perfil %></span>
+        </div>
+        <div class="rv-field">
+          <label>Correo</label>
+          <span><%= persona&.correo %></span>
+        </div>
+        <div class="rv-field">
+          <label>Teléfono</label>
+          <span><%= persona&.tele %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rv-card">
+    <div class="rv-card-hdr"><i class="fa fa-file-text-o"></i> Contrato</div>
+    <div class="rv-card-body">
+      <div class="rv-grid">
+        <div class="rv-field full">
+          <label>Objeto</label>
+          <span><%= contrato&.objeto %></span>
+        </div>
+        <div class="rv-field">
+          <label>Valor Mensual</label>
+          <span style="font-size:14px; font-weight:700;">
+            $ <%= number_to_currency(perfecha&.salariofinal, precision: 0, unit: '', delimiter: '.') %>
+          </span>
+        </div>
+        <div class="rv-field">
+          <label>Vigencia</label>
+          <span>
+            <%= perfecha&.fecha_inicio&.strftime("%d/%m/%Y") %>
+            <% if perfecha&.fecha_fin.present? %>
+              al <%= perfecha.fecha_fin.strftime("%d/%m/%Y") %>
+            <% else %>
+              <span style="background:#27ae60;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;">En ejecución</span>
+            <% end %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── CUENTA DE COBRO (solo lectura) ─────────────────────────────────────── %>
+<div class="rv-card">
+  <div class="rv-card-hdr"><i class="fa fa-calculator"></i> Cuenta de Cobro</div>
+  <div class="rv-card-body">
+    <div class="rv-grid">
+      <div class="rv-field">
+        <label>Honorarios del Periodo</label>
+        <span style="font-size:15px; font-weight:700;">$ <%= number_to_currency(valor_mes_display, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="rv-field">
+        <label>Total a Pagar</label>
+        <% if total_display %>
+          <span style="font-size:15px; font-weight:700; color:#27ae60;">$ <%= number_to_currency(total_display, precision: 0, unit: '', delimiter: '.') %></span>
+        <% else %>
+          <span style="color:#aaa; font-size:12px;"><i class="fa fa-info-circle"></i> Pendiente de diligenciar</span>
+        <% end %>
+      </div>
+      <div class="rv-field">
+        <label>Aportes Salud</label>
+        <span>$ <%= number_to_currency(@interventoria.salud, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="rv-field">
+        <label>Aportes Pensión</label>
+        <span>$ <%= number_to_currency(@interventoria.pension, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="rv-field">
+        <label>Aportes ARL</label>
+        <span>$ <%= number_to_currency(@interventoria.arl, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="rv-field">
+        <label>Retención en la Fuente (383)</label>
+        <span>$ <%= number_to_currency(@interventoria.retefuente383, precision: 0, unit: '', delimiter: '.') %></span>
+      </div>
+      <div class="rv-field full">
+        <label>Observaciones y Forma de Pago</label>
+        <span><%= @interventoria.observaciones %></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── ACTIVIDADES ─────────────────────────────────────────────────────────── %>
+<div class="rv-card">
+  <div class="rv-card-hdr">
+    <i class="fa fa-list-ul"></i> Obligaciones del Contrato
+    <span class="badge" style="background:#3c8dbc; margin-left:6px;"><%= @interventoria.interactividades.count %></span>
+  </div>
+  <div class="rv-card-body" style="padding:0;">
+    <% if @interventoria.interactividades.any? %>
+      <table class="table table-condensed table-striped" style="margin:0; font-size:12px;">
+        <thead>
+          <tr class="thcolor">
+            <th width="4%" class="text-center">N°</th>
+            <th width="28%">Actividad</th>
+            <th>Desarrollo</th>
+            <th width="7%" class="text-center">Soporte</th>
+            <th width="7%" class="text-center">Obs.</th>
+          </tr>
+        </thead>
+        <tbody id="tbody_interactividades">
+          <% @interventoria.interactividades.order(:consecutivo).each do |act| %>
+            <tr id="interactividad_<%= act.id %>">
+              <td class="text-center"><%= act.consecutivo %></td>
+              <td>
+                <strong><%= act.actividad %></strong>
+                <%# Observaciones del supervisor visibles %>
+                <% if act.interactobservaciones.exists? %>
+                  <div style="margin-top:6px;">
+                    <% act.interactobservaciones.each do |obs| %>
+                      <div style="background:#fff3cd; border-left:3px solid #f39c12; padding:4px 8px; font-size:11px; margin-bottom:3px;">
+                        <i class="fa fa-sticky-note" style="color:#f39c12;"></i>
+                        <%= obs.obs %>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+              </td>
+              <td style="color:<%= act.desarrollo.present? ? '#2c3e50' : '#ccc' %>; white-space:pre-wrap;">
+                <%= act.desarrollo.presence || 'Sin desarrollo' %>
+              </td>
+              <td class="text-center">
+                <% if act.interactimagenes.exists? %>
+                  <% act.interactimagenes.each do |img| %>
+                    <%= link_to img.interactividad.url(:original, false),
+                                onclick: 'window.open(this.href,"nw","height=600,width=830,scrollbars=yes");return false',
+                                class: 'btn btn-xs btn-info',
+                                title: img.interactividad_file_name do %>
+                      <i class="fa fa-paperclip"></i>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <span style="color:#ccc;">—</span>
+                <% end %>
+              </td>
+              <td class="text-center">
+                <%# Botón para que el supervisor agregue observación por actividad %>
+                <%= link_to cargue_observaciones_interactividades_path(interactividad_id: act.id),
+                            remote: true,
+                            class: 'btn btn-xs btn-warning',
+                            title: 'Agregar observación a esta actividad',
+                            data: { toggle: 'tooltip' } do %>
+                  <i class="fa fa-sticky-note"></i>
+                <% end %>
+              </td>
+            </tr>
+            <%# Modal para observación de esta actividad %>
+            <div class="modal fade" id="cargar_observacion<%= act.id %>">
+              <div class="modal-dialog" role="document" style="width:70%;">
+                <div class="modal-content"></div>
+              </div>
+            </div>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="alert alert-warning" style="margin:10px;">
+        <i class="fa fa-exclamation-triangle"></i> No hay actividades registradas.
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# ── BITÁCORA ────────────────────────────────────────────────────────────── %>
+<%= render 'bitacora' %>
+
+<%# ── ACCIONES DEL SUPERVISOR ─────────────────────────────────────────────── %>
+<% limite = Sifi.find_by(id: 107)&.valor.to_s rescue '9999-12-31 23:59:59' %>
+<div class="rv-card">
+  <div class="rv-card-hdr"><i class="fa fa-gavel"></i> Decisión del Supervisor</div>
+  <% if Time.now.strftime("%Y-%m-%d %H:%M:%S") <= limite %>
+
+    <%# Formulario de rechazo con observación opcional %>
+    <%= form_tag rechazarint_interventoria_path(@interventoria), method: :post, id: 'form_rechazo', style: 'display:none;' do %>
+      <div style="padding:14px 16px; background:#fdf2f2; border-top:1px solid #f5c6cb;">
+        <label style="font-size:12px; font-weight:700; color:#922b21; display:block; margin-bottom:6px;">
+          <i class="fa fa-exclamation-triangle"></i> Motivo del rechazo (recomendado):
+        </label>
+        <%= text_area_tag :observacion_rechazo, '',
+                          rows: 3,
+                          placeholder: 'Describa el motivo para que el contratista pueda corregirlo...',
+                          style: 'width:100%; border:1px solid #f5c6cb; border-radius:4px; padding:8px; font-size:12px; resize:vertical;',
+                          oninput: 'this.value=this.value.toUpperCase()' %>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <%= submit_tag 'Confirmar Rechazo', class: 'btn btn-danger btn-sm',
+                         data: { disable_with: 'Rechazando...' } %>
+          <button type="button" class="btn btn-default btn-sm"
+                  onclick="document.getElementById('form_rechazo').style.display='none';
+                           document.getElementById('btn_rechazar').style.display='inline-block';">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="rv-acciones">
+      <%= link_to aprobarint_interventoria_path(@interventoria),
+                  method: :post,
+                  class: 'btn btn-success',
+                  data: { confirm: '¿Aprobar este informe? Se enviará a validación del SGSST.' } do %>
+        <i class="fa fa-check-circle"></i> Aprobar → SGSST
+      <% end %>
+
+      <button type="button" id="btn_rechazar" class="btn btn-danger"
+              onclick="document.getElementById('form_rechazo').style.display='block'; this.style.display='none';">
+        <i class="fa fa-times-circle"></i> Rechazar
+      </button>
+
+      <%= link_to verificacion_interventorias_path(id: @interventoria.id),
+                  class: 'btn btn-info popup', title: 'Ver informe' do %>
+        <i class="fa fa-file-pdf-o"></i> Ver Informe
+      <% end %>
+
+      <small style="color:#888; margin-left:auto;">
+        <i class="fa fa-clock-o"></i> Límite: <%= limite %>
+      </small>
+    </div>
+  <% else %>
+    <div class="rv-acciones">
+      <div class="alert alert-danger" style="margin:0; width:100%;">
+        <i class="fa fa-ban"></i>
+        Ha superado el límite para revisar: <strong><%= limite %></strong>
+      </div>
+    </div>
+  <% end %>
+</div>

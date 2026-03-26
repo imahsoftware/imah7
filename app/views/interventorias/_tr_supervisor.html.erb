@@ -1,0 +1,49 @@
+<%# Fila de actividad en la vista del supervisor (revisioninter) %>
+<%# Variable: act (Interactividad) %>
+<tr id="interactividad_<%= act.id %>">
+  <td class="text-center"><%= act.consecutivo %></td>
+  <td>
+    <strong><%= act.actividad %></strong>
+    <% if act.interactobservaciones.exists? %>
+      <div style="margin-top:6px;">
+        <% act.interactobservaciones.each do |obs| %>
+          <div style="background:#fff3cd; border-left:3px solid #f39c12; padding:4px 8px; font-size:11px; margin-bottom:3px;">
+            <i class="fa fa-sticky-note" style="color:#f39c12;"></i>
+            <%= obs.obs %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
+  <td style="color:<%= act.desarrollo.present? ? '#2c3e50' : '#ccc' %>; white-space:pre-wrap; font-size:12px;">
+    <%= act.desarrollo.presence || 'Sin desarrollo' %>
+  </td>
+  <td class="text-center">
+    <% if act.interactimagenes.exists? %>
+      <% act.interactimagenes.each do |img| %>
+        <%= link_to img.interactividad.url(:original, false),
+                    onclick: 'window.open(this.href,"nw","height=600,width=830,scrollbars=yes");return false',
+                    class: 'btn btn-xs btn-info', title: img.interactividad_file_name do %>
+          <i class="fa fa-paperclip"></i>
+        <% end %>
+      <% end %>
+    <% else %>
+      <span style="color:#ccc;">—</span>
+    <% end %>
+  </td>
+  <td class="text-center">
+    <%= link_to cargue_observaciones_interactividades_path(interactividad_id: act.id),
+                remote: true,
+                class: 'btn btn-xs btn-warning',
+                title: 'Agregar observación',
+                data: { toggle: 'tooltip' } do %>
+      <i class="fa fa-sticky-note"></i>
+    <% end %>
+  </td>
+</tr>
+<%# Modal para observación %>
+<div class="modal fade" id="cargar_observacion<%= act.id %>">
+  <div class="modal-dialog" role="document" style="width:70%;">
+    <div class="modal-content"></div>
+  </div>
+</div>

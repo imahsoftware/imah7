@@ -1,0 +1,56 @@
+<%# Variables: intervs (colección de interventorías) %>
+<table class="table table-bordered table-condensed table-striped" style="font-size:12px;">
+  <thead>
+    <tr class="thcolor">
+      <th width="20%" class="text-center">Acción</th>
+      <th width="14%" class="text-center">Fecha</th>
+      <th width="10%" class="text-center">Contrato</th>
+      <th width="10%" class="text-center">Estado</th>
+      <th class="text-center">Contratista</th>
+      <th width="12%" class="text-center">Periodo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% intervs.each do |interventoria| %>
+      <% persona = interventoria.contratosperfecha&.contratospersona %>
+      <% es_final = interventoria.contrato&.fechafinal.present? &&
+                    interventoria.contrato.fechafinal.strftime("%m") == interventoria.mes.to_s &&
+                    interventoria.contrato.fechafinal.strftime("%Y") == interventoria.anno.to_s %>
+      <tr class="<%= cycle('even1', 'odd1') %>">
+        <td class="text-center">
+          <%= link_to verificacion_interventorias_path(id: interventoria.id),
+                      class: 'btn btn-xs btn-info popup', title: 'Ver informe' do %>
+            <i class="fa fa-file-pdf-o"></i> Informe
+          <% end %>
+          &nbsp;
+          <% if interventoria.firma_digital_supervisor.blank? && is_auth_c("interventoriaedicion") %>
+            <%= link_to firmar_digital_interventorias_path(id: interventoria.id),
+                        class: 'btn btn-xs btn-dropbox', remote: true, title: 'Firmar' do %>
+              <i class="fa fa-pencil"></i> Firmar
+            <% end %>
+          <% else %>
+            <%= link_to visualizaracum_interventorias_path(
+                          contrato_id: interventoria.contrato_id,
+                          ano: interventoria.anno,
+                          mes: interventoria.mes),
+                        class: "btn btn-xs #{es_final ? 'btn-dropbox' : 'btn-warning'} popup" do %>
+              <i class="fa fa-file-pdf-o"></i> <%= es_final ? 'Final' : 'Acum.' %>
+            <% end %>
+          <% end %>
+        </td>
+        <td class="text-center"><%= interventoria.updated_at&.strftime("%Y-%m-%d %H:%M") %></td>
+        <td class="text-center"><%= interventoria.contrato&.nro_contrato %></td>
+        <td class="text-center">
+          <span style="font-size:10px; padding:2px 7px; border-radius:10px; color:#fff;
+                       background:<%= interventoria.estado.to_s.start_with?('APROBADO') ? '#27ae60' : '#e67e22' %>;">
+            <%= interventoria.estado %>
+          </span>
+        </td>
+        <td>
+          <%= persona&.identificacion %> — <%= persona&.nombre_completo %>
+        </td>
+        <td class="text-center"><%= interventoria.anno %> - <%= descmesmin(interventoria.mes) rescue interventoria.mes %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
