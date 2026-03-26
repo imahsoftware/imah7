@@ -1,0 +1,5 @@
+$("#aprobarcont_modal<%= @interventoria.id %> .modal-content").html('<%= j render "interventorias/aprobarcont_modal" %>');
+$("#aprobarcont_modal<%= @interventoria.id %>").modal();
+
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();

@@ -1,8 +1,14 @@
 $(".alert_flash").fadeOut(500, function() { $(this).remove(); });
 $(".flash_messages").html("<%= j render 'layouts/flash_messages' %>");
-// Recargar la fila de la interactividad para mostrar la nueva observación
+
+<% if params[:contexto] == 'supervisor' %>
+// Contexto supervisor: reemplazar fila con versión simple (solo lectura + observaciones)
+$("#interactividad_<%= @interactividad.id %>").replaceWith("<%= j render 'interventorias/tr_supervisor', act: @interactividad %>");
+<% else %>
+// Contexto contratista: reemplazar con fila completa editable
 $("#interactividad_<%= @interactividad.id %>").replaceWith("<%= j render 'interactividades/tr', interactividad: @interactividad, usuario_actual: User.find_by(id: is_admin) %>");
-// Cerrar el modal
+<% end %>
+
 $("#cargar_observacion<%= @interactividad.id %>").modal('hide');
 $('[data-toggle="tooltip"]').tooltip();
 setTimeout(function() { $(".alert_flash").fadeOut(800, function() { $(this).remove(); }); }, 4000);

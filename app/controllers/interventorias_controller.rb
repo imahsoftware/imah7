@@ -183,8 +183,9 @@ class InterventoriasController < ApplicationController
   # Interventor rechaza
   def rechazarint
     @interventoria.update!(estado: 'RECHAZADOFINALINT')
-    @interventoria.registrar_bitacora(is_admin, "INFORME RECHAZADO POR EL SUPERVISOR")
-    flash[:notice] = "El informe ha sido rechazado"
+    motivo = params[:observacion_rechazo].to_s.strip.presence || "INFORME RECHAZADO POR EL SUPERVISOR"
+    @interventoria.registrar_bitacora(is_admin, "INFORME RECHAZADO POR EL SUPERVISOR — #{motivo}")
+    flash[:alert] = "El informe ha sido rechazado."
     redirect_to interventorias_path
   end
 
@@ -533,21 +534,35 @@ class InterventoriasController < ApplicationController
 
     case user.etapa.to_s
     when 'SUPERVISOR'
-      if user.contratospersona_id.present?
-        perfechas_ids = Contratosperfecha
-                          .where(contratospersona_id: user.contratospersona_id)
-                          .pluck(:id)
+      supervisor_persona = @user.identificacion.present? ?
+                             Contratospersona.find_by(identificacion: @user.identificacion) : nil
+
+      # IDs de contratistas asignados a este supervisor via contratosperusers
+      contratistas_ids = Contratosperuser
+                           .where(user_id: @user.id, fecha_fin: nil)
+                           .pluck(:contratospersona_id)
+      perfechas_ids = Contratosperfecha
+                        .where(contratospersona_id: contratistas_ids)
+                        .pluck(:id)
+
+      if supervisor_persona.present?
+        # Busca por interventorempleado_id O por contratosperfecha_id (cubre registros sin el campo)
+        @interventorias = Interventoria
+                            .where(estado: %w[REVISION REVISIONFINALINT])
+                            .where(
+                              "interventorempleado_id = ? OR (interventorempleado_id IS NULL AND contratosperfecha_id IN (?))",
+                              supervisor_persona.id,
+                              perfechas_ids.presence || [0]
+                            )
+                            .order(updated_at: :asc)
+        @interventorempleado_id = supervisor_persona.id
+      else
         @interventorias = Interventoria
                             .where(estado: %w[REVISION REVISIONFINALINT],
                                    contratosperfecha_id: perfechas_ids)
                             .order(updated_at: :asc)
-      else
-        # fallback: ve todas (admin/supervisor sin contratospersona_id)
-        @interventorias = Interventoria
-                            .where(estado: %w[REVISION REVISIONFINALINT])
-                            .order(updated_at: :asc)
+        @interventorempleado_id = nil
       end
-      @interventorempleado_id = user.contratospersona_id # para filtrar revisadas
       @message_interventor = 'SI'
     when 'TALENTO_HUMANO'
       if is_auth_c("interventoriagh")
@@ -624,23 +639,39 @@ class InterventoriasController < ApplicationController
                else
                  Contratosperfecha.find_by(contrato_id: contrato_id)
                end
+
+    # Buscar el supervisor vigente del contratista via contratosperusers
+    supervisor_persona_id = nil
+    if perfecha&.contratospersona_id.present?
+      supervisor_user_id = Contratosperuser
+                             .where(contratospersona_id: perfecha.contratospersona_id, fecha_fin: nil)
+                             .order(created_at: :desc)
+                             .pick(:user_id)
+      if supervisor_user_id.present?
+        supervisor_user = User.find_by(id: supervisor_user_id)
+        if supervisor_user&.identificacion.present?
+          supervisor_persona = Contratospersona.find_by(identificacion: supervisor_user.identificacion)
+          supervisor_persona_id = supervisor_persona&.id
+        end
+      end
+    end
+
     interventoria = Interventoria.create!(
-      contrato_id:             contrato_id,
-      contratosperfecha_id:    perfecha&.id,
-      anno:                    ano,
-      mes:                     mes,
-      user_id:                 is_admin,
-      estado:                  'PENDIENTE',
-      etapa:                   '1',
-      valor_mes:               perfecha&.salario.to_i
+      contrato_id:              contrato_id,
+      contratosperfecha_id:     perfecha&.id,
+      anno:                     ano,
+      mes:                      mes,
+      user_id:                  is_admin,
+      estado:                   'PENDIENTE',
+      etapa:                    '1',
+      valor_mes:                perfecha&.salariofinal.to_i,
+      interventorempleado_id:   supervisor_persona_id
     )
-    # El cargo_id viene directo del contratosperfecha — evita ambigüedad cuando
-    # hay múltiples contratistas en el mismo contrato
+
+    # El cargo_id viene directo del contratosperfecha
     cargo_id = perfecha&.contratoscargo_id
     interventoria.registrar_obligaciones(cargo_id) if cargo_id.present?
-
     interventoria.registrar_bitacora(is_admin, "SE CREA EL PROCESO")
-
 
     redirect_to edit_interventoria_path(interventoria, etapa: '1')
   end

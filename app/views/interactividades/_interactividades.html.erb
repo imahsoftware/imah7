@@ -131,8 +131,17 @@
     sin_desarrollo = @interventoria.interactividades.where("desarrollo IS NULL OR desarrollo = ''").count
     total          = @interventoria.interactividades.count
     estado         = @interventoria.estado.to_s
+    con_observaciones_supervisor = @interventoria.interactividades.joins(:interactobservaciones).exists?
   %>
-  <% if sin_desarrollo > 0 %>
+  <% if %w[RECHAZADOFINALINT RECHAZADO RECHAZADOGH].include?(estado) && con_observaciones_supervisor %>
+    <div class="ic-alert ic-alert-danger">
+      <i class="fa fa-exclamation-circle"></i>
+      <div>
+        <strong>El informe fue rechazado.</strong>
+        El supervisor dejó observaciones en algunas actividades. Revísalas, corrígelas y reenvía el informe.
+      </div>
+    </div>
+  <% elsif sin_desarrollo > 0 %>
     <div class="ic-alert ic-alert-warning">
       <i class="fa fa-exclamation-triangle"></i>
       <div>Tiene <strong><%= total %></strong> obligaciones registradas, de las cuales

@@ -100,9 +100,9 @@
             <% if @interventoria.habilitado_final? %>
               Si el informe está listo pulse
               <% if @interventoria.fin_anno.blank? %>
-                <%= link_to 'Aquí', enviofinalgh_interventorias_path(id: @interventoria.id, fin_anno: 'SI'), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                <%= link_to 'Aquí', enviofinalgh_interventoria_path(@interventoria, fin_anno: 'SI'), method: :post, class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
               <% else %>
-                <%= link_to 'Aquí', enviofinalint_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+                <%= link_to 'Aquí', enviofinalint_interventoria_path(@interventoria), method: :post, class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
               <% end %>
             <% else %>
               <strong>No has completado el diligenciamiento. Verifica!!</strong>
@@ -115,13 +115,13 @@
     <% elsif @interventoria.estado.to_s == 'RECHAZADOFINALINT' %>
       <div class="ic2-alert ic2-alert-danger"><i class="fa fa-times-circle"></i>
         <div>Su informe presenta problemas. Corríjalos y reenvíe.
-          <%= link_to 'Reenviar', enviofinalint_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+          <%= link_to 'Reenviar', enviofinalint_interventoria_path(@interventoria), method: :post, class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
         </div>
       </div>
     <% elsif @interventoria.estado.to_s == 'RECHAZADOFINALGH' %>
       <div class="ic2-alert ic2-alert-danger"><i class="fa fa-times-circle"></i>
         <div>Su informe fue rechazado por Gestión Humana. Corríjalo y reenvíe.
-          <%= link_to 'Reenviar', enviofinalgh_interventorias_path(id: @interventoria.id), class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
+          <%= link_to 'Reenviar', enviofinalgh_interventoria_path(@interventoria), method: :post, class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
         </div>
       </div>
     <% elsif !%w[APROBADO APROBADOGH APROBADOCONT].include?(@interventoria.estado.to_s) %>
@@ -145,11 +145,6 @@
           <div class="ic2-field full">
             <label>Objeto</label>
             <span><%= contrato&.objeto %></span>
-          </div>
-          <div class="ic2-field">
-            <label>Valor Total</label>
-            <div class="ic2-valor">$ <%= number_to_currency(contrato&.valor, precision: 0, unit: '', delimiter: '.') %></div>
-            <div class="ic2-palabras"><%= numero_a_palabras(contrato&.valor.to_i) rescue '' %></div>
           </div>
           <div class="ic2-field">
             <label>Valor Mensual</label>
@@ -188,7 +183,12 @@
           </div>
           <div class="ic2-field">
             <label>Estado Contrato</label>
-            <span class="label label-<%= contrato&.estado == 'A' ? 'success' : 'default' %>"><%= contrato&.estado %></span>
+            <span>
+              <span style="display:inline-block; padding:3px 12px; border-radius:20px; font-size:11px; font-weight:700;
+                           background:<%= contrato&.estado == 'A' ? '#27ae60' : '#95a5a6' %>; color:#fff;">
+                <%= contrato&.estado == 'A' ? 'EN EJECUCIÓN' : (contrato&.estado || '—') %>
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -212,16 +212,16 @@
             <span><%= perfecha&.contratoscargo&.perfil %></span>
           </div>
           <div class="ic2-field">
-            <label>Fecha Inicio Vinculación</label>
+            <label>Fecha Inicio</label>
             <span><%= perfecha&.fecha_inicio&.strftime("%d/%m/%Y") %></span>
           </div>
           <div class="ic2-field">
-            <label>Fecha Fin Vinculación</label>
+            <label>Fecha Fin</label>
             <span>
               <% if perfecha&.fecha_fin.present? %>
                 <%= perfecha.fecha_fin.strftime("%d/%m/%Y") %>
               <% else %>
-                <span class="label label-success" style="font-size:10px;">En ejecución</span>
+                <span style="display:inline-block; padding:3px 12px; border-radius:20px; font-size:11px; font-weight:700; background:#95a5a6; color:#fff;">En ejecución</span>
               <% end %>
             </span>
           </div>
@@ -232,10 +232,6 @@
           <div class="ic2-field">
             <label>Teléfono / Móvil</label>
             <span><%= persona&.tele %></span>
-          </div>
-          <div class="ic2-field">
-            <label>Banco / Cuenta</label>
-            <span><%= persona&.banco %> — <%= persona&.tipo_cuenta %> <%= persona&.cuenta_bancolombia %></span>
           </div>
         </div>
       </div>
@@ -412,8 +408,8 @@
 
       <% if listo_para_envio %>
         <% path_envio = @interventoria.estado.to_s == 'RECHAZADOGH' ?
-                          enviogh_interventorias_path(id: @interventoria.id) :
-                          envio_interventorias_path(id: @interventoria.id) %>
+                          enviogh_interventoria_path(@interventoria) :
+                          envio_interventoria_path(@interventoria) %>
         <%= link_to path_envio,
                     method: :post,
                     class: 'btn btn-primary',

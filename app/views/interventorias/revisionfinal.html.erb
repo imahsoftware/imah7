@@ -1,0 +1,103 @@
+<legend>
+  <%= link_to interventorias_path, data: {toggle: 'tooltip'}, title: 'Regresar a la em' do %>
+    <i class="fa fa-arrow-left fa-fw text-success" aria-hidden="true"></i>
+  <% end %>
+  Presupuesto - <%=@interventoria.contrato.empleado.autobuscar rescue nil%>
+</legend>
+
+<div class="box box-primary">
+  <div class="box-body">
+    <legend>Cuenta de Cobro</legend>
+
+    <table class="table table-bordered table-condensed table-striped">
+  <tr>
+    <td>
+      <table class="table table-bordered table-condensed table-striped">
+          <tr>
+            <td width="20%" height="25" class="text-left thcolor">Contrato número:</td>
+            <td width="80%" class="camposDesc"><%=@interventoria.contrato.nro_contrato%> de <%=@interventoria.contrato.fecha_firma.strftime("%d") rescue nil%> de <%=descmesmin(@interventoria.contrato.fecha_firma.strftime("%m")) rescue nil%> de <%=@interventoria.contrato.fecha_firma.strftime("%Y") rescue nil%></td>
+          </tr>
+          <tr>
+            <td height="25" class="text-left thcolor">Tipo de Contrato:</td>
+            <td class="camposDesc"><div align="justify">CONTRATO DE <%=@interventoria.contrato.tiposcontrato.descripcion rescue nil%></div></td>
+          </tr>
+          <tr>
+            <td height="25" class="text-left thcolor">Valor total del Contrato:</td>
+            <td class="camposDesc">$ <%=number_to_currency(@interventoria.contrato.valor_contrato,{:precision => 0, :unit=>"", :delimiter =>"."})%> (
+              <% if @interventoria.contrato.valor_contrato.to_i >= 1000000000%>
+                 <%=numero_a_palabras(@interventoria.contrato.valor_contrato.to_i)%>
+              <% else %>
+                 <%=numero_a_palabras @interventoria.contrato.valor_contrato.to_i rescue nil%>
+              <% end %> PESOS M/L)</td>
+          </tr>
+          <tr class="odd1">
+            <td height="25" class="text-left thcolor">Valor mensual:</td>
+            <td class="camposDesc">$ <%=number_to_currency(@interventoria.contrato.valor_mes,{:precision => 0, :unit=>"", :delimiter =>"."})%> (
+              <%=numero_a_palabras @interventoria.contrato.valor_mes.to_i rescue nil%> PESOS M/L)</td>
+          </tr>
+          <tr>
+            <td height="25" class="text-left thcolor">Duración del Contrato:</td>
+            <td class="camposDesc"><% if @interventoria.contrato.plazo_mes.to_i > 0 %>
+                   <%=@interventoria.contrato.plazo_mes%> meses -
+                <% end %>
+                <% if @interventoria.contrato.plazo_dias.to_i > 0 %>
+                   <%=@interventoria.contrato.plazo_dias%> dias
+              <% end %> **
+              <strong>Fecha Inicio:</strong> <%= @interventoria.contrato.fecha_inicio.strftime("%Y-%m-%d") rescue nil %>
+              <strong> - Fecha
+                Fin:</strong> <%= @interventoria.contrato.fechafinalreal.strftime("%Y-%m-%d") rescue nil %>
+            </td>
+          </tr>
+        <tr>
+          <th class="text-left thcolor">Total Días Suspensión en Contrato:</th>
+          <td class="text-justify">
+            <%=
+              @interventoriase = Interventoria.where(contrato_id: @interventoria.contrato.id)
+              totaldiassuspension=@interventoriase.sum(:diassuspension)
+              totaldiassuspension.to_i
+            %> Días
+            <% unless  totaldiassuspension <= 0 %>
+              <%#= <strong> - **Nueva Fecha Finalización de Contrato: <%#= @interventoria.contrato.fechafinalreal.strftime("%Y-%m-%d") rescue nil %>
+                <%#= (@interventoria.contrato.fechafinalreal + (totaldiassuspension || 0).days).strftime("%Y-%m-%d") rescue nil %></strong>
+            <% end %>
+          </td>
+        </tr>
+          <tr>
+            <td height="25" class="text-left thcolor">Periodo</td>
+            <td class="camposDesc">Mes: <%=descmes(@interventoria.mes) rescue nil%> - Año <%=@interventoria.anno rescue nil%> </td>
+          </tr>
+        </table>
+        <br/>
+
+
+        <% if @interventoria.version.to_s == '1'%>
+          <%= render 'version1' %>        
+        <% else %>
+          <%= render 'version2' %>        
+        <% end %>
+        <br/>
+      <table class="table table-bordered table-condensed table-striped">
+        <tr class="thcolor">
+            <td width="25%" height="25" class="text-justify"><strong>Observaciones y forma de pago:</strong></td>
+            <td width="75%" class="text-justify"><%=camponumerico(@interventoria.observaciones) rescue 0%>&nbsp;&nbsp;</td>
+          </tr>
+        </table>
+      <table><tr><td height="10">
+        <hr size="1" noshade class="hrlinea"/>
+      </td></tr></table>
+      <table class="table table-bordered table-condensed table-striped">
+        <tr>
+          <td class="camposNotas" align="left">Ultima Actualización: <%=User.find(@interventoria.user_actualiza).username rescue nil%> - <%=@interventoria.updated_at.strftime("%Y-%m-%d %X")%></td>
+          <td height="30"><div align="right"></div></td>
+        </tr>
+      </table>
+   </td>
+  </tr>
+</table> 
+</div>
+<% if is_auth_c("interventoriagh")%>
+    <%= render 'actgestionhumanafinal' %>
+<% end %>
+<br/>
+  </div>
+</div>

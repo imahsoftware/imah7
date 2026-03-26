@@ -9,5 +9,5 @@
   <p class="text-muted" style="font-size:12px;">
     <strong>Actividad:</strong> <%= @interactividad.actividad.truncate(100) %>
   </p>
-  <%= render 'interactobservaciones/new' %>
+  <%= render 'interactobservaciones/new', contexto: @contexto %>
 </div>

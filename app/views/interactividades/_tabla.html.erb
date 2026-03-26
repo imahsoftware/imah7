@@ -1,12 +1,15 @@
 <%# app/views/interactividades/_tabla.html.erb %>
 <%
   estado       = @interventoria.estado.to_s
-  solo_ss      = %w[RECHAZADOGH PREPARAFINAL RECHAZADOFINALGH RECHAZADOFINALINT]
+  # Solo_ss: estados donde GH/SGSST solo necesita ver el soporte de seguridad social
+  # RECHAZADOFINALINT NO va aquí — el contratista debe ver todas sus actividades para corregir
+  solo_ss      = %w[RECHAZADOGH PREPARAFINAL RECHAZADOFINALGH]
   solo_lectura = %w[APROBADOGH REVISIONFINALGH REVISIONFINALINT]
 
   actividades = if solo_ss.include?(estado)
                   @interventoria.interactividades
-                                .where("actividad LIKE ?", "%PAGO%DE%SEGURIDAD%SOCIAL%")
+                                .where(es_pago_ss: 'SI')
+                                .or(@interventoria.interactividades.where("actividad LIKE ?", "%SEGURIDAD%SOCIAL%"))
                                 .order(:consecutivo)
                 else
                   @interventoria.interactividades.order(:consecutivo)

@@ -1,5 +1,8 @@
 <%# app/views/interactobservaciones/_new.html.erb %>
-<%= simple_form_for([@interactividad, @interactobservacion], remote: true) do |f| %>
+<%= simple_form_for(@interactobservacion,
+                    url: interactobservaciones_path,
+                    method: :post,
+                    remote: true) do |f| %>
 
   <%# Contexto de la actividad %>
   <table class="table table-bordered table-condensed" style="font-size:12px; margin-bottom:12px;">
@@ -20,6 +23,7 @@
   </table>
 
   <%= hidden_field_tag :interactividad_id, @interactividad.id %>
+  <%= hidden_field_tag :contexto, local_assigns[:contexto] %>
 
   <div class="row">
     <div class="col-xs-12">

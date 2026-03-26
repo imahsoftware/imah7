@@ -1,0 +1,5 @@
+$("#rechazarghfinal_modal<%= @interventoria.id %> .modal-content").html('<%= j render "interventorias/rechazarghfinal_modal" %>');
+$("#rechazarghfinal_modal<%= @interventoria.id %>").modal();
+
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();

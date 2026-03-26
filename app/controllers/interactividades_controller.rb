@@ -96,8 +96,10 @@ class InteractividadesController < ApplicationController
     @interactividad      = Interactividad.find(params[:interactividad_id])
     @interventoria       = @interactividad.interventoria
     @interactobservacion = Interactobservacion.new
+    # Detectar si viene desde revisioninter para renderizar fila correcta al guardar
+    @contexto = request.referer.to_s.include?('revisioninter') ? 'supervisor' : 'contratista'
     respond_to do |format|
-      format.js   # → cargue_observaciones.js.erb
+      format.js
       format.html { render partial: 'interactividades/cargar_observaciones' }
     end
   end

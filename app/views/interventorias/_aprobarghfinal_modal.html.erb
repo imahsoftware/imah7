@@ -1,0 +1,163 @@
+<div class="modal-header">
+  <h4 class="modal-title">Aprobación de la cuenta de cobro</h4>
+</div>
+<div class="modal-body" style='width: 100%;'>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <%= form_tag aprobarghfinal_interventorias_path, method: :post, remote: true do %>
+          <%= hidden_field_tag :id, params[:id], value: @interventoria.id %>
+          <div class="row">
+            <div class="col-md-8">
+              <legend>
+                <%= @interventoria.contrato.empleado.autobuscar rescue nil %>
+              </legend>
+              <table class="table table-bordered table-condensed table-striped">
+                <tbody id="tbody">
+                <tr>
+                  <th width="20%" class="thcolor text-table-tr">Contrato número:</th>
+                  <td width="80%" class="text-justify text-table-tr">
+                    <%= @interventoria.contratoactual rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Tipo de Contrato:</th>
+                  <td class="text-justify text-table-tr">
+                    CONTRATO DE <%= @interventoria.contrato.tiposcontrato.descripcion rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Objeto del Contrato:</th>
+                  <td class="text-justify text-table-tr">
+                    <%= @interventoria.contrato.objeto rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Valor total del Contrato:</th>
+                  <td class="text-justify text-table-tr">
+                    $ <%= number_to_currency(@interventoria.contrato.valor_contrato, { precision: 0, unit: "", delimiter: "." }) %>
+                    (
+                    <% if @interventoria.contrato.valor_contrato.to_i >= 1000000000 %>
+                      <%= numero_a_palabras(@interventoria.contrato.valor_contrato.to_i) rescue nil %>
+                    <% else %>
+                      <%= @interventoria.contrato.valor_contrato.to_i.to_words.upcase rescue nil %><%= numero_a_palabras(@interventoria.contrato.valor_contrato.to_i) rescue nil%>
+                    <% end %> PESOS M/L)
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Valor mensual:</th>
+                  <td class="text-justify text-table-tr">
+                    $ <%= number_to_currency(@interventoria.contrato.valor_mes, { precision: 0, unit: "", delimiter: "." }) %>
+                    (<%= @interventoria.contrato.valor_mes.to_i.to_words.upcase rescue nil %><%= numero_a_palabras(@interventoria.contrato.valor_mes.to_i) rescue nil%> PESOS M/L)
+                  </td>
+                </tr>
+                <tr>
+                  <th width="20%" class="thcolor text-table-tr">Duración del Contrato:</th>
+                  <td class="text-justify text-table-tr">
+                    <% if @interventoria.contrato.plazo_mes.to_i > 0 %>
+                      <%= @interventoria.contrato.plazo_mes %> meses -
+                    <% end %>
+                    <% if @interventoria.contrato.plazo_dias.to_i > 0 %>
+                      <%= @interventoria.contrato.plazo_dias %> días
+                    <% end %> **
+                    <strong>Fecha Inicio:</strong> <%= @interventoria.contrato.fecha_inicio.strftime("%Y-%m-%d") rescue nil %>
+                    <strong> - Fecha Fin:</strong> <%= @interventoria.contrato.fechafinalreal.strftime("%Y-%m-%d") rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Total Días Suspensión en Contrato:</th>
+                  <td class="text-justify text-table-tr">
+                    <%=
+                      @interventoriase = Interventoria.where(contrato_id: @interventoria.contrato.id)
+                      totaldiassuspension = @interventoriase.sum(:diassuspension)
+                      totaldiassuspension.to_i
+                    %> Días
+                    <% unless totaldiassuspension <= 0 %>
+                      <%#= <strong> - **Nueva Fecha Finalización de Contrato:</strong>
+                       (@interventoria.contrato.fechafinalreal + (totaldiassuspension || 0).days).strftime("%Y-%m-%d") rescue nil %>
+                    <% end %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Nro Compromiso:</th>
+                  <td class="text-justify text-table-tr">
+                    <%= @interventoria.contrato.nro_compromiso rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Nro Disponibilidad:</th>
+                  <td class="text-justify text-table-tr">
+                    <%= @interventoria.contrato.nro_disponibilidad rescue nil %>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="thcolor text-table-tr">Periodo</th>
+                  <td class="text-justify text-table-tr">
+                    <%= @interventoria.periodoactual rescue nil %>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+            </div>
+            <div class="col-md-4"><br/><br/><br/><br/>
+              <div class="text-center" style="background-color: #ededee"><br/><br/><br/>
+                <label for="">Codigo Verificación</label><br/>
+                <% (1..6).each do |i| %>
+                  <%= text_field_tag "nr#{i}", params["nr#{i}"], {
+                    class: "form-control2 input#{i} otp_code",
+                    maxlength: "1",
+                    id: "nr#{i}",
+                    pattern: "[0-9]*", # Solo permite números
+                    inputmode: "numeric", # Muestra el teclado numérico en dispositivos móviles
+                    oninput: "if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);",
+                    onkeyup: "moveToNext(this, 'nr#{i + 1}')",
+                    onkeydown: "moveToPrevious(this, 'nr#{i - 1}')",
+                    style: "display: inline-block; width: 40px; margin: 0 5px; border-radius: 3px; border: 1px solid black; text-align: center;"
+                  } %>
+                <% end %>
+                <div id="mensaje_otp"></div>
+                <script>
+                        function moveToNext(current, nextFieldID) {
+                            if (current.value.length >= current.maxLength) {
+                                let nextField = document.getElementById(nextFieldID);
+                                if (nextField) {
+                                    nextField.focus();
+                                }
+                            }
+                        }
+                        function moveToPrevious(current, previousFieldID) {
+                            if (event.key === "Backspace" && current.value.length === 0) {
+                                const prevField = document.getElementById(previousFieldID);
+                                if (prevField) {
+                                    prevField.focus();
+                                }
+                            }
+                        }
+            </script>
+                <br/><br/><br/><br/>
+              </div>
+            </div>
+          </div><br/>
+          <div id="mensaje_otp"></div>
+          <div class="row">
+            <div class="col-md-6 text-center"><br/>
+
+            </div>
+            <div class="col-md-6 text-center"><br/>
+              <%= submit_tag 'Confirmar', class: 'btn btn-flat btn-success pull-right' %>
+            </div>
+          </div>
+          <br>
+
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

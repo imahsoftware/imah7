@@ -1,0 +1,5 @@
+$("#aprobargh_modal<%= @interventoria.id %> .modal-content").html('<%= j render "interventorias/aprobargh_modal" %>');
+$("#aprobargh_modal<%= @interventoria.id %>").modal();
+
+$(".tooltip").tooltip("hide");
+$('[data-toggle="tooltip"]').tooltip();

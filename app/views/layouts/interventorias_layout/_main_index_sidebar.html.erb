@@ -3,6 +3,8 @@
     <%
       usr = @user
       estados = []
+
+      # MI_CUENTA: si tiene contrato activo como contratista
       if @empleado.present? && Contratosperfecha
         .where(contratospersona_id: @empleado.id)
         .where("fecha_inicio <= CURDATE() AND fecha_fin IS NULL")
@@ -10,12 +12,17 @@
         .exists?
         estados << 'MI_CUENTA'
       end
+
       if is_auth_c("interventoriabuscador")
         estados << 'BUSCADOR'
       end
-      if is_auth_c("interventoria")
+
+      # SUPERVISOR: por permiso O por tener contratistas asignados vigentes
+      if is_auth_c("interventoria") ||
+         Contratosperuser.where(user_id: usr.id, fecha_fin: nil).exists?
         estados << 'SUPERVISOR'
       end
+
       if is_auth_c("interventoriagh")
         estados << 'TALENTO_HUMANO'
       end
@@ -25,7 +32,16 @@
       if is_auth_c("interventoriatesoreria")
         estados << 'TESORERIA'
       end
-      estados << 'VALIDADOR'
+
+      etapa_labels = {
+        'MI_CUENTA'     => 'Cuenta de Cobro',
+        'BUSCADOR'      => 'Buscador',
+        'SUPERVISOR'    => 'Supervisor',
+        'TALENTO_HUMANO'=> 'Talento Humano',
+        'CONTABILIDAD'  => 'Contabilidad',
+        'TESORERIA'     => 'Tesorería',
+        'VALIDADOR'     => 'Validador'
+      }
     %>
 
     <ul class="sidebar-menu" data-widget="tree">
@@ -38,15 +54,13 @@
 
       <%
         estados.each do |p|
-          if usr.etapa.to_s == p
-            clase = "active"
-          else
-            clase = ""
-          end
+          clase = usr.etapa.to_s == p ? "active" : ""
       %>
         <li class="<%= clase %>">
           <%= link_to etapar_interventorias_path(etapa: p) do %>
-            <div style="font-size:12px; font-family: Tahoma;"><i class="fa fa-cog"></i> <%= p.capitalize %></div>
+            <div style="font-size:12px; font-family: Tahoma;">
+              <i class="fa fa-cog"></i> <%= etapa_labels[p] || p.capitalize %>
+            </div>
           <% end %>
         </li>
       <% end %>

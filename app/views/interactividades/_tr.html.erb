@@ -62,15 +62,20 @@
       <%= interactividad.actividad %>
     </div>
 
-    <%# Observaciones colapsables %>
+    <%# Observaciones colapsables — expandidas automáticamente si está rechazado %>
     <% if con_obs %>
+      <% rechazado = %w[RECHAZADOFINALINT RECHAZADO RECHAZADOGH].include?(@interventoria.estado.to_s) %>
       <div class="ia-obs-toggle" onclick="toggleObservaciones(<%= interactividad.id %>)">
-        <i class="fa fa-sticky-note"></i>
-        Ver observaciones (<%= interactividad.interactobservaciones.count %>)
+        <i class="fa fa-sticky-note" style="color:<%= rechazado ? '#e74c3c' : 'inherit' %>;"></i>
+        <% if rechazado %>
+          <strong style="color:#e74c3c;">Observaciones del supervisor (<%= interactividad.interactobservaciones.count %>)</strong>
+        <% else %>
+          Ver observaciones (<%= interactividad.interactobservaciones.count %>)
+        <% end %>
       </div>
-      <div id="observaciones_<%= interactividad.id %>" style="display:none;">
+      <div id="observaciones_<%= interactividad.id %>" style="display:<%= rechazado ? 'block' : 'none' %>;">
         <% interactividad.interactobservaciones.each do |obs| %>
-          <div class="ia-obs-item">
+          <div class="ia-obs-item" style="<%= rechazado ? 'background:#fdf2f2; border-left:3px solid #e74c3c; color:#922b21;' : '' %>">
             <%= obs.try(:observaciones) || obs.try(:obs) %>
           </div>
         <% end %>

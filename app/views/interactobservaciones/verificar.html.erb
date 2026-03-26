@@ -1,0 +1,19 @@
+<% content_for :title, "Observaciones" %>
+<h3>Observaciones Anteriores</h3>
+<hr>
+<div align="center">
+  <table class="table table-bordered table-condensed table-striped">
+    <tr class="thcolor">
+      <th width="10%" height="20" class="text-center">Año</th>
+      <th width="10%" height="20" class="text-center">Mes</th>
+      <th width="80%" height="20" class="text-center">Observaciones registradas</th>
+    </tr>
+    <% @interactobservaciones.each do |interactobservacion| %>
+    <tr valign="middle" class="interactobservacion_<%=interactobservacion.id%>">
+      <td><div align="center"><%=interactobservacion.interactividad.interventoria.anno rescue nil%></div></td>
+      <td><div align="center"><%=descmesmin(interactobservacion.interactividad.interventoria.mes) rescue nil%></div></td>
+      <td><div align="justify"><%=interactobservacion.obs rescue nil%></div></td>
+    </tr>
+    <% end %>
+  </table>
+</div>

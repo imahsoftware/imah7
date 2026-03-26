@@ -46,12 +46,8 @@
                 <td><%= contrato.objeto %></td>
               </tr>
               <tr>
-                <td><strong>Valor Total:</strong></td>
-                <td>$ <%= number_to_currency(contrato.valor, precision: 0, unit: '', delimiter: '.') %></td>
-              </tr>
-              <tr>
                 <td><strong>Valor Mensual:</strong></td>
-                <td>$ <%= number_to_currency(perfecha.salario, precision: 0, unit: '', delimiter: '.') %></td>
+                <td>$ <%= number_to_currency(perfecha.salariofinal, precision: 0, unit: '', delimiter: '.') %></td>
               </tr>
               <tr>
                 <td><strong>Vigencia:</strong></td>
