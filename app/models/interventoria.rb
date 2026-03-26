@@ -61,8 +61,6 @@ class Interventoria < ApplicationRecord
   end
 
   # ─── VALIDACION DEL INFORME ───────────────────────────────────────────────
-  # Reemplaza fnc_validainformes (Oracle) — misma lógica en Ruby puro
-  # Retorna string HTML con errores, o "" si todo está correcto
   def validainforme
     errores = []
 
@@ -75,15 +73,17 @@ class Interventoria < ApplicationRecord
       errores << "• Tiene #{sin_desarrollo} obligacion(es) sin desarrollo diligenciado."
     end
 
-    act_ss = interactividades.where("actividad LIKE ?", '%PAGOS%DE%SEGURIDAD%SOCIAL%')
+    # Busca actividad SS por campo es_pago_ss primero, luego fallback por texto
+    act_ss = interactividades.where(es_pago_ss: 'SI')
+    act_ss = interactividades.where("actividad LIKE ?", '%SEGURIDAD%SOCIAL%') if act_ss.empty?
+
     if act_ss.exists?
       sin_imagen = act_ss.select { |a| !a.interactimagenes.exists? }
       if sin_imagen.any?
         errores << "• La actividad de Pagos de Seguridad Social no tiene soporte digital cargado."
       end
-    else
-      errores << "• No se encontró la actividad de Pagos de Seguridad Social."
     end
+    # Si no existe actividad SS en el cargo, no se valida — es opcional por diseño del cargo
 
     if salud.to_i == 0
       errores << "• El valor de salud no ha sido diligenciado en la cuenta de cobro."
@@ -141,47 +141,59 @@ class Interventoria < ApplicationRecord
                               interes_credito:, salud_prepagada:, dependientes:,
                               afc:, voluntarias:, base_uvt_config:,
                               retefuente383_config:, retefuente384_config:)
-    valor_mes = valor_mes.to_i
-    salud = salud.to_i
-    arl = arl.to_i
-    pension = pension.to_i
-    interes_credito = interes_credito.to_i
-    salud_prepagada = salud_prepagada.to_i
-    dependientes = dependientes.to_i
-    afc = afc.to_i
-    voluntarias = voluntarias.to_i
+    valor_mes        = valor_mes.to_i
+    salud            = salud.to_i
+    arl              = arl.to_i
+    pension          = pension.to_i
+    interes_credito  = interes_credito.to_i
+    salud_prepagada  = salud_prepagada.to_i
+    dependientes     = dependientes.to_i
+    afc              = afc.to_i
+    voluntarias      = voluntarias.to_i
+    base_uvt_config      = base_uvt_config.to_f
+    retefuente383_config = retefuente383_config.to_f
+    retefuente384_config = retefuente384_config.to_f
 
-    subtotal = salud + arl + interes_credito + salud_prepagada + dependientes
-    subtotalr = pension + afc + voluntarias
-    valortotal = valor_mes - subtotal - subtotalr
-    renta = (valortotal * 25) / 100
+    subtotal        = salud + arl + interes_credito + salud_prepagada + dependientes
+    subtotalr       = pension + afc + voluntarias
+    valortotal      = valor_mes - subtotal - subtotalr
+    renta           = (valortotal * 25) / 100
     base_retefuente = valortotal - renta
-    base_uvt = (base_retefuente.to_f / base_uvt_config.to_f).round(0).to_i
 
-    # Método 383: tabla de rangos UVT
-    vlr1 = calcular_uvt_383(base_uvt)
-    retefuente383 = (vlr1 * retefuente383_config.to_f).round(-3).to_i
+    # Proteger división por cero — si no hay config UVT, retención = 0
+    base_uvt = if base_uvt_config > 0
+                 raw = base_retefuente.to_f / base_uvt_config
+                 raw.finite? ? raw.round(0).to_i : 0
+               else
+                 0
+               end
 
-    # Método 384
-    base384 = ((valor_mes - salud - arl - pension).to_f / retefuente384_config.to_f).round(2)
-    retefuente384 = calcular_retefuente384(base384, retefuente384_config)
+    vlr1         = calcular_uvt_383(base_uvt)
+    retefuente383 = if retefuente383_config > 0 && vlr1.to_f.finite?
+                      (vlr1 * retefuente383_config).round(-3).to_i
+                    else
+                      0
+                    end
 
-    total = if retefuente383 > retefuente384
-              valor_mes - retefuente383
-            else
-              valor_mes - retefuente384
-            end
+    retefuente384 = if retefuente384_config > 0
+                      base384 = (valor_mes - salud - arl - pension).to_f / retefuente384_config
+                      base384.finite? ? calcular_retefuente384(base384, retefuente384_config) : 0
+                    else
+                      0
+                    end
+
+    total = valor_mes - [retefuente383, retefuente384].max
 
     {
-      subtotal: subtotal,
-      subtotalr: subtotalr,
-      subtotalt: valortotal,
-      renta: renta,
+      subtotal:        subtotal,
+      subtotalr:       subtotalr,
+      subtotalt:       valortotal,
+      renta:           renta,
       base_retefuente: base_retefuente,
-      base_uvt: base_uvt,
-      retefuente383: retefuente383,
-      retefuente384: retefuente384,
-      total: total
+      base_uvt:        base_uvt,
+      retefuente383:   retefuente383,
+      retefuente384:   retefuente384,
+      total:           total
     }
   end
 
@@ -244,22 +256,18 @@ class Interventoria < ApplicationRecord
   end
 
   def registrar_obligaciones(cargo_id)
-    actividades = Contratoscargosact.where(contratoscargo_id: cargo_id)
-    Rails.logger.debug ">>> actividades count: #{actividades.count}"
-    Rails.logger.debug ">>> interventoria id: #{id}, user_id: #{user_id}"
-
+    actividades = Contratoscargosact.where(contratoscargo_id: cargo_id, estado: 'ACTIVO')
     actividades.each_with_index do |actividad, index|
-      Rails.logger.debug ">>> creando interactividad: #{actividad.descripcion}"
       interactividad = Interactividad.new(
         interventoria_id: id,
-        actividad: actividad.descripcion,
-        user_id: user_id,
-        consecutivo: index + 1
+        actividad:        actividad.descripcion,
+        es_pago_ss:       actividad.es_pago_ss.to_s,
+        user_id:          user_id,
+        consecutivo:      index + 1
       )
       unless interactividad.save
-        Rails.logger.debug ">>> ERROR: #{interactividad.errors.full_messages}"
+        Rails.logger.warn "InterventoriaError registrar_obligaciones: #{interactividad.errors.full_messages}"
       end
-
     end
   end
 
@@ -274,13 +282,16 @@ class Interventoria < ApplicationRecord
   # ─── ESTADO: HABILITAR INFORME FINAL ─────────────────────────────────────
   def habilitado_final?
     return false unless estado.to_s == 'PREPARAFINAL'
-    actividades_ss = interactividades.where("actividad LIKE ?", '%PAGOS%DE%SEGURIDAD%SOCIAL%')
-    return false if actividades_ss.empty?
-
-    todas_con_soporte = actividades_ss.all? do |act|
-      act.desarrollo.present? && act.interactimagenes.exists?
+    actividades_ss = interactividades.where(es_pago_ss: 'SI')
+    actividades_ss = interactividades.where("actividad LIKE ?", '%SEGURIDAD%SOCIAL%') if actividades_ss.empty?
+    # Si el cargo no tiene actividad SS, no bloquea el cierre
+    if actividades_ss.exists?
+      todas_con_soporte = actividades_ss.all? do |act|
+        act.desarrollo.present? && act.interactimagenes.exists?
+      end
+      return false unless todas_con_soporte
     end
-    todas_con_soporte && salud.to_i > 0 && observaciones.present?
+    salud.to_i > 0 && observaciones.present?
   end
 
   # ─── VENCIMIENTO ──────────────────────────────────────────────────────────
