@@ -1,115 +1,33 @@
 <%# app/views/interventorias/_leyenda_estados.html.erb %>
-<%# Línea de tiempo de estados con iconos %>
-
 <div class="box box-default box-solid" style="margin-bottom: 15px;">
   <div class="box-header with-border">
     <h4 class="box-title"><i class="fa fa-info-circle"></i> Estado de los Informes</h4>
   </div>
   <div class="box-body" style="padding: 12px 15px;">
-    <div class="timeline-estados" style="display: flex; align-items: center; flex-wrap: wrap; gap: 0; font-size: 11px;">
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0; font-size: 11px;">
 
-      <%# Estado 1: No generado %>
-      <div class="estado-item" style="display: flex; align-items: center;">
+      <% [
+        { color: '#95a5a6', icono: 'fa-file-o',       label: 'No generado' },
+        { color: '#bdc3c7', icono: 'fa-clock-o',       label: 'Pendiente envío' },
+        { color: '#f39c12', icono: 'fa-paper-plane',   label: 'Enviado a revisor' },
+        { color: '#e74c3c', icono: 'fa-times-circle',  label: 'Rechazado' },
+        { color: '#27ae60', icono: 'fa-check-circle',  label: 'Aprobado Int. → SGSST' },
+        { color: '#3c8dbc', icono: 'fa-shield',        label: 'Aprobado SGSST' },
+        { color: '#00a65a', icono: 'fa-money',         label: 'Contabilizado' },
+      ].each_with_index do |paso, i| %>
         <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #95a5a6; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-file-o"></i>
+          <div style="width: 36px; height: 36px; border-radius: 50%;
+                      background: <%= paso[:color] %>; color: #fff;
+                      display: flex; align-items: center; justify-content: center;
+                      margin: 0 auto 4px; font-size: 15px;">
+            <i class="fa <%= paso[:icono] %>"></i>
           </div>
-          <span style="color: #555;">No generado</span>
+          <span style="color: #555; font-size: 10px;"><%= paso[:label] %></span>
         </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 2: Pendiente envío %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #bdc3c7; color: #333;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;
-                      border: 2px solid #aaa;">
-            <i class="fa fa-clock-o"></i>
-          </div>
-          <span style="color: #555;">Listo, pte. envío</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 3: Actividades pendientes %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #3498db; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-tasks"></i>
-          </div>
-          <span style="color: #555;">Act. pendientes</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 4: Enviado a revisor %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #f39c12; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-paper-plane"></i>
-          </div>
-          <span style="color: #555;">Enviado a revisor</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 5: Rechazado %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #e74c3c; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-times-circle"></i>
-          </div>
-          <span style="color: #555;">Rechazado</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 6: Aprobado interventor → SGSST %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 90px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #27ae60; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-check-circle"></i>
-          </div>
-          <span style="color: #555;">Aprobado Int. → SGSST</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 7: Aprobado SGSST %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #3c8dbc; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-shield"></i>
-          </div>
-          <span style="color: #555;">Aprobado SGSST</span>
-        </div>
-      </div>
-
-      <div style="flex: 1; min-width: 20px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 18px;"></div>
-
-      <%# Estado 8: Contabilizado %>
-      <div class="estado-item" style="display: flex; align-items: center;">
-        <div style="text-align: center; min-width: 80px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #00a65a; color: #fff;
-                      display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-size: 16px;">
-            <i class="fa fa-money"></i>
-          </div>
-          <span style="color: #555;">Contabilizado</span>
-        </div>
-      </div>
+        <% unless i == 6 %>
+          <div style="flex: 1; min-width: 12px; height: 2px; background: #ddd; margin: 0 2px; margin-bottom: 20px;"></div>
+        <% end %>
+      <% end %>
 
     </div>
   </div>

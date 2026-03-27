@@ -2,13 +2,49 @@
   contrato  = @interventoria.contrato
   perfecha  = @interventoria.contratosperfecha
   persona   = perfecha&.contratospersona
-  valor_mes_c = contrato&.monto_maximo_mes.to_i
+
+  # Valor mensual: del perfecha (salariofinal) o calculado del contrato
+  valor_mes_c = perfecha&.salariofinal.to_i
+  if valor_mes_c == 0
+    valor_mes_c = contrato&.monto_maximo_mes.to_i
+  end
   if valor_mes_c == 0
     plazo = contrato&.plazo_mes.to_i
     valor_mes_c = plazo > 0 ? (contrato&.valor.to_i / plazo) : 0
   end
-  valor_dia       = valor_mes_c > 0 ? (valor_mes_c / 30) : 0
-  dias_laborados  = valor_dia > 0 ? (@interventoria.valor_mes.to_i / valor_dia rescue 0) : 0
+
+  # Calcular días laborados reales en el mes del informe
+  anno_inf = @interventoria.anno.to_i
+  mes_inf  = @interventoria.mes.to_i
+  if anno_inf > 0 && mes_inf > 0
+    primer_dia_mes = Date.new(anno_inf, mes_inf, 1)
+    ultimo_dia_mes = primer_dia_mes.end_of_month
+
+    # Día de inicio: si el contrato empezó en este mes, usar fecha_inicio; si no, día 1
+    inicio_real = if perfecha&.fecha_inicio.present? &&
+                     perfecha.fecha_inicio.year == anno_inf &&
+                     perfecha.fecha_inicio.month == mes_inf
+                    perfecha.fecha_inicio
+                  else
+                    primer_dia_mes
+                  end
+
+    # Día de fin: si el contrato terminó en este mes, usar fecha_fin; si no, último día
+    fin_real = if perfecha&.fecha_fin.present? &&
+                  perfecha.fecha_fin.year == anno_inf &&
+                  perfecha.fecha_fin.month == mes_inf
+                 perfecha.fecha_fin
+               else
+                 ultimo_dia_mes
+               end
+
+    dias_laborados = (fin_real - inicio_real).to_i + 1
+    dias_laborados = [[dias_laborados, 0].max, 30].min
+  else
+    dias_laborados = 30
+  end
+
+  valor_dia       = valor_mes_c > 0 ? (valor_mes_c.to_f / 30).round(0).to_i : 0
   desc_suspension = valor_dia * @interventoria.diassuspension.to_i
   total_suspension = Interventoria.where(contrato_id: @interventoria.contrato_id).sum(:diassuspension).to_i
   estados_bloqueados = %w[APROBADO APROBADOGH APROBADOCONT REVISIONFINALGH REVISIONFINALINT]
@@ -113,8 +149,24 @@
         <div class="ic2-alert ic2-alert-danger"><i class="fa fa-ban"></i><div>El tiempo para enviar la cuenta de cobro ha finalizado.</div></div>
       <% end %>
     <% elsif @interventoria.estado.to_s == 'RECHAZADOFINALINT' %>
-      <div class="ic2-alert ic2-alert-danger"><i class="fa fa-times-circle"></i>
-        <div>Su informe presenta problemas. Corríjalos y reenvíe.
+      <%
+        ultima_bita = @interventoria.interbitacoras
+                        .where("observacion LIKE ?", '%RECHAZADO POR EL SUPERVISOR%')
+                        .order(created_at: :desc).first
+        motivo_rechazo = ultima_bita&.observacion.to_s
+                           .gsub(/.*INFORME RECHAZADO POR EL SUPERVISOR\s*—?\s*/i, '')
+                           .strip
+      %>
+      <div class="ic2-alert ic2-alert-danger">
+        <i class="fa fa-times-circle"></i>
+        <div>
+          <strong>El informe fue rechazado por el supervisor.</strong>
+          <% if motivo_rechazo.present? %>
+            <br/><span style="margin-top:4px; display:block;">
+              <i class="fa fa-comment"></i> <em><%= motivo_rechazo %></em>
+            </span>
+          <% end %>
+          <br/>
           <%= link_to 'Reenviar', enviofinalint_interventoria_path(@interventoria), method: :post, class: 'btn btn-xs btn-danger', data: { confirm: '¿Está seguro?' } %>
         </div>
       </div>
@@ -281,7 +333,7 @@
         </div>
         <div class="ic2-hon-box">
           <div class="ic2-hon-label">Valor día</div>
-          <div class="ic2-hon-value">$ <%= number_to_currency(valor_dia, precision: 0, unit: '', delimiter: '.') %></div>
+          <div class="ic2-hon-value" style="font-size:13px;">$ <%= number_to_currency(valor_mes_c.to_f / 30, precision: 2, unit: '', delimiter: '.') %></div>
         </div>
         <% if @interventoria.diassuspension.to_i > 0 %>
           <div class="ic2-hon-box">
@@ -295,7 +347,17 @@
         <% end %>
         <div class="ic2-hon-box total">
           <div class="ic2-hon-label">Honorarios del periodo</div>
-          <div class="ic2-hon-value">$ <%= number_to_currency(@interventoria.valor_mes, precision: 0, unit: '', delimiter: '.') %></div>
+          <%
+            honorarios_periodo = if @interventoria.valor_mes.to_i > 0
+                                   @interventoria.valor_mes.to_i
+                                 elsif dias_laborados >= 30
+                                   valor_mes_c
+                                 else
+                                   # Proporcional exacto: evita pérdida por redondeo de valor_dia
+                                   (valor_mes_c.to_f * dias_laborados / 30).round(0).to_i
+                                 end
+          %>
+          <div class="ic2-hon-value">$ <%= number_to_currency(honorarios_periodo, precision: 0, unit: '', delimiter: '.') %></div>
         </div>
       </div>
 

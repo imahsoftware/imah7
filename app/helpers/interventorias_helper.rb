@@ -1,34 +1,38 @@
 # app/helpers/interventorias_helper.rb
 module InterventoriasHelper
 
-  # Retorna un badge HTML con el ícono del estado del informe
+  # Retorna un círculo icono igual a la línea de tiempo de _leyenda_estados
   def icono_estado_interventoria(interventoria)
-    return content_tag(:span, '', class: 'label label-default',
-                       title: 'No generado', style: 'font-size:10px;') if interventoria.nil?
-
-    estado = interventoria.estado.to_s
+    # Configuración: [color_fondo, icono_fa, tooltip]
     config = {
-      'PENDIENTE'         => ['label-default', 'fa-hourglass-start', 'Pendiente de envío'],
-      'REVISION'          => ['label-warning',  'fa-eye',             'En revisión del supervisor'],
-      'REVISIONFINALINT'  => ['label-warning',  'fa-eye',             'Revisión final interventor'],
-      'REVISIONFINALGH'   => ['label-warning',  'fa-users',           'Revisión Gestión Humana'],
-      'APROBADO'          => ['label-success',  'fa-check',           'Aprobado por supervisor'],
-      'APROBADOGH'        => ['label-primary',  'fa-check-circle',    'Aprobado Gestión Humana'],
-      'APROBADOCONT'      => ['label-success',  'fa-check-circle-o',  'Aprobado Contabilidad'],
-      'APROBADOFINAL'     => ['label-success',  'fa-trophy',          'Aprobado Final'],
-      'RECHAZADO'         => ['label-danger',   'fa-times',           'Rechazado'],
-      'RECHAZADOGH'       => ['label-danger',   'fa-times-circle',    'Rechazado Gestión Humana'],
-      'RECHAZADOCONT'     => ['label-danger',   'fa-times-circle-o',  'Rechazado Contabilidad'],
-      'RECHAZADOFINALINT' => ['label-danger',   'fa-times',           'Rechazado por interventor'],
-      'RECHAZADOFINALGH'  => ['label-danger',   'fa-times-circle',    'Rechazado final GH'],
-      'TESORERIA'         => ['label-info',     'fa-bank',            'En tesorería'],
+      nil              => ['#95a5a6', 'fa-file-o',      'No generado'],
+      'PENDIENTE'      => ['#bdc3c7', 'fa-clock-o',     'Listo, pendiente envío'],
+      'REVISION'       => ['#f39c12', 'fa-paper-plane', 'Enviado a revisor'],
+      'REVISIONFINALINT'  => ['#f39c12', 'fa-paper-plane', 'Enviado a revisor'],
+      'REVISIONFINALGH'   => ['#f39c12', 'fa-paper-plane', 'Enviado a revisor'],
+      'RECHAZADO'         => ['#e74c3c', 'fa-times-circle', 'Rechazado'],
+      'RECHAZADOGH'       => ['#e74c3c', 'fa-times-circle', 'Rechazado'],
+      'RECHAZADOCONT'     => ['#e74c3c', 'fa-times-circle', 'Rechazado'],
+      'RECHAZADOFINALINT' => ['#e74c3c', 'fa-times-circle', 'Rechazado'],
+      'RECHAZADOFINALGH'  => ['#e74c3c', 'fa-times-circle', 'Rechazado'],
+      'APROBADO'          => ['#27ae60', 'fa-check-circle', 'Aprobado Int. → SGSST'],
+      'APROBADOGH'        => ['#3c8dbc', 'fa-shield',       'Aprobado SGSST'],
+      'APROBADOCONT'      => ['#00a65a', 'fa-money',        'Contabilizado'],
+      'APROBADOFINAL'     => ['#00a65a', 'fa-money',        'Contabilizado'],
+      'TESORERIA'         => ['#00a65a', 'fa-money',        'Contabilizado'],
     }
 
-    css_class, icon, titulo = config[estado] || ['label-default', 'fa-question', estado]
-    content_tag(:span, '', class: "label #{css_class}",
-                title: titulo, style: 'font-size: 10px;') do
-      content_tag(:i, '', class: "fa #{icon}")
-    end
+    estado = interventoria&.estado.to_s.presence
+    color, icon, titulo = config[estado] || ['#95a5a6', 'fa-file-o', 'No generado']
+
+    content_tag(:div,
+      content_tag(:i, '', class: "fa #{icon}"),
+      title: titulo,
+      data: { toggle: 'tooltip' },
+      style: "width:28px; height:28px; border-radius:50%; background:#{color}; color:#fff;
+              display:inline-flex; align-items:center; justify-content:center;
+              font-size:13px; margin:auto;"
+    )
   end
 
   # CSS class para el badge de estado en tablas
