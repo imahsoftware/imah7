@@ -534,27 +534,15 @@ class InterventoriasController < ApplicationController
 
     case user.etapa.to_s
     when 'SUPERVISOR'
-      supervisor_persona = @user.identificacion.present? ?
-                             Contratospersona.find_by(identificacion: @user.identificacion) : nil
+      supervisor_persona = @user.identificacion.present? ? Contratospersona.find_by(identificacion: @user.identificacion) : nil
 
       # IDs de contratistas asignados a este supervisor via contratosperusers
-      contratistas_ids = Contratosperuser
-                           .where(user_id: @user.id, fecha_fin: nil)
-                           .pluck(:contratospersona_id)
-      perfechas_ids = Contratosperfecha
-                        .where(contratospersona_id: contratistas_ids)
-                        .pluck(:id)
+      contratistas_ids = Contratosperuser.where(user_id: @user.id, fecha_fin: nil).pluck(:contratospersona_id)
+      perfechas_ids = Contratosperfecha.where(contratospersona_id: contratistas_ids).pluck(:id)
 
       if supervisor_persona.present?
         # Busca por interventorempleado_id O por contratosperfecha_id (cubre registros sin el campo)
-        @interventorias = Interventoria
-                            .where(estado: %w[REVISION REVISIONFINALINT])
-                            .where(
-                              "interventorempleado_id = ? OR (interventorempleado_id IS NULL AND contratosperfecha_id IN (?))",
-                              supervisor_persona.id,
-                              perfechas_ids.presence || [0]
-                            )
-                            .order(updated_at: :asc)
+        @interventorias = Interventoria.where(estado: %w[REVISION REVISIONFINALINT]).where("interventorempleado_id = ? OR (interventorempleado_id IS NULL AND contratosperfecha_id IN (?))", supervisor_persona.id, perfechas_ids.presence || [0]).order(updated_at: :asc)
         @interventorempleado_id = supervisor_persona.id
       else
         @interventorias = Interventoria
@@ -646,7 +634,7 @@ class InterventoriasController < ApplicationController
       supervisor_user_id = Contratosperuser
                              .where(contratospersona_id: perfecha.contratospersona_id, fecha_fin: nil)
                              .order(created_at: :desc)
-                             .pick(:user_id)
+                             .limit(1).pluck(:user_id).first
       if supervisor_user_id.present?
         supervisor_user = User.find_by(id: supervisor_user_id)
         if supervisor_user&.identificacion.present?
