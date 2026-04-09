@@ -235,62 +235,122 @@
 <%= render 'bitacora' %>
 
 <%# ── ACCIONES DEL SUPERVISOR ─────────────────────────────────────────────── %>
-<% limite = Sifi.find_by(id: 107)&.valor.to_s rescue '9999-12-31 23:59:59' %>
-<div class="rv-card">
-  <div class="rv-card-hdr"><i class="fa fa-gavel"></i> Decisión del Supervisor</div>
-  <% if Time.now.strftime("%Y-%m-%d %H:%M:%S") <= limite %>
+<% if @interventoria.estado.in?(['REVISION', 'REVISIONFINALINT']) %>
+  <% limite = Sifi.find_by(id: 107)&.valor.to_s rescue '9999-12-31 23:59:59' %>
+  <div class="rv-card">
+    <div class="rv-card-hdr"><i class="fa fa-gavel"></i> Decisión del Supervisor</div>
+    <% if Time.now.strftime("%Y-%m-%d %H:%M:%S") <= limite %>
 
-    <%# Formulario de rechazo con observación opcional %>
-    <%= form_tag rechazarint_interventoria_path(@interventoria), method: :post, id: 'form_rechazo', style: 'display:none;' do %>
-      <div style="padding:14px 16px; background:#fdf2f2; border-top:1px solid #f5c6cb;">
-        <label style="font-size:12px; font-weight:700; color:#922b21; display:block; margin-bottom:6px;">
-          <i class="fa fa-exclamation-triangle"></i> Motivo del rechazo (recomendado):
-        </label>
-        <%= text_area_tag :observacion_rechazo, '',
-                          rows: 3,
-                          placeholder: 'Describa el motivo para que el contratista pueda corregirlo...',
-                          style: 'width:100%; border:1px solid #f5c6cb; border-radius:4px; padding:8px; font-size:12px; resize:vertical;',
-                          oninput: 'this.value=this.value.toUpperCase()' %>
-        <div style="margin-top:10px; display:flex; gap:8px;">
-          <%= submit_tag 'Confirmar Rechazo', class: 'btn btn-danger btn-sm',
-                         data: { disable_with: 'Rechazando...' } %>
-          <button type="button" class="btn btn-default btn-sm"
-                  onclick="document.getElementById('form_rechazo').style.display='none';
-                           document.getElementById('btn_rechazar').style.display='inline-block';">
-            Cancelar
-          </button>
+      <%# Formulario de rechazo con observación opcional %>
+      <%= form_tag rechazarint_interventoria_path(@interventoria), method: :post, id: 'form_rechazo', style: 'display:none;' do %>
+        <div style="padding:14px 16px; background:#fdf2f2; border-top:1px solid #f5c6cb;">
+          <label style="font-size:12px; font-weight:700; color:#922b21; display:block; margin-bottom:6px;">
+            <i class="fa fa-exclamation-triangle"></i> Motivo del rechazo (recomendado):
+          </label>
+          <%= text_area_tag :observacion_rechazo, '',
+                            rows: 3,
+                            placeholder: 'Describa el motivo para que el contratista pueda corregirlo...',
+                            style: 'width:100%; border:1px solid #f5c6cb; border-radius:4px; padding:8px; font-size:12px; resize:vertical;',
+                            oninput: 'this.value=this.value.toUpperCase()' %>
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <%= submit_tag 'Confirmar Rechazo', class: 'btn btn-danger btn-sm',
+                           data: { disable_with: 'Rechazando...' } %>
+            <button type="button" class="btn btn-default btn-sm"
+                    onclick="document.getElementById('form_rechazo').style.display='none';
+                             document.getElementById('btn_rechazar').style.display='inline-block';">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="rv-acciones">
+        <%= link_to aprobarint_interventoria_path(@interventoria),
+                    method: :post,
+                    class: 'btn btn-success',
+                    data: { confirm: '¿Aprobar este informe? Se enviará a validación del SGSST.' } do %>
+          <i class="fa fa-check-circle"></i> Aprobar → SGSST
+        <% end %>
+
+        <button type="button" id="btn_rechazar" class="btn btn-danger"
+                onclick="document.getElementById('form_rechazo').style.display='block'; this.style.display='none';">
+          <i class="fa fa-times-circle"></i> Rechazar
+        </button>
+
+        <%= link_to verificacion_interventorias_path(id: @interventoria.id),
+                    class: 'btn btn-info popup', title: 'Ver informe' do %>
+          <i class="fa fa-file-pdf-o"></i> Ver Informe
+        <% end %>
+
+        <small style="color:#888; margin-left:auto;">
+          <i class="fa fa-clock-o"></i> Límite: <%= limite %>
+        </small>
+      </div>
+    <% else %>
+      <div class="rv-acciones">
+        <div class="alert alert-danger" style="margin:0; width:100%;">
+          <i class="fa fa-ban"></i>
+          Ha superado el límite para revisar: <strong><%= limite %></strong>
         </div>
       </div>
     <% end %>
+  </div>
+<% end %>
 
-    <div class="rv-acciones">
-      <%= link_to aprobarint_interventoria_path(@interventoria),
-                  method: :post,
-                  class: 'btn btn-success',
-                  data: { confirm: '¿Aprobar este informe? Se enviará a validación del SGSST.' } do %>
-        <i class="fa fa-check-circle"></i> Aprobar → SGSST
-      <% end %>
-
-      <button type="button" id="btn_rechazar" class="btn btn-danger"
-              onclick="document.getElementById('form_rechazo').style.display='block'; this.style.display='none';">
-        <i class="fa fa-times-circle"></i> Rechazar
-      </button>
-
-      <%= link_to verificacion_interventorias_path(id: @interventoria.id),
-                  class: 'btn btn-info popup', title: 'Ver informe' do %>
-        <i class="fa fa-file-pdf-o"></i> Ver Informe
-      <% end %>
-
-      <small style="color:#888; margin-left:auto;">
-        <i class="fa fa-clock-o"></i> Límite: <%= limite %>
-      </small>
+<%# ── ACCIONES DE GESTIÓN HUMANA ──────────────────────────────────────────── %>
+<% if is_auth_c("interventoriagh") && @interventoria.estado.in?(['APROBADO', 'REVISIONFINALGH']) %>
+  <div class="rv-card" style="margin-top: 20px;">
+    <div class="rv-card-hdr" style="background: #3498db;">
+      <i class="fa fa-users"></i> Decisión de Gestión Humana
     </div>
-  <% else %>
-    <div class="rv-acciones">
-      <div class="alert alert-danger" style="margin:0; width:100%;">
-        <i class="fa fa-ban"></i>
-        Ha superado el límite para revisar: <strong><%= limite %></strong>
+    
+    <div style="padding: 15px; background: #ecf0f1;">
+      <div class="alert alert-info" style="margin-bottom: 15px;">
+        <i class="fa fa-info-circle"></i>
+        <strong>Revisión de Gestión Humana:</strong> 
+        Este informe requiere su aprobación. La aprobación se realizará mediante código OTP enviado a su celular.
+      </div>
+      
+      <div class="rv-acciones">
+        <%# Botón APROBAR con OTP %>
+        <%= link_to aprobar_supervisor_gh_modal_interventoria_path(@interventoria), 
+            remote: true,
+            class: 'btn btn-success',
+            style: 'padding: 4px 10px; font-size: 12px;',
+            data: { toggle: 'tooltip', placement: 'top', title: 'Aprobar con código de verificación SMS' } do %>
+          <i class="fa fa-check-circle"></i> Aprobar con OTP
+        <% end %>
+        
+        <%# Botón RECHAZAR %>
+        <%= link_to rechazar_supervisor_gh_modal_interventoria_path(@interventoria), 
+            remote: true,
+            class: 'btn btn-danger',
+            style: 'padding: 4px 10px; font-size: 12px;',
+            data: { toggle: 'tooltip', placement: 'top', title: 'Rechazar informe' } do %>
+          <i class="fa fa-times-circle"></i> Rechazar
+        <% end %>
+        
+        <%# Botón Ver Informe %>
+        <%= link_to verificacion_interventorias_path(id: @interventoria.id),
+            class: 'btn btn-info popup',
+            style: 'padding: 4px 10px; font-size: 12px;',
+            data: { toggle: 'tooltip', placement: 'top', title: 'Ver informe en PDF' } do %>
+          <i class="fa fa-file-pdf-o"></i> Ver Informe
+        <% end %>
       </div>
     </div>
-  <% end %>
-</div>
+  </div>
+  
+  <%# Modales para OTP %>
+  <div id="aprobar_supervisor_gh_modal<%= @interventoria.id %>" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+  <div id="rechazar_supervisor_gh_modal<%= @interventoria.id %>" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+<% end %>

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       get :revisioninter
       post :aprobar
       post :rechazar
+      post :actualizacionact
       resources :interactividades
     end
 
@@ -33,6 +34,8 @@ Rails.application.routes.draw do
       get  :rechazarghfinal_modal
       get  :aprobarghfinal_modal
       get  :aprobarcont_modal
+      get  :aprobar_supervisor_gh_modal
+      get  :rechazar_supervisor_gh_modal
       post :envio
       post :enviofinalgh
       post :enviofinalint
@@ -50,7 +53,11 @@ Rails.application.routes.draw do
       post :firmar_informes
       post :validaresp
       post :recalcular_retencion
+      post :obs_calculofinal
       post :recargar_actividades
+      post :generar_otp_supervisor_gh
+      post :aprobar_supervisor_gh
+      post :rechazar_supervisor_gh
     end
   end
 

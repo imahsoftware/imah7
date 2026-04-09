@@ -8,7 +8,11 @@ class InterventoriasController < ApplicationController
                                               aprobarghfinal rechazarghfinal aprobarcont
                                               rechazarcont firmar_digital firmar_informes
                                               revisioninter revisionfinal verificacionfinal
-                                              verificacion validaresp recargar_actividades]
+                                              verificacion validaresp recargar_actividades
+                                              obs_calculofinal actualizacionact
+                                              aprobar_supervisor_gh_modal generar_otp_supervisor_gh
+                                              aprobar_supervisor_gh rechazar_supervisor_gh_modal
+                                              rechazar_supervisor_gh]
 
   # ─── INDEX ─────────────────────────────────────────────────────────────────
   # Dashboard principal — el contenido varía según la etapa del usuario
@@ -348,6 +352,293 @@ class InterventoriasController < ApplicationController
     @interventoria.save
 
     render json: resultado
+  end
+
+  # ─── CALCULO FINAL CON VALIDACIONES DE LIMITES ───────────────────────────
+  # Aplica límites fiscales: 30% para AFC+voluntarias+pensión, topes de prepagada, etc.
+  def obs_calculofinal
+    @interventoria = Interventoria.find(params[:id])
+    
+    pvr0 = @interventoria.valor_mes.to_i
+    pvr1 = params[:pvr1].to_i # salud
+    pvr2 = params[:pvr2].to_i # arl
+    pvr3 = params[:pvr3] # interes_credito (puede ser valor o 'SI'/'NO')
+    pvr4 = params[:pvr4] # salud_prepagada (puede ser valor o 'SI'/'NO')
+    pvr5 = params[:pvr5] # dependientes (valor numérico)
+    pvr6 = params[:pvr6].to_i # pension
+    pvr7 = params[:pvr7].to_i # afc
+    pvr8 = params[:pvr8].to_i # voluntarias
+
+    # Aplicar límite del 30% para pensión + afc + voluntarias
+    limite_treinta = (pvr0 * 0.3).to_i
+    ajuste_afc_vol = ""
+    
+    if (pvr7 + pvr8 + pvr6) >= limite_treinta
+      if pvr7 > pvr8
+        pvr7 = [limite_treinta - (pvr8 + pvr6), 0].max
+        ajuste_afc_vol = 'S'
+      elsif pvr8 > pvr7
+        pvr8 = [limite_treinta - (pvr7 + pvr6), 0].max
+        ajuste_afc_vol = 'S'
+      end
+    end
+
+    # Normalizar interés de crédito
+    ajuste_interes = ""
+    pvr3 = if pvr3 == 3185900 || pvr3.to_s.upcase == 'SI'
+             ajuste_interes = 'S'
+             3185900
+           else
+             0
+           end
+
+    # Normalizar salud prepagada con límite
+    ajuste_prepagada = ""
+    limite_prepagada = @interventoria.limite_prepagada
+    pvr4 = if pvr4 == 509744 || pvr4.to_s.upcase == 'SI'
+             ajuste_prepagada = 'S'
+             [509744, limite_prepagada].min
+           else
+             0
+           end
+
+    # Aplicar límite de dependientes
+    ajuste_dependientes = ""
+    limite_dependencia = @interventoria.limite_dependencia
+    if pvr5.to_i >= limite_dependencia
+      pvr5 = limite_dependencia
+      ajuste_dependientes = 'S'
+    end
+
+    # Cálculos fiscales
+    vlrincr = pvr0 - (pvr1 + pvr6)
+    subtotalr = pvr7 + pvr8
+    subtotal = pvr2 + pvr3 + pvr4 + pvr5.to_i
+    subtotalt = vlrincr - subtotalr - subtotal
+    renta = (subtotalt * 25) / 100
+    total_rentas = renta + subtotalr + subtotal
+    
+    # Límite del 40% del ingreso
+    cuarenta = (vlrincr * 0.4).to_i
+    total_rentas = [total_rentas, cuarenta].min
+    
+    base_retefuente = vlrincr - total_rentas
+    base_uvt = (base_retefuente.to_f / valor_config(:base_uvt)).round(0).to_i
+    
+    vlr1 = Interventoria.calcular_uvt_383(base_uvt)
+    retefuente383 = (vlr1 * valor_config(:retefuente383)).round(-3).to_i
+    total = pvr0 - retefuente383
+
+    # Actualizar el registro
+    @interventoria.assign_attributes(
+      salud: pvr1,
+      arl: pvr2,
+      interes_credito: pvr3,
+      salud_prepagada: pvr4,
+      dependientes: pvr5,
+      pension: pvr6,
+      afc: pvr7,
+      voluntarias: pvr8,
+      subtotalr: subtotalr,
+      subtotal: subtotal,
+      subtotalt: subtotalt,
+      renta: renta,
+      total_rentas: total_rentas,
+      base_retefuente: base_retefuente,
+      base_uvt: base_uvt,
+      retefuente383: retefuente383,
+      total: total
+    )
+    
+    if @interventoria.save
+      respond_to do |format|
+        format.js do
+          render json: {
+            success: true,
+            salud_prepagada: pvr4,
+            interes_credito: pvr3,
+            dependientes: pvr5,
+            afc: pvr7,
+            voluntarias: pvr8,
+            subtotalr: subtotalr,
+            total: total,
+            ajuste_interes: ajuste_interes,
+            ajuste_prepagada: ajuste_prepagada,
+            ajuste_dependientes: ajuste_dependientes,
+            ajuste_afc_vol: ajuste_afc_vol
+          }
+        end
+      end
+    else
+      render json: { success: false, errors: @interventoria.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  # ─── ACTUALIZAR ACTIVIDADES PENDIENTES ───────────────────────────────────
+  # Recarga las actividades desde el procedimiento almacenado (si existe)
+  # o desde la configuración del cargo
+  def actualizacionact
+    @interventoria = Interventoria.find(params[:id])
+    
+    # Intentar ejecutar procedimiento almacenado si existe (compatibilidad Oracle)
+    begin
+      ActiveRecord::Base.connection.execute(
+        "BEGIN prc_interventoriapendientes(#{@interventoria.id}); END;"
+      )
+      flash[:notice] = "El informe de Supervisión ha sido actualizado en sus actividades"
+    rescue ActiveRecord::StatementInvalid => e
+      # Si no existe el procedimiento, recargar desde cargo
+      if @interventoria.bloqueado?
+        flash[:alert] = "Informe bloqueado, no se pueden actualizar actividades."
+      else
+        perfecha = @interventoria.contratosperfecha
+        cargo_id = perfecha&.contratoscargo_id
+        
+        if cargo_id.present?
+          @interventoria.interactividades.destroy_all
+          @interventoria.registrar_obligaciones(cargo_id)
+          flash[:notice] = "Actividades actualizadas con éxito (#{@interventoria.interactividades.count} obligaciones)."
+        else
+          flash[:alert] = "No se encontró el cargo asociado. Verifique la configuración del contrato."
+        end
+      end
+    end
+    
+    redirect_to interventorias_path
+  end
+
+  # ─── ENVIO A GESTION HUMANA ──────────────────────────────────────────────
+  # El supervisor envía el informe aprobado a Gestión Humana
+  def enviogh
+    @interventoria.update!(estado: 'APROBADO')
+    @interventoria.registrar_bitacora(is_admin, "INFORME ENVIADO AL SGSST")
+    flash[:notice] = "El informe ha sido enviado para revisión de Gestión Humana"
+    redirect_to interventorias_path
+  end
+
+  # ─── SUPERVISOR GH: APROBAR CON OTP Y SMS ────────────────────────────────
+  # Modal para aprobar con OTP (Supervisor de Gestión Humana)
+  def aprobar_supervisor_gh_modal
+    @interventoria = Interventoria.find(params[:id])
+  end
+
+  # Genera y envía OTP por SMS al supervisor de GH
+  def generar_otp_supervisor_gh
+    @interventoria = Interventoria.find(params[:id])
+    user = User.find(is_admin)
+    
+    # Generar código OTP de 6 dígitos (sin ceros para evitar confusión)
+    codigo_otp = 6.times.map { rand(1..9) }.join
+    
+    # Guardar el código en la sesión con timestamp
+    session[:otp_supervisor_gh] = {
+      codigo: codigo_otp,
+      interventoria_id: @interventoria.id,
+      timestamp: Time.now.to_i
+    }
+    
+    # Log para depuración
+    logger.info("=== GENERANDO OTP ===")
+    logger.info("Interventoria ID: #{@interventoria.id}")
+    logger.info("Código OTP generado: #{codigo_otp}")
+    logger.info("Sesión guardada: #{session[:otp_supervisor_gh].inspect}")
+    
+    # Enviar SMS (solo una vez)
+    @sms_enviado = false
+    @mensaje_sms = ""
+    
+    begin
+      if user.celular.present?
+        mensaje = "IMAH - Codigo de verificacion para aprobar informe: #{codigo_otp}. Valido por 5 minutos."
+        WsController.smscolombiared(user.celular.to_s, mensaje)
+        @mensaje_sms = "SMS enviado exitosamente al #{user.celular}"
+        @sms_enviado = true
+        logger.info("SMS OTP enviado a #{user.celular} - Código: #{codigo_otp}")
+      else
+        @mensaje_sms = "Error: El usuario no tiene número de celular registrado"
+        @sms_enviado = false
+        logger.error("Usuario #{user.id} no tiene celular registrado")
+      end
+    rescue StandardError => e
+      logger.error("Error enviando SMS OTP: #{e.message}")
+      @mensaje_sms = "Error al enviar SMS: #{e.message}"
+      @sms_enviado = false
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  # Verifica OTP y aprueba el informe (Supervisor de GH)
+  def aprobar_supervisor_gh
+    @interventoria = Interventoria.find(params[:id])
+    otp_ingresado = (1..6).map { |i| params["nr#{i}"] }.join
+    
+    # Verificar OTP de la sesión
+    otp_data = session[:otp_supervisor_gh]
+    @validacion = false
+    
+    # Log para depuración
+    logger.info("=== DEBUG OTP ===")
+    logger.info("Interventoria ID: #{@interventoria.id}")
+    logger.info("OTP ingresado: #{otp_ingresado}")
+    logger.info("OTP data en sesión: #{otp_data.inspect}")
+    
+    if otp_data.nil?
+      flash[:error] = "No se ha generado un código OTP. Por favor, solicite uno nuevo."
+      logger.error("OTP data es nil")
+    elsif (otp_data['interventoria_id'] || otp_data[:interventoria_id]).to_s != @interventoria.id.to_s
+      flash[:error] = "El código OTP no corresponde a este informe."
+      logger.error("Interventoria ID no coincide: esperado #{otp_data['interventoria_id'] || otp_data[:interventoria_id]}, recibido #{@interventoria.id}")
+    elsif (Time.now.to_i - (otp_data['timestamp'] || otp_data[:timestamp]).to_i) > 300 # 5 minutos
+      flash[:error] = "El código OTP ha expirado. Por favor, solicite uno nuevo."
+      session.delete(:otp_supervisor_gh)
+      logger.error("OTP expirado")
+    elsif (otp_data['codigo'] || otp_data[:codigo]).to_s != otp_ingresado.to_s
+      flash[:error] = "Código OTP inválido. Por favor, verifique e intente nuevamente."
+      logger.error("Código OTP no coincide: esperado #{otp_data['codigo'] || otp_data[:codigo]}, recibido #{otp_ingresado}")
+    else
+      @validacion = true
+      @interventoria.update!(
+        estado: 'APROBADOGH',
+        firma_digital_supervisor: SecureRandom.hex(14),
+        fecha_firma_supervisor: Time.now
+      )
+      @interventoria.registrar_bitacora(is_admin, "INFORME APROBADO POR SUPERVISOR DE GESTION HUMANA")
+      
+      # Enviar correo al contratista
+      enviar_correo_contratista('sendaprobacion')
+      
+      flash[:notice] = "El informe ha sido aprobado exitosamente"
+      session.delete(:otp_supervisor_gh)
+      logger.info("OTP validado correctamente")
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  # ─── SUPERVISOR GH: RECHAZAR ─────────────────────────────────────────────
+  # Modal para rechazar (Supervisor de Gestión Humana)
+  def rechazar_supervisor_gh_modal
+    @interventoria = Interventoria.find(params[:id])
+  end
+
+  # Rechaza el informe (Supervisor de GH)
+  def rechazar_supervisor_gh
+    @interventoria = Interventoria.find(params[:id])
+    motivo = params[:observacion_rechazo].to_s.strip.presence || "Sin observaciones"
+    
+    @interventoria.update!(estado: 'RECHAZADOGH', fin_anno: nil)
+    @interventoria.registrar_bitacora(is_admin, "INFORME RECHAZADO POR SUPERVISOR DE GESTION HUMANA - #{motivo}")
+    
+    # Enviar correo al contratista
+    enviar_correo_contratista('sendrechazog')
+    
+    flash[:notice] = "El informe ha sido rechazado"
+    redirect_to interventorias_path
   end
 
   # ─── CREAR/VALIDAR PERIODO ────────────────────────────────────────────────

@@ -197,6 +197,53 @@ class Interventoria < ApplicationRecord
     }
   end
 
+  # Calcula retención con límites fiscales aplicados (30%, 40%, topes UVT)
+  # Usado en obs_calculofinal del controller
+  def self.calcular_retencion_con_limites(valor_mes:, salud:, arl:, pension:,
+                                          interes_credito:, salud_prepagada:, dependientes:,
+                                          afc:, voluntarias:, base_uvt_config:,
+                                          retefuente383_config:)
+    valor_mes        = valor_mes.to_i
+    salud            = salud.to_i
+    arl              = arl.to_i
+    pension          = pension.to_i
+    interes_credito  = interes_credito.to_i
+    salud_prepagada  = salud_prepagada.to_i
+    dependientes     = dependientes.to_i
+    afc              = afc.to_i
+    voluntarias      = voluntarias.to_i
+
+    vlrincr = valor_mes - (salud + pension)
+    subtotalr = afc + voluntarias
+    subtotal = arl + interes_credito + salud_prepagada + dependientes
+    subtotalt = vlrincr - subtotalr - subtotal
+    renta = (subtotalt * 25) / 100
+    total_rentas = renta + subtotalr + subtotal
+    
+    # Límite del 40%
+    cuarenta = (vlrincr * 0.4).to_i
+    total_rentas = [total_rentas, cuarenta].min
+    
+    base_retefuente = vlrincr - total_rentas
+    base_uvt = base_uvt_config > 0 ? (base_retefuente.to_f / base_uvt_config).round(0).to_i : 0
+    
+    vlr1 = calcular_uvt_383(base_uvt)
+    retefuente383 = (vlr1 * retefuente383_config).round(-3).to_i
+    total = valor_mes - retefuente383
+
+    {
+      subtotal:        subtotal,
+      subtotalr:       subtotalr,
+      subtotalt:       subtotalt,
+      renta:           renta,
+      total_rentas:    total_rentas,
+      base_retefuente: base_retefuente,
+      base_uvt:        base_uvt,
+      retefuente383:   retefuente383,
+      total:           total
+    }
+  end
+
   def self.calcular_uvt_383(base_uvt)
     # Tabla de rangos UVT - ajustar según tabla vigente
     # Retorna el factor para aplicar
