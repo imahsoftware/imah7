@@ -1,0 +1,14 @@
+<% if @sms_enviado %>
+  $('#mensaje_sms_status').html('<div style="background: #dff0d8; border: 1px solid #d6e9c6; border-radius: 4px; padding: 8px; font-size: 11px; color: #3c763d;"><i class="fa fa-check-circle"></i> <%= @mensaje_sms %></div>');
+  $('#otp_inputs_container').slideDown();
+  $('#btn_confirmar_aprobacion').prop('disabled', false);
+  $('#btn_generar_otp').html('<i class="fa fa-refresh"></i> Reenviar código').prop('disabled', false).removeClass('btn-primary').addClass('btn-warning');
+  
+  // Auto-focus en el primer input
+  setTimeout(function() {
+    $('#nr1').focus();
+  }, 300);
+<% else %>
+  $('#mensaje_sms_status').html('<div style="background: #f2dede; border: 1px solid #ebccd1; border-radius: 4px; padding: 8px; font-size: 11px; color: #a94442;"><i class="fa fa-exclamation-triangle"></i> <%= @mensaje_sms %></div>');
+  $('#btn_generar_otp').html('<i class="fa fa-mobile"></i> Reintentar envío').prop('disabled', false);
+<% end %>

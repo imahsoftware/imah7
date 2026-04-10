@@ -1,0 +1,9 @@
+$('#mensaje_otp').html("<%= j render 'menus/mensaje_otp_registro_generico' %>");
+
+<% if @validacion %>
+  $(document).ready(function() {
+    $("#aprobar_supervisor_gh_modal<%= @interventoria.id %>").modal('hide');
+    url = "<%= interventorias_path %>";
+    $(location).attr("href", url);
+  });
+<% end %>
