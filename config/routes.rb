@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       post :generar_otp_supervisor_gh
       post :aprobar_supervisor_gh
       post :rechazar_supervisor_gh
+      post :generar_otp_contabilidad
     end
   end
 

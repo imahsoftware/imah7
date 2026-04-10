@@ -54,6 +54,21 @@ class InterventoriasController < ApplicationController
                    .order("ano DESC, mes DESC")
     end
 
+    if is_auth_c("interventoriatesoreria")
+      @objetos = Contratosperfecha
+                   .joins(:contratospernominas)
+                   .where(
+                     "YEAR(contratosperfechas.fecha_inicio) = YEAR(CURDATE()) AND " \
+                       "MONTH(contratosperfechas.fecha_inicio) <= MONTH(CURDATE())"
+                   )
+                   .select(
+                     "DISTINCT MONTH(contratosperfechas.fecha_inicio) AS mes, " \
+                       "YEAR(contratosperfechas.fecha_inicio)           AS ano, " \
+                       "LPAD(MONTH(contratosperfechas.fecha_inicio),2,'0') AS mesc"
+                   )
+                   .order("ano DESC, mes DESC")
+    end
+
     respond_to do |format|
       format.html
       format.js
@@ -265,14 +280,89 @@ class InterventoriasController < ApplicationController
 
   # Contabilidad aprueba con OTP
   def aprobarcont
-    if verificar_otp
-      @interventoria.update!(estado: 'APROBADOCONT')
-      @interventoria.registrar_bitacora(is_admin, "INFORME APROBADO POR CONTABILIDAD")
-      flash[:notice] = "El informe ha sido aprobado"
+    @interventoria = Interventoria.find(params[:id])
+    otp_ingresado = (1..6).map { |i| params["nr#{i}"] }.join
+    
+    # Verificar OTP de la sesión
+    otp_data = session[:otp_contabilidad]
+    @validacion = false
+    
+    if otp_data.nil?
+      flash[:error] = "No se ha generado un código OTP. Por favor, solicite uno nuevo."
+    elsif (otp_data['interventoria_id'] || otp_data[:interventoria_id]).to_s != @interventoria.id.to_s
+      flash[:error] = "El código OTP no corresponde a este informe."
+    elsif (Time.now.to_i - (otp_data['timestamp'] || otp_data[:timestamp]).to_i) > 300 # 5 minutos
+      flash[:error] = "El código OTP ha expirado. Por favor, solicite uno nuevo."
+      session.delete(:otp_contabilidad)
+    elsif (otp_data['codigo'] || otp_data[:codigo]).to_s != otp_ingresado.to_s
+      flash[:error] = "Código OTP inválido. Por favor, verifique e intente nuevamente."
     else
-      flash[:error] = "Código OTP inválido."
+      @validacion = true
+      @interventoria.update!(
+        estado: 'APROBADOCONT',
+        firma_digital_supervisor: SecureRandom.hex(14),
+        fecha_firma_supervisor: Time.now
+      )
+      @interventoria.registrar_bitacora(is_admin, "INFORME APROBADO POR CONTABILIDAD")
+      
+      # Enviar correo al contratista
+      enviar_correo_contratista('sendaprobacion')
+      
+      flash[:notice] = "El informe ha sido aprobado exitosamente"
+      session.delete(:otp_contabilidad)
     end
-    @validacion = @otp_valid
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  # ─── CONTABILIDAD: GENERAR OTP POR SMS ────────────────────────────────────
+  def generar_otp_contabilidad
+    @interventoria = Interventoria.find(params[:id])
+    user = User.find(is_admin)
+    
+    # Generar código OTP de 6 dígitos (sin ceros para evitar confusión)
+    codigo_otp = 6.times.map { rand(1..9) }.join
+    
+    # Guardar el código en la sesión con timestamp
+    session[:otp_contabilidad] = {
+      codigo: codigo_otp,
+      interventoria_id: @interventoria.id,
+      timestamp: Time.now.to_i
+    }
+    
+    # Log para depuración
+    logger.info("=== GENERANDO OTP CONTABILIDAD ===")
+    logger.info("Interventoria ID: #{@interventoria.id}")
+    logger.info("Código OTP generado: #{codigo_otp}")
+    logger.info("Sesión guardada: #{session[:otp_contabilidad].inspect}")
+    
+    # Enviar SMS (solo una vez)
+    @sms_enviado = false
+    @mensaje_sms = ""
+    
+    begin
+      if user.celular.present?
+        mensaje = "IMAH - Codigo de verificacion para aprobar informe: #{codigo_otp}. Valido por 5 minutos."
+        WsController.smscolombiared(user.celular.to_s, mensaje)
+        @mensaje_sms = "SMS enviado exitosamente al #{user.celular}"
+        @sms_enviado = true
+        logger.info("SMS OTP enviado a #{user.celular} - Código: #{codigo_otp}")
+      else
+        @mensaje_sms = "Error: El usuario no tiene número de celular registrado"
+        @sms_enviado = false
+        logger.error("Usuario #{user.id} no tiene celular registrado")
+      end
+    rescue StandardError => e
+      logger.error("Error enviando SMS OTP: #{e.message}")
+      @mensaje_sms = "Error al enviar SMS: #{e.message}"
+      @sms_enviado = false
+    end
+    
+    respond_to do |format|
+      format.js
+    end
   end
 
   # Contabilidad rechaza
@@ -302,7 +392,9 @@ class InterventoriasController < ApplicationController
 
   def revisionfinal; end
 
-  def verificacionfinal; end
+  def verificacionfinal
+    @interventoria = Interventoria.find(params[:id])
+  end
 
   def verificacion; end
 
