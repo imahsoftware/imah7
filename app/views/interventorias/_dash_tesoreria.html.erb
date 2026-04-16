@@ -83,7 +83,7 @@
     anno_actual   = Date.today.year.to_s
     anno_anterior = (Date.today.year - 1).to_s
     mes_actual_i  = Date.today.month
-    objetos_actual = @objetos.presence || (1..mes_actual_i).to_a.reverse.map do |m|
+    objetos_actual = (1..mes_actual_i).to_a.reverse.map do |m|
       OpenStruct.new(ano: anno_actual, mes: m.to_s, mesc: m.to_s.rjust(2, '0'))
     end
     objetos_anterior = (1..12).to_a.reverse.map do |m|
@@ -103,7 +103,7 @@
         <% objetos_actual.each do |objeto| %>
           <%
             intervs = Interventoria.includes(contratosperfecha: :contratospersona)
-                                   .where(anno: objeto.ano, mes: objeto.mes, estado: %w[APROBADOCONT TESORERIA])
+                                   .where(anno: objeto.ano, mes: objeto.mes, estado: %w[TESORERIA])
                                    .order(updated_at: :asc)
           %>
           <div style="margin-bottom:8px;">
@@ -184,7 +184,7 @@
         <% objetos_anterior.each do |objeto| %>
           <%
             intervs = Interventoria.includes(contratosperfecha: :contratospersona)
-                                   .where(anno: objeto.ano, mes: objeto.mes, estado: %w[APROBADOCONT TESORERIA])
+                                   .where(anno: objeto.ano, mes: objeto.mes, estado: %w[TESORERIA])
                                    .order(updated_at: :asc)
           %>
           <div style="margin-bottom:8px;">

@@ -15,7 +15,11 @@
           </span>
         </small>
       <% elsif action_name == 'index' %>
-        Informes de Supervisión
+        <% if @user.present? && @user.etapa.to_s == 'MI_CUENTA' %>
+          Cuenta de Cobro
+        <% else %>
+          Informes de Supervisión
+        <% end %>
         <% if @user.present? %>
           <% etapa_nombres = { 'MI_CUENTA' => 'Mi Cuenta', 'BUSCADOR' => 'Buscador',
                                'SUPERVISOR' => 'Supervisor', 'TALENTO_HUMANO' => 'Talento Humano',
@@ -27,7 +31,6 @@
         Informes de Supervisión
       <% end %>
     </h1>
-
     <ol class="breadcrumb">
       <li><%= link_to 'Inicio', root_path %></li>
       <li><%= link_to 'Interventorías', interventorias_path %></li>
