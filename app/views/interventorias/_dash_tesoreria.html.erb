@@ -28,11 +28,11 @@
               <% persona = interventoria.contratosperfecha&.contratospersona %>
               <tr class="<%= cycle('even1', 'odd1') %>">
                 <td class="text-center">
-                  <%= link_to verificacion_interventoria_path(id: interventoria.id),
+                  <%= link_to verificacionfinal_interventoria_path(id: interventoria.id),
                               class: 'btn btn-xs btn-info', title: 'Ver informe' do %>
                     <i class="fa fa-file-pdf-o"></i> Informe
                   <% end %>
-                  <% if interventoria.mes.to_s == interventoria.contrato.fechafinalreal.strftime("%m").to_s && interventoria.anno.to_s == interventoria.contrato.fechafinalreal.strftime("%Y").to_s %>
+                  <% if interventoria.mes.to_s == interventoria.contrato.fechafinal.strftime("%m").to_s && interventoria.anno.to_s == interventoria.contrato.fechafinal.strftime("%Y").to_s %>
                     <%= link_to visualizarfinal_interventoria_path(contrato_id: interventoria.contrato.id, ano: interventoria.anno, mes: interventoria.mes),
                                 class: 'btn btn-xs btn-danger', title: 'Informe Final' do %>
                       <i class="fa fa-file-pdf-o"></i> Final
@@ -133,7 +133,7 @@
                     <% persona = interventoria.contratosperfecha&.contratospersona %>
                     <tr class="<%= cycle('even1', 'odd1') %>">
                       <td class="text-center">
-                        <%= link_to verificacion_interventoria_path(id: interventoria.id),
+                        <%= link_to verificacionfinal_interventoria_path(id: interventoria.id),
                                     class: 'btn btn-xs btn-info popup', title: 'Ver informe' do %>
                           <i class="fa fa-file-pdf-o"></i> Informe
                         <% end %>
@@ -214,7 +214,7 @@
                     <% persona = interventoria.contratosperfecha&.contratospersona %>
                     <tr class="<%= cycle('even1', 'odd1') %>">
                       <td class="text-center">
-                        <%= link_to verificacion_interventoria_path(id: interventoria.id),
+                        <%= link_to verificacionfinal_interventoria_path(id: interventoria.id),
                                     class: 'btn btn-xs btn-info popup', title: 'Ver informe' do %>
                           <i class="fa fa-file-pdf-o"></i> Informe
                         <% end %>

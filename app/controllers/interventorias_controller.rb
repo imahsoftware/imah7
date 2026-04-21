@@ -961,7 +961,7 @@ class InterventoriasController < ApplicationController
         @interventoriasteok = Interventoria.where(estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
       end
     when 'TESORERIA'
-      @interventoriaste = Interventoria.where(anno: Date.today.year.to_s, estado: %w[APROBADOGH TESORERIA]).order(updated_at: :asc)
+      @interventoriaste = Interventoria.where(anno: Date.today.year.to_s, estado: %w[APROBADOCONT TESORERIA]).order(updated_at: :asc)
       @interventoriasteok = Interventoria.where(estado: %w[APROBADOCONT TESORERIA]).order(updated_at: :asc)
 
     when 'MI_CUENTA'
