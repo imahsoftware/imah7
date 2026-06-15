@@ -22,6 +22,22 @@ class InterventoriasController < ApplicationController
     if @user.identificacion.present?
       @empleado = Contratospersona.find_by(identificacion: @user.identificacion)
     end
+
+    # Si el usuario no tiene asignada una etapa válida (p. ej. queda en el valor
+    # por defecto al crear el usuario) pero sí tiene un contrato activo sin fecha
+    # fin, debe ingresar directamente a "Cuenta de Cobro" en vez de caer en
+    # "Buscador".
+    etapas_validas = %w[MI_CUENTA SUPERVISOR TALENTO_HUMANO CONTABILIDAD TESORERIA INDICADORES BUSCADOR]
+    unless etapas_validas.include?(@user.etapa.to_s)
+      if @empleado.present? && Contratosperfecha
+                                  .where(contratospersona_id: @empleado.id)
+                                  .where("fecha_inicio <= CURDATE() AND fecha_fin IS NULL")
+                                  .where(estado: 'ACTIVO')
+                                  .exists?
+        @user.etapa = 'MI_CUENTA'
+      end
+    end
+
     cargar_datos_por_etapa(@user)
 
     if is_auth_c("interventoriagh")
@@ -812,6 +828,7 @@ class InterventoriasController < ApplicationController
   def visualizarfinal
     @contrato = Contrato.find(params[:contrato_id])
     @interventoria = Interventoria.find_by(anno: params[:ano], mes: params[:mes], contrato_id: params[:contrato_id])
+    @titulo_informe_pdf = "INFORME FINAL DE INTERVENTORÍA"
     respond_to do |format|
       format.html
       format.pdf do
@@ -829,6 +846,7 @@ class InterventoriasController < ApplicationController
   def visualizaracum
     @contrato = Contrato.find(params[:contrato_id])
     @interventoria = Interventoria.find_by(anno: params[:ano], mes: params[:mes], contrato_id: params[:contrato_id])
+    @titulo_informe_pdf = "INFORME ACUMULADO DE INTERVENTORÍA"
     respond_to do |format|
       format.html
       format.pdf do

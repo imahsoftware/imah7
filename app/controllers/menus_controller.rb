@@ -309,7 +309,7 @@ class MenusController < ApplicationController
     @existeContratoFirmaPendiente = ""
 
     #if @usr.id == 15910 or @usr.id == 4561 # 2025-05-02 regla especial solicitada por lilly
-    if [4998,22117].include?(@usr.id)
+    if [4998,22117,21220].include?(@usr.id)
       bloqueoporfirma = 'NO'
       bloqueoporcapa = 'NO'
       bloqueoporweek = 'NO'

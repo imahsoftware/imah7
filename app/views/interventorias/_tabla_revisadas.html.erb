@@ -32,7 +32,8 @@
             <%= link_to visualizaracum_interventorias_path(
                           contrato_id: interventoria.contrato_id,
                           ano: interventoria.anno,
-                          mes: interventoria.mes),
+                          mes: interventoria.mes,
+                          format: :pdf),
                         class: "btn btn-xs #{es_final ? 'btn-dropbox' : 'btn-warning'} popup" do %>
               <i class="fa fa-file-pdf-o"></i> <%= es_final ? 'Final' : 'Acum.' %>
             <% end %>

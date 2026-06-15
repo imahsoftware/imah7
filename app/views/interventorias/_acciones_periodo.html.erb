@@ -49,7 +49,8 @@
     <%= link_to visualizaracum_interventorias_path(
                   contrato_id: contrato.id,
                   ano:         periodo[:ano],
-                  mes:         periodo[:mes]),
+                  mes:         periodo[:mes],
+                  format:      :pdf),
                 class: "btn btn-xs #{es_ultimo_mes ? 'btn-dropbox' : 'btn-warning'} popup",
                 title: es_ultimo_mes ? 'Informe Final' : 'Informe Acumulado' do %>
       <i class="fa fa-file-pdf-o"></i> <%= es_ultimo_mes ? 'Final' : 'Acum.' %>
