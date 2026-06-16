@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pie de página</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif; }
+    .ftr-rule { height:2px; background:#3c8dbc; margin-bottom:4px; border-radius:2px; }
+    .ftr-bar {
+      width:100%; display:flex; align-items:center; justify-content:space-between;
+      font-size:8.5pt; color:#7f8c8d; padding:0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="ftr-rule"></div>
+  <div class="ftr-bar">
+    <span>Generado el <%= Time.now.strftime("%d/%m/%Y %H:%M") %></span>
+    <span>Página <span class="page"></span> de <span class="topage"></span></span>
+  </div>
+  <script type="text/javascript">
+    var vars = {};
+    var x = window.location.search.substring(1).split('&');
+    for (var i in x) {
+      var z = x[i].split('=', 2);
+      vars[z[0]] = unescape(z[1]);
+    }
+    document.querySelectorAll('.page').forEach(function (el) { el.textContent = vars['page']; });
+    document.querySelectorAll('.topage').forEach(function (el) { el.textContent = vars['topage']; });
+  </script>
+</body>
+</html>

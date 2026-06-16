@@ -1,0 +1,13 @@
+<%# app/views/interventorias/visualizarfinal.html.erb %>
+<%# Informe final de interventoría: consolida todos los periodos del contrato
+    (informe de cierre). %>
+<%
+  contrato = @contrato || @interventoria&.contrato
+
+  periodos = if contrato
+    Interventoria.where(contrato_id: contrato.id).order(:anno, :mes)
+  else
+    Interventoria.none
+  end
+%>
+<%= render 'informe_consolidado', tipo: 'final', contrato: contrato, interventoria: @interventoria, periodos: periodos %>

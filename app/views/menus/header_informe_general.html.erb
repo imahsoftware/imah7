@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Encabezado</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, Helvetica, sans-serif; }
+    .hdr-bar {
+      width:100%; background:#3c4b5e; color:#fff;
+      padding:8px 16px; border-radius:4px;
+      display:flex; align-items:center; justify-content:space-between; font-size:11pt;
+    }
+    .hdr-title { font-weight:700; }
+    .hdr-sub   { font-size:9pt; color:#dfe6ee; }
+    .hdr-rule  { height:3px; background:#3c8dbc; margin-top:4px; border-radius:2px; }
+  </style>
+</head>
+<body>
+  <div class="hdr-bar">
+    <div class="hdr-title">
+      <%= (@titulo_informe_pdf.presence || "INFORME DE INTERVENTORÍA") %>
+    </div>
+    <div class="hdr-sub">
+      <% contrato = @contrato || @interventoria&.contrato %>
+      <% if contrato %>
+        Contrato N° <%= contrato.nro_contrato %>
+        <% if contrato.empresa&.nombre.present? %> — <%= contrato.empresa.nombre %><% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="hdr-rule"></div>
+</body>
+</html>

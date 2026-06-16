@@ -1,0 +1,17 @@
+<%# app/views/interventorias/visualizaracum.html.erb %>
+<%# Informe acumulado de interventoría: consolida todos los periodos del contrato
+    hasta (e incluyendo) el periodo seleccionado. %>
+<%
+  contrato = @contrato || @interventoria&.contrato
+
+  periodos = if contrato && @interventoria
+    Interventoria.where(contrato_id: contrato.id)
+                  .where("(anno < :a) OR (anno = :a AND mes <= :m)", a: @interventoria.anno, m: @interventoria.mes)
+                  .order(:anno, :mes)
+  elsif contrato
+    Interventoria.where(contrato_id: contrato.id).order(:anno, :mes)
+  else
+    Interventoria.none
+  end
+%>
+<%= render 'informe_consolidado', tipo: 'acum', contrato: contrato, interventoria: @interventoria, periodos: periodos %>
