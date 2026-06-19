@@ -4,8 +4,8 @@ class User < ApplicationRecord
   devise :two_factor_authenticatable,
          :otp_secret_encryption_key => '2eb8ceeaf09042a4edda0c6dc8d8b564674f76bed3780bd220b4bd208e123823bc2b5254c40b0be9278029694b389e569ee17f1516a349a545663be7a6331e2b'
 
-  devise :recoverable, :trackable, :validatable, :timeoutable, :lockable, :session_limitable,
-         :ssl_session_verifiable
+  devise :recoverable, :trackable, :validatable, :timeoutable, :lockable, :session_limitable
+         #:ssl_session_verifiable
 
   has_many :login_activities, as: :user
   has_many :registros
