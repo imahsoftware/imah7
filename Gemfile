@@ -111,11 +111,11 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 #gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-gem 'devise'
+gem 'devise', '~> 4.7.3'
 gem 'devise-two-factor'
 gem 'rqrcode_png'
 #gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git'
-gem 'devise-security', '~> 0.18.0'
+gem 'devise-security', '~> 0.14.3'
 gem 'devise_ssl_session_verifiable'
 # server de jobs
 gem 'sidekiq'
