@@ -33,8 +33,11 @@ gem 'dotenv-rails'
 
 gem 'authtrail'
 
-gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
-gem 'axlsx_rails', '~> 0.5.1'
+#gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+#gem 'axlsx_rails', '~> 0.5.1'
+
+gem 'caxlsx', '~> 3.4'
+gem 'caxlsx_rails'
 
 # Google Map
 gem 'gmaps4rails'
@@ -111,7 +114,8 @@ end
 gem 'devise'
 gem 'devise-two-factor'
 gem 'rqrcode_png'
-gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git'
+#gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git'
+gem 'devise-security', '~> 0.18.0'
 gem 'devise_ssl_session_verifiable'
 # server de jobs
 gem 'sidekiq'
